@@ -37,7 +37,7 @@ Uma aplicação moderna de gerenciamento de tarefas desenvolvida com FastAPI e K
   - Navegação entre telas
   - Cópia rápida de IDs
 
-[Clique aqui para ver o projeto completo](https://github.com/TassioSales/todo_api)
+[Clique aqui para ver o projeto completo](https://github.com/TassioSales/MeuPortfolio/blob/main/todo_api/README.md)
 
 ## 🛠️ Tecnologias
 

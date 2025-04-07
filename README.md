@@ -1,62 +1,57 @@
-<div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #333;">
-    <h1 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">Meu Portfólio</h1>
-    
-    <p style="font-size: 1.1em; line-height: 1.6;">Este é o meu portfólio de projetos e trabalhos desenvolvidos.</p>
+# 🚀 Meu Portfólio de Projetos
 
-    <h2 style="color: #2c3e50; margin-top: 30px;">Projetos</h2>
+Bem-vindo ao meu portfólio de projetos! Aqui você encontrará uma coleção de aplicações que desenvolvi, demonstrando minhas habilidades em desenvolvimento de software.
 
-    <div style="display: flex; gap: 20px; margin: 20px 0;">
-        <div style="flex: 1; background: #f5f6fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3 style="color: #3498db;">Todo API</h3>
-            <p>Uma API REST para gerenciamento de tarefas desenvolvida com FastAPI.</p>
-        </div>
-        <div style="flex: 1; background: #f5f6fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3 style="color: #3498db;">Sistema de Gerenciamento de Estoque</h3>
-            <p>Sistema completo para controle de estoque com backend em FastAPI e frontend em Flask. Features:</p>
-            <ul style="list-style-type: none; padding-left: 0;">
-                <li>✅ API REST com FastAPI</li>
-                <li>✅ Frontend moderno com Flask e Bootstrap</li>
-                <li>✅ Dashboard com métricas em tempo real</li>
-                <li>✅ CRUD completo de produtos</li>
-                <li>✅ Testes automatizados</li>
-            </ul>
-            <a href="./estoque-api" style="color: #3498db; text-decoration: none;">Ver projeto →</a>
-        </div>
-    </div>
+## 📦 Projetos
 
-    <h2 style="color: #2c3e50; margin-top: 30px;">Tecnologias Utilizadas</h2>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
-        <div style="background: #f5f6fa; padding: 15px; border-radius: 8px; text-align: center;">
-            <span style="color: #3498db; font-weight: bold;">Python</span>
-        </div>
-        <div style="background: #f5f6fa; padding: 15px; border-radius: 8px; text-align: center;">
-            <span style="color: #3498db; font-weight: bold;">FastAPI</span>
-        </div>
-        <div style="background: #f5f6fa; padding: 15px; border-radius: 8px; text-align: center;">
-            <span style="color: #3498db; font-weight: bold;">SQLAlchemy</span>
-        </div>
-        <div style="background: #f5f6fa; padding: 15px; border-radius: 8px; text-align: center;">
-            <span style="color: #3498db; font-weight: bold;">SQLite</span>
-        </div>
-        <div style="background: #f5f6fa; padding: 15px; border-radius: 8px; text-align: center;">
-            <span style="color: #3498db; font-weight: bold;">Pydantic</span>
-        </div>
-    </div>
+### 1. Sistema de Gerenciamento de Estoque
 
-    <h2 style="color: #2c3e50; margin-top: 30px;">Como Executar os Projetos</h2>
-    
-    <p style="background: #f5f6fa; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db;">
-        Cada projeto possui seu próprio README.md com instruções específicas de instalação e execução.
-    </p>
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
 
-    <h2 style="color: #2c3e50; margin-top: 30px;">Estrutura do Repositório</h2>
-    
-    <div style="background: #f5f6fa; padding: 20px; border-radius: 8px; font-family: monospace; line-height: 1.8;">
-        <span style="color: #2c3e50;">MeuPortfolio/</span><br>
-        ├── <span style="color: #3498db;">todo_api/</span>          # API de Gerenciamento de Tarefas<br>
-        ├── <span style="color: #3498db;">estoque-api/</span>       # API de Gerenciamento de Estoque<br>
-        ├── <span style="color: #3498db;">README.md</span>          # Este arquivo<br>
-        └── <span style="color: #3498db;">.gitignore</span>         # Arquivo de configuração do Git
-    </div>
-</div>
+Um sistema completo para gerenciamento de estoque com backend em FastAPI e frontend em Flask. Permite controle total de produtos, movimentações de estoque e geração de relatórios.
+
+**Principais funcionalidades:**
+- Cadastro e gerenciamento de produtos
+- Controle de entradas e saídas
+- Dashboard com estatísticas
+- Interface moderna e responsiva
+
+📝 [Documentação Completa](https://github.com/TassioSales/MeuPortfolio/blob/main/estoque-api/README.md)  
+📄 [Licença](https://github.com/TassioSales/MeuPortfolio/blob/main/estoque-api/LICENSE)
+
+### 2. API de Gerenciamento de Tarefas (TODO)
+
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
+
+Uma API RESTful para gerenciamento de tarefas, construída com FastAPI. Oferece funcionalidades completas para criar, atualizar, listar e excluir tarefas.
+
+**Principais funcionalidades:**
+- CRUD completo de tarefas
+- Categorização de tarefas
+- Priorização
+- Documentação Swagger/OpenAPI
+
+📝 [Documentação Completa](https://github.com/TassioSales/MeuPortfolio/blob/main/todo_api/README.md)  
+📄 [Licença](https://github.com/TassioSales/MeuPortfolio/blob/main/todo_api/LICENSE)
+
+## 🛠️ Tecnologias Utilizadas
+
+- FastAPI
+- Flask
+- SQLAlchemy
+- SQLite
+- Bootstrap
+- Python
+- HTML/CSS/JavaScript
+
+## 👤 Autor
+
+**Tassio Sales**
+- GitHub: [@TassioSales](https://github.com/TassioSales)
+
+## 📝 Licença
+
+Todos os projetos estão sob a licença MIT. Veja os arquivos LICENSE em cada projeto para mais detalhes.

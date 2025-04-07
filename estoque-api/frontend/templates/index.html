@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Sistema de Estoque{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <!-- Cards do Dashboard -->
+    <div class="col-md-3">
+        <div class="card dashboard-card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-boxes me-2"></i>Total de Produtos
+                </h5>
+                <p class="card-text display-6">{{ dashboard.total_products }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card dashboard-card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-dollar-sign me-2"></i>Valor Total
+                </h5>
+                <p class="card-text display-6">R$ {{ "%.2f"|format(dashboard.total_value) }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card dashboard-card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-tags me-2"></i>Preço Médio
+                </h5>
+                <p class="card-text display-6">R$ {{ "%.2f"|format(dashboard.average_price) }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card dashboard-card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Alertas
+                </h5>
+                <p class="card-text display-6">{{ dashboard.low_stock_count + dashboard.out_of_stock_count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alertas de Estoque -->
+{% if alerts %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-exclamation-circle me-2"></i>Alertas de Estoque
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Estoque Atual</th>
+                                <th>Estoque Mínimo</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for alert in alerts %}
+                            <tr class="{% if alert.status == 'OUT' %}table-danger stock-alert{% else %}table-warning{% endif %}">
+                                <td>{{ alert.product_name }}</td>
+                                <td>{{ alert.current_quantity }}</td>
+                                <td>{{ alert.minimum_stock }}</td>
+                                <td>
+                                    {% if alert.status == 'OUT' %}
+                                        <span class="badge bg-danger">Sem Estoque</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Estoque Baixo</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-success" 
+                                            onclick="showStockModal('{{ alert.product_id }}', 'entrada')">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Lista de Produtos -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Lista de Produtos
+                    </h5>
+                    <a href="{{ url_for('create_product') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Novo Produto
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="productsTable">
+                    {% include 'products_table.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Atualização de Estoque -->
+<div class="modal fade" id="stockModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Atualizar Estoque</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="stockForm" onsubmit="return false;">
+                    <input type="hidden" id="productId">
+                    <input type="hidden" id="operationType">
+                    
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantidade</label>
+                        <input type="number" class="form-control" id="quantity" required min="1">
+                        <div class="invalid-feedback">
+                            Por favor, insira uma quantidade válida (mínimo 1)
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Motivo</label>
+                        <input type="text" class="form-control" id="reason" required 
+                               minlength="3" maxlength="200" 
+                               placeholder="Descreva o motivo da alteração">
+                        <div class="invalid-feedback">
+                            Por favor, insira um motivo válido (entre 3 e 200 caracteres)
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitStockUpdate()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Função para mostrar o modal de atualização de estoque
+    function showStockModal(productId, type) {
+        // Limpa validações anteriores
+        const form = document.getElementById('stockForm');
+        form.classList.remove('was-validated');
+        
+        // Reseta os campos
+        document.getElementById('productId').value = productId;
+        document.getElementById('operationType').value = type;
+        document.getElementById('quantity').value = '';
+        document.getElementById('reason').value = '';
+        
+        // Mostra o modal
+        const modal = new bootstrap.Modal(document.getElementById('stockModal'));
+        modal.show();
+    }
+    
+    // Função para enviar a atualização de estoque
+    async function submitStockUpdate() {
+        const form = document.getElementById('stockForm');
+        form.classList.add('was-validated');
+        
+        const productId = document.getElementById('productId').value;
+        const type = document.getElementById('operationType').value;
+        const quantityInput = document.getElementById('quantity');
+        const reasonInput = document.getElementById('reason');
+        
+        // Validação do formulário
+        if (!quantityInput.checkValidity() || !reasonInput.checkValidity()) {
+            return;
+        }
+        
+        const quantity = parseInt(quantityInput.value);
+        const reason = reasonInput.value.trim();
+        
+        // Validação adicional
+        if (!quantity || !reason) {
+            return;
+        }
+        
+        const finalQuantity = type === 'entrada' ? quantity : -quantity;
+        
+        try {
+            const response = await fetch(`/product/${productId}/stock`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    quantity: finalQuantity,
+                    reason: reason
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                location.reload(); // Recarrega a página para atualizar os dados
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert('Erro ao atualizar estoque: ' + error.message);
+        } finally {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('stockModal'));
+            modal.hide();
+        }
+    }
+</script>
+{% endblock %}

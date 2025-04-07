@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Estoque{% endblock %}</title>
+    {{ bootstrap.load_css() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .dashboard-card {
+            transition: transform 0.2s;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .stock-alert {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-box-open me-2"></i>Sistema de Estoque
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="fas fa-home me-1"></i>Início
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('create_product') }}">
+                            <i class="fas fa-plus me-1"></i>Novo Produto
+                        </a>
+                    </li>
+                </ul>
+                <form class="d-flex ms-auto" id="searchForm">
+                    <select class="form-select me-2" name="category" style="width: 150px;">
+                        <option value="">Todas Categorias</option>
+                        <option value="ELECTRONICS">Eletrônicos</option>
+                        <option value="CLOTHING">Roupas</option>
+                        <option value="FOOD">Alimentos</option>
+                        <option value="BOOKS">Livros</option>
+                        <option value="OTHERS">Outros</option>
+                    </select>
+                    <input class="form-control me-2" type="search" name="q" placeholder="Buscar produtos...">
+                    <button class="btn btn-light" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    {{ bootstrap.load_js() }}
+    <script>
+        // Função para atualizar o estoque
+        function updateStock(productId, quantity, reason) {
+            fetch(`/product/${productId}/stock`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity, reason })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                alert('Erro ao atualizar estoque: ' + error);
+            });
+        }
+
+        // Busca dinâmica de produtos
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const searchParams = new URLSearchParams(formData);
+            
+            fetch('/search?' + searchParams.toString())
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('productsTable').innerHTML = html;
+                });
+        });
+    </script>
+</body>
+</html>

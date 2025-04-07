@@ -1,0 +1,91 @@
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Preço</th>
+                <th>Quantidade</th>
+                <th>Valor Total</th>
+                <th>Localização</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.sku or '-' }}</td>
+                <td>
+                    {{ product.name }}
+                    {% if product.description %}
+                    <i class="fas fa-info-circle text-info" data-bs-toggle="tooltip" title="{{ product.description }}"></i>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if product.category == 'ELECTRONICS' %}
+                        <span class="badge bg-primary">Eletrônicos</span>
+                    {% elif product.category == 'CLOTHING' %}
+                        <span class="badge bg-success">Roupas</span>
+                    {% elif product.category == 'FOOD' %}
+                        <span class="badge bg-warning text-dark">Alimentos</span>
+                    {% elif product.category == 'BOOKS' %}
+                        <span class="badge bg-info">Livros</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Outros</span>
+                    {% endif %}
+                </td>
+                <td>R$ {{ "%.2f"|format(product.price) }}</td>
+                <td>
+                    {% if product.quantity <= 0 %}
+                        <span class="badge bg-danger">Sem Estoque</span>
+                    {% elif product.quantity <= product.minimum_stock %}
+                        <span class="badge bg-warning text-dark">{{ product.quantity }}</span>
+                    {% else %}
+                        {{ product.quantity }}
+                    {% endif %}
+                </td>
+                <td>R$ {{ "%.2f"|format(product.price * product.quantity) }}</td>
+                <td>{{ product.location or '-' }}</td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-success" 
+                                onclick="showStockModal('{{ product.id }}', 'entrada')" 
+                                title="Adicionar estoque">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" 
+                                onclick="showStockModal('{{ product.id }}', 'saída')" 
+                                title="Remover estoque">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <a href="{{ url_for('edit_product', product_id=product.id) }}" 
+                           class="btn btn-sm btn-warning" 
+                           title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{{ url_for('delete_product', product_id=product.id) }}" 
+                           class="btn btn-sm btn-danger" 
+                           onclick="return confirm('Tem certeza que deseja excluir este produto?')"
+                           title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center">Nenhum produto encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Inicializa os tooltips do Bootstrap
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+</script>

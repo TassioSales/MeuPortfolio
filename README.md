@@ -39,7 +39,17 @@ Uma API RESTful para gerenciamento de tarefas, construída com FastAPI. Oferece 
 
 ### 3. Análise Inteligente de Textos
 
-Flask Python IA
+![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![MistralAI](https://img.shields.io/badge/MistralAI-5E4AE3?style=for-the-badge)
+![LlamaIndex](https://img.shields.io/badge/LlamaIndex-FFD700?style=for-the-badge)
+![Transformers](https://img.shields.io/badge/Transformers-FF6F00?style=for-the-badge)
+![NLTK](https://img.shields.io/badge/NLTK-76B900?style=for-the-badge)
+![TextBlob](https://img.shields.io/badge/TextBlob-FFB300?style=for-the-badge)
+![scikit--learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![PyPDF2](https://img.shields.io/badge/PyPDF2-3776AB?style=for-the-badge)
+![matplotlib](https://img.shields.io/badge/matplotlib-11557C?style=for-the-badge)
+![wordcloud](https://img.shields.io/badge/wordcloud-8A2BE2?style=for-the-badge)
 
 Um sistema web para análise avançada de textos em português. Permite resumo automático, análise de sentimento, chatbot contextual e visualização de dados.
 

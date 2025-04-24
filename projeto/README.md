@@ -1,100 +1,128 @@
 # 🧠 Análise Inteligente de Textos
 
-Este sistema web permite a análise avançada de textos em português, combinando IA generativa, análise de sentimentos, visualização e chatbot contextual. O objetivo é oferecer uma solução completa para explorar, resumir, compreender e interagir com textos de qualquer tamanho, de forma simples e visual.
+![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![MistralAI](https://img.shields.io/badge/MistralAI-5E4AE3?style=for-the-badge)
+![LlamaIndex](https://img.shields.io/badge/LlamaIndex-FFD700?style=for-the-badge)
+![Transformers](https://img.shields.io/badge/Transformers-FF6F00?style=for-the-badge)
+![NLTK](https://img.shields.io/badge/NLTK-76B900?style=for-the-badge)
+![TextBlob](https://img.shields.io/badge/TextBlob-FFB300?style=for-the-badge)
+![scikit--learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![PyPDF2](https://img.shields.io/badge/PyPDF2-3776AB?style=for-the-badge)
+![matplotlib](https://img.shields.io/badge/matplotlib-11557C?style=for-the-badge)
+![wordcloud](https://img.shields.io/badge/wordcloud-8A2BE2?style=for-the-badge)
+
+Sistema web completo para análise avançada de textos em português, combinando IA generativa, análise de sentimentos, visualização de dados e chatbot contextual. Ideal para explorar, resumir, compreender e interagir com textos de qualquer tamanho de forma simples, visual e inteligente.
 
 ## 🚀 Principais Funcionalidades
 
 - **Texto Manual:** Digite ou cole textos diretamente na interface para análise.
-- **Upload de Arquivo:** Envie arquivos `.txt` ou `.pdf` e o sistema extrai e processa automaticamente o conteúdo.
-- **Visualização:** Veja o texto carregado, alterne entre modos manual/upload e confira o conteúdo antes de analisar.
-- **Resumo Automático:** Gere resumos de textos extensos usando IA (MistralAI), facilitando a compreensão rápida do conteúdo.
-- **Análise de Sentimento:** Utilize múltiplos modelos (TextBlob, transformers, scikit-learn, pysentimiento, CardiffNLP) para avaliar o sentimento de cada frase e do texto geral.
-- **Análise Inteligente:** Pipeline completo que inclui extração de frases, análise de sentimentos, geração de WordCloud, gráficos e insights contextuais com LlamaIndex.
-- **Chatbot do Documento:** Faça perguntas sobre o texto carregado e obtenha respostas contextuais baseadas apenas no conteúdo fornecido.
-- **Visualização de Dados:** WordCloud de palavras-chave e gráficos de distribuição de sentimentos, tornando os resultados mais intuitivos.
-- **Exportação e Cópia:** Copie ou baixe resultados de resumo e análise facilmente.
+- **Upload de Arquivo:** Envie arquivos `.txt` ou `.pdf` para análise automática.
+- **Resumo Automático:** Gere resumos de textos extensos usando IA (MistralAI).
+- **Análise de Sentimento:** Avalie sentimento por frase e geral com múltiplos modelos (TextBlob, transformers, scikit-learn, pysentimiento, CardiffNLP).
+- **Análise Inteligente:** Pipeline completo com extração de frases, geração de WordCloud, gráficos e insights contextuais (LlamaIndex).
+- **Chatbot do Documento:** Faça perguntas sobre o texto carregado e obtenha respostas contextuais.
+- **Visualização de Dados:** WordCloud de palavras-chave e gráficos de sentimentos.
+- **Exportação e Cópia:** Copie ou baixe resultados facilmente.
 
-## 🏗️ Estrutura da Aplicação
+## 🗂️ Estrutura do Projeto
 
 ```
 projeto/
-├── app.py                  # Servidor Flask principal, define as rotas e integra todos os módulos
-├── analise_de_sentimento.py # Funções de análise de sentimento (vários modelos)
-├── analise_inteligente.py   # Pipeline de análise inteligente, visualização e contexto
-├── resumo.py                # Geração automática de resumos com IA
-├── chatbot_backend.py       # Backend do chatbot contextual (perguntas e respostas)
-├── requirements.txt         # Lista de dependências Python
-├── static/                  # Arquivos estáticos (CSS, JS, logo.svg, imagens)
-├── templates/               # Templates HTML da interface web
-├── uploads/                 # Textos enviados pelo usuário (armazenados em JSON)
-│   ├── manual_text.json     # Texto digitado manualmente
+├── app.py                  # Servidor Flask principal, integra todos os módulos
+├── analise_de_sentimento.py # Funções de análise de sentimento
+├── analise_inteligente.py   # Pipeline de análise inteligente e visualização
+├── resumo.py                # Geração de resumos automáticos
+├── chatbot_backend.py       # Backend do chatbot contextual
+├── requirements.txt         # Dependências Python
+├── static/                  # Arquivos estáticos (CSS, JS, logo.svg)
+├── templates/               # Templates HTML (interface web)
+├── uploads/                 # Textos enviados pelo usuário
+│   ├── manual_text.json     # Texto digitado
 │   └── upload_text.json     # Texto extraído de upload
-├── index/                   # Armazenamento de índices/contexto para busca inteligente
-├── logging_config.py        # Configuração e padronização dos logs do sistema
+├── index/                   # Armazenamento de índices/contexto
+├── logging_config.py        # Configuração de logs
 └── ...
 ```
 
 ## ⚙️ Tecnologias Utilizadas
 
-- **Flask:** Backend web e roteamento
-- **HTML/CSS/JavaScript:** Frontend moderno e responsivo
-- **MistralAI:** Geração de resumos e respostas com IA generativa
-- **LlamaIndex:** Busca contextual e análise inteligente
-- **Transformers (HuggingFace):** Modelos de sentimento e emoção
-- **NLTK, TextBlob, scikit-learn, joblib:** NLP tradicional e ML
-- **PyPDF2:** Extração de texto de PDFs
-- **matplotlib, wordcloud:** Visualização de dados
-- **deep-translator:** Tradução automática, se necessário
+- [Flask](https://flask.palletsprojects.com/) • [Python](https://www.python.org/)
+- [MistralAI](https://mistral.ai/) • [LlamaIndex](https://github.com/jerryjliu/llama_index)
+- [Transformers (HuggingFace)](https://huggingface.co/transformers/) • [NLTK](https://www.nltk.org/)
+- [TextBlob](https://textblob.readthedocs.io/en/dev/) • [scikit-learn](https://scikit-learn.org/)
+- [PyPDF2](https://pypi.org/project/pypdf2/) • [matplotlib](https://matplotlib.org/) • [wordcloud](https://github.com/amueller/word_cloud)
 
-## 🔒 Privacidade e Segurança
-- Todos os dados enviados pelo usuário são processados localmente.
-- Nenhum texto ou resultado é compartilhado com terceiros.
-- O logo do sistema é gerado automaticamente (SVG) e não depende de imagens externas.
+## 📝 Instalação e Execução
 
-## 📝 Pré-requisitos
-- Python 3.8+
-- `pip` instalado
-- Chave de API MistralAI (crie um arquivo `.env` na raiz do projeto):
-  ```
-  MISTRAL_API_KEY=SEU_TOKEN_AQUI
-  ```
-
-## 🛠️ Instalação e Execução
-1. **Instale as dependências:**
+1. **Pré-requisitos:**
+   - Python 3.8+
+   - `pip` instalado
+   - Chave da API MistralAI (adicione ao `.env`):
+     ```
+     MISTRAL_API_KEY=SEU_TOKEN_AQUI
+     ```
+2. **Instale as dependências:**
    ```bash
    pip install -r requirements.txt
    ```
-2. **Execute o servidor Flask:**
+3. **Execute o servidor Flask:**
    ```bash
    python app.py
    ```
-3. **Acesse pelo navegador:**
-   - Vá para [http://localhost:5000](http://localhost:5000)
+4. **Acesse no navegador:**
+   - [http://localhost:5000](http://localhost:5000)
 
-## 🧩 Como Usar
+## 💡 Como Usar
 
-1. **Escolha o modo de entrada:**
-   - Digite texto manualmente ou faça upload de um arquivo `.txt` ou `.pdf`.
-2. **Visualize o texto carregado:**
-   - Confira se o conteúdo está correto antes de analisar.
-3. **Gere o resumo (opcional):**
-   - Para textos grandes, utilize o botão de resumo para obter uma versão condensada.
-4. **Execute a análise de sentimento:**
-   - Veja o sentimento por frase e o sentimento geral do texto.
-5. **Acesse a análise inteligente:**
-   - Veja insights detalhados, WordCloud, gráficos e contexto extraído do texto.
-6. **Utilize o chatbot:**
-   - Faça perguntas sobre o texto/documento e obtenha respostas precisas baseadas apenas no conteúdo carregado.
-7. **Baixe ou copie resultados:**
-   - Use os botões de exportação para salvar ou copiar resumos e análises.
+1. Escolha o modo de entrada: digite texto ou faça upload de `.txt`/`.pdf`.
+2. Visualize o texto carregado.
+3. Gere resumo (opcional).
+4. Execute análise de sentimento.
+5. Veja análise inteligente, WordCloud e gráficos.
+6. Use o chatbot para perguntas contextuais.
+7. Baixe ou copie resultados.
 
-## 💡 Dicas Avançadas
-- O sistema aceita textos longos e arquivos grandes, mas recomenda-se usar o resumo para garantir análises rápidas.
-- O chatbot responde apenas com base no texto carregado, garantindo privacidade e foco.
-- Os logs do sistema são organizados e podem ser consultados no console para depuração.
+## 🤝 Como Contribuir
 
-## 🖼️ Prints e Exemplos
-> Adicione aqui prints de tela ou GIFs mostrando o uso do sistema para facilitar o entendimento de novos usuários.
+1. Faça um fork deste repositório
+2. Crie uma branch: `git checkout -b minha-feature`
+3. Faça suas alterações e commit: `git commit -m 'minha contribuição'`
+4. Envie para o fork: `git push origin minha-feature`
+5. Abra um Pull Request
+
+## 🖼️ Exemplos Visuais
+
+Abaixo alguns prints ilustrando o funcionamento do sistema:
+
+<p align="center">
+  <img src="imagens_readme/imagem1.png" alt="Tela inicial" width="70%">
+  <br><em>1. Tela inicial do sistema</em>
+</p>
+<p align="center">
+  <img src="imagens_readme/imagem2.png" alt="Upload de arquivo" width="70%">
+  <br><em>2. Upload de arquivo para análise</em>
+</p>
+<p align="center">
+  <img src="imagens_readme/imagem3.png" alt="Resumo automático" width="70%">
+  <br><em>3. Geração de resumo automático</em>
+</p>
+<p align="center">
+  <img src="imagens_readme/imagem4.png" alt="Análise de sentimento" width="70%">
+  <br><em>4. Análise de sentimento detalhada</em>
+</p>
+<p align="center">
+  <img src="imagens_readme/imagem5.png" alt="WordCloud" width="70%">
+  <br><em>5. Visualização WordCloud</em>
+</p>
+<p align="center">
+  <img src="imagens_readme/imagem6.png" alt="Gráfico de sentimentos" width="70%">
+  <br><em>6. Gráfico de distribuição de sentimentos</em>
+</p>
+<p align="center">
+  <img src="imagens_readme/imagem7.png" alt="Chatbot contextual" width="70%">
+  <br><em>7. Chatbot contextual sobre o texto</em>
+</p>
 
 ## 📚 Créditos e Referências
 - [MistralAI](https://mistral.ai/)
@@ -108,9 +136,9 @@ projeto/
 
 ## 👤 Autor
 
-**Tassio Sales**
-- GitHub: [@TassioSales](https://github.com/TassioSales)
+**Tassio Sales**  
+GitHub: [@TassioSales](https://github.com/TassioSales)
 
 ## 📝 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+Distribuído sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.

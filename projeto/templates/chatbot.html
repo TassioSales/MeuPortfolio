@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot do Documento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .chat-container { max-width: 700px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px #e6e9ef; padding: 32px 26px 22px 26px; }
+        .chat-title { color: #31415a; font-size: 2em; font-weight: 700; margin-bottom: 18px; }
+        .chat-history { min-height: 200px; max-height: 400px; overflow-y: auto; background: #f8fafc; border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+        .chat-msg { margin-bottom: 14px; }
+        .chat-msg.user { color: #2467a6; font-weight: 600; }
+        .chat-msg.bot { color: #29304a; }
+        .chat-input-row { display: flex; gap: 10px; }
+        .chat-input { flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #b5c1d6; font-size: 1.13em; }
+        .chat-btn { background: #31415a; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1.07em; font-weight: 600; cursor: pointer; }
+        .chat-btn:hover { background: #2467a6; }
+        .sidebar { position: fixed; top: 0; left: 0; width: 200px; height: 100%; background: #fff; padding: 20px; border-right: 1px solid #ddd; }
+        .sidebar-btn { background: #fff; border: none; padding: 10px; font-size: 1.07em; font-weight: 600; cursor: pointer; }
+        .sidebar-btn:hover { background: #f8fafc; }
+        .sidebar-active { background: #31415a; color: #fff; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><button class="sidebar-btn" onclick="window.location.href='/'">Texto Manual</button></li>
+            <li><button class="sidebar-btn" onclick="window.location.href='/upload'">Upload de Arquivo</button></li>
+            <li><button class="sidebar-btn" onclick="window.location.href='/visualizar'">Visualizar Texto</button></li>
+            <li><button class="sidebar-btn" onclick="window.location.href='/resumo'">Gerar Resumo</button></li>
+            <li><button class="sidebar-btn" onclick="window.location.href='/sentimento'">Análise de Sentimento</button></li>
+            <li><button class="sidebar-btn" onclick="window.location.href='/inteligente'">Análise Inteligente</button></li>
+            <li><button class="sidebar-btn sidebar-active" disabled>Chatbot do Documento</button></li>
+        </ul>
+    </div>
+    <div class="chat-container">
+        <div class="chat-title">Chatbot do Documento</div>
+        <form id="chatForm" autocomplete="off">
+            <div class="chat-history" id="chatHistory"></div>
+            <div class="chat-input-row">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Digite sua pergunta sobre o texto..." required autofocus>
+                <button type="submit" class="chat-btn">Perguntar</button>
+            </div>
+        </form>
+        <div id="chatAviso" style="margin-top:12px;color:#b82e2e;font-weight:600;"></div>
+    </div>
+    <script>
+        const chatForm = document.getElementById('chatForm');
+        const chatInput = document.getElementById('chatInput');
+        const chatHistory = document.getElementById('chatHistory');
+        const chatAviso = document.getElementById('chatAviso');
+        let tipo = 'manual'; // ou 'upload', pode ser selecionável se quiser
+
+        function addMessage(msg, sender) {
+            const div = document.createElement('div');
+            div.className = 'chat-msg ' + sender;
+            div.innerHTML = msg;
+            chatHistory.appendChild(div);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        chatForm.onsubmit = async function(e) {
+            e.preventDefault();
+            const pergunta = chatInput.value.trim();
+            if (!pergunta) return;
+            addMessage(pergunta, 'user');
+            chatInput.value = '';
+            chatAviso.textContent = '';
+            try {
+                const resp = await fetch('/chatbot', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ pergunta, tipo })
+                });
+                const data = await resp.json();
+                if (data.status === 'sucesso') {
+                    addMessage(data.resposta, 'bot');
+                } else {
+                    chatAviso.textContent = data.mensagem || 'Erro ao obter resposta.';
+                }
+            } catch (err) {
+                chatAviso.textContent = 'Erro de comunicação com o servidor.';
+            }
+        };
+    </script>
+</body>
+</html>

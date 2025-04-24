@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+.env
+venv/
+
+# VSCode
+.vscode/
+
+# Dados temporários e uploads
+uploads/*.json
+uploads/*.txt
+uploads/*.pdf
+uploads/*.csv
+uploads/*.xlsx
+uploads/*.docx
+uploads/*.doc
+uploads/*.zip
+uploads/*.tar.gz
+uploads/*.tar
+uploads/*.rar
+uploads/*.7z
+
+# Modelos e arquivos grandes
+*.joblib
+*.h5
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Arquivos de índice/contexto
+index/
+
+# Outras pastas temporárias
+.temp/
+.cache/
+
+# Sistema
+.DS_Store
+Thumbs.db

@@ -1,0 +1,19 @@
+Arquivos e pastas a serem EXCLUÍDOS para limpeza do projeto:
+
+- pasta: uploa (vazia)
+- pasta: manual (vazia)
+- pasta: temp (vazia)
+- pasta: jsons (não utilizada, contém arquivos antigos)
+- pasta: resumo (não utilizada, contém resumo.py e __pycache__)
+- arquivo: templates/summary.html (não utilizado no fluxo atual)
+
+Itens a manter:
+- app.py
+- requirements.txt
+- static/
+- templates/index.html
+- uploads/ (apenas manual_text.json e upload_text.json)
+- venv/ (ambiente virtual)
+- .env
+
+A exclusão será feita dos diretórios e arquivos listados acima.

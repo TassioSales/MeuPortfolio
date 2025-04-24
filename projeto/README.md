@@ -104,8 +104,8 @@ Abaixo alguns prints ilustrando o funcionamento do sistema:
   <br><em>2. Upload de arquivo para análise</em>
 </p>
 <p align="center">
-  <img src="imagens_readme/imagem3.png" alt="Resumo automático" width="70%">
-  <br><em>3. Geração de resumo automático</em>
+  <img src="imagens_readme/imagem3.png" alt="Visualização do texto" width="70%">
+  <br><em>3. Visualização do texto</em>
 </p>
 <p align="center">
   <img src="imagens_readme/imagem4.png" alt="Resumo automático" width="70%">

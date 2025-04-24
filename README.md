@@ -51,8 +51,8 @@ Principais funcionalidades:
 - Visualização de dados (WordCloud e gráficos)
 - Upload de arquivos `.txt` e `.pdf`
 
-📝 Documentação Completa
-📄 Licença
+📝 [Documentação Completa](https://github.com/TassioSales/MeuPortfolio/blob/main/projeto/README.md)  
+📄 [Licença](https://github.com/TassioSales/MeuPortfolio/blob/main/projeto/LICENSE)
 
 ## 👤 Autor
 

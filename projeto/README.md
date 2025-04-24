@@ -108,16 +108,16 @@ Abaixo alguns prints ilustrando o funcionamento do sistema:
   <br><em>3. Geração de resumo automático</em>
 </p>
 <p align="center">
-  <img src="imagens_readme/imagem4.png" alt="Análise de sentimento" width="70%">
-  <br><em>4. Análise de sentimento detalhada</em>
+  <img src="imagens_readme/imagem4.png" alt="Resumo automático" width="70%">
+  <br><em>4. Resumo automático</em>
 </p>
 <p align="center">
-  <img src="imagens_readme/imagem5.png" alt="WordCloud" width="70%">
-  <br><em>5. Visualização WordCloud</em>
+  <img src="imagens_readme/imagem5.png" alt="Análise de sentimento" width="70%">
+  <br><em>5. Análise de sentimento</em>
 </p>
 <p align="center">
-  <img src="imagens_readme/imagem6.png" alt="Gráfico de sentimentos" width="70%">
-  <br><em>6. Gráfico de distribuição de sentimentos</em>
+  <img src="imagens_readme/imagem6.png" alt="Análise inteligente" width="70%">
+  <br><em>6. Análise inteligente</em>
 </p>
 <p align="center">
   <img src="imagens_readme/imagem7.png" alt="Chatbot contextual" width="70%">

@@ -4,6 +4,8 @@
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, StorageContext, load_index_from_storage
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from transformers import pipeline
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 import os

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Inserir Transação Financeira{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">
+                <i class="bi bi-plus-circle me-2"></i>Nova Transação Financeira
+            </h2>
+            <p class="mb-0">Preencha os dados da transação abaixo</p>
+        </div>
+        <div class="card-body">
+            <form id="formTransacao" action="{{ url_for('inserir.inserir_transacao') }}" method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.data.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                {{ form.data(class="form-control", placeholder="Selecione a data") }}
+                            </div>
+                            {% if form.data.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.data.errors[0] }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.valor.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                {{ form.valor(class="form-control", placeholder="0,00") }}
+                            </div>
+                            {% if form.valor.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.valor.errors[0] }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.tipo.label(class="form-label") }}
+                            {{ form.tipo(class="form-select") }}
+                            {% if form.tipo.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.tipo.errors[0] }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.categoria.label(class="form-label") }}
+                            {{ form.categoria(class="form-select") }}
+                            {% if form.categoria.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.categoria.errors[0] }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.descricao.label(class="form-label") }}
+                    {{ form.descricao(class="form-control", rows="3", placeholder="Adicione uma descrição detalhada") }}
+                    <div class="form-text">Descreva com detalhes a natureza desta transação.</div>
+                    {% if form.descricao.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.descricao.errors[0] }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="btn btn-outline-secondary me-md-2">
+                        <i class="fas fa-arrow-left me-1"></i> Voltar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Salvar Transação
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Mapeamento de categorias
+    const categorias = {
+        'receita': [
+            {value: 'salario', text: 'Salário'},
+            {value: 'freelance', text: 'Freelance'},
+            {value: 'investimentos', text: 'Investimentos'},
+            {value: 'presente', text: 'Presente'},
+            {value: 'outros', text: 'Outros'}
+        ],
+        'despesa': [
+            {value: 'alimentacao', text: 'Alimentação'},
+            {value: 'moradia', text: 'Moradia'},
+            {value: 'transporte', text: 'Transporte'},
+            {value: 'saude', text: 'Saúde'},
+            {value: 'educacao', text: 'Educação'},
+            {value: 'lazer', text: 'Lazer'},
+            {value: 'compras', text: 'Compras'},
+            {value: 'contas', text: 'Contas'},
+            {value: 'outros', text: 'Outros'}
+        ]
+    };
+
+    // Função para atualizar as categorias com base no tipo selecionado
+    function atualizarCategorias() {
+        const tipoSelecionado = document.getElementById('tipo').value;
+        const categoriaSelect = document.getElementById('categoria');
+        
+        // Limpa as opções atuais
+        categoriaSelect.innerHTML = '';
+        
+        // Adiciona as opções correspondentes ao tipo selecionado
+        categorias[tipoSelecionado].forEach(categoria => {
+            const option = document.createElement('option');
+            option.value = categoria.value;
+            option.textContent = categoria.text;
+            categoriaSelect.appendChild(option);
+        });
+    }
+
+    // Adiciona o evento de mudança ao campo de tipo
+    document.addEventListener('DOMContentLoaded', function() {
+        const tipoSelect = document.getElementById('tipo');
+        if (tipoSelect) {
+            // Atualiza as categorias quando a página carrega
+            atualizarCategorias();
+            
+            // Atualiza as categorias quando o tipo é alterado
+            tipoSelect.addEventListener('change', atualizarCategorias);
+        }
+    });
+</script>
+
+<script>
+    // Inicializar datepicker
+    document.addEventListener('DOMContentLoaded', function() {
+        // Configurar máscara para o campo de valor
+        var valorInput = document.getElementById('valor');
+        if (valorInput) {
+            // Formatar valor quando o campo perde o foco
+            valorInput.addEventListener('blur', function(e) {
+                let value = e.target.value.trim();
+                
+                // Se o valor estiver vazio, não faz nada
+                if (!value) return;
+                
+                // Se o valor já estiver formatado, mantém
+                if (value.match(/^[0-9]+(,[0-9]{2})?$/)) {
+                    return;
+                }
+                
+                // Tenta formatar o valor
+                value = value.replace(/\./g, '').replace(',', '.');
+                const numValue = parseFloat(value);
+                
+                if (!isNaN(numValue)) {
+                    e.target.value = numValue.toFixed(2).replace('.', ',');
+                }
+            });
+        }
+        
+        // Configurar data atual como padrão
+        var dataInput = document.getElementById('data');
+        if (dataInput && !dataInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            dataInput.value = today;
+        }
+    });
+</script>
+{% endblock %}

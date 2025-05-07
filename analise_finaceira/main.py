@@ -3,7 +3,6 @@ from flask_wtf.csrf import CSRFProtect
 import secrets
 from upload_arq.src import upload_bp
 from dashboard_arq.src import dashboard_bp, inserir_bp
-from alertas_arq.src import alertas_bp
 import os
 
 # Criar diretório para uploads se não existir
@@ -23,8 +22,7 @@ app = Flask(__name__,
 template_dirs = [
     os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates'),
     os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dashboard_arq', 'templates'),
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload_arq', 'templates'),
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'alertas_arq', 'templates')
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload_arq', 'templates')
 ]
 app.jinja_loader.searchpath = template_dirs
 
@@ -44,7 +42,8 @@ csrf.init_app(app)
 app.register_blueprint(upload_bp, url_prefix='/upload')
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 app.register_blueprint(inserir_bp, url_prefix='/inserir')
-app.register_blueprint(alertas_bp, url_prefix='/alertas')
+
+
 
 
 # Configurar o template global para o token CSRF

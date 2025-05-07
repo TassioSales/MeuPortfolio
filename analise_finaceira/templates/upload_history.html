@@ -1,0 +1,44 @@
+{% if upload_history.empty %}
+    <div class="alert alert-info mb-0">
+        Nenhum histórico de upload encontrado.
+    </div>
+{% else %}
+    <div class="table-responsive">
+        <table class="table table-sm table-hover" id="uploadHistoryTable">
+            <thead>
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>Arquivo</th>
+                    <th class="text-center">Registros</th>
+                    <th>Status</th>
+                    <th>Mensagem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for _, upload in upload_history.iterrows() %}
+                    <tr class="align-middle">
+                        <td class="text-nowrap">{{ upload.data_upload }}</td>
+                        <td class="text-nowrap">{{ upload.nome_arquivo }}</td>
+                        <td class="text-center">
+                            {% if upload.status == 'concluido' %}
+                                {{ upload.registros_inseridos }}/{{ upload.total_registros }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if upload.status == 'concluido' %}
+                                <span class="badge bg-success">Concluído</span>
+                            {% elif upload.status == 'erro' %}
+                                <span class="badge bg-danger">Erro</span>
+                            {% else %}
+                                <span class="badge bg-warning">Processando</span>
+                            {% endif %}
+                        </td>
+                        <td class="small">{{ upload.mensagem|default('', true) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}

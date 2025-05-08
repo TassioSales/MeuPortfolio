@@ -1,34 +1,223 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+body {
+  background: linear-gradient(120deg, #e9f0fb 0%, #f8fbff 100%);
+  min-height: 100vh;
+}
+
+.hero-section {
+  background: linear-gradient(90deg, #0d6efd 0%, #6ea8fe 100%);
+  color: #fff;
+  padding: 3.5rem 0 2.5rem 0;
+  border-radius: 0 0 2.5rem 2.5rem;
+  box-shadow: 0 8px 40px rgba(13,110,253,0.13);
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+.hero-section .hero-icon {
+  font-size: 3.7rem;
+  margin-bottom: 1.2rem;
+  color: #fff;
+  opacity: 0.9;
+}
+.hero-section h1 {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.hero-section .lead {
+  font-size: 1.25rem;
+  opacity: 0.95;
+}
+.dashboard-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+.dashboard-highlight {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 16px rgba(13,110,253,0.08);
+  padding: 1.3rem 2.2rem;
+  min-width: 180px;
+  text-align: center;
+  color: #0d6efd;
+}
+.dashboard-highlight .highlight-value {
+  font-size: 2rem;
+  font-weight: 600;
+}
+.dashboard-highlight .highlight-label {
+  font-size: 1.1rem;
+  opacity: 0.85;
+}
+.main-cards-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+.main-card {
+  min-width: 290px;
+  max-width: 340px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  border: none;
+  border-radius: 1.25rem;
+  transition: transform 0.14s, box-shadow 0.14s;
+  background: #fff;
+  opacity: 0;
+  animation: fadeInCard 0.7s ease forwards;
+}
+.main-cards-row .main-card:nth-child(2) { animation-delay: 0.15s; }
+.main-cards-row .main-card:nth-child(3) { animation-delay: 0.3s; }
+@keyframes fadeInCard {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
+}
+
+.fadein-card {
+  opacity: 0;
+  animation: fadeInCard 0.7s ease forwards;
+  animation-delay: 0.4s;
+}
+.main-card:hover,
+.card.fadein-card:hover,
+.card.shadow-sm:hover {
+  transform: translateY(-14px) scale(1.045) rotateZ(-1.2deg);
+  box-shadow: 0 10px 38px 0 rgba(13,110,253,0.22), 0 1.5px 8px rgba(13,110,253,0.09);
+  border: 2.5px solid #6ea8fe;
+  outline: 0.5px solid #b6d4fe;
+  outline-offset: 2px;
+  filter: brightness(1.03) drop-shadow(0 0 6px #e9f0fb);
+  transition: 
+    transform 0.22s cubic-bezier(.4,2,.6,1),
+    box-shadow 0.22s,
+    border 0.18s,
+    outline 0.18s,
+    filter 0.18s;
+}
+.main-card .card-body {
+  padding: 2.2rem 1.7rem 1.5rem 1.7rem;
+  text-align: center;
+}
+.main-card .card-icon {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  color: #0d6efd;
+}
+@media (max-width: 900px) {
+  .main-cards-row { gap: 1.2rem; }
+  .dashboard-highlights { gap: 1.2rem; }
+}
+@media (max-width: 600px) {
+  .main-cards-row { flex-direction: column; align-items: center; }
+  .dashboard-highlights { flex-direction: column; align-items: center; }
+}
+.footer {
+  text-align: center;
+  color: #6c757d;
+  font-size: 1rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.2rem;
+}
+</style>
+<div class="hero-section">
+    <div class="d-flex flex-column align-items-center mb-2">
+        <!-- Logo SVG TS -->
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="30" fill="#0d6efd"/>
+            <text x="50%" y="54%" text-anchor="middle" fill="#fff" font-size="2.3rem" font-family="Segoe UI, Arial, sans-serif" font-weight="bold" letter-spacing="2" dominant-baseline="middle">TS</text>
+        </svg>
+    </div>
+    <div class="hero-icon">
+        <i class="bi bi-cash-coin"></i>
+    </div>
+    <div class="mb-2" style="font-size:1.35rem; font-weight:500; letter-spacing:0.5px;">
+        {{ saudacao }}!
+    </div>
+    <h1 class="mb-2">Bem-vindo ao Sistema Financeiro</h1>
+    <p class="lead mb-0">Controle, visualize e automatize suas finanças pessoais com facilidade.</p>
+</div>
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h1 class="display-4 mb-4">Bem-vindo ao Sistema Financeiro</h1>
-            <p class="lead mb-5">Gerencie suas finanças de forma simples e eficiente.</p>
-            
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Upload de Arquivos</h5>
-                            <p class="card-text">Faça upload de extratos bancários em formato CSV ou PDF para importar suas transações.</p>
-                            <a href="{{ url_for('upload.upload_file') }}" class="btn btn-primary">Acessar Upload</a>
-                        </div>
-                    </div>
+    <div class="dashboard-highlights">
+        <div class="dashboard-highlight">
+            <div class="highlight-value">{{ total_transacoes or '--' }}</div>
+            <div class="highlight-label">Transações</div>
+        </div>
+        <div class="dashboard-highlight">
+            <div class="highlight-value">{{ total_alertas_ativos or '--' }}</div>
+            <div class="highlight-label">Alertas Ativos</div>
+        </div>
+        <div class="dashboard-highlight">
+            <div class="highlight-value">{{ total_categorias or '--' }}</div>
+            <div class="highlight-label">Categorias</div>
+        </div>
+    </div>
+    <div class="main-cards-row">
+        <div class="card main-card">
+            <div class="card-body">
+                <div class="card-icon">
+                    <i class="bi bi-upload"></i>
                 </div>
-                
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Dashboard Financeiro</h5>
-                            <p class="card-text">Visualize gráficos e relatórios sobre suas finanças.</p>
-                            <a href="{{ url_for('dashboard.dashboard') }}" class="btn btn-primary">Acessar Dashboard</a>
-                        </div>
-                    </div>
+                <h5 class="card-title mb-2">Upload de Arquivos</h5>
+                <p class="card-text">Faça upload de extratos bancários em CSV ou PDF para importar suas transações.</p>
+                <a href="{{ url_for('upload.upload_file') }}" class="btn btn-primary mt-2">Acessar Upload</a>
+            </div>
+        </div>
+        <div class="card main-card">
+            <div class="card-body">
+                <div class="card-icon">
+                    <i class="bi bi-bar-chart-line"></i>
+                </div>
+                <h5 class="card-title mb-2">Dashboard Financeiro</h5>
+                <p class="card-text">Visualize gráficos e relatórios sobre suas finanças de forma intuitiva.</p>
+                <a href="{{ url_for('dashboard.dashboard') }}" class="btn btn-primary mt-2">Acessar Dashboard</a>
+            </div>
+        </div>
+        <div class="card main-card">
+            <div class="card-body">
+                <div class="card-icon">
+                    <i class="bi bi-bell"></i>
+                </div>
+                <h5 class="card-title mb-2">Alertas Manuais</h5>
+                <p class="card-text">Gerencie e acompanhe alertas personalizados para eventos financeiros importantes.</p>
+                <a href="{{ url_for('alertas_manuais.index') }}" class="btn btn-primary mt-2">Acessar Alertas Manuais</a>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-sm mb-3 fadein-card" style="border-radius: 1rem;">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-3 text-primary"><i class="bi bi-lightbulb me-2"></i>Dicas de Uso</h5>
+                    <ul class="mb-0 ps-3">
+                        <li>Use o <b>Dashboard</b> para visualizar gráficos e relatórios detalhados das suas finanças.</li>
+                        <li>Cadastre <b>Alertas Manuais</b> para ser avisado sobre eventos financeiros importantes.</li>
+                        <li>Faça <b>upload</b> de extratos bancários para importar rapidamente suas transações.</li>
+                        <li>Explore as <b>categorias</b> para organizar melhor seus gastos e receitas.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card shadow-sm fadein-card" style="border-radius: 1rem;">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-3 text-primary"><i class="bi bi-megaphone me-2"></i>Novidades</h5>
+                    <ul class="mb-0 ps-3">
+                        <li><b>08/05/2025:</b> Página inicial redesenhada, mais moderna e informativa!</li>
+                        <li><b>Nova página de Alertas Manuais:</b> agora você pode criar, editar e acompanhar alertas financeiros personalizados.</li>
+                        <li><b>Filtros avançados</b> na tabela de transações para facilitar sua análise.</li>
+                        <li>Correções e melhorias de performance em todo o sistema.</li>
+                    </ul>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="footer">
+        <span>&copy; {{ ano_atual }} Meu Sistema Financeiro. Todos os direitos reservados.<br>
+        <span style="font-size:0.95rem; color:#0d6efd;">Criado por Tassio Sales</span></span>
     </div>
 </div>
 {% endblock %}

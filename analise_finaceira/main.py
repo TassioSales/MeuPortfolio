@@ -1,8 +1,9 @@
-from flask import Flask, render_template, redirect, url_for, session, jsonify, send_from_directory
+from flask import Flask, render_template, redirect, url_for, session, jsonify, send_from_directory, request
 from flask_wtf.csrf import CSRFProtect
 import secrets
 from upload_arq.src import upload_bp
 from dashboard_arq.src import dashboard_bp, inserir_bp
+from alertas_manuais_arq.src.blueprint import alertas_manuais_bp
 import os
 
 # Criar diretório para uploads se não existir
@@ -22,7 +23,8 @@ app = Flask(__name__,
 template_dirs = [
     os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates'),
     os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dashboard_arq', 'templates'),
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload_arq', 'templates')
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'upload_arq', 'templates'),
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'alertas_manuais_arq', 'templates')
 ]
 app.jinja_loader.searchpath = template_dirs
 
@@ -38,10 +40,21 @@ app.config['DATABASE'] = os.path.join(DB_FOLDER, 'financas.db')
 csrf = CSRFProtect()
 csrf.init_app(app)
 
+# Desabilitar CSRF para a rota de exclusão de alertas (apenas para teste)
+@alertas_manuais_bp.before_request
+def check_csrf_for_excluir():
+    if request.endpoint == 'alertas_manuais.excluir_alerta':
+        return None
+    return None
+
+# Aplicar isenção CSRF para a rota de exclusão
+alertas_manuais_bp.before_request(csrf.exempt(check_csrf_for_excluir))
+
 # Registrar blueprints
 app.register_blueprint(upload_bp, url_prefix='/upload')
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 app.register_blueprint(inserir_bp, url_prefix='/inserir')
+app.register_blueprint(alertas_manuais_bp, url_prefix='/alertas-manuais')
 
 
 
@@ -63,9 +76,28 @@ def dashboard_static(filename):
     return send_from_directory('dashboard_arq/static', filename)
 
 # Rota principal
+from utils import get_dashboard_highlights
+from datetime import datetime
+
 @app.route('/')
 def index():
-    return render_template('index.html', active_page='home')
+    total_transacoes, total_alertas_ativos, total_categorias = get_dashboard_highlights()
+    hora = datetime.now().hour
+    if 5 <= hora < 12:
+        saudacao = 'Bom dia'
+    elif 12 <= hora < 18:
+        saudacao = 'Boa tarde'
+    else:
+        saudacao = 'Boa noite'
+    return render_template(
+        'index.html',
+        active_page='home',
+        ano_atual=datetime.now().year,
+        total_transacoes=total_transacoes,
+        total_alertas_ativos=total_alertas_ativos,
+        total_categorias=total_categorias,
+        saudacao=saudacao
+    )
 
 # Rota para redirecionar /upload para /upload/ para evitar problemas com URLs relativas
 @app.route('/upload')

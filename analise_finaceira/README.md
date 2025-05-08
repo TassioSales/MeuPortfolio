@@ -4,11 +4,15 @@ Este é um sistema de análise financeira desenvolvido em Python com Flask, proj
 
 ## 🚀 Funcionalidades Principais
 
-- **Upload de Arquivos**: Processamento de arquivos financeiros (incluindo PDFs)
-- **Análise de Dados**: Processamento e análise de dados financeiros
-- **Alertas**: Sistema de notificações para eventos importantes
-- **Dashboard**: Visualização interativa de métricas financeiras
-- **Banco de Dados**: Armazenamento seguro de transações e configurações
+- **Página Inicial Moderna**: Saudação dinâmica (bom dia/tarde/noite), destaques com métricas, dicas de uso e novidades do sistema.
+- **Logo Personalizado**: Logo "TS" (Tassio Sales) no topo da home.
+- **Relógio Digital**: Mostra a hora atual na navbar, alinhado à direita.
+- **Upload de Arquivos**: Processamento de arquivos financeiros (incluindo PDFs).
+- **Análise de Dados**: Processamento e análise de dados financeiros.
+- **Alertas Manuais**: Gerenciamento completo de alertas financeiros personalizados.
+- **Dashboard**: Visualização interativa de métricas financeiras.
+- **Banco de Dados**: Armazenamento seguro de transações e configurações.
+- **Visual Premium**: Gradiente de fundo, cards animados, efeitos de hover e responsividade.
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -39,11 +43,19 @@ analise_finaceira/
 └── README.md           # Este arquivo
 ```
 
+## 🆕 Novidades Recentes
+
+- Página inicial redesenhada com saudação dinâmica, destaques e novidades.
+- Inclusão de dicas de uso para facilitar a experiência do usuário.
+- Logo TS no topo e assinatura "Criado por Tassio Sales" no rodapé.
+- Relógio digital na navbar, sempre atualizado.
+- Visual aprimorado com gradiente, animações e efeitos modernos.
+
 ## 🚦 Status do Projeto
 
 > ⚠️ **EM DESENVOLVIMENTO ATIVO**
 
-Este projeto está em desenvolvimento ativo. Novas funcionalidades estão sendo adicionadas regularmente e podem ocorrer mudanças significativas na API.
+Este projeto está em constante evolução. Novas funcionalidades e melhorias visuais são implementadas regularmente.
 
 ## 📋 Índice de Arquivos
 

@@ -13,7 +13,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
+        <div class="container position-relative">
             <a class="navbar-brand" href="{{ url_for('index') }}">Sistema Financeiro</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -27,6 +27,34 @@
                     <li class="nav-item">
                         <a class="nav-link {{ 'active' if active_page == 'dashboard' else '' }}" 
                            href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if active_page == 'alertas_manuais' else '' }}" 
+                           href="{{ url_for('alertas_manuais.index') }}">Alertas Manuais</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Relógio digital alinhado à direita na navbar -->
+            <div id="clock-top-right" style="position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:0.5rem;padding:4px 14px 4px 10px;background:rgba(255,255,255,0.10);border-radius:0.8rem 0 0 0.8rem;min-width:92px;">
+                <i class="bi bi-clock-history" style="font-size:1.1rem;color:#fff;"></i>
+                <span id="clock-text" style="font-size:1.07rem;font-family:'Segoe UI',Arial,sans-serif;font-weight:500;color:#fff;letter-spacing:0.5px;text-shadow:0 1px 4px #0d6efd,0 0 1px #000;"></span>
+            </div>
+        </div>
+    </nav>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if active_page == 'upload' else '' }}" 
+                           href="{{ url_for('upload.upload_file') }}">Upload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if active_page == 'dashboard' else '' }}" 
+                           href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if active_page == 'alertas_manuais' else '' }}" 
+                           href="{{ url_for('alertas_manuais.index') }}">Alertas Manuais</a>
                     </li>
                 </ul>
             </div>
@@ -54,6 +82,18 @@
     <!-- jQuery (opcional, necessário para alguns plugins) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
+    <!-- Relógio digital script -->
+    <script>
+      function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('clock-text').textContent = `${h}:${m}:${s}`;
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+    </script>
     <!-- Seus scripts -->
     {% block scripts %}{% endblock %}
     {% block extra_js %}{% endblock %}

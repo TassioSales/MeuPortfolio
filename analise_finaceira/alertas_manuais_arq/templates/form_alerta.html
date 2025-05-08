@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Editar' if form.id.data | default(False) else 'Novo' }} Alerta{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ 'Editar' if form.id.data | default(False) else 'Novo' }} Alerta</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('alertas_manuais.editar_alerta', id=form.id.data) if form.id.data else url_for('alertas_manuais.novo_alerta') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.tipo_alerta.label(class="form-label") }}
+                                {{ form.tipo_alerta(class="form-select" + (' is-invalid' if form.tipo_alerta.errors else '')) }}
+                                {% if form.tipo_alerta.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.tipo_alerta.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.categoria.label(class="form-label") }}
+<select id="categoria" name="categoria" class="form-select">
+    <option value="">Selecione...</option>
+</select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.descricao.label(class="form-label") }}
+                            {{ form.descricao(class="form-control" + (' is-invalid' if form.descricao.errors else '')) }}
+                            {% if form.descricao.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.descricao.errors[0] }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.valor_referencia.label(class="form-label") }}
+                                {{ form.valor_referencia(class="form-control" + (' is-invalid' if form.valor_referencia.errors else '')) }}
+                                {% if form.valor_referencia.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.valor_referencia.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.prioridade.label(class="form-label") }}
+                                {{ form.prioridade(class="form-select") }}
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.data_inicio.label(class="form-label") }}
+                                {{ form.data_inicio(class="form-control") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.data_fim.label(class="form-label") }}
+                                {{ form.data_fim(class="form-control") }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                {{ form.notificar_email(class="form-check-input") }}
+                                {{ form.notificar_email.label(class="form-check-label") }}
+                            </div>
+                            <div class="form-check form-switch">
+                                {{ form.notificar_app(class="form-check-input") }}
+                                {{ form.notificar_app.label(class="form-check-label") }}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('alertas_manuais.index') }}" class="btn btn-secondary me-md-2">
+                                <i class="bi bi-arrow-left"></i> Voltar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> {{ 'Atualizar' if form.id.data | default(False) else 'Salvar' }} Alerta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Categorias vindas do backend
+const categoriasReceita = {{ categorias_receita|tojson }};
+const categoriasDespesa = {{ categorias_despesa|tojson }};
+
+function atualizarCategorias(tipoSelecionado, categoriaAtual) {
+    let select = document.getElementById('categoria');
+    select.innerHTML = '';
+    let categorias = [];
+    if (tipoSelecionado === 'RECEITA') {
+        categorias = categoriasReceita;
+    } else if (tipoSelecionado === 'DESPESA') {
+        categorias = categoriasDespesa;
+    } else {
+        categorias = [['', 'Selecione...']];
+    }
+    categorias.forEach(function(cat) {
+        let opt = document.createElement('option');
+        opt.value = cat[0];
+        opt.text = cat[1];
+        if (categoriaAtual && cat[0] === categoriaAtual) {
+            opt.selected = true;
+        }
+        select.appendChild(opt);
+    });
+}
+
+$(document).ready(function() {
+    // Inicializar categorias ao carregar a página
+    const tipoInicial = $('#tipo_alerta').val();
+    const categoriaAtual = "{{ form.categoria.data or '' }}";
+    atualizarCategorias(tipoInicial, categoriaAtual);
+
+    // Atualizar categorias ao mudar o tipo
+    $('#tipo_alerta').on('change', function() {
+        atualizarCategorias(this.value, '');
+    });
+
+// Validação do formulário
+
+    $('form').on('submit', function(e) {
+        const valor = parseFloat($('#valor_referencia').val());
+        if (isNaN(valor) || valor <= 0) {
+            e.preventDefault();
+            alert('Por favor, insira um valor válido maior que zero.');
+            return false;
+        }
+        
+        const dataInicio = $('#data_inicio').val();
+        const dataFim = $('#data_fim').val();
+        
+        if (dataInicio && dataFim && new Date(dataInicio) > new Date(dataFim)) {
+            e.preventDefault();
+            alert('A data de início não pode ser posterior à data de fim.');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}

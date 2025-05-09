@@ -1,11 +1,9 @@
 import os
 import sqlite3
-import logging
 from pathlib import Path
+from logger import get_logger
 
-# Configuração de logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = get_logger("update_db")
 
 # Caminho para o banco de dados
 DB_PATH = os.path.join(os.path.dirname(__file__), 'banco', 'financas.db')
@@ -150,6 +148,6 @@ def update_database_schema():
             conn.close()
 
 if __name__ == "__main__":
-    print("Atualizando esquema do banco de dados...")
+    logger.info("Atualizando esquema do banco de dados...")
     update_database_schema()
-    print("Concluído!")
+    logger.info("Concluído!")

@@ -1,9 +1,9 @@
 import pandas as pd
-import logging
 from datetime import datetime
+from logger import get_logger
 
-# Configuração de logging
-logger = logging.getLogger(__name__)
+logger = get_logger("upload.file_processor")
+logger.info("Módulo file_processor inicializado")
 
 def normalize_column_name(column):
     """Normaliza o nome da coluna para minúsculas e sem acentos"""
@@ -29,6 +29,7 @@ class FileProcessor:
             df = pd.read_csv(file_path, encoding='utf-8')
             
             if df.empty:
+                logger.warning("O arquivo CSV está vazio")
                 return False, "O arquivo CSV está vazio"
             
             # Normaliza os nomes das colunas
@@ -39,14 +40,17 @@ class FileProcessor:
             missing_columns = [col for col in required_columns if col not in df.columns]
             
             if missing_columns:
+                logger.error(f"Colunas obrigatórias faltando: {', '.join(missing_columns)}")
                 return False, f"Colunas obrigatórias faltando: {', '.join(missing_columns)}"
             
             # Converte a coluna de data para datetime
             try:
                 df['data'] = pd.to_datetime(df['data'], dayfirst=True, errors='coerce')
                 if df['data'].isna().any():
+                    logger.error("Formato de data inválido. Use DD/MM/AAAA")
                     return False, "Formato de data inválido. Use DD/MM/AAAA"
             except Exception as e:
+                logger.error(f"Erro ao converter datas: {str(e)}")
                 return False, f"Erro ao converter datas: {str(e)}"
             
             # Valida os tipos
@@ -55,6 +59,7 @@ class FileProcessor:
             invalid_types = df[~df['tipo'].isin(valid_types)]
             
             if not invalid_types.empty:
+                logger.error("Tipos inválidos encontrados no CSV. Use 'receita' ou 'despesa'")
                 return False, f"Tipos inválidos encontrados. Use 'receita' ou 'despesa'"
             
             # Converte valores para numérico

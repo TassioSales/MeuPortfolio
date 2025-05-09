@@ -1,5 +1,12 @@
 # analise_financeira - Sistema de Gerenciamento
 
+**analise_financeira** é um sistema completo para controle, análise e visualização de finanças pessoais ou empresariais. O projeto é dividido em módulos principais:
+- **Upload de Arquivos:** Importação e processamento automatizado de extratos e dados financeiros.
+- **Dashboard:** Visualização interativa de métricas, gráficos e relatórios.
+- **Alertas Manuais:** Gerenciamento de alertas financeiros personalizados.
+
+O sistema possui arquitetura modular, interface moderna, logging padronizado e foco em usabilidade, performance e segurança.
+
 Este é um sistema de análise financeira desenvolvido em Python com Flask, projetado para processar, analisar e visualizar dados financeiros de forma eficiente. O sistema é modular e inclui funcionalidades para upload de arquivos, geração de alertas e visualização de dados em dashboards interativos.
 
 ## 🚀 Funcionalidades Principais

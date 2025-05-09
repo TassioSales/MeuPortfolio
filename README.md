@@ -64,6 +64,26 @@ Principais funcionalidades:
 📝 [Documentação Completa](https://github.com/TassioSales/MeuPortfolio/blob/main/projeto/README.md)  
 📄 [Licença](https://github.com/TassioSales/MeuPortfolio/blob/main/projeto/LICENSE)
 
+### 4. Sistema de Análise e Gestão Financeira (`analise_financeira`)
+
+![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
+![Loguru](https://img.shields.io/badge/Loguru-0d6efd?style=for-the-badge)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+
+Um sistema completo e modular para controle, análise e visualização de finanças pessoais ou empresariais.
+
+**Principais funcionalidades:**
+- Upload de extratos bancários (CSV/PDF) e processamento automatizado
+- Dashboard financeiro interativo com gráficos e métricas
+- Gerenciamento de alertas financeiros personalizados
+- Logging padronizado para rastreamento e manutenção
+- Interface moderna, responsiva e com dicas de uso
+
+📝 [Documentação Completa](https://github.com/TassioSales/MeuPortfolio/blob/main/analise_finaceira/README.md)  
+📄 [Licença](https://github.com/TassioSales/MeuPortfolio/blob/main/analise_finaceira/LICENSE)
+
 ## 👤 Autor
 
 **Tassio Sales**

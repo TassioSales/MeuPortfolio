@@ -1,4 +1,4 @@
-# Análise Financeira - Sistema de Gerenciamento
+# analise_financeira - Sistema de Gerenciamento
 
 Este é um sistema de análise financeira desenvolvido em Python com Flask, projetado para processar, analisar e visualizar dados financeiros de forma eficiente. O sistema é modular e inclui funcionalidades para upload de arquivos, geração de alertas e visualização de dados em dashboards interativos.
 
@@ -28,7 +28,7 @@ Este é um sistema de análise financeira desenvolvido em Python com Flask, proj
 ## 📦 Estrutura do Projeto
 
 ```
-analise_finaceira/
+analise_financeira/
 ├── alertas_arq/         # Módulo de alertas
 ├── banco/               # Configurações do banco de dados
 ├── dashboard_arq/       # Módulo de dashboard
@@ -61,7 +61,7 @@ analise_finaceira/
 
 > ⚠️ **EM DESENVOLVIMENTO ATIVO**
 
-Este projeto está em constante evolução. Novas funcionalidades e melhorias visuais são implementadas regularmente.
+O projeto analise_financeira está em constante evolução. Novas funcionalidades e melhorias visuais são implementadas regularmente.
 
 ## 📖 Logging Padronizado
 
@@ -112,8 +112,8 @@ logger.info("Mensagem informativa")
 
 1. Clone o repositório:
    ```bash
-   git clone [URL_DO_REPOSITÓRIO]
-   cd analise_finaceira
+   git clone https://github.com/seu-usuario/analise_financeira
+   cd analise_financeira
    ```
 
 2. Crie e ative um ambiente virtual:

@@ -45,6 +45,12 @@ analise_finaceira/
 
 ## 🆕 Novidades Recentes
 
+- <b>09/05/2025:</b> Logging padronizado em todo o sistema, facilitando rastreio de erros e manutenção.
+- Melhorias de usabilidade: ajustes visuais e de navegação para uma experiência mais intuitiva.
+- Correções de bugs: diversas correções para maior estabilidade e segurança.
+- Modernização visual: interface mais limpa, responsiva e agradável.
+- Alertas Manuais: gerencie alertas financeiros personalizados facilmente.
+- Filtros avançados na tabela de transações para facilitar sua análise.
 - Página inicial redesenhada com saudação dinâmica, destaques e novidades.
 - Inclusão de dicas de uso para facilitar a experiência do usuário.
 - Logo TS no topo e assinatura "Criado por Tassio Sales" no rodapé.
@@ -56,6 +62,17 @@ analise_finaceira/
 > ⚠️ **EM DESENVOLVIMENTO ATIVO**
 
 Este projeto está em constante evolução. Novas funcionalidades e melhorias visuais são implementadas regularmente.
+
+## 📖 Logging Padronizado
+
+O projeto agora utiliza um sistema de logging unificado baseado em Loguru. Todos os módulos e scripts usam o logger padronizado, facilitando o rastreamento de erros, auditoria e manutenção. Prints e logs inconsistentes foram substituídos por chamadas ao logger, com níveis adequados (`info`, `warning`, `error`, `debug`).
+
+Exemplo de uso:
+```python
+from logger import get_logger
+logger = get_logger("nome_do_modulo")
+logger.info("Mensagem informativa")
+```
 
 ## 📋 Índice de Arquivos
 

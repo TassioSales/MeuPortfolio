@@ -5,19 +5,25 @@ from upload_arq.src import upload_bp
 from dashboard_arq.src import dashboard_bp, inserir_bp
 from alertas_manuais_arq.src.blueprint import alertas_manuais_bp
 import os
+from logger import get_logger
+
+logger = get_logger("main")
 
 # Criar diretório para uploads se não existir
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+logger.info(f"Diretório de uploads configurado: {UPLOAD_FOLDER}")
 
 # Criar diretório para o banco de dados se não existir
 DB_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'banco')
 os.makedirs(DB_FOLDER, exist_ok=True)
+logger.info(f"Diretório do banco de dados configurado: {DB_FOLDER}")
 
 # Configurar o aplicativo Flask
 app = Flask(__name__, 
            template_folder='templates',
            static_folder='static')
+logger.info("Aplicativo Flask inicializado")
 
 # Configurar os diretórios de templates adicionais
 template_dirs = [
@@ -52,9 +58,13 @@ alertas_manuais_bp.before_request(csrf.exempt(check_csrf_for_excluir))
 
 # Registrar blueprints
 app.register_blueprint(upload_bp, url_prefix='/upload')
+logger.info("Blueprint de upload registrado")
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
+logger.info("Blueprint de dashboard registrado")
 app.register_blueprint(inserir_bp, url_prefix='/inserir')
+logger.info("Blueprint de inserir registrado")
 app.register_blueprint(alertas_manuais_bp, url_prefix='/alertas-manuais')
+logger.info("Blueprint de alertas manuais registrado")
 
 
 
@@ -64,10 +74,6 @@ app.register_blueprint(alertas_manuais_bp, url_prefix='/alertas-manuais')
 def inject_csrf_token():
     from flask_wtf.csrf import generate_csrf
     token = generate_csrf()
-    print(f"\n=== GERANDO TOKEN CSRF ===\n{token}\n")
-    print(f"Token CSRF gerado: {token}")
-    print(f"Tipo do token: {type(token)}")
-    print(f"Tamanho do token: {len(token) if token else 0}")
     return dict(csrf_token=token)  # Retorna o token diretamente, não a função
 
 # Rota para arquivos estáticos do dashboard
@@ -122,11 +128,12 @@ def check_csrf():
     })
 
 if __name__ == '__main__':
-    # Criar diretório para templates se não existir
-    os.makedirs('templates', exist_ok=True)
-    # Criar diretório para arquivos estáticos se não existir
-    os.makedirs('static/css', exist_ok=True)
-    os.makedirs('static/js', exist_ok=True)
-    
-    # Iniciar o servidor
-    app.run(debug=True, port=5000)
+    logger.info("Iniciando aplicação Flask...")
+    try:
+        # Criar diretório para templates se não existir
+        os.makedirs('templates', exist_ok=True)
+        # Criar diretório para arquivos estáticos se não existir
+        os.makedirs('static', exist_ok=True)
+        app.run(debug=True)
+    except Exception as e:
+        logger.error(f"Erro ao iniciar a aplicação: {e}", exc_info=True)

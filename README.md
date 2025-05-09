@@ -34,8 +34,8 @@ Uma API RESTful para gerenciamento de tarefas, construída com FastAPI. Oferece 
 - Priorização
 - Documentação Swagger/OpenAPI
 
-📝 [Documentação Completa](https://github.com/TassioSales/MeuPortfolio/blob/main/todo_api/README.md)  
-📄 [Licença](https://github.com/TassioSales/MeuPortfolio/blob/main/todo_api/LICENSE)
+ [Documentação Completa](https://github.com/TassioSales/MeuPortfolio/blob/main/todo_api/README.md)  
+ [Licença](https://github.com/TassioSales/MeuPortfolio/blob/main/todo_api/LICENSE)
 
 ### 3. Análise Inteligente de Textos
 

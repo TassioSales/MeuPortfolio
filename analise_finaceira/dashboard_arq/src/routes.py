@@ -37,7 +37,8 @@ except ImportError:
 # Configurações
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'banco', 'financas.db')
 
-@dashboard_bp.route('/')
+@dashboard_bp.route('/dashboard')
+@dashboard_bp.endpoint('dashboard')
 @log_function()
 def dashboard():
     """

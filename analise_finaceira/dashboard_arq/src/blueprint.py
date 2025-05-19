@@ -15,6 +15,10 @@ from logger import get_logger, log_function, setup_logger
 # Configura o logger para este módulo
 logger = setup_logger("dashboard.blueprint") if 'setup_logger' in globals() else get_logger("dashboard.blueprint")
 
+dashboard_bp = Blueprint('dashboard', __name__,
+    template_folder=os.path.join(root_dir, 'dashboard_arq', 'templates'),
+    static_folder=os.path.join(root_dir, 'dashboard_arq', 'static'))
+
 @log_function()
 def get_base_directories() -> tuple[str, str, str]:
     """

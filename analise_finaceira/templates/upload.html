@@ -22,7 +22,7 @@
                     {% endwith %}
 
                     <form method="POST" enctype="multipart/form-data" id="uploadForm">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         
                         <div class="mb-3">
                             <label for="fileInput" class="form-label">Selecione um arquivo (CSV ou PDF)</label>
@@ -173,8 +173,24 @@ $(document).ready(function() {
         const alertDiv = $('<div class="alert alert-info">Processando arquivo, por favor aguarde...</div>');
         $(this).before(alertDiv);
         
-        // Log detalhado no console
-        logToConsole('Iniciando upload do arquivo...');
+        // Verifica se um arquivo foi selecionado
+        const fileInput = $('#fileInput')[0];
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            alertDiv.removeClass('alert-info')
+                   .addClass('alert-danger')
+                   .html('<i class="bi bi-exclamation-triangle me-2"></i> Por favor, selecione um arquivo primeiro.');
+            return;
+        }
+        
+        // Criar FormData
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        // Adicionar token CSRF
+        const csrfToken = $('input[name="csrf_token"]').val();
+        formData.append('csrf_token', csrfToken);
         
         // Desabilita o botão de envio
         const submitBtn = $(this).find('button[type="submit"]');
@@ -183,12 +199,8 @@ $(document).ready(function() {
             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processando...'
         );
         
-        // Cria um FormData para o envio do arquivo
-        const formData = new FormData(this);
-        
-        // Envia o arquivo via AJAX
         $.ajax({
-            url: $(this).attr('action'),
+            url: '/upload/upload',
             type: 'POST',
             data: formData,
             processData: false,

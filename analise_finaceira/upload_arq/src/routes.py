@@ -26,7 +26,7 @@ def allowed_file(filename):
 
 def get_upload_folder():
     """Retorna o caminho para a pasta de uploads"""
-    return os.path.join(current_app.root_path, '..', '..', 'uploads')
+    return os.path.join(current_app.root_path, '..', '..', 'Uploads')
 
 @upload_bp.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -34,12 +34,22 @@ def upload_file():
     if request.method == 'POST':
         logger.info("Iniciando processamento de upload de arquivo")
         
+        # Verifica o token CSRF
+        csrf_token = request.form.get('csrf_token') or request.headers.get('X-CSRFToken')
+        if not csrf_token:
+            error_msg = 'Token CSRF ausente na solicitação'
+            logger.error(error_msg)
+            if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': error_msg}), 400
+            flash(error_msg, 'error')
+            return redirect(request.url)
+
         # Verifica se o arquivo foi enviado
         if 'file' not in request.files:
             error_msg = 'Nenhum arquivo enviado'
             logger.warning(error_msg)
             if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return {'success': False, 'message': error_msg}, 400
+                return jsonify({'success': False, 'message': error_msg}), 400
             flash(error_msg, 'error')
             return redirect(request.url)
         
@@ -50,7 +60,7 @@ def upload_file():
             error_msg = 'Nenhum arquivo selecionado'
             logger.warning(error_msg)
             if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return {'success': False, 'message': error_msg}, 400
+                return jsonify({'success': False, 'message': error_msg}), 400
             flash(error_msg, 'error')
             return redirect(request.url)
         
@@ -59,7 +69,7 @@ def upload_file():
             error_msg = f'Tipo de arquivo não permitido: {file.filename}. Use apenas arquivos CSV ou PDF.'
             logger.warning(error_msg)
             if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return {'success': False, 'message': error_msg}, 400
+                return jsonify({'success': False, 'message': error_msg}), 400
             flash(error_msg, 'error')
             return redirect(request.url)
         
@@ -87,16 +97,16 @@ def upload_file():
                     success, message = process_pdf(file_path)
                 
                 if success:
-                    logger.success(f"Arquivo processado com sucesso: {message}")
+                    logger.info(f"Arquivo processado com sucesso: {message}")
                     if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                        return {'success': True, 'message': message}
+                        return jsonify({'success': True, 'message': message})
                     flash(message, 'success')
                     return redirect(url_for('upload.upload_file'))
                 else:
                     error_msg = f'Erro ao processar o arquivo: {message}'
                     logger.error(error_msg)
                     if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                        return {'success': False, 'message': error_msg}, 400
+                        return jsonify({'success': False, 'message': error_msg}), 400
                     flash(error_msg, 'error')
                     return redirect(request.url)
                     
@@ -108,7 +118,7 @@ def upload_file():
             error_msg = f'Erro ao processar o arquivo: {str(e)}'
             logger.error(error_msg)
             if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return {'success': False, 'message': error_msg}, 500
+                return jsonify({'success': False, 'message': error_msg}), 500
             flash(error_msg, 'error')
             return redirect(request.url)
     

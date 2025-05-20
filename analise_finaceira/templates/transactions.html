@@ -25,20 +25,49 @@
     <div class="card mb-4">
         <div class="card-body">
             <h5 class="card-title">Estatísticas</h5>
-            <div class="row">
+            <div class="row g-4">
                 <div class="col-md-4">
-                    <p><strong>Total de Transações:</strong> {{ stats.total_transacoes }}</p>
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title mb-0">Total de Transações</h6>
+                            <p class="display-6 mb-0">{{ stats.total_transacoes }}</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-4">
-                    <p><strong>Total de Receitas:</strong> R$ {{ "%.2f"|format(stats.total_receitas) }}</p>
+                    <div class="card h-100 bg-success text-white">
+                        <div class="card-body">
+                            <h6 class="card-title mb-0">Total de Receitas</h6>
+                            <p class="display-6 mb-0">R$ {{ utils.format_currency(stats.total_receitas) }}</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-4">
-                    <p><strong>Total de Despesas:</strong> R$ {{ "%.2f"|format(stats.total_despesas) }}</p>
+                    <div class="card h-100 bg-danger text-white">
+                        <div class="card-body">
+                            <h6 class="card-title mb-0">Total de Despesas</h6>
+                            <p class="display-6 mb-0">R$ {{ utils.format_currency(stats.total_despesas) }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row mt-2">
+            <div class="row mt-4">
                 <div class="col-md-6">
-                    <p><strong>Período:</strong> De {{ stats.periodo.inicio }} até {{ stats.periodo.fim }}</p>
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title mb-0">Período</h6>
+                            <p class="mb-0">De {{ stats.periodo.inicio }} até {{ stats.periodo.fim }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title mb-0">Saldo Total</h6>
+                            {% set saldo = stats.total_receitas - stats.total_despesas %}
+                            <p class="mb-0">R$ {{ utils.format_currency(saldo) }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -191,7 +220,7 @@
                                 {% set valor = row.get('valor') %}
                                 {% if valor is not none %}
                                     <span class="{% if valor < 0 %}text-danger{% else %}text-success{% endif %}">
-                                        R$ {{ "%.2f"|format(valor|abs) }}
+                                        R$ {{ utils.format_currency(valor) }}
                                     </span>
                                 {% else %}
                                     -
@@ -239,7 +268,7 @@
                     <tr class="table-active">
                         <td colspan="2"><strong>Total</strong></td>
                         <td class="text-end">
-                            <strong>R$ {{ "%.2f"|format(transactions['valor'].sum()) }}</strong>
+                            <strong>R$ {{ utils.format_currency(transactions['valor'].sum()) }}</strong>
                         </td>
                         <td colspan="3"></td>
                     </tr>

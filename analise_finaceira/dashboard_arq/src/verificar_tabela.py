@@ -4,6 +4,9 @@ import pandas as pd
 from datetime import datetime
 import sys
 from pathlib import Path
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from logger import get_logger
 
 # Configura o logger
@@ -21,8 +24,56 @@ def conectar_banco():
         raise
 
 def verificar_tabela_transacoes():
-    """Verifica e mostra todos os dados da tabela transacoes."""
+    """Verifica e mostra todos os dados da tabela transacoes, incluindo todas as colunas."""
     try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        
+        # Mostrar estrutura da tabela
+        logger.info("\n=== Estrutura da Tabela transacoes ===")
+        cursor.execute("PRAGMA table_info(transacoes)")
+        colunas = cursor.fetchall()
+        for col in colunas:
+            logger.info(f"Coluna: {col[1]} - Tipo: {col[2]} - Não Nulo: {col[3]} - PK: {col[5]}")
+        
+        # Mostrar dados da tabela
+        logger.info("\n=== Dados da Tabela transacoes ===")
+        query = """
+        SELECT 
+            id,
+            data,
+            descricao,
+            valor,
+            tipo,
+            categoria,
+            preco,
+            quantidade,
+            tipo_operacao,
+            taxa,
+            ativo,
+            forma_pagamento,
+            indicador1,
+            indicador2,
+            data_importacao,
+            upload_id
+        FROM transacoes
+        ORDER BY data DESC, id DESC
+        LIMIT 10
+        """
+        
+        df = pd.read_sql_query(query, conn)
+        if not df.empty:
+            logger.info(f"\nTotal de registros encontrados: {len(df)}")
+            logger.info("\nPrimeiros 10 registros:")
+            logger.info(df.to_string())
+        else:
+            logger.info("Nenhum registro encontrado na tabela transacoes")
+        
+        conn.close()
+    except sqlite3.Error as e:
+        logger.error(f"Erro ao verificar tabela: {e}", exc_info=True)
+    except Exception as e:
+        logger.error(f"Erro inesperado: {e}", exc_info=True)
         conn = conectar_banco()
         cursor = conn.cursor()
         

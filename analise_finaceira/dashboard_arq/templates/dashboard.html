@@ -39,19 +39,6 @@
                 <div class="card-body">
                     <h5 class="card-title">Receitas</h5>
                     <h2 class="card-text">R$ {% if total_receitas is not none %}{{ "{:,.2f}".format(total_receitas).replace(",", "v").replace(".", ",").replace("v", ".") }}{% else %}0,00{% endif %}</h2>
-                    {% if variacao_receitas > 0 %}
-                        <span class="badge bg-light text-success">
-                            <i class="bi bi-arrow-up"></i> {{ "%.1f"|format(variacao_receitas) }}%
-                        </span>
-                    {% elif variacao_receitas < 0 %}
-                        <span class="badge bg-light text-danger">
-                            <i class="bi bi-arrow-down"></i> {{ "%.1f"|format(variacao_receitas|abs) }}%
-                        </span>
-                    {% else %}
-                        <span class="badge bg-light text-secondary">
-                            <i class="bi bi-dash"></i> 0.0%
-                        </span>
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -60,19 +47,6 @@
                 <div class="card-body">
                     <h5 class="card-title">Despesas</h5>
                     <h2 class="card-text">R$ {% if total_despesas is not none %}{{ "{:,.2f}".format(total_despesas).replace(",", "v").replace(".", ",").replace("v", ".") }}{% else %}0,00{% endif %}</h2>
-                    {% if variacao_despesas > 0 %}
-                        <span class="badge bg-light text-danger">
-                            <i class="bi bi-arrow-up"></i> {{ "%.1f"|format(variacao_despesas) }}%
-                        </span>
-                    {% elif variacao_despesas < 0 %}
-                        <span class="badge bg-light text-success">
-                            <i class="bi bi-arrow-down"></i> {{ "%.1f"|format(variacao_despesas|abs) }}%
-                        </span>
-                    {% else %}
-                        <span class="badge bg-light text-secondary">
-                            <i class="bi bi-dash"></i> 0.0%
-                        </span>
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -80,12 +54,7 @@
             <div class="card text-white bg-primary mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Saldo</h5>
-                    <h2 class="card-text">
-                        R$ {% if saldo_mes_atual is not none %}{{ "{:,.2f}".format(saldo_mes_atual).replace(",", "v").replace(".", ",").replace("v", ".") }}{% else %}0,00{% endif %}
-                        <small class="d-block mt-1" style="font-size: 0.6em; opacity: 0.8;">
-                            (Receitas - Despesas)
-                        </small>
-                    </h2>
+                    <h2 class="card-text">R$ {% if saldo_mes_atual is not none %}{{ "{:,.2f}".format(saldo_mes_atual).replace(",", "v").replace(".", ",").replace("v", ".") }}{% else %}0,00{% endif %}</h2>
                 </div>
             </div>
         </div>
@@ -333,21 +302,22 @@ document.addEventListener('DOMContentLoaded', function() {
         btnConfirmar.disabled = true;
         
         // Fazer a requisição para limpar os dados
-        fetch('{{ url_for("dashboard.limpar_dados") }}', {
+        fetch('/dashboard/api/limpar_dados', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': getCSRFToken()  // Corrigido o nome do cabeçalho para X-CSRFToken
+                'X-CSRFToken': getCSRFToken()
             },
+            body: JSON.stringify({}),  // Enviando um JSON vazio
             credentials: 'same-origin'
         })
         .then(response => {
-            console.log('Resposta recebida:', response);
+            // Verificar o status da resposta
             if (!response.ok) {
-                throw new Error('Erro ao limpar os dados');
+                throw new Error('Erro ao limpar dados');
             }
-            return response.json();
+            return response.text();
         })
         .then(data => {
             console.log('Dados recebidos:', data);
@@ -364,7 +334,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Mostrar mensagem de sucesso
             const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('successToast'));
-            document.getElementById('toastMessage').textContent = data.message;
+            const mensagem = document.getElementById('toastMessage');
+            if (mensagem) {
+                mensagem.textContent = 'Dados limpos com sucesso';
+            }
             toast.show();
             
             // Recarregar a página após 2 segundos

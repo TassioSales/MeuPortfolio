@@ -64,27 +64,23 @@ def dashboard():
         
         # Obter dados para o dashboard com tratamento individual
         try:
-            logger.debug("Obtendo totais de despesas...")
-            total_despesas = despesas.obter_despesas_totais()
-            logger.debug(f"Total de despesas: R$ {total_despesas:.2f}")
+            logger.debug("Obtendo totais de despesas dos últimos 12 meses...")
+            total_despesas = despesas.obter_despesas_12_meses()
+            logger.debug(f"Total de despesas dos últimos 12 meses: R$ {total_despesas:.2f}")
             
             logger.debug("Obtendo variação mensal de despesas...")
-            variacao_despesas = despesas.obter_variacao_mensal()
+            variacao_despesas = 0.0  # Não calculamos variação mensal mais
             logger.debug(f"Variação de despesas: {variacao_despesas:.2f}%")
             
-            logger.debug("Obtendo despesas por categoria...")
+            logger.debug("Obtendo despesas por categoria dos últimos 12 meses...")
             despesas_por_categoria = despesas.obter_despesas_por_categoria()
             logger.debug(f"{len(despesas_por_categoria)} categorias de despesas encontradas")
             
             logger.debug("Obtendo totais de receitas...")
-            total_receitas = receitas.obter_receitas_mes_atual()
-            logger.debug(f"Total de receitas: R$ {total_receitas:.2f}")
+            total_receitas = receitas.obter_receitas_12_meses()
+            logger.debug(f"Total de receitas dos últimos 12 meses: R$ {total_receitas:.2f}")
             
-            logger.debug("Obtendo variação mensal de receitas...")
-            variacao_receitas = receitas.obter_variacao_receitas()
-            logger.debug(f"Variação de receitas: {variacao_receitas:.2f}%")
-            
-            logger.debug("Obtendo receitas por categoria...")
+            logger.debug("Obtendo receitas por categoria dos últimos 12 meses...")
             receitas_por_categoria = receitas.obter_receitas_por_categoria()
             logger.debug(f"{len(receitas_por_categoria)} categorias de receitas encontradas")
             
@@ -123,7 +119,6 @@ def dashboard():
                 variacao_despesas=variacao_despesas,
                 despesas_por_categoria=despesas_por_categoria,
                 total_receitas=total_receitas,
-                variacao_receitas=variacao_receitas,
                 receitas_por_categoria=receitas_por_categoria,
                 saldo_atual=saldo_atual,
                 saldo_mes_atual=saldo_mes_atual,
@@ -396,10 +391,10 @@ def gerar_grafico_fluxo_caixa():
         # Gerar o gráfico
         try:
             logger.info("Importando módulo de geração de gráfico de fluxo de caixa...")
-            from .grafico_fluxo_caixa import gerar_grafico_fluxo_caixa as gerar_grafico
+            from .gerar_grafico_fluxo_caixa import gerar_grafico_fluxo_caixa as gerar_grafico
             
             logger.info("Gerando gráfico de fluxo de caixa...")
-            caminho_grafico = gerar_grafico()
+            caminho_grafico = gerar_grafico(meses_atras=12)
             
             if not caminho_grafico:
                 logger.error("Falha ao gerar o gráfico: nenhum caminho retornado")
@@ -476,7 +471,44 @@ def limpar_dados():
     logger.warning("Iniciando limpeza dos dados de transações do banco de dados")
     logger.debug(f"Método da requisição: {request.method}")
     logger.debug(f"Headers: {dict(request.headers)}")
+    logger.debug(f"Raw data: {request.data}")
+    logger.debug(f"Content-Type: {request.content_type}")
+    logger.debug(f"Content-Length: {request.content_length}")
     
+    # Verifica se a requisição é JSON
+    if not request.is_json:
+        logger.error(f"Requisição não é JSON. Content-Type: {request.content_type}")
+        return jsonify({
+            "status": "error",
+            "message": "O corpo da requisição deve ser JSON"
+        }), 400
+    
+    try:
+        # Tenta analisar o JSON
+        data = request.get_json()
+        logger.debug(f"Raw JSON data: {data}")
+        
+        if not isinstance(data, dict):
+            logger.error(f"Dados JSON inválidos. Tipo recebido: {type(data)}")
+            return render_template(
+                'erro.html',
+                mensagem="Erro ao limpar dados",
+                detalhes=f"Dados JSON inválidos. Tipo recebido: {type(data)}"
+            ), 400
+        
+        logger.debug(f"Dados recebidos: {data}")
+        logger.debug(f"Keys em data: {list(data.keys())}")
+        logger.debug(f"Values em data: {list(data.values())}")
+    except Exception as e:
+        logger.error(f"Erro ao processar JSON: {str(e)}", exc_info=True)
+        logger.error(f"Raw data: {request.data}")
+        logger.error(f"Headers: {dict(request.headers)}")
+        logger.error(f"Request environ: {dict(request.environ)}")
+        return render_template(
+            'erro.html',
+            mensagem="Erro ao limpar dados",
+            detalhes=f"Erro ao processar dados JSON: {str(e)}"
+        ), 400
     try:
         logger.debug("Conectando ao banco de dados...")
         conn = sqlite3.connect(DB_PATH)
@@ -496,10 +528,15 @@ def limpar_dados():
         
         if total_registros == 0:
             logger.info("Nenhum dado para apagar - a tabela 'transacoes' já está vazia")
-            return jsonify({"status": "success", "message": "Nenhum dado para apagar - a tabela 'transacoes' já está vazia"})
+            return render_template(
+                'dashboard.html',
+                active_page='dashboard',
+                mensagem_sucesso="Nenhum dado para apagar - a tabela 'transacoes' já está vazia"
+            )
         
         # Desativa a verificação de chaves estrangeiras temporariamente
         cursor.execute("PRAGMA foreign_keys = OFF")
+        logger.debug("Desativada verificação de chaves estrangeiras")
         
         try:
             # Limpa a tabela de transações
@@ -508,32 +545,74 @@ def limpar_dados():
             
             # Reinicia o contador de autoincremento
             cursor.execute("DELETE FROM sqlite_sequence WHERE name='transacoes'")
+            logger.debug("Contador de autoincremento resetado")
             
             # Confirma as alterações
             conn.commit()
+            logger.debug("Transação commitada com sucesso")
+            
+            # Inicializar variáveis de estatísticas
+            transacoes_recentes = 0
+            transacoes_semana = 0
+            ultima_transacao = None
+            
+            # Salva as variáveis em um dicionário para uso posterior
+            estatisticas = {
+                'transacoes_recentes_30d': transacoes_recentes,
+                'transacoes_recentes_7d': transacoes_semana,
+                'ultima_transacao': ultima_transacao
+            }
             
             logger.warning(f"Dados da tabela 'transacoes' foram removidos com sucesso. {total_registros} registros removidos.")
-            return jsonify({
-                "status": "success", 
-                "message": "Dados das transações foram removidos com sucesso",
-                "tabela_limpa": "transacoes",
-                "registros_removidos": total_registros
-            })
+            # Passar todas as variáveis necessárias para o template
+            return render_template(
+                'dashboard.html',
+                active_page='dashboard',
+                mensagem_sucesso=f"Dados limpos com sucesso! {total_registros} registros foram removidos.",
+                total_registros=total_registros,
+                estatisticas=estatisticas,
+                total_receitas=0,
+                total_despesas=0,
+                saldo_mes_atual=0,
+                transacoes_recentes=[],
+                despesas_por_categoria={},
+                receitas_por_categoria={}
+            )
             
         except sqlite3.Error as e:
             error_msg = f"Erro ao limpar a tabela 'transacoes': {str(e)}"
             logger.error(error_msg, exc_info=True)
             conn.rollback()
-            return jsonify({"status": "error", "message": error_msg}), 500
+            return render_template(
+                'erro.html',
+                mensagem="Erro ao limpar dados",
+                detalhes=error_msg
+            ), 500
+            
+        except Exception as e:
+            error_msg = f"Erro inesperado ao processar dados: {str(e)}"
+            logger.error(error_msg, exc_info=True)
+            return render_template(
+                'erro.html',
+                mensagem="Erro ao limpar dados",
+                detalhes=error_msg
+            ), 500
             
         finally:
             # Reativa a verificação de chaves estrangeiras
             cursor.execute("PRAGMA foreign_keys = ON")
-        
+            logger.debug("Reativada verificação de chaves estrangeiras")
+            logger.debug("Reativada verificação de chaves estrangeiras")
+            
     except Exception as e:
         error_msg = f"Erro ao conectar ao banco de dados: {str(e)}"
         logger.error(error_msg, exc_info=True)
-        return jsonify({"status": "error", "message": error_msg}), 500
+        logger.error(f"Erro inesperado: {error_msg}")
+        return render_template(
+            'erro.html',
+            mensagem="Erro ao limpar dados",
+            detalhes=error_msg
+        ), 500
         
     finally:
         if 'conn' in locals():

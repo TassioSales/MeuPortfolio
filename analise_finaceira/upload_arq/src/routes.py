@@ -3,16 +3,23 @@ from flask import render_template, request, flash, redirect, url_for, current_ap
 from werkzeug.utils import secure_filename
 from pathlib import Path
 import sys
-
-# Adiciona o diretório raiz ao path para importar o logger
-root_dir = str(Path(__file__).parent.parent.parent)
-if root_dir not in sys.path:
-    sys.path.append(root_dir)
+from .processamento import process_csv, process_pdf, get_all_transactions, get_upload_history
 
 from logger import get_logger, log_function, LogLevel
 from . import upload_bp
-from .processamento import process_csv, process_pdf, get_all_transactions, get_upload_history
+from . import processamento, utils
+
+# Adiciona o utils ao contexto global do template
+@upload_bp.context_processor
+def inject_utils():
+    return dict(utils=utils)
+
+# Adiciona o filtro de formatação de moeda ao Jinja
+upload_bp.app_template_filter('format_currency')(utils.format_currency)
+
 import sqlite3
+
+
 
 # Configura o logger para este módulo
 logger = get_logger("upload.routes")

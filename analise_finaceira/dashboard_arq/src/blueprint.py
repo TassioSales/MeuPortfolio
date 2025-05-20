@@ -12,12 +12,16 @@ if root_dir not in sys.path:
 # Importa o módulo logger e configura o logger
 from logger import get_logger, log_function, setup_logger
 
+
 # Configura o logger para este módulo
 logger = setup_logger("dashboard.blueprint") if 'setup_logger' in globals() else get_logger("dashboard.blueprint")
 
 dashboard_bp = Blueprint('dashboard', __name__,
     template_folder=os.path.join(root_dir, 'dashboard_arq', 'templates'),
     static_folder=os.path.join(root_dir, 'dashboard_arq', 'static'))
+
+# Comentando a linha que adicionava o filtro ao Jinja
+# dashboard_bp.add_app_template_filter(format_currency, 'format_currency')
 
 @log_function()
 def get_base_directories() -> tuple[str, str, str]:

@@ -45,37 +45,23 @@ def obter_dados_fluxo_caixa(meses_atras=12):
         data_limite = (datetime.now() - timedelta(days=30*meses_atras)).strftime('%Y-%m-%d')
         fluxo_caixa_logger.info(f"Filtrando dados a partir de: {data_limite} (últimos {meses_atras} meses)")
         
-        # Consulta para obter as receitas por mês
-        query_receitas = """
+        # Consulta para obter receitas e despesas por mês
+        query = """
         SELECT 
             strftime('%Y-%m', data) as mes,
-            SUM(valor) as total_receitas
-        FROM receitas
+            SUM(CASE WHEN valor > 0 THEN valor ELSE 0 END) as total_receitas,
+            SUM(ABS(CASE WHEN valor < 0 THEN valor ELSE 0 END)) as total_despesas
+        FROM transacoes
         WHERE data >= ?
         GROUP BY strftime('%Y-%m', data)
         ORDER BY mes
         """
         
-        # Consulta para obter as despesas por mês
-        query_despesas = """
-        SELECT 
-            strftime('%Y-%m', data) as mes,
-            SUM(valor) as total_despesas
-        FROM despesas
-        WHERE data >= ?
-        GROUP BY strftime('%Y-%m', data)
-        ORDER BY mes
-        """
-        
-        # Executar as consultas
-        receitas_df = pd.read_sql_query(query_receitas, conn, params=(data_limite,))
-        despesas_df = pd.read_sql_query(query_despesas, conn, params=(data_limite,))
-        
-        # Juntar os DataFrames
-        fluxo_caixa = pd.merge(receitas_df, despesas_df, on='mes', how='outer').fillna(0)
+        # Executar a consulta
+        fluxo_caixa = pd.read_sql_query(query, conn, params=(data_limite,))
         
         # Calcular o saldo mensal
-        fluxo_caixa['saldo'] = fluxo_caixa['total_receitas'] - fluxo_caixa['total_despesas']
+        fluxo_caixa['saldo'] = fluxo_caixa['total_receitas'] - abs(fluxo_caixa['total_despesas'])
         
         # Converter a coluna 'mes' para datetime para ordenação correta
         fluxo_caixa['mes'] = pd.to_datetime(fluxo_caixa['mes'] + '-01')
@@ -88,9 +74,12 @@ def obter_dados_fluxo_caixa(meses_atras=12):
         
     except Exception as e:
         fluxo_caixa_logger.error(f"Erro ao obter dados de fluxo de caixa: {str(e)}", exc_info=True)
-        raise
+        if 'conn' in locals():
+            conn.close()
+        return None
     finally:
-        conn.close()
+        if 'conn' in locals():
+            conn.close()
 
 def limpar_arquivos_antigos(diretorio, prefixo='grafico_fluxo_caixa_', extensao='.html'):
     """
@@ -133,7 +122,7 @@ def gerar_grafico_fluxo_caixa(meses_atras=12):
         # Obter os dados
         df = obter_dados_fluxo_caixa(meses_atras)
         
-        if df.empty:
+        if df is None or df.empty:
             fluxo_caixa_logger.warning("Nenhum dado encontrado para o período especificado")
             return None
         
@@ -190,27 +179,59 @@ def gerar_grafico_fluxo_caixa(meses_atras=12):
                 'x': 0.5,
                 'xanchor': 'center',
                 'yanchor': 'top',
-                'font': {'size': 20}
+                'font': {'size': 28, 'family': 'Arial, sans-serif', 'color': '#2c3e50'}
             },
-            xaxis_title='Mês',
-            yaxis_title='Valor (R$)',
+            xaxis_title={
+                'text': 'Mês',
+                'font': {'size': 18, 'family': 'Arial, sans-serif', 'color': '#2c3e50'}
+            },
+            yaxis_title={
+                'text': 'Valor (R$)',
+                'font': {'size': 18, 'family': 'Arial, sans-serif', 'color': '#2c3e50'}
+            },
             barmode='group',
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(family="Arial, sans-serif", size=12, color="#333"),
-            margin=dict(l=50, r=50, t=80, b=50),
+            plot_bgcolor='rgba(255,255,255,1)',
+            paper_bgcolor='rgba(255,255,255,1)',
+            font=dict(family="Arial, sans-serif", size=16, color="#2c3e50"),
+            margin=dict(l=100, r=100, t=120, b=100),
             legend=dict(
                 orientation="h",
                 yanchor="bottom",
                 y=1.02,
-                xanchor="right",
-                x=1
+                xanchor="center",
+                x=0.5,
+                font=dict(size=16, family="Arial, sans-serif", color="#2c3e50"),
+                bgcolor='rgba(255,255,255,0.9)',
+                bordercolor='#ddd',
+                borderwidth=1
             ),
             hovermode='x unified',
             hoverlabel=dict(
-                bgcolor='white',
-                font_size=12,
-                font_family="Arial"
+                bgcolor='rgba(255,255,255,0.95)',
+                font_size=16,
+                font_family="Arial, sans-serif",
+                font_color='#2c3e50',
+                bordercolor='#ddd'
+            ),
+            height=700,
+            width=1200,
+            showlegend=True,
+            legend_title_text='Legenda',
+            legend_title_font=dict(size=16, family="Arial, sans-serif", color="#2c3e50"),
+            bargap=0.15,
+            bargroupgap=0.1,
+            xaxis=dict(
+                tickfont=dict(size=16, color='#2c3e50'),
+                tickangle=45,
+                tickmode='auto',
+                nticks=12
+            ),
+            yaxis=dict(
+                tickfont=dict(size=16, color='#2c3e50'),
+                gridcolor='#eee',
+                gridwidth=1,
+                zerolinecolor='#ddd',
+                zerolinewidth=2
             )
         )
         
@@ -218,11 +239,13 @@ def gerar_grafico_fluxo_caixa(meses_atras=12):
         fig.update_yaxes(
             tickprefix='R$ ',
             tickformat=",.2f",
-            gridcolor='rgba(0,0,0,0.05)'
+            gridcolor='rgba(0,0,0,0.1)',
+            gridwidth=1,
+            zeroline=True,
+            zerolinecolor='rgba(0,0,0,0.2)',
+            zerolinewidth=2,
+            tickfont=dict(size=16, family="Arial, sans-serif", color="#2c3e50")
         )
-        
-        # Ajustar o tamanho do gráfico
-        fig.update_layout(height=500)
         
         # Criar diretório para os gráficos se não existir
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -238,17 +261,23 @@ def gerar_grafico_fluxo_caixa(meses_atras=12):
         caminho_arquivo = os.path.join(img_dir, nome_arquivo)
         
         # Salvar o gráfico como HTML
-        fig.write_html(
-            caminho_arquivo,
-            full_html=True,
-            include_plotlyjs='cdn',
-            config={
-                'displayModeBar': True,
-                'scrollZoom': True,
-                'responsive': True,
-                'displaylogo': False
-            }
-        )
+        try:
+            fig.write_html(
+                caminho_arquivo,
+                full_html=True,
+                include_plotlyjs='cdn',
+                config={
+                    'displayModeBar': True,
+                    'scrollZoom': True,
+                    'responsive': True,
+                    'displaylogo': False
+                }
+            )
+            fluxo_caixa_logger.info(f"Gráfico de fluxo de caixa salvo com sucesso em: {caminho_arquivo}")
+            return caminho_arquivo
+        except Exception as e:
+            fluxo_caixa_logger.error(f"Erro ao salvar o gráfico: {str(e)}", exc_info=True)
+            return None
         
         fluxo_caixa_logger.info(f"Gráfico de fluxo de caixa salvo em: {caminho_arquivo}")
         return caminho_arquivo

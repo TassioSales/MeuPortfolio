@@ -11,10 +11,10 @@ root_dir = str(Path(__file__).parent)
 if root_dir not in sys.path:
     sys.path.append(root_dir)
 
+# Configurar logger
 try:
     from logger import get_logger, log_function, LogLevel
 except ImportError:
-    # Fallback logger if custom logger is not available
     def get_logger(name: str) -> logging.Logger:
         logger = logging.getLogger(name)
         if not logger.handlers:
@@ -27,44 +27,42 @@ except ImportError:
 
 logger = get_logger("main")
 
-# Importar blueprints
-try:
-    from upload_arq.src import upload_bp
-    from dashboard_arq.src import dashboard_bp, inserir_bp
-    from alertas_manuais_arq.src.blueprint import alertas_manuais_bp
-    from alertas_automaticos.blueprint import alertas_automaticos_bp
-except ImportError as e:
-    logger.error(f"Erro ao importar blueprints: {e}")
-    raise
-
-# Criar diretórios para uploads e banco de dados
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Uploads')
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-logger.info(f"Diretório de uploads configurado: {UPLOAD_FOLDER}")
-
-DB_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'banco')
-os.makedirs(DB_FOLDER, exist_ok=True)
-logger.info(f"Diretório do banco de dados configurado: {DB_FOLDER}")
-
 # Configurar o aplicativo Flask
 app = Flask(__name__, template_folder='templates', static_folder='static')
+
+# Adicionar caminho para arquivos estáticos do módulo analise_estatistica_arq
+analise_static_path = os.path.join(os.path.dirname(__file__), 'analise_estatistica_arq', 'static')
+app.static_folder = analise_static_path
 logger.info("Aplicativo Flask inicializado")
 
 # Configurações do aplicativo
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(32))
 app.config['WTF_CSRF_ENABLED'] = True
+
+# Criar diretórios para uploads e banco de dados
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+logger.info(f"Diretório de uploads configurado: {UPLOAD_FOLDER}")
+
+DB_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'banco')
+os.makedirs(DB_FOLDER, exist_ok=True)
 app.config['DATABASE'] = os.path.join(DB_FOLDER, 'financas.db')
-logger.info(f"Configurações do Flask: {app.config}")
-logger.info(f"Banco de dados configurado: {app.config['DATABASE']}")
+logger.info(f"Diretório do banco de dados configurado: {app.config['DATABASE']}")
 
 # Habilitar proteção CSRF
 csrf = CSRFProtect()
 csrf.init_app(app)
 logger.info("Proteção CSRF habilitada")
 
-# Registrar blueprints com tratamento de erros
+# Importar e registrar blueprints
 try:
+    from upload_arq.src import upload_bp
+    from dashboard_arq.src import dashboard_bp, inserir_bp
+    from alertas_manuais_arq.src.blueprint import alertas_manuais_bp
+    from analise_estatistica_arq.src.__init__ import analise_bp as analise_estatistica_bp
+
+    # Registrar blueprints com prefixos únicos
     app.register_blueprint(upload_bp, url_prefix='/upload')
     logger.info("Blueprint de upload registrado")
     app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
@@ -73,10 +71,10 @@ try:
     logger.info("Blueprint de inserir registrado")
     app.register_blueprint(alertas_manuais_bp, url_prefix='/alertas-manuais')
     logger.info("Blueprint de alertas manuais registrado")
-    app.register_blueprint(alertas_automaticos_bp, url_prefix='/alertas-automaticos')
-    logger.info("Blueprint de alertas automáticos registrado")
-except Exception as e:
-    logger.error(f"Erro ao registrar blueprints: {e}")
+    app.register_blueprint(analise_estatistica_bp, url_prefix='/analise_estatistica')
+    logger.info("Blueprint de análise estatística registrado")
+except ImportError as e:
+    logger.error(f"Erro ao importar blueprints: {e}")
     raise
 
 # Configurar o template global para o token CSRF
@@ -84,7 +82,7 @@ except Exception as e:
 def inject_csrf_token():
     return dict(csrf_token=app.jinja_env.globals.get('csrf_token'))
 
-# Rota para arquivos estáticos do dashboard (se necessário)
+# Rota para arquivos estáticos do dashboard
 @app.route('/dashboard/static/<path:filename>')
 def dashboard_static(filename):
     try:

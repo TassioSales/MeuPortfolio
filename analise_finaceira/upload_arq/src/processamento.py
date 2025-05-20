@@ -812,7 +812,8 @@ def process_pdf(file_path):
         logger.error(error_msg, exc_info=True)
         return False, error_msg
 
-def get_all_transactions(limit=1000):
+def get_all_transactions():
+    limit = None  # Remove o limite de transações
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
@@ -832,7 +833,7 @@ def get_all_transactions(limit=1000):
         if missing_columns:
             logger.warning(f"Colunas obrigatórias faltando na tabela: {', '.join(missing_columns)}")
         
-        query = f"SELECT * FROM transacoes ORDER BY data DESC LIMIT {limit}"
+        query = "SELECT * FROM transacoes ORDER BY data DESC"
         df = pd.read_sql_query(query, conn)
         
         numeric_columns = ['valor', 'preco', 'quantidade', 'taxa', 'indicador1', 'indicador2']

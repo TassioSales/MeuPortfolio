@@ -35,20 +35,20 @@ def conectar_banco() -> sqlite3.Connection:
         raise
 
 @log_function()
-def obter_receitas_mes_atual() -> float:
+def obter_receitas_12_meses() -> float:
     """
-    Retorna o total de receitas do mês atual.
+    Retorna o total de receitas dos últimos 12 meses.
     
     Returns:
-        float: Total de receitas do mês atual
+        float: Total de receitas dos últimos 12 meses
     """
     conn = None
     try:
         conn = conectar_banco()
         hoje = datetime.now()
-        primeiro_dia_mes = hoje.replace(day=1).strftime('%Y-%m-%d')
+        data_inicio = hoje - timedelta(days=30*12)
         
-        logger.debug(f"Obtendo receitas a partir de {primeiro_dia_mes}")
+        logger.debug(f"Obtendo receitas dos últimos 12 meses")
         
         query = """
         SELECT COALESCE(SUM(CASE WHEN valor > 0 THEN valor ELSE 0 END), 0) as total_receitas
@@ -57,15 +57,15 @@ def obter_receitas_mes_atual() -> float:
         """
         
         cursor = conn.cursor()
-        cursor.execute(query, (primeiro_dia_mes,))
+        cursor.execute(query, (data_inicio.strftime('%Y-%m-%d'),))
         resultado = cursor.fetchone()
         total_receitas = float(resultado[0]) if (resultado and resultado[0] is not None) else 0.0
         
-        logger.info(f"Total de receitas do mês: R$ {total_receitas:.2f}")
+        logger.info(f"Total de receitas dos últimos 12 meses: R$ {total_receitas:.2f}")
         return total_receitas
         
     except sqlite3.Error as e:
-        logger.error(f"Erro ao obter receitas do mês atual: {str(e)}")
+        logger.error(f"Erro ao obter receitas dos últimos 12 meses: {str(e)}")
         raise
     except Exception as e:
         logger.error(f"Erro inesperado ao obter receitas: {str(e)}")
@@ -148,7 +148,7 @@ def obter_variacao_receitas() -> float:
 @log_function()
 def obter_receitas_por_categoria() -> Dict[str, float]:
     """
-    Retorna um dicionário com as receitas agrupadas por categoria.
+    Retorna um dicionário com as receitas agrupadas por categoria dos últimos 12 meses.
     
     Returns:
         Dict[str, float]: Dicionário com categorias como chaves e valores totais
@@ -157,10 +157,11 @@ def obter_receitas_por_categoria() -> Dict[str, float]:
     try:
         conn = conectar_banco()
         
-        # Obter o primeiro dia do mês atual
-        primeiro_dia_mes = datetime.now().replace(day=1).strftime('%Y-%m-%d')
+        # Obter data de 12 meses atrás
+        hoje = datetime.now()
+        data_inicio = hoje - timedelta(days=365)
         
-        logger.debug(f"Obtendo receitas por categoria a partir de {primeiro_dia_mes}")
+        logger.debug(f"Obtendo receitas por categoria dos últimos 12 meses")
         
         query = """
         SELECT 
@@ -175,7 +176,7 @@ def obter_receitas_por_categoria() -> Dict[str, float]:
         """
         
         cursor = conn.cursor()
-        cursor.execute(query, (primeiro_dia_mes,))
+        cursor.execute(query, (data_inicio.strftime('%Y-%m-%d'),))
         resultados = cursor.fetchall()
         
         # Criar dicionário com os resultados
@@ -187,7 +188,7 @@ def obter_receitas_por_categoria() -> Dict[str, float]:
                 receitas_por_categoria[categoria] = total
                 total_geral += total
         
-        logger.debug(f"Total de categorias de receita encontradas: {len(receitas_por_categoria)}")
+        logger.debug(f"Total de categorias encontradas: {len(receitas_por_categoria)}")
         logger.debug(f"Total geral de receitas: R$ {total_geral:.2f}")
         
         # Log detalhado das categorias (apenas em nível de debug)
@@ -208,15 +209,12 @@ def obter_receitas_por_categoria() -> Dict[str, float]:
     except sqlite3.Error as e:
         logger.error(f"Erro ao obter receitas por categoria: {str(e)}")
         raise
-    except Exception as e:
-        logger.error(f"Erro inesperado ao processar receitas por categoria: {str(e)}")
-        raise
     finally:
         if conn:
             conn.close()
 
 if __name__ == "__main__":
     # Testes
-    logger.info(f"Total de receitas do mês: R$ {obter_receitas_mes_atual():.2f}")
-    logger.info(f"Variação das receitas: {obter_variacao_receitas():.2f}%")
+    logger.info(f"Total de receitas dos últimos 12 meses: R$ {obter_receitas_12_meses():.2f}")
+    logger.info(f"Receitas por categoria dos últimos 12 meses: {obter_receitas_por_categoria()}")
     logger.info(f"Receitas por categoria: {obter_receitas_por_categoria()}")

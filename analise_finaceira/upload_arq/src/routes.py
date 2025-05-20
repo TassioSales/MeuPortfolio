@@ -95,6 +95,10 @@ def upload_file():
                 elif filename.lower().endswith('.pdf'):
                     logger.debug("Iniciando processamento de arquivo PDF")
                     success, message = process_pdf(file_path)
+                else:
+                    error_msg = f"Tipo de arquivo não suportado: {filename}"
+                    logger.error(error_msg)
+                    raise ValueError(error_msg)
                 
                 if success:
                     logger.info(f"Arquivo processado com sucesso: {message}")
@@ -109,9 +113,10 @@ def upload_file():
                         return jsonify({'success': False, 'message': error_msg}), 400
                     flash(error_msg, 'error')
                     return redirect(request.url)
-                    
+            
             except Exception as e:
-                logger.error(f"Erro durante o processamento do arquivo: {str(e)}", exc_info=True)
+                error_msg = f"Erro durante o processamento do arquivo: {str(e)}"
+                logger.error(error_msg, exc_info=True)
                 raise
             
         except Exception as e:
@@ -128,12 +133,45 @@ def upload_file():
 
 @upload_bp.route('/transactions')
 def list_transactions():
-    """Rota para listar as transações"""
+    """Rota para listar as transações com informações sobre colunas faltantes"""
     try:
         transactions = get_all_transactions()
-        return render_template('transactions.html', transactions=transactions)
+        
+        # Verificar se há transações
+        if transactions.empty:
+            flash('Nenhuma transação encontrada no banco de dados', 'info')
+            return redirect(url_for('upload.upload_file'))
+        
+        # Extrair colunas faltantes do DataFrame
+        missing_columns = []
+        if 'missing_columns' in transactions.columns:
+            missing_columns = eval(transactions['missing_columns'].iloc[0]) if transactions['missing_columns'].iloc[0] else []
+            # Remover a coluna missing_columns do DataFrame antes de passar para o template
+            transactions = transactions.drop(columns=['missing_columns'])
+        
+        # Se houver colunas faltantes, mostrar mensagem de aviso
+        if missing_columns:
+            flash(f'Atenção: As seguintes colunas obrigatórias estão faltando no banco de dados: {", ".join(missing_columns)}', 'warning')
+        
+        # Adicionar informações estatísticas usando o DataFrame
+        stats = {
+            'total_transacoes': len(transactions),
+            'total_receitas': transactions[transactions['valor'] > 0]['valor'].sum(),
+            'total_despesas': abs(transactions[transactions['valor'] < 0]['valor'].sum()),
+            'periodo': {
+                'inicio': transactions['data'].min(),
+                'fim': transactions['data'].max()
+            }
+        }
+        
+        return render_template(
+            'transactions.html', 
+            transactions=transactions,
+            stats=stats,
+            missing_columns=missing_columns
+        )
     except Exception as e:
-        logger.error(f"Erro ao buscar transações: {str(e)}")
+        logger.error(f"Erro ao buscar transações: {str(e)}", exc_info=True)
         flash('Erro ao buscar transações', 'danger')
         return redirect(url_for('upload.upload_file'))
 

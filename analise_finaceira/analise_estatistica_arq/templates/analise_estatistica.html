@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/analise_estatistica.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Análise Estatística</h4>
+                    <p class="mb-0">Análise detalhada de suas transações financeiras</p>
+                </div>
+                <div class="card-body">
+                    <form id="analiseForm" method="POST" novalidate>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="data_inicio" class="form-label">Data Inicial</label>
+                                    <input type="date" class="form-control" id="data_inicio" name="data_inicio" required>
+                                    <div id="data_inicio_error" class="error-message"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="data_fim" class="form-label">Data Final</label>
+                                    <input type="date" class="form-control" id="data_fim" name="data_fim" required>
+                                    <div id="data_fim_error" class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="tipo_analise" class="form-label">Tipo de Análise</label>
+                                    <select class="form-select" id="tipo_analise" name="tipo_analise" multiple aria-describedby="tipo_analise_info" style="height: 300px;">
+                                        <optgroup label="Informações Gerais">
+                                            <option value="basica">Análise Básica</option>
+                                        </optgroup>
+                                        <optgroup label="Estatísticas Descritivas">
+                                            <option value="descritiva">Estatísticas Descritivas</option>
+                                        </optgroup>
+                                        <optgroup label="Análise de Risco">
+                                            <option value="sharpe">Sharpe Ratio</option>
+                                            <option value="sortino">Sortino Ratio</option>
+                                            <option value="drawdown">Drawdown Máximo</option>
+                                            <option value="volatilidade">Volatilidade</option>
+                                            <option value="var">Valor em Risco (VaR)</option>
+                                            <option value="cvar">CVaR</option>
+                                            <option value="prob_perda">Probabilidade de Perda</option>
+                                        </optgroup>
+                                        <optgroup label="Análise Temporal">
+                                            <option value="periodo">Melhor e Pior Mês/Ano</option>
+                                            <option value="retornos_periodo">Retorno por Período</option>
+                                            <option value="frequencia_operacoes">Frequência de Operações</option>
+                                        </optgroup>
+                                        <optgroup label="Análise por Ativo">
+                                            <option value="top_ativos">Top 5 Ativos</option>
+                                            <option value="distribuicao_ativos">Distribuição por Tipo</option>
+                                        </optgroup>
+                                        <optgroup label="Análise de Performance">
+                                            <option value="taxa_acerto">Taxa de Acerto</option>
+                                            <option value="proporcao">Proporção de Ganhos/Losses</option>
+                                            <option value="retorno_operacao">Retorno por Operação</option>
+                                        </optgroup>
+                                        <optgroup label="Análise de Capital">
+                                            <option value="capital">Evolução do Capital</option>
+                                            <option value="drawdown_capital">Drawdown do Capital</option>
+                                        </optgroup>
+                                        <optgroup label="Análise de Frequência">
+                                            <option value="frequencia_operacoes">Frequência de Operações</option>
+                                            <option value="horario_operacoes">Horário de Operações</option>
+                                            <option value="dia_semana">Dia da Semana</option>
+                                        </optgroup>
+                                        <optgroup label="Análise de Correlação">
+                                            <option value="correlacao_ativos">Correlação entre Ativos</option>
+                                            <option value="correlacao_volume">Correlação Volume/Preço</option>
+                                            <option value="correlacao_indicadores">Correlação Indicadores</option>
+                                        </optgroup>
+                                    </select>
+                                    <small id="tipo_analise_info" class="form-text text-muted">Segure Ctrl para selecionar múltiplas opções.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search me-2"></i>Analisar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading-spinner" class="loading-spinner fade-in" style="display: none;">
+        <div class="d-flex justify-content-center align-items-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultado" class="mt-4 fade-in"></div>
+</div>
+
+<script src="{{ url_for('static', filename='js/analise_estatistica.js') }}"></script>
+{% endblock %}

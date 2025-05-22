@@ -39,6 +39,11 @@ analise_financeira/
 ├── alertas_arq/         # Módulo de alertas
 ├── banco/               # Configurações do banco de dados
 ├── dashboard_arq/       # Módulo de dashboard
+│   └── src/
+│       ├── __init__.py
+│       ├── acoes.py     # Gerenciamento de transações
+│       ├── inserir_dados.py  # Inserção de dados
+│       └── logger.py    # Configuração de logging
 ├── static/              # Arquivos estáticos (CSS, JS, imagens)
 ├── templates/          # Templates HTML
 ├── upload_arq/         # Módulo de upload de arquivos
@@ -52,17 +57,27 @@ analise_financeira/
 
 ## 🆕 Novidades Recentes
 
-- <b>09/05/2025:</b> Logging padronizado em todo o sistema, facilitando rastreio de erros e manutenção.
+- **22/05/2025:** Melhorias no gerenciamento de transações:
+  - Aprimoramento do sistema de edição de transações
+  - Validação robusta de tipos de dados
+  - Tratamento automático de valores negativos para despesas
+  - Sistema de logging aprimorado com rastreamento de requisições
+  - Melhor tratamento de erros e mensagens para o usuário
+  - Prevenção de condições de corrida em operações de banco de dados
+
+- **20/05/2025:** Melhorias no sistema:
+  - Upload de arquivos: Suporte a mais colunas e processamento aprimorado
+  - Limpeza de dados: Correção do tratamento de respostas no frontend
+  - JavaScript: Melhorias no tratamento de respostas HTTP
+  - Mensagens: Padronização de mensagens de sucesso e erro
+
+- **19/05/2025:** Logging padronizado em todo o sistema, facilitando rastreio de erros e manutenção.
+
 - Melhorias de usabilidade: ajustes visuais e de navegação para uma experiência mais intuitiva.
 - Correções de bugs: diversas correções para maior estabilidade e segurança.
 - Modernização visual: interface mais limpa, responsiva e agradável.
 - Alertas Manuais: gerencie alertas financeiros personalizados facilmente.
 - Filtros avançados na tabela de transações para facilitar sua análise.
-- Página inicial redesenhada com saudação dinâmica, destaques e novidades.
-- Inclusão de dicas de uso para facilitar a experiência do usuário.
-- Logo TS no topo e assinatura "Criado por Tassio Sales" no rodapé.
-- Relógio digital na navbar, sempre atualizado.
-- Visual aprimorado com gradiente, animações e efeitos modernos.
 
 ## 🚦 Status do Projeto
 
@@ -80,6 +95,34 @@ from logger import get_logger
 logger = get_logger("nome_do_modulo")
 logger.info("Mensagem informativa")
 ```
+
+## 🗃️ Estrutura da Tabela de Transações
+
+A tabela `transacoes` armazena todas as transações financeiras do sistema. Abaixo está a estrutura completa dos campos:
+
+| Coluna | Tipo | Obrigatório | Descrição | Exemplo |
+|--------|------|-------------|-----------|----------|
+| `data` | Data | ✅ Sim | Data da transação | 2025-05-22 |
+| `descricao` | Texto | ✅ Sim | Descrição da transação | Supermercado |
+| `valor` | Número | ✅ Sim | Valor da transação (use . como separador decimal) | 150.75 |
+| `tipo` | Texto | ✅ Sim | Tipo da transação | receita/despesa |
+| `categoria` | Texto | ❌ Opcional | Categoria da transação | Alimentação |
+| `preco` | Número | ❌ Opcional | Preço unitário (para investimentos) | 45.20 |
+| `quantidade` | Número | ❌ Opcional | Quantidade (para investimentos) | 10 |
+| `tipo_operacao` | Texto | ❌ Opcional | Tipo de operação | compra/venda |
+| `taxa` | Número | ❌ Opcional | Taxa da operação (em %) | 0.5 |
+| `ativo` | Texto | ❌ Opcional | Ativo financeiro relacionado | PETR4, BTC |
+| `forma_pagamento` | Texto | ❌ Opcional | Forma de pagamento utilizada | Cartão, PIX |
+| `indicador1` | Número | ❌ Opcional | Indicador personalizado 1 | 1.5 |
+| `indicador2` | Número | ❌ Opcional | Indicador personalizado 2 | 2.3 |
+
+### Dicas de Uso
+
+- **Para transações comuns**: Preencha pelo menos os campos obrigatórios (`data`, `descricao`, `valor`, `tipo`).
+- **Para investimentos**: Utilize os campos específicos como `preco`, `quantidade` e `ativo`.
+- **Categorização**: Use o campo `categoria` para classificar suas transações.
+- **Indicadores**: Os campos `indicador1` e `indicador2` podem ser usados para métricas personalizadas.
+- **Formas de pagamento**: Registre como cada transação foi paga usando `forma_pagamento`.
 
 ## 📋 Índice de Arquivos
 

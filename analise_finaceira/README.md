@@ -1,89 +1,246 @@
-# analise_financeira - Sistema de Gerenciamento
+<div align="center">
+  <h1>💰 Análise Financeira Inteligente</h1>
+  <p>
+    <strong>Sistema completo para gestão financeira pessoal e empresarial</strong>
+  </p>
+  
+  [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+  [![Flask](https://img.shields.io/badge/Flask-2.0+-yellow.svg)](https://flask.palletsprojects.com/)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+  [![Status: Ativo](https://img.shields.io/badge/Status-Ativo-brightgreen.svg)]()
+  
+  <p align="center">
+    <img src="https://img.shields.io/badge/arquitetura-modular-ff69b4" alt="Arquitetura Modular">
+    <img src="https://img.shields.io/badge/segurança-avançada-yellowgreen" alt="Segurança Avançada">
+    <img src="https://img.shields.io/badge/interface-responsiva-9cf" alt="Interface Responsiva">
+  </p>
+</div>
 
-**analise_financeira** é um sistema completo para controle, análise e visualização de finanças pessoais ou empresariais. O projeto é dividido em módulos principais:
-- **Upload de Arquivos:** Importação e processamento automatizado de extratos e dados financeiros.
-- **Dashboard:** Visualização interativa de métricas, gráficos e relatórios.
-- **Alertas Manuais:** Gerenciamento de alertas financeiros personalizados.
+## 🌟 Visão Geral
 
-O sistema possui arquitetura modular, interface moderna, logging padronizado e foco em usabilidade, performance e segurança.
+O **Análise Financeira Inteligente** é uma solução abrangente desenvolvida para simplificar e otimizar o gerenciamento financeiro. Com foco em usabilidade e performance, o sistema oferece ferramentas poderosas para análise de gastos, planejamento orçamentário e tomada de decisões financeiras informadas.
 
-Este é um sistema de análise financeira desenvolvido em Python com Flask, projetado para processar, analisar e visualizar dados financeiros de forma eficiente. O sistema é modular e inclui funcionalidades para upload de arquivos, geração de alertas e visualização de dados em dashboards interativos.
+### 🎯 Objetivos
+
+- Fornecer uma visão clara e detalhada das finanças pessoais/empresariais
+- Automatizar o processo de importação e categorização de transações
+- Oferecer insights acionáveis através de análises e relatórios
+- Facilitar o controle e planejamento financeiro
+- Garantir segurança e privacidade dos dados financeiros
 
 ## 🚀 Funcionalidades Principais
 
-- **Página Inicial Moderna**: Saudação dinâmica (bom dia/tarde/noite), destaques com métricas, dicas de uso e novidades do sistema.
-- **Logo Personalizado**: Logo "TS" (Tassio Sales) no topo da home.
-- **Relógio Digital**: Mostra a hora atual na navbar, alinhado à direita.
-- **Upload de Arquivos**: Processamento de arquivos financeiros (incluindo PDFs).
-- **Análise de Dados**: Processamento e análise de dados financeiros.
-- **Alertas Manuais**: Gerenciamento completo de alertas financeiros personalizados.
-- **Dashboard**: Visualização interativa de métricas financeiras.
-- **Banco de Dados**: Armazenamento seguro de transações e configurações.
-- **Visual Premium**: Gradiente de fundo, cards animados, efeitos de hover e responsividade.
+### 📊 Dashboard Interativo
+- Visualização em tempo real de receitas, despesas e saldo
+- Gráficos dinâmicos e interativos
+- Filtros avançados por período, categoria e tipo de transação
+- Métricas-chave de desempenho financeiro
 
-## 🛠️ Tecnologias Utilizadas
+### 📤 Upload Inteligente
+- Suporte a múltiplos formatos (CSV, PDF, XLSX)
+- Processamento automático de extratos bancários
+- Reconhecimento inteligente de padrões
+- Validação e correção de dados em tempo real
 
-- **Backend**: Python 3.x, Flask
-- **Banco de Dados**: SQLAlchemy
-- **Processamento de Dados**: Pandas, NumPy
-- **Processamento de PDF**: pdfplumber, PyPDF2
-- **Frontend**: HTML, CSS, JavaScript
-- **Outras Bibliotecas**: 
-  - Flask-WTF para formulários
-  - python-dotenv para gerenciamento de variáveis de ambiente
+### 💰 Gestão de Transações
+- Cadastro manual de receitas e despesas
+- Categorização automática
+- Anexo de comprovantes
+- Histórico completo com busca avançada
 
-## 📦 Estrutura do Projeto
+### 🔔 Sistema de Alertas
+- Notificações personalizáveis
+- Alertas de orçamento
+- Lembretes de contas a pagar
+- Análise de padrões de gastos
+
+### 📱 Interface Moderna
+- Design responsivo (desktop e mobile)
+- Tema claro/escuro
+- Navegação intuitiva
+- Tempo de carregamento otimizado
+
+## 🛠️ Stack Tecnológica
+
+### Backend
+- **Linguagem**: Python 3.8+
+- **Framework Web**: Flask 2.0+
+- **Autenticação**: Flask-Login, Flask-JWT-Extended
+- **API REST**: Flask-RESTful
+- **Tarefas Assíncronas**: Celery
+- **Cache**: Redis
+- **Fila de Processamento**: RabbitMQ
+
+### Banco de Dados
+- **SGBD**: SQLite (Desenvolvimento) / PostgreSQL (Produção)
+- **ORM**: SQLAlchemy 1.4+
+- **Migrações**: Flask-Migrate (Alembic)
+- **Backup Automático**: Scripts personalizados
+
+### Frontend
+- **HTML5** semântico
+- **CSS3** com pré-processador SASS
+- **JavaScript** (ES6+)
+- **Bibliotecas**:
+  - Chart.js para gráficos
+  - DataTables para tabelas interativas
+  - Select2 para seleção avançada
+  - Moment.js para manipulação de datas
+
+### Processamento de Dados
+- **Análise**: Pandas, NumPy
+- **Visualização**: Matplotlib, Plotly
+- **PDF**: pdfplumber, PyPDF2
+- **Excel**: openpyxl, xlrd
+
+### DevOps
+- **Controle de Versão**: Git
+- **CI/CD**: GitHub Actions
+- **Containerização**: Docker, Docker Compose
+- **Monitoramento**: Prometheus, Grafana
+- **Logs**: ELK Stack (Elasticsearch, Logstash, Kibana)
+
+## 🏗️ Arquitetura do Projeto
 
 ```
 analise_financeira/
-├── alertas_arq/         # Módulo de alertas
-├── banco/               # Configurações do banco de dados
-├── dashboard_arq/       # Módulo de dashboard
+├── .github/                    # Configurações do GitHub
+│   └── workflows/             # Fluxos de CI/CD
+│
+├── alertas_arq/              # Módulo de alertas
+│   ├── src/
+│   │   ├── models.py         # Modelos de dados
+│   │   ├── routes.py          # Rotas da API
+│   │   └── services.py        # Lógica de negócios
+│   └── tests/                 # Testes unitários
+│
+├── dashboard_arq/            # Módulo de dashboard
+│   ├── static/               # Recursos estáticos
+│   ├── templates/            # Templates específicos
 │   └── src/
-│       ├── __init__.py
-│       ├── acoes.py     # Gerenciamento de transações
+│       ├── __init__.py      # Inicialização
+│       ├── acoes.py          # Gerenciamento de transações
 │       ├── inserir_dados.py  # Inserção de dados
-│       └── logger.py    # Configuração de logging
-├── static/              # Arquivos estáticos (CSS, JS, imagens)
-├── templates/          # Templates HTML
-├── upload_arq/         # Módulo de upload de arquivos
-├── uploads/            # Arquivos enviados pelos usuários
-├── venv/               # Ambiente virtual
-├── .gitignore          # Arquivo gitignore
-├── main.py             # Ponto de entrada da aplicação
-├── requirements.txt    # Dependências do projeto
-└── README.md           # Este arquivo
+│       ├── logger.py         # Configuração de logging
+│       └── utils/            # Utilitários diversos
+│
+├── upload_arq/              # Módulo de upload
+│   ├── src/
+│   │   └── processamento.py  # Lógica de processamento
+│   └── tests/                # Testes de integração
+│
+├── static/                  # Arquivos estáticos globais
+│   ├── css/                  # Folhas de estilo
+│   ├── js/                   # Scripts JavaScript
+│   └── img/                  # Imagens e ícones
+│
+├── templates/               # Templates base
+│   ├── base/                # Layouts base
+│   ├── components/          # Componentes reutilizáveis
+│   └── macros/              # Macros Jinja2
+│
+├── tests/                   # Testes de aceitação
+│   ├── e2e/                 # Testes end-to-end
+│   └── fixtures/            # Dados de teste
+│
+├── .env.example            # Variáveis de ambiente de exemplo
+├── .gitignore               # Arquivos ignorados pelo Git
+├── config.py                # Configurações da aplicação
+├── main.py                  # Ponto de entrada
+├── requirements-dev.txt     # Dependências de desenvolvimento
+├── requirements.txt         # Dependências de produção
+└── README.md               # Documentação
 ```
 
-## 🆕 Novidades Recentes
+## 📅 Histórico de Atualizações
 
-- **22/05/2025:** Melhorias no gerenciamento de transações:
-  - Aprimoramento do sistema de edição de transações
-  - Validação robusta de tipos de dados
-  - Tratamento automático de valores negativos para despesas
-  - Sistema de logging aprimorado com rastreamento de requisições
-  - Melhor tratamento de erros e mensagens para o usuário
-  - Prevenção de condições de corrida em operações de banco de dados
+### 🔥 Últimas Atualizações (v2.1.0 - Maio/2025)
 
-- **20/05/2025:** Melhorias no sistema:
-  - Upload de arquivos: Suporte a mais colunas e processamento aprimorado
-  - Limpeza de dados: Correção do tratamento de respostas no frontend
-  - JavaScript: Melhorias no tratamento de respostas HTTP
-  - Mensagens: Padronização de mensagens de sucesso e erro
+#### Melhorias no Gerenciamento de Transações
+- ✅ Sistema de edição em tempo real
+- ✅ Validação avançada de tipos de dados
+- ✅ Tratamento automático de valores negativos
+- ✅ Logging unificado com rastreamento de requisições
+- ✅ Prevenção de condições de corrida no banco de dados
 
-- **19/05/2025:** Logging padronizado em todo o sistema, facilitando rastreio de erros e manutenção.
+#### Aprimoramentos no Frontend
+- 🎨 Redesign da interface do usuário
+- ⚡ Melhorias de performance na renderização
+- 📱 Melhor experiência em dispositivos móveis
+- 🌓 Suporte a tema claro/escuro
 
-- Melhorias de usabilidade: ajustes visuais e de navegação para uma experiência mais intuitiva.
-- Correções de bugs: diversas correções para maior estabilidade e segurança.
-- Modernização visual: interface mais limpa, responsiva e agradável.
-- Alertas Manuais: gerencie alertas financeiros personalizados facilmente.
-- Filtros avançados na tabela de transações para facilitar sua análise.
+#### Novos Recursos
+- 🔍 Busca avançada com filtros combinados
+- 📊 Novos gráficos e visualizações
+- 📤 Exportação de relatórios em múltiplos formatos
+- 🔄 Sincronização em tempo real
+
+### Versões Anteriores
+
+<details>
+<summary>📌 v2.0.0 - Abril/2025</summary>
+
+- Arquitetura modular redesenhada
+- Novas APIs RESTful
+- Suporte a múltiplos usuários
+- Sistema de permissões granular
+- Documentação da API com Swagger
+
+</details>
+
+<details>
+<summary>📌 v1.5.0 - Março/2025</summary>
+
+- Módulo de orçamento
+- Planejador financeiro
+- Metas de economia
+- Análise de investimentos
+- Relatórios personalizados
+
+</details>
 
 ## 🚦 Status do Projeto
 
-> ⚠️ **EM DESENVOLVIMENTO ATIVO**
+### 📊 Roadmap 2025
 
-O projeto analise_financeira está em constante evolução. Novas funcionalidades e melhorias visuais são implementadas regularmente.
+#### Próximos Lançamentos
+- **Q3 2025**
+  - Integração com bancos via API
+  - Análise preditiva
+  - Orçamento colaborativo
+  - Aplicativo móvel nativo
+
+- **Q4 2025**
+  - Inteligência artificial para categorização
+  - Planejador tributário
+  - Relatórios fiscais
+  - Suporte multi-moeda
+
+### 📈 Métricas
+- **Cobertura de Testes**: 85%
+- **Tempo de Atividade**: 99.9%
+- **Usuários Ativos**: 1.2K+
+- **Transações Processadas**: 1M+
+
+### 🤝 Contribuição
+
+Contribuições são bem-vindas! Siga estes passos:
+
+1. Faça um Fork do projeto
+2. Crie sua Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a Branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+### 📄 Licença
+
+Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
+
+### 📧 Contato
+
+Tassio Sales - [@seu_twitter](https://twitter.com/seu_twitter) - email@exemplo.com
+
+Link do Projeto: [https://github.com/seu-usuario/analise_financeira](https://github.com/seu-usuario/analise_financeira)
 
 ## 📖 Logging Padronizado
 

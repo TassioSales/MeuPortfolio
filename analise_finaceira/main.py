@@ -38,6 +38,7 @@ logger.info("Aplicativo Flask inicializado")
 # Configurações do aplicativo
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(32))
 app.config['WTF_CSRF_ENABLED'] = True
+app.config['WTF_CSRF_CHECK_DEFAULT'] = False
 
 # Criar diretórios para uploads e banco de dados
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Uploads')
@@ -50,17 +51,21 @@ os.makedirs(DB_FOLDER, exist_ok=True)
 app.config['DATABASE'] = os.path.join(DB_FOLDER, 'financas.db')
 logger.info(f"Diretório do banco de dados configurado: {app.config['DATABASE']}")
 
-# Habilitar proteção CSRF
-csrf = CSRFProtect()
-csrf.init_app(app)
-logger.info("Proteção CSRF habilitada")
-
-# Importar e registrar blueprints
+# Importar blueprints
 try:
     from upload_arq.src import upload_bp
     from dashboard_arq.src import dashboard_bp, inserir_bp
+    from dashboard_arq.src.acoes import acoes_bp
     from alertas_manuais_arq.src.blueprint import alertas_manuais_bp
     from analise_estatistica_arq.src.__init__ import analise_bp as analise_estatistica_bp
+    
+    # Habilitar proteção CSRF
+    csrf = CSRFProtect()
+    csrf.init_app(app)
+    logger.info("Proteção CSRF habilitada")
+    
+    # Desabilitar CSRF para rotas de API
+    csrf.exempt(acoes_bp)  # Desabilita CSRF para todas as rotas no blueprint de ações
 
     # Registrar blueprints com prefixos únicos
     app.register_blueprint(upload_bp, url_prefix='/upload')
@@ -69,6 +74,9 @@ try:
     logger.info("Blueprint de dashboard registrado")
     app.register_blueprint(inserir_bp, url_prefix='/inserir')
     logger.info("Blueprint de inserir registrado")
+    app.register_blueprint(acoes_bp, url_prefix='/acoes')
+    logger.info("Blueprint de ações registrado")
+    
     app.register_blueprint(alertas_manuais_bp, url_prefix='/alertas-manuais')
     logger.info("Blueprint de alertas manuais registrado")
     app.register_blueprint(analise_estatistica_bp, url_prefix='/analise_estatistica')

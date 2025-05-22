@@ -44,18 +44,152 @@
 
             <div class="card mt-4">
                 <div class="card-body">
-                    <h5 class="card-title">Como preparar seu arquivo</h5>
-                    <p class="card-text">Para melhores resultados, seu arquivo CSV deve conter as seguintes colunas:</p>
+                    <h5 class="card-title">📋 Como preparar seu arquivo</h5>
+                    <p class="card-text">Para garantir o melhor processamento dos seus dados, siga estas orientações:</p>
+                    
+                    <h6 class="mt-4">📝 Formato do Arquivo</h6>
                     <ul class="list-group list-group-flush mb-3">
-                        <li class="list-group-item"><strong>data</strong> - Data da transação (formato: DD/MM/AAAA)</li>
-                        <li class="list-group-item"><strong>descricao</strong> - Descrição da transação</li>
-                        <li class="list-group-item"><strong>valor</strong> - Valor numérico (use . como separador decimal)</li>
-                        <li class="list-group-item"><strong>tipo</strong> - Receita ou Despesa</li>
-                        <li class="list-group-item"><strong>categoria</strong> - (Opcional) Categoria da transação</li>
+                        <li class="list-group-item">
+                            <strong>📄 Formatos aceitos:</strong> .csv, .pdf (até 10MB)
+                        </li>
+                        <li class="list-group-item">
+                            <strong>📅 Formato de data:</strong> DD/MM/AAAA ou AAAA-MM-DD
+                        </li>
+                        <li class="list-group-item">
+                            <strong>🔢 Separador decimal:</strong> Ponto (.)
+                        </li>
+                        <li class="list-group-item">
+                            <strong>📊 Codificação:</strong> UTF-8 (recomendado)
+                        </li>
                     </ul>
+
+                    <h6 class="mt-4">📋 Colunas Recomendadas</h6>
+                    <div class="table-responsive mb-3">
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Coluna</th>
+                                    <th>Tipo</th>
+                                    <th>Obrigatório</th>
+                                    <th>Descrição</th>
+                                    <th>Exemplo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>data</code></td>
+                                    <td>Data</td>
+                                    <td>✅ Sim</td>
+                                    <td>Data da transação</td>
+                                    <td>15/05/2025 ou 2025-05-15</td>
+                                </tr>
+                                <tr>
+                                    <td><code>descricao</code></td>
+                                    <td>Texto</td>
+                                    <td>✅ Sim</td>
+                                    <td>Descrição da transação</td>
+                                    <td>Mercado do Zé</td>
+                                </tr>
+                                <tr>
+                                    <td><code>valor</code></td>
+                                    <td>Número</td>
+                                    <td>✅ Sim</td>
+                                    <td>Valor da transação (use . como separador decimal)</td>
+                                    <td>150.75</td>
+                                </tr>
+                                <tr>
+                                    <td><code>tipo</code></td>
+                                    <td>Texto</td>
+                                    <td>✅ Sim</td>
+                                    <td>Tipo da transação</td>
+                                    <td>receita ou despesa</td>
+                                </tr>
+                                <tr>
+                                    <td><code>categoria</code></td>
+                                    <td>Texto</td>
+                                    <td>❌ Opcional</td>
+                                    <td>Categoria da transação</td>
+                                    <td>Alimentação, Transporte, Salário</td>
+                                </tr>
+                                <tr>
+                                    <td><code>preco</code></td>
+                                    <td>Número</td>
+                                    <td>❌ Opcional</td>
+                                    <td>Preço unitário (para investimentos)</td>
+                                    <td>45.20</td>
+                                </tr>
+                                <tr>
+                                    <td><code>quantidade</code></td>
+                                    <td>Número</td>
+                                    <td>❌ Opcional</td>
+                                    <td>Quantidade (para investimentos)</td>
+                                    <td>10</td>
+                                </tr>
+                                <tr>
+                                    <td><code>tipo_operacao</code></td>
+                                    <td>Texto</td>
+                                    <td>❌ Opcional</td>
+                                    <td>Tipo de operação (compra, venda, etc)</td>
+                                    <td>compra</td>
+                                </tr>
+                                <tr>
+                                    <td><code>taxa</code></td>
+                                    <td>Número</td>
+                                    <td>❌ Opcional</td>
+                                    <td>Taxa da operação (em %)</td>
+                                    <td>0.5</td>
+                                </tr>
+                                <tr>
+                                    <td><code>ativo</code></td>
+                                    <td>Texto</td>
+                                    <td>❌ Opcional</td>
+                                    <td>Ativo financeiro relacionado</td>
+                                    <td>PETR4, BTC, USD</td>
+                                </tr>
+                                <tr>
+                                    <td><code>forma_pagamento</code></td>
+                                    <td>Texto</td>
+                                    <td>❌ Opcional</td>
+                                    <td>Forma de pagamento utilizada</td>
+                                    <td>Cartão de Crédito, PIX, Boleto</td>
+                                </tr>
+                                <tr>
+                                    <td><code>indicador1</code></td>
+                                    <td>Número</td>
+                                    <td>❌ Opcional</td>
+                                    <td>Indicador personalizado 1</td>
+                                    <td>1.5</td>
+                                </tr>
+                                <tr>
+                                    <td><code>indicador2</code></td>
+                                    <td>Número</td>
+                                    <td>❌ Opcional</td>
+                                    <td>Indicador personalizado 2</td>
+                                    <td>2.3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>
-                        O sistema aceita variações dos nomes das colunas (ex: "data", "date", "data_transacao").
+                        <h6><i class="bi bi-lightbulb me-2"></i> Dicas Importantes</h6>
+                        <ul class="mb-0">
+                            <li>O sistema é flexível com os nomes das colunas (ex: "data", "date", "data_transacao")</li>
+                            <li>Valores de despesa podem ser positivos ou negativos - o sistema ajusta automaticamente</li>
+                            <li>Para arquivos PDF, o sistema extrai tabelas automaticamente</li>
+                            <li>Verifique se não há linhas em branco no início do arquivo</li>
+                            <li>Para investimentos, preencha os campos específicos como <code>preco</code>, <code>quantidade</code> e <code>ativo</code></li>
+                            <li>Use <code>tipo_operacao</code> para classificar o tipo de transação (ex: compra, venda, dividendo)</li>
+                            <li>Os campos de indicadores podem ser usados para métricas personalizadas</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i> Atenção</h6>
+                        <p class="mb-0">
+                            Arquivos mal formatados podem resultar em erros de importação. 
+                            Certifique-se de que os dados sigam os formatos especificados acima.
+                        </p>
                     </div>
                 </div>
             </div>

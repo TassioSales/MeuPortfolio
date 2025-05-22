@@ -1,19 +1,18 @@
 <div align="center">
-  <h1>💰 Análise Financeira Inteligente</h1>
-  <p>
-    <strong>Sistema completo para gestão financeira pessoal e empresarial</strong>
-  </p>
-  
-  [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
-  [![Flask](https://img.shields.io/badge/Flask-2.0+-yellow.svg)](https://flask.palletsprojects.com/)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-  [![Status: Ativo](https://img.shields.io/badge/Status-Ativo-brightgreen.svg)]()
-  
-  <p align="center">
-    <img src="https://img.shields.io/badge/arquitetura-modular-ff69b4" alt="Arquitetura Modular">
-    <img src="https://img.shields.io/badge/segurança-avançada-yellowgreen" alt="Segurança Avançada">
-    <img src="https://img.shields.io/badge/interface-responsiva-9cf" alt="Interface Responsiva">
-  </p>
+
+# 💰 Análise Financeira Inteligente
+
+**Sistema completo para gestão financeira pessoal e empresarial**
+
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-2.0+-yellow.svg)](https://flask.palletsprojects.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Status: Ativo](https://img.shields.io/badge/Status-Ativo-brightgreen.svg)]()
+
+[![Arquitetura Modular](https://img.shields.io/badge/arquitetura-modular-ff69b4)](https://github.com/TassioSales/MeuPortfolio/tree/main/analise_financeira)
+[![Segurança Avançada](https://img.shields.io/badge/segurança-avançada-yellowgreen)](https://github.com/TassioSales/MeuPortfolio/tree/main/analise_financeira)
+[![Interface Responsiva](https://img.shields.io/badge/interface-responsiva-9cf)](https://github.com/TassioSales/MeuPortfolio/tree/main/analise_financeira)
+
 </div>
 
 ## 🌟 Visão Geral
@@ -203,19 +202,6 @@ analise_financeira/
 
 ### 📊 Roadmap 2025
 
-#### Próximos Lançamentos
-- **Q3 2025**
-  - Integração com bancos via API
-  - Análise preditiva
-  - Orçamento colaborativo
-  - Aplicativo móvel nativo
-
-- **Q4 2025**
-  - Inteligência artificial para categorização
-  - Planejador tributário
-  - Relatórios fiscais
-  - Suporte multi-moeda
-
 ### 📈 Métricas
 - **Cobertura de Testes**: 85%
 - **Tempo de Atividade**: 99.9%
@@ -356,4 +342,4 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e enviar 
 
 ## 📧 Contato
 
-Para mais informações, entre em contato através do [seu-email@exemplo.com](mailto:seu-email@exemplo.com)
+Para mais informações, entre em contato através do [seu-email@exemplo.com](tassio.ljs@gmail.com)

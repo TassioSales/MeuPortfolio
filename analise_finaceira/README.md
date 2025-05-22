@@ -222,7 +222,7 @@ Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 
 ### 📧 Contato
 
-Link do Projeto: [https://github.com/seu-usuario/analise_financeira](https://github.com/seu-usuario/analise_financeira)
+Link do Projeto: [https://github.com/TassioSales/MeuPortfolio/tree/main/analise_finaceira](https://github.com/seu-usuario/analise_financeira)
 
 ## 📖 Logging Padronizado
 

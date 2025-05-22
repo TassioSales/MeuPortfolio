@@ -200,8 +200,6 @@ analise_financeira/
 
 ## 🚦 Status do Projeto
 
-### 📊 Roadmap 2025
-
 ### 📈 Métricas
 - **Cobertura de Testes**: 85%
 - **Tempo de Atividade**: 99.9%
@@ -223,8 +221,6 @@ Contribuições são bem-vindas! Siga estes passos:
 Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 
 ### 📧 Contato
-
-Tassio Sales - [@seu_twitter](https://twitter.com/seu_twitter) - email@exemplo.com
 
 Link do Projeto: [https://github.com/seu-usuario/analise_financeira](https://github.com/seu-usuario/analise_financeira)
 
@@ -342,4 +338,4 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e enviar 
 
 ## 📧 Contato
 
-Para mais informações, entre em contato através do [seu-email@exemplo.com](tassio.ljs@gmail.com)
+Para mais informações, entre em contato através do [tassio.ljs@gmail.com](mailto:seu-email@exemplo.com)

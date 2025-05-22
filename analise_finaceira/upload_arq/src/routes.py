@@ -204,9 +204,12 @@ def clear_upload_history():
     """Rota para limpar o histórico de uploads"""
     conn = None
     try:
-        # Conecta ao banco de dados usando o caminho correto
-        db_path = os.path.join(root_dir, 'banco', 'financas.db')
+        # Conecta ao banco de dados usando o caminho absoluto correto
+        db_path = r"D:\Github\MeuPortfolio\analise_finaceira\banco\financas.db"
         logger.info(f"Conectando ao banco de dados em: {db_path}")
+        
+        # Verifica se o diretório existe, se não existir, cria
+        os.makedirs(os.path.dirname(db_path), exist_ok=True)
         
         # Verifica se o arquivo do banco de dados existe
         if not os.path.exists(db_path):

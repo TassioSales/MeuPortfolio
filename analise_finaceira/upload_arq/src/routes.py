@@ -216,7 +216,7 @@ def clear_upload_history():
         # Verifica se a tabela existe
         cursor.execute("""
             SELECT name FROM sqlite_master 
-            WHERE type='table' AND name='upload_history'
+            WHERE type='table' AND name='uploads_historico'
         """)
         
         if not cursor.fetchone():
@@ -227,7 +227,7 @@ def clear_upload_history():
             })
         
         # Limpa a tabela de histórico
-        cursor.execute("DELETE FROM upload_history")
+        cursor.execute("DELETE FROM uploads_historico")
         conn.commit()
         
         # Retorna sucesso com lista vazia para a tabela

@@ -2,7 +2,7 @@ import os
 import sqlite3
 import sys
 from datetime import datetime
-from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
+from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app, jsonify
 from flask_wtf import FlaskForm
 from wtforms import StringField, DecimalField, DateField, SelectField, TextAreaField
 from wtforms.validators import DataRequired, NumberRange, Optional
@@ -282,6 +282,16 @@ def inserir_transacao():
                                    'valor': valor,
                                    'categoria': form.categoria.data
                                })
+            
+            # Verifica se é uma requisição AJAX
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({
+                    'success': True,
+                    'message': 'Transação adicionada com sucesso!',
+                    'redirect': url_for('inserir.inserir_transacao')
+                })
+            
+            # Se não for AJAX, redireciona normalmente
             flash('Transação adicionada com sucesso!', 'success')
             return redirect(url_for('inserir.inserir_transacao'))
             

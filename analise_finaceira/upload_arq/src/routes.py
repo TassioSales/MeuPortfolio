@@ -205,47 +205,79 @@ def clear_upload_history():
     conn = None
     try:
         # Conecta ao banco de dados usando o caminho absoluto correto
-        db_path = r"D:\Github\MeuPortfolio\analise_finaceira\banco\financas.db"
+        db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'banco', 'financas.db')
         logger.info(f"Conectando ao banco de dados em: {db_path}")
         
-        # Verifica se o diretório existe, se não existir, cria
-        os.makedirs(os.path.dirname(db_path), exist_ok=True)
-        
-        # Verifica se o arquivo do banco de dados existe
-        if not os.path.exists(db_path):
-            error_msg = f"Arquivo do banco de dados não encontrado em: {db_path}"
-            logger.error(error_msg)
-            return jsonify({'success': False, 'message': error_msg}), 404
-            
+        # Conecta ao banco de dados
         conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
         # Verifica se a tabela existe
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='uploads_historico'")
-        if not cursor.fetchone():
-            error_msg = "Tabela 'uploads_historico' não encontrada no banco de dados"
-            logger.error(error_msg)
-            return jsonify({'success': False, 'message': error_msg}), 404
+        cursor.execute("""
+            SELECT name FROM sqlite_master 
+            WHERE type='table' AND name='upload_history'
+        """)
         
-        # Remove todas as entradas do histórico
-        cursor.execute('DELETE FROM uploads_historico')
+        if not cursor.fetchone():
+            return jsonify({
+                'success': True,
+                'message': 'Nenhum histórico para limpar',
+                'data': []  # Retorna uma lista vazia para a tabela
+            })
+        
+        # Limpa a tabela de histórico
+        cursor.execute("DELETE FROM upload_history")
         conn.commit()
         
-        logger.info("Histórico de uploads limpo com sucesso")
-        
-        # Retorna uma lista vazia para atualizar a tabela no frontend
+        # Retorna sucesso com lista vazia para a tabela
         return jsonify({
-            'success': True, 
-            'message': 'Histórico de uploads limpo com sucesso',
-            'data': []
+            'success': True,
+            'message': 'Histórico de uploads limpo com sucesso!',
+            'data': []  # Retorna uma lista vazia para a tabela
         })
         
     except Exception as e:
-        error_msg = f"Erro ao limpar histórico de uploads: {str(e)}"
+        error_msg = f'Erro ao limpar histórico: {str(e)}'
         logger.error(error_msg, exc_info=True)
-        if conn:
-            conn.rollback()
-        return jsonify({'success': False, 'message': error_msg}), 500
+        return jsonify({
+            'success': False,
+            'message': error_msg,
+            'data': []  # Retorna uma lista vazia mesmo em caso de erro
+        }), 500
     finally:
         if conn:
-            conn.close()
+            try:
+                conn.close()
+            except Exception as e:
+                logger.error(f"Erro ao fechar conexão: {str(e)}")
+
+# Cria um logger para este módulo
+logger_categorias = get_logger("categorias")
+
+@upload_bp.route('/get-categorias', methods=['GET'])
+@log_function(logger_categorias, LogLevel.INFO)
+def get_categorias():
+    """
+    Rota para obter categorias, opcionalmente filtradas por tipo (Receita/Despesa)
+    
+    Query Parameters:
+        tipo (str, optional): 'Receita' ou 'Despesa' para filtrar as categorias
+    """
+    try:
+        tipo = request.args.get('tipo')
+        logger_categorias.info(f"Obtendo categorias para o tipo: {tipo}")
+        
+        categorias = processamento.get_categorias_por_tipo(tipo)
+        
+        return jsonify({
+            'success': True,
+            'categorias': categorias
+        })
+        
+    except Exception as e:
+        logger_categorias.error(f"Erro ao obter categorias: {str(e)}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'message': f'Erro ao obter categorias: {str(e)}'
+        }), 500

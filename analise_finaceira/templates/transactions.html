@@ -79,120 +79,222 @@
             Nenhuma transação encontrada. <a href="{{ url_for('upload.upload_file') }}">Importe um arquivo</a> para começar.
         </div>
     {% else %}
-        <div class="row mb-3">
-    <div class="col-auto">
-        <label for="filtro-ano" class="form-label">Ano:</label>
-        <select id="filtro-ano" class="form-select">
-            <option value="">Todos</option>
-        </select>
-    </div>
-    <div class="col-auto">
-        <label for="filtro-descricao" class="form-label">Descrição:</label>
-        <select id="filtro-descricao" class="form-select">
-            <option value="">Todas</option>
-        </select>
-    </div>
-    <div class="col-auto">
-        <label for="filtro-tipo" class="form-label">Tipo:</label>
-        <select id="filtro-tipo" class="form-select">
-            <option value="">Todos</option>
-        </select>
-    </div>
-    <div class="col-auto">
-        <label for="filtro-categoria" class="form-label">Categoria:</label>
-        <select id="filtro-categoria" class="form-select">
-            <option value="">Todas</option>
-        </select>
-    </div>
-    <div class="col-auto">
-        <label for="filtro-tipo-operacao" class="form-label">Tipo Operação:</label>
-        <select id="filtro-tipo-operacao" class="form-select">
-            <option value="">Todos</option>
-        </select>
-    </div>
-
-</div>
-<style>
-    .table-responsive {
-        overflow-x: auto;
-        margin-bottom: 1.5rem;
-        padding: 0 1rem;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .table-responsive::-webkit-scrollbar {
-        height: 10px;
-    }
-    
-    .table-responsive::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 5px;
-    }
-    
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 5px;
-    }
-    
-    .table-responsive::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-    
-    #tabela-transacoes {
-        width: 100%;
-        min-width: 1400px; /* Aumentei para melhor visualização de todas as colunas */
-        font-size: 14px;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-    
-    #tabela-transacoes th {
-        white-space: nowrap;
-        padding: 12px;
-        min-width: 120px;
-        background-color: #343a40;
-        color: white;
-        position: sticky;
-        top: 0;
-        z-index: 2;
-    }
-    
-    #tabela-transacoes td {
-        padding: 12px;
-        min-width: 120px;
-        vertical-align: middle;
-        border-top: 1px solid #dee2e6;
-    }
-    
-    .badge {
-        padding: 8px 12px;
-        font-size: 14px;
-    }
-    
-    .text-end {
-        text-align: right !important;
-    }
-    
-    /* Mantendo a primeira coluna fixa */
-    #tabela-transacoes th:first-child,
-    #tabela-transacoes td:first-child {
-        position: sticky;
-        left: 0;
-        z-index: 1;
-        background-color: white;
-    }
-    
-    /* Ajustando as bordas das células fixas */
-    #tabela-transacoes th:first-child {
-        border-right: 1px solid #dee2e6;
-    }
-    
-    #tabela-transacoes td:first-child {
-        border-right: 1px solid #dee2e6;
-    }
-</style>
-
-<div class="table-responsive">
+        <!-- Seção de Filtros -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center" 
+                 data-bs-toggle="collapse" href="#filtrosCollapse" role="button" 
+                 aria-expanded="true" aria-controls="filtrosCollapse" 
+                 style="cursor: pointer;">
+                <h5 class="mb-0">
+                    <i class="bi bi-funnel me-2"></i>Filtros
+                </h5>
+                <i class="bi bi-chevron-down"></i>
+            </div>
+            <div class="collapse show" id="filtrosCollapse">
+                <div class="card-body bg-light">
+                    <div class="row g-3">
+                        <!-- Linha 1 de Filtros -->
+                        <div class="col-md-3">
+                            <label for="filtro-ano" class="form-label">Ano</label>
+                            <select id="filtro-ano" class="form-select">
+                                <option value="">Todos os anos</option>
+                                {% set anos = transactions['data'].str[:4].unique().tolist() %}
+                                {% for ano in anos|sort(reverse=True) %}
+                                    <option value="{{ ano }}">{{ ano }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="filtro-tipo" class="form-label">Tipo</label>
+                            <select id="filtro-tipo" class="form-select">
+                                <option value="">Todos</option>
+                                <option value="Receita">Receita</option>
+                                <option value="Despesa">Despesa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="filtro-ativo" class="form-label">Ativo</label>
+                            <select id="filtro-ativo" class="form-select">
+                                <option value="">Todos</option>
+                                {% set ativos = transactions['ativo'].dropna().unique().tolist() %}
+                                {% for ativo in ativos|sort %}
+                                    {% if ativo and ativo != 'None' and ativo != '-' %}
+                                        <option value="{{ ativo }}">{{ ativo }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="filtro-tipo-operacao" class="form-label">Tipo de Operação</label>
+                            <select id="filtro-tipo-operacao" class="form-select">
+                                <option value="">Todos</option>
+                                {% set tipos_operacao = transactions['tipo_operacao'].dropna().unique().tolist() %}
+                                {% for tipo in tipos_operacao|sort %}
+                                    {% if tipo %}
+                                        <option value="{{ tipo }}">{{ tipo }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Linha 2 de Filtros -->
+                        <div class="col-md-4">
+                            <label for="filtro-categoria" class="form-label">Categoria</label>
+                            <select id="filtro-categoria" class="form-select" disabled>
+                                <option value="">Todas as categorias</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="filtro-forma-pagamento" class="form-label">Forma de Pagamento</label>
+                            <select id="filtro-forma-pagamento" class="form-select">
+                                <option value="">Todas</option>
+                                {% set formas_pagamento = transactions['forma_pagamento'].dropna().unique().tolist() %}
+                                {% for forma in formas_pagamento|sort %}
+                                    {% if forma %}
+                                        <option value="{{ forma }}">{{ forma }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="filtro-registros" class="form-label">Registros por página</label>
+                            <select id="filtro-registros" class="form-select">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="25" selected>25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="250">250</option>
+                                <option value="500">500</option>
+                            </select>
+                        </div>
+                        <!-- Linha 3 - Busca e Botões -->
+                        <div class="col-md-8">
+                            <label for="filtro-busca" class="form-label">Buscar na tabela</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" id="filtro-busca" placeholder="Digite para buscar...">
+                                <button class="btn btn-outline-secondary" type="button" id="btn-limpar-busca" title="Limpar busca">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="button" id="btn-limpar-filtros" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> Limpar Filtros
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <style>
+            /* Estilos para a seção de filtros */
+            .card-header {
+                background-color: #f8f9fa;
+                transition: background-color 0.2s;
+            }
+            .card-header:hover {
+                background-color: #e9ecef;
+            }
+            .card-header h5 {
+                color: #495057;
+                font-weight: 600;
+            }
+            .card-header i {
+                transition: transform 0.3s;
+            }
+            .card-header.collapsed i.bi-chevron-down {
+                transform: rotate(-90deg);
+            }
+            /* Estilos para a tabela */
+            .table-responsive {
+                overflow-x: auto;
+                margin-bottom: 1.5rem;
+                padding: 0 1rem;
+            }
+            .table {
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+            #tabela-transacoes th {
+                white-space: nowrap;
+                vertical-align: middle;
+                background-color: #2c3e50 !important;
+                color: #ffffff !important;
+                font-weight: 500;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+                padding: 12px 15px;
+                border-bottom: 2px solid #1a252f;
+            }
+            .table td {
+                vertical-align: middle;
+            }
+            .table-hover tbody tr:hover {
+                background-color: rgba(0, 0, 0, 0.03);
+            }
+            .badge {
+                font-size: 0.8em;
+                padding: 0.4em 0.6em;
+            }
+            .text-success {
+                color: #198754 !important;
+            }
+            .text-danger {
+                color: #dc3545 !important;
+            }
+            .bg-success {
+                background-color: #198754 !important;
+            }
+            .bg-danger {
+                background-color: #dc3545 !important;
+            }
+            .table-active {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+            .table > :not(caption) > * > * {
+                padding: 0.75rem 1rem;
+            }
+            .table > :not(:first-child) {
+                border-top: none;
+            }
+            .table > thead > tr > th {
+                border-bottom: none;
+            }
+            .table tbody tr:last-child td {
+                border-bottom: 2px solid #dee2e6;
+            }
+            #tabela-transacoes td {
+                padding: 12px;
+                min-width: 120px;
+                vertical-align: middle;
+                border-top: 1px solid #dee2e6;
+            }
+            .badge {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            .text-end {
+                text-align: right !important;
+            }
+            #tabela-transacoes th:first-child,
+            #tabela-transacoes td:first-child {
+                position: sticky;
+                left: 0;
+                z-index: 1;
+                background-color: white;
+            }
+            #tabela-transacoes th:first-child {
+                border-right: 1px solid #dee2e6;
+            }
+            #tabela-transacoes td:first-child {
+                border-right: 1px solid #dee2e6;
+            }
+        </style>
+        
+        <div class="table-responsive">
             <table id="tabela-transacoes" class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
@@ -265,13 +367,6 @@
                     {% endfor %}
                 </tbody>
                 <tfoot>
-                    <tr class="table-active">
-                        <td colspan="2"><strong>Total</strong></td>
-                        <td class="text-end">
-                            <strong>R$ {{ utils.format_currency(transactions['valor'].sum()) }}</strong>
-                        </td>
-                        <td colspan="3"></td>
-                    </tr>
                 </tfoot>
             </table>
         </div>
@@ -287,94 +382,204 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
 $(document).ready(function() {
-    var table = $('#tabela-transacoes').DataTable({
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
-        },
-        pageLength: 25,
-        lengthMenu: [10, 25, 50, 100, 250, 500],
-        order: [[0, 'desc']],
-        responsive: true
-    });
-    // Filtros dropdown para cada coluna
-    function uniqueSorted(colIdx, parser) {
-        var values = new Set();
-        table.column(colIdx).data().each(function(value) {
-            if (parser) value = parser(value);
-            if(value && value.trim() !== "") values.add(value.trim());
-        });
-        return Array.from(values).sort();
-    }
-    // Ano (Data)
-    var anos = uniqueSorted(0, function(v) { return v ? v.substring(0,4) : ''; });
-    $.each(anos, function(i, ano) {
-        $('#filtro-ano').append($('<option>', { value: ano, text: ano }));
-    });
-    $('#filtro-ano').on('change', function() {
-        var val = $(this).val();
-        table.column(0).search(val ? '^'+val : '', true, false).draw();
-    });
-    // Descrição
-    var descricoes = uniqueSorted(1);
-    $.each(descricoes, function(i, desc) {
-        $('#filtro-descricao').append($('<option>', { value: desc, text: desc }));
-    });
-    $('#filtro-descricao').on('change', function() {
-        var val = $.fn.dataTable.util.escapeRegex($(this).val());
-        table.column(1).search(val ? '^'+val+'$' : '', true, false).draw();
-    });
-    // Tipo
-    // Corrigir: pegar apenas o texto do atributo data-tipo para o filtro de Tipo
-    var tipos = new Set();
-    table.column(3).nodes().each(function(cell) {
-        var tipo = $(cell).attr('data-tipo');
-        if(tipo) tipos.add(tipo.trim());
-    });
-    tipos = Array.from(tipos).sort();
-    $.each(tipos, function(i, tipo) {
-        $('#filtro-tipo').append($('<option>', { value: tipo, text: tipo }));
-    });
-    // Busca personalizada para a coluna Tipo
-    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-        var filtroTipo = $('#filtro-tipo').val();
-        if (!filtroTipo) return true;
-        var tipoCelula = table.column(3).nodes()[dataIndex].getAttribute('data-tipo');
-        return tipoCelula && tipoCelula.trim().toLowerCase() === filtroTipo.trim().toLowerCase();
-    });
-    $('#filtro-tipo').on('change', function() {
-        table.draw();
+    // Configurar o comportamento do collapse
+    $('[data-bs-toggle="collapse"]').on('click', function() {
+        $(this).find('i').toggleClass('bi-chevron-down bi-chevron-up');
     });
 
-    // Busca personalizada para a coluna Tipo Operação
-    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-        var filtroTipoOperacao = $('#filtro-tipo-operacao').val();
-        if (!filtroTipoOperacao) return true;
-        var tipoOperacao = data[4]; // índice da coluna tipo_operacao
-        return tipoOperacao && tipoOperacao.trim().toLowerCase() === filtroTipoOperacao.trim().toLowerCase();
+    // Inicializar tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
     });
-    $('#filtro-tipo-operacao').on('change', function() {
+
+    // Inicializa a tabela DataTable
+    var table = $('#tabela-transacoes').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+            search: 'Buscar na tabela:',
+            searchPlaceholder: 'Digite para buscar...',
+            lengthMenu: 'Mostrar _MENU_ registros por página',
+            zeroRecords: 'Nenhum registro encontrado',
+            info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+            infoEmpty: 'Nenhum registro disponível',
+            infoFiltered: '(filtrado de _MAX_ registros no total)'
+        },
+        pageLength: 25,
+        lengthMenu: [5, 10, 25, 50, 100, 250, 500],
+        responsive: true,
+        dom: 'rt<"bottom"ip><"clear">',
+        columnDefs: [
+            {
+                targets: 0,
+                type: 'date',
+                render: function(data, type, row) {
+                    if (type === 'sort' || type === 'type') {
+                        return data;
+                    }
+                    return data;
+                }
+            }
+        ],
+        processing: true,
+        serverSide: false,
+        deferRender: true,
+        order: []
+    });
+
+    // Função para extrair o ano de uma data
+    function extrairAno(data) {
+        if (!data) return null;
+        var match = data.match(/^(\d{4})/);
+        return match ? match[1] : null;
+    }
+
+    // Função para carregar categorias baseadas no tipo selecionado
+    function carregarCategorias(tipo) {
+        var filtroCategoria = $('#filtro-categoria');
+        filtroCategoria.prop('disabled', true).html('<option value="">Carregando...</option>');
+
+        $.ajax({
+            url: '{{ url_for("upload.get_categorias") }}',
+            type: 'GET',
+            data: { tipo: tipo || '' },
+            success: function(response) {
+                var options = '<option value="">Todas as categorias</option>';
+                var categorias = (response.categorias || []).sort();
+                categorias.forEach(function(categoria) {
+                    if (categoria) {
+                        options += '<option value="' + categoria + '">' + categoria + '</option>';
+                    }
+                });
+                filtroCategoria.html(options).prop('disabled', false);
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao carregar categorias:', error);
+                filtroCategoria.html('<option value="">Erro ao carregar</option>').prop('disabled', false);
+            }
+        });
+    }
+
+    // Carrega as categorias iniciais
+    carregarCategorias('');
+
+    // Atualiza categorias quando o tipo for alterado
+    $('#filtro-tipo').on('change', function() {
+        carregarCategorias($(this).val());
+        aplicarFiltros();
+    });
+
+    // Função para aplicar filtros
+    function aplicarFiltros() {
+        var anoSelecionado = $('#filtro-ano').val();
+        var tipoSelecionado = $('#filtro-tipo').val();
+        var tipoOperacaoSelecionado = $('#filtro-tipo-operacao').val();
+        var categoriaSelecionada = $('#filtro-categoria').val();
+        var formaPagamentoSelecionada = $('#filtro-forma-pagamento').val();
+        var ativoSelecionado = $('#filtro-ativo').val();
+
+        $.fn.dataTable.ext.search = [];
+
+        if (anoSelecionado || tipoSelecionado || tipoOperacaoSelecionado || 
+            categoriaSelecionada || formaPagamentoSelecionada || ativoSelecionado) {
+            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                if (settings.nTable !== document.getElementById('tabela-transacoes')) {
+                    return true;
+                }
+
+                var COL_DATA = 0;
+                var COL_TIPO = 3;
+                var COL_TIPO_OPERACAO = 4;
+                var COL_CATEGORIA = 5;
+                var COL_ATIVO = 9;
+                var COL_FORMA_PAGAMENTO = 10;
+
+                if (anoSelecionado) {
+                    var anoTransacao = extrairAno(data[COL_DATA]);
+                    if (anoTransacao !== anoSelecionado) {
+                        return false;
+                    }
+                }
+
+                if (tipoSelecionado) {
+                    var tipo = data[COL_TIPO] ? data[COL_TIPO].toString().trim().toLowerCase() : '';
+                    if (tipo !== tipoSelecionado.toLowerCase()) {
+                        return false;
+                    }
+                }
+
+                if (tipoOperacaoSelecionado) {
+                    var tipoOp = data[COL_TIPO_OPERACAO] ? data[COL_TIPO_OPERACAO].toString().trim() : '';
+                    if (tipoOp !== tipoOperacaoSelecionado) {
+                        return false;
+                    }
+                }
+
+                if (categoriaSelecionada) {
+                    var categoria = data[COL_CATEGORIA] ? data[COL_CATEGORIA].toString().trim() : '';
+                    if (categoria !== categoriaSelecionada) {
+                        return false;
+                    }
+                }
+
+                if (formaPagamentoSelecionada) {
+                    var formaPagamento = data[COL_FORMA_PAGAMENTO] ? data[COL_FORMA_PAGAMENTO].toString().trim() : '';
+                    if (formaPagamento !== formaPagamentoSelecionada) {
+                        return false;
+                    }
+                }
+
+                if (ativoSelecionado) {
+                    var ativo = data[COL_ATIVO] ? data[COL_ATIVO].toString().trim() : '';
+                    if (ativo !== ativoSelecionado) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+        }
+
         table.draw();
+    }
+
+    // Configurar eventos dos filtros
+    $('#filtro-ano, #filtro-tipo, #filtro-tipo-operacao, #filtro-categoria, #filtro-forma-pagamento, #filtro-ativo').on('change', aplicarFiltros);
+
+    // Configurar evento para alterar o número de registros por página
+    $('#filtro-registros').on('change', function() {
+        table.page.len($(this).val()).draw();
     });
-    
-    // Categoria
-    var categorias = uniqueSorted(4);
-    $.each(categorias, function(i, cat) {
-        $('#filtro-categoria').append($('<option>', { value: cat, text: cat }));
+
+    // Configurar busca na tabela
+    var searchInput = $('#filtro-busca');
+    var searchButton = $('#btn-limpar-busca');
+
+    searchInput.on('keyup', function() {
+        table.search(this.value).draw();
     });
-    $('#filtro-categoria').on('change', function() {
-        var val = $.fn.dataTable.util.escapeRegex($(this).val());
-        table.column(4).search(val ? '^'+val+'$' : '', true, false).draw();
+
+    searchButton.on('click', function() {
+        searchInput.val('');
+        table.search('').draw();
     });
-    
-    // Tipo Operação
-    var tipos_operacao = uniqueSorted(5);
-    $.each(tipos_operacao, function(i, tipo) {
-        $('#filtro-tipo-operacao').append($('<option>', { value: tipo, text: tipo }));
-    });
-    $('#filtro-tipo-operacao').on('change', function() {
-        var val = $.fn.dataTable.util.escapeRegex($(this).val());
-        table.column(5).search(val ? '^'+val+'$' : '', true, false).draw();
-    });
+
+    // Função para limpar todos os filtros
+    function limparFiltros() {
+        $('select').val('');
+        searchInput.val('');
+        table.search('').columns().search('').draw();
+        table.page('first').draw('page');
+        table.page.len(25).draw();
+        $('#filtro-registros').val('25');
+        carregarCategorias('');
+    }
+
+    // Configurar botão de limpar filtros
+    $('#btn-limpar-filtros').on('click', limparFiltros);
+
+    // Torna a tabela acessível globalmente
+    window.dataTable = table;
 });
 </script>
 {% endblock %}

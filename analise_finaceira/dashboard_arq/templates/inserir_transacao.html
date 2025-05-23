@@ -716,14 +716,14 @@ const logger = {
                 formData['csrf_token'] = getCSRFToken();
                 
                 const transacaoId = document.getElementById('transacao_id') ? document.getElementById('transacao_id').value : null;
-                const url = transacaoId ? `/acoes/editar_transacao/${transacaoId}` : this.action;
+                const url = transacaoId 
+                    ? `/acoes/editar_transacao/${transacaoId}` 
+                    : "{{ url_for('inserir.inserir_transacao') }}";
                 const method = transacaoId ? 'POST' : 'POST';
                 
-                // Garante que a URL comece com /acoes/
-                const fullUrl = url.startsWith('/acoes/') ? url : `/acoes${url.startsWith('/') ? '' : '/'}${url}`;
-                logger.info(`Enviando requisição para: ${fullUrl}`);
+                logger.info(`Enviando requisição para: ${url}`);
                 
-                fetch(fullUrl, {
+                fetch(url, {
                     method: method,
                     body: JSON.stringify(formData),
                     headers: {

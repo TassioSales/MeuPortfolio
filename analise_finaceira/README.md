@@ -40,12 +40,16 @@ O **Análise Financeira Inteligente** é uma solução abrangente desenvolvida p
 - Processamento automático de extratos bancários
 - Reconhecimento inteligente de padrões
 - Validação e correção de dados em tempo real
+- Processamento otimizado para arquivos grandes
+- Suporte a mais colunas e formatos de dados
 
 ### 💰 Gestão de Transações
 - Cadastro manual de receitas e despesas
-- Categorização automática
+- Categorização automática inteligente
 - Anexo de comprovantes
 - Histórico completo com busca avançada
+- Tabela otimizada com rolagem suave
+- Filtros avançados por múltiplos critérios
 
 ### 🔔 Sistema de Alertas
 - Notificações personalizáveis
@@ -56,8 +60,10 @@ O **Análise Financeira Inteligente** é uma solução abrangente desenvolvida p
 ### 📱 Interface Moderna
 - Design responsivo (desktop e mobile)
 - Tema claro/escuro
-- Navegação intuitiva
+- Navegação intuitiva com atalhos
 - Tempo de carregamento otimizado
+- Tabelas com colunas fixas para melhor navegação
+- Experiência do usuário aprimorada
 
 ## 🛠️ Stack Tecnológica
 
@@ -91,6 +97,8 @@ O **Análise Financeira Inteligente** é uma solução abrangente desenvolvida p
 - **Visualização**: Matplotlib, Plotly
 - **PDF**: pdfplumber, PyPDF2
 - **Excel**: openpyxl, xlrd
+- **Otimização**: Processamento em lote para grandes volumes
+- **Validação**: Schemas avançados para garantia de qualidade dos dados
 
 ### DevOps
 - **Controle de Versão**: Git

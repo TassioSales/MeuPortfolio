@@ -894,4 +894,42 @@ def get_upload_history(limit=10):
             except Exception as e:
                 logger.error(f"Erro ao buscar histórico de uploads: {str(e)}", exc_info=True)
 
+def get_categorias_por_tipo(tipo=None):
+    """
+    Obtém as categorias filtradas por tipo (Receita/Despesa)
+    
+    Args:
+        tipo (str, optional): 'Receita' ou 'Despesa'. Se None, retorna todas as categorias.
+        
+    Returns:
+        list: Lista de categorias únicas
+    """
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        query = """
+            SELECT DISTINCT categoria 
+            FROM transacoes 
+            WHERE categoria IS NOT NULL AND categoria != ''
+        """
+        
+        params = ()
+        
+        if tipo:
+            query += " AND LOWER(tipo) = LOWER(?)"
+            params = (tipo.lower(),)
+            
+        query += " ORDER BY categoria"
+        
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        
+        # Retorna uma lista simples de categorias
+        return [row[0] for row in cursor.fetchall() if row[0]]
+        
+    except Exception as e:
+        logger.error(f"Erro ao obter categorias por tipo: {str(e)}")
+        return []
+    finally:
+        conn.close()
+
 create_tables()

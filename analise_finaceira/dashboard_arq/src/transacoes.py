@@ -53,13 +53,13 @@ def obter_transacoes_recentes(limite: int = 10) -> List[Dict[str, Any]]:
         
         query = """
         SELECT 
-            data,
+            strftime('%d/%m/%Y', data) as data_formatada,
             descricao,
             valor,
             COALESCE(categoria, 'Sem Categoria') as categoria,
             tipo
         FROM transacoes
-        ORDER BY data DESC, id DESC
+        ORDER BY date(data) DESC, id DESC
         LIMIT ?
         """
         
@@ -68,7 +68,16 @@ def obter_transacoes_recentes(limite: int = 10) -> List[Dict[str, Any]]:
         resultados = cursor.fetchall()
         
         # Converter para lista de dicionários
-        transacoes = [dict(zip(colunas, linha)) for linha in resultados]
+        transacoes = []
+        for linha in resultados:
+            transacao = dict(zip(colunas, linha))
+            # Garantir que o valor seja um número
+            if 'valor' in transacao and transacao['valor'] is not None:
+                try:
+                    transacao['valor'] = float(transacao['valor'])
+                except (ValueError, TypeError):
+                    transacao['valor'] = 0.0
+            transacoes.append(transacao)
         
         logger.debug(f"Encontradas {len(transacoes)} transações")
         

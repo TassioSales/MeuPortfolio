@@ -8,7 +8,6 @@ from wtforms import StringField, DecimalField, DateField, SelectField, TextAreaF
 from wtforms.validators import DataRequired, NumberRange, Optional
 
 # Adiciona o diretório raiz ao path para importar o logger
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from logger import get_logger, RequestContext, LogLevel
 

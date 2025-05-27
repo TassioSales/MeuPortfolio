@@ -53,14 +53,14 @@ def obter_despesas_12_meses() -> float:
         query = """
         SELECT COALESCE(SUM(ABS(valor)), 0) as total_despesas
         FROM transacoes
-        WHERE data >= ? 
+        WHERE date(data) >= date(?)
         AND valor < 0
         """
         
         cursor = conn.cursor()
         cursor.execute(query, (data_inicio.strftime('%Y-%m-%d'),))
         resultado = cursor.fetchone()
-        total_despesas = resultado[0] if resultado and resultado[0] is not None else 0.0
+        total_despesas = float(resultado[0]) if resultado and resultado[0] is not None else 0.0
         
         logger.info(f"Total de despesas dos últimos 12 meses: R$ {total_despesas:.2f}")
         
@@ -97,7 +97,7 @@ def obter_despesas_por_categoria() -> Dict[str, float]:
             COALESCE(categoria, 'Sem Categoria') as categoria,
             ROUND(SUM(ABS(valor)), 2) as total
         FROM transacoes
-        WHERE data >= ? 
+        WHERE date(data) >= date(?)
         AND valor < 0
         GROUP BY categoria
         HAVING total > 0
@@ -113,9 +113,13 @@ def obter_despesas_por_categoria() -> Dict[str, float]:
         total_geral = 0.0
         
         for categoria, total in resultados:
-            if total > 0:
-                despesas_por_categoria[categoria] = total
-                total_geral += total
+            if total and total > 0:
+                try:
+                    total_float = float(total)
+                    despesas_por_categoria[categoria] = total_float
+                    total_geral += total_float
+                except (ValueError, TypeError):
+                    logger.warning(f"Valor inválido para a categoria {categoria}: {total}")
         
         logger.debug(f"Total de categorias de despesa encontradas: {len(despesas_por_categoria)}")
         logger.debug(f"Total geral de despesas: R$ {total_geral:.2f}")

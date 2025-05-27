@@ -159,22 +159,44 @@ analise_financeira/
 └── README.md               # Documentação
 ```
 
-## 📅 Histórico de Atualizações
+### 📅 Histórico de Atualizações
 
-### 🔥 Últimas Atualizações (v2.1.0 - Maio/2025)
+### 🔥 Últimas Atualizações (v2.3.0 - Maio/2025)
 
-#### Melhorias no Gerenciamento de Transações
-- ✅ Sistema de edição em tempo real
-- ✅ Validação avançada de tipos de dados
-- ✅ Tratamento automático de valores negativos
-- ✅ Logging unificado com rastreamento de requisições
-- ✅ Prevenção de condições de corrida no banco de dados
+#### 🚀 Nova Seção de Atividades Recentes
+- ✅ Visão unificada de transações e alertas
+- ✅ Destaque visual para alertas importantes
+- ✅ Filtros por tipo e prioridade
+- ✅ Atualização em tempo real
+- ✅ Design responsivo para todos os dispositivos
 
-#### Aprimoramentos no Frontend
-- 🎨 Redesign da interface do usuário
-- ⚡ Melhorias de performance na renderização
-- 📱 Melhor experiência em dispositivos móveis
-- 🌓 Suporte a tema claro/escuro
+#### 🔔 Aprimoramentos no Sistema de Alertas
+- ✅ Exibição em destaque no dashboard
+- ✅ Priorização visual (Alta/Média/Baixa)
+- ✅ Valores de referência destacados
+- ✅ Ícones e cores intuitivas
+- ✅ Integração com transações existentes
+
+#### 🎨 Melhorias na Interface
+- ✅ Cards redesenhados com melhor hierarquia visual
+- ✅ Animações suaves para melhor experiência
+- ✅ Ícones e indicadores visuais aprimorados
+- ✅ Melhor feedback visual para ações
+- ✅ Otimização para dispositivos móveis
+
+#### ⚡ Melhorias de Performance
+- ✅ Carregamento mais rápido do dashboard
+- ✅ Processamento otimizado de dados
+- ✅ Cache inteligente para consultas frequentes
+- ✅ Redução no consumo de recursos
+- ✅ Melhor tratamento de erros
+
+### 📌 Próximas Atualizações (Em Desenvolvimento)
+- 🔄 Sincronização em nuvem
+- 📊 Relatórios personalizados
+- 🤖 Automação de categorização
+- 📱 Aplicativo móvel nativo
+- 🌐 Suporte a múltiplas moedas
 
 #### Novos Recursos
 - 🔍 Busca avançada com filtros combinados
@@ -183,6 +205,17 @@ analise_financeira/
 - 🔄 Sincronização em tempo real
 
 ### Versões Anteriores
+
+<details>
+<summary>📌 v2.1.0 - Maio/2025</summary>
+
+- Sistema de edição em tempo real
+- Validação avançada de tipos de dados
+- Tratamento automático de valores negativos
+- Logging unificado com rastreamento de requisições
+- Prevenção de condições de corrida no banco de dados
+
+</details>
 
 <details>
 <summary>📌 v2.0.0 - Abril/2025</summary>

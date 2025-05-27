@@ -272,6 +272,151 @@ canvas {
     background-color: #dc3545;
 }
 
+/* Estilos para a seção de Atividades Recentes */
+.activity-feed{
+    position: relative;
+    padding: 15px 0;
+}
+
+.activity-item {
+    position: relative;
+    padding: 16px 0;
+    transition: all 0.3s ease;
+}
+
+.activity-item:hover {
+    background-color: rgba(13, 110, 253, 0.03);
+}
+
+.activity-badge {
+    position: absolute;
+    left: 16px;
+    top: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    z-index: 2;
+}
+
+.activity-content {
+    padding-left: 24px;
+    position: relative;
+    margin-left: 40px;
+}
+
+.activity-content h6 {
+    font-size: 0.95rem;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.activity-content p {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.activity-divider {
+    position: relative;
+    height: 1px;
+    background-color: #e9ecef;
+    margin: 0 60px 0 80px;
+}
+
+/* Cores dinâmicas */
+.bg-success-soft {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+.bg-danger-soft {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+.bg-warning-soft {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.bg-info-soft {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+.bg-primary-soft {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+/* Efeito de linha do tempo */
+.activity-item:not(:last-child) .activity-content::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 0;
+    bottom: -16px;
+    width: 2px;
+    background-color: #e9ecef;
+    z-index: 1;
+}
+
+/* Responsividade */
+@media (max-width: 767.98px) {
+    .activity-badge {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+    
+    .activity-content {
+        margin-left: 36px;
+    }
+    
+    .activity-divider {
+        margin-left: 60px;
+    }
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.activity-item {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Atraso para cada item */
+.activity-item:nth-child(1) { animation-delay: 0.1s; }
+.activity-item:nth-child(2) { animation-delay: 0.2s; }
+.activity-item:nth-child(3) { animation-delay: 0.3s; }
+.activity-item:nth-child(4) { animation-delay: 0.4s; }
+
+/* Cores para os ícones de atividade */
+.bg-soft-primary { background-color: rgba(78, 115, 223, 0.1); color: #4e73df; }
+.bg-soft-success { background-color: rgba(28, 200, 138, 0.1); color: #1cc88a; }
+.bg-soft-info { background-color: rgba(54, 185, 204, 0.1); color: #36b9cc; }
+.bg-soft-warning { background-color: rgba(246, 194, 62, 0.1); color: #f6c23e; }
+.bg-soft-danger { background-color: rgba(231, 74, 59, 0.1); color: #e74a3b; }
+
+/* Animações */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.atividade-item {
+    animation: fadeIn 0.3s ease-out forwards;
+    opacity: 0;
+}
+
+.atividade-item:nth-child(1) { animation-delay: 0.1s; }
+.atividade-item:nth-child(2) { animation-delay: 0.2s; }
+.atividade-item:nth-child(3) { animation-delay: 0.3s; }
+.atividade-item:nth-child(4) { animation-delay: 0.4s; }
+
 /* Responsividade para tabelas */
 @media (max-width: 768px) {
     .table-responsive {

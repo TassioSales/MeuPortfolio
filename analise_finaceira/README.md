@@ -111,52 +111,64 @@ O **Análise Financeira Inteligente** é uma solução abrangente desenvolvida p
 
 ```
 analise_financeira/
-├── .github/                    # Configurações do GitHub
-│   └── workflows/             # Fluxos de CI/CD
+├── alertas_manuais/           # Módulo de gerenciamento de alertas
+│   ├── static/               # Arquivos estáticos (CSS, JS)
+│   │   ├── css/
+│   │   └── js/
+│   ├── templates/            # Templates HTML
+│   ├── __init__.py          # Inicialização do módulo
+│   ├── models.py            # Modelos de dados
+│   ├── routes.py            # Rotas do Flask
+│   ├── forms.py             # Formulários
+│   └── config.py            # Configurações do módulo
 │
-├── alertas_arq/              # Módulo de alertas
-│   ├── src/
-│   │   ├── models.py         # Modelos de dados
-│   │   ├── routes.py          # Rotas da API
-│   │   └── services.py        # Lógica de negócios
-│   └── tests/                 # Testes unitários
+├── analise_estatistica_arq/  # Módulo de análises estatísticas
+│   ├── src/                  # Código-fonte
+│   │   ├── services/        # Lógica de negócios
+│   │   └── database/        # Scripts de banco de dados
+│   ├── static/              # Arquivos estáticos
+│   └── templates/           # Templates HTML
 │
-├── dashboard_arq/            # Módulo de dashboard
-│   ├── static/               # Recursos estáticos
-│   ├── templates/            # Templates específicos
-│   └── src/
-│       ├── __init__.py      # Inicialização
-│       ├── acoes.py          # Gerenciamento de transações
-│       ├── inserir_dados.py  # Inserção de dados
-│       ├── logger.py         # Configuração de logging
-│       └── utils/            # Utilitários diversos
+├── dashboard_arq/          # Módulo principal do dashboard
+│   ├── src/                 # Lógica de negócios
+│   │   ├── acoes.py         # Ações do dashboard
+│   │   ├── despesas.py      # Lógica de despesas
+│   │   ├── receitas.py      # Lógica de receitas
+│   │   ├── routes.py        # Rotas do dashboard
+│   │   └── dashboard_utils.py # Utilitários
+│   ├── static/              # Arquivos estáticos
+│   └── templates/           # Templates HTML
 │
-├── upload_arq/              # Módulo de upload
-│   ├── src/
-│   │   └── processamento.py  # Lógica de processamento
-│   └── tests/                # Testes de integração
+├── upload_arq/             # Módulo de upload de arquivos
+│   ├── src/                 # Lógica de processamento
+│   │   ├── file_processor.py # Processamento de arquivos
+│   │   └── routes.py        # Rotas de upload
+│   └── static/              # Arquivos estáticos
 │
-├── static/                  # Arquivos estáticos globais
-│   ├── css/                  # Folhas de estilo
-│   ├── js/                   # Scripts JavaScript
-│   └── img/                  # Imagens e ícones
+├── banco/                  # Banco de dados SQLite
+│   └── financas.db
 │
-├── templates/               # Templates base
-│   ├── base/                # Layouts base
-│   ├── components/          # Componentes reutilizáveis
-│   └── macros/              # Macros Jinja2
+├── logs/                   # Arquivos de log
+│   ├── dashboard.log
+│   └── alertas.log
 │
-├── tests/                   # Testes de aceitação
-│   ├── e2e/                 # Testes end-to-end
-│   └── fixtures/            # Dados de teste
+├── static/                 # Arquivos estáticos globais
+│   ├── css/
+│   └── js/
 │
-├── .env.example            # Variáveis de ambiente de exemplo
-├── .gitignore               # Arquivos ignorados pelo Git
-├── config.py                # Configurações da aplicação
-├── main.py                  # Ponto de entrada
-├── requirements-dev.txt     # Dependências de desenvolvimento
-├── requirements.txt         # Dependências de produção
-└── README.md               # Documentação
+├── templates/              # Templates globais
+│   ├── base.html
+│   └── index.html
+│
+├── test/                  # Testes
+│   ├── unit/               # Testes unitários
+│   └── integration/        # Testes de integração
+│
+├── .env.example           # Variáveis de ambiente de exemplo
+├── .gitignore              # Arquivos ignorados pelo Git
+├── main.py                 # Ponto de entrada da aplicação
+├── requirements.txt        # Dependências do projeto
+└── README.md              # Documentação
 ```
 
 ### 📅 Histórico de Atualizações

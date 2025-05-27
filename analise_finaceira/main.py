@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import sys
 import logging
+from datetime import datetime
 
 # Adiciona o diretório raiz ao path para importar módulos locais
 root_dir = str(Path(__file__).parent)
@@ -56,8 +57,9 @@ try:
     from upload_arq.src import upload_bp
     from dashboard_arq.src import dashboard_bp, inserir_bp
     from dashboard_arq.src.acoes import acoes_bp
-    from alertas_manuais_arq.src.blueprint import alertas_manuais_bp
+    from dashboard_arq.src.transacoes import obter_saldo_atual
     from analise_estatistica_arq.src.__init__ import analise_bp as analise_estatistica_bp
+    from alertas_manuais import init_app as init_alertas_manuais
     
     # Habilitar proteção CSRF
     csrf = CSRFProtect()
@@ -77,10 +79,14 @@ try:
     app.register_blueprint(acoes_bp, url_prefix='/acoes')
     logger.info("Blueprint de ações registrado")
     
-    app.register_blueprint(alertas_manuais_bp, url_prefix='/alertas-manuais')
-    logger.info("Blueprint de alertas manuais registrado")
     app.register_blueprint(analise_estatistica_bp, url_prefix='/analise_estatistica')
     logger.info("Blueprint de análise estatística registrado")
+    
+    # Inicializar o módulo de alertas manuais
+    print("Iniciando inicialização do módulo de alertas manuais...")
+    init_alertas_manuais(app)
+    logger.info("Módulo de alertas manuais inicializado")
+    print("Módulo de alertas manuais inicializado com sucesso")
 except ImportError as e:
     logger.error(f"Erro ao importar blueprints: {e}")
     raise
@@ -100,33 +106,138 @@ def dashboard_static(filename):
         return jsonify({'status': 'error', 'message': 'Arquivo não encontrado'}), 404
 
 # Rota principal
-try:
-    from utils import get_dashboard_highlights
-except ImportError:
-    logger.warning("Módulo utils não encontrado. Definindo get_dashboard_highlights como fallback.")
-    def get_dashboard_highlights():
-        return 0, 0, 0  # Valores padrão para evitar erros
-
 from datetime import datetime
+from dashboard_arq.src.dashboard_utils import get_dashboard_highlights, get_recent_activities, calcular_saldo_atual
 
 @app.route('/')
 def index():
     try:
-        total_transacoes, total_alertas_ativos, total_categorias = get_dashboard_highlights()
-        hora = datetime.now().hour
+        # Inicializar variáveis com valores padrão
+        dados_transacoes = {
+            'total': 0,
+            'este_mes': 0,
+            'variacao': 0,
+            'variacao_percentual': 0
+        }
+        dados_categorias = {
+            'total': 0,
+            'novas_este_mes': 0
+        }
+        total_alertas_ativos = 0
+        saldo_atual = 0.0
+        atividades_recentes = []
+        
+        try:
+            # Obter dados do dashboard
+            # Obter dados do dashboard
+            dados_transacoes, total_alertas_ativos, dados_categorias = get_dashboard_highlights()
+            
+            # Calcular saldo atual usando a nova função
+            saldo_info = calcular_saldo_atual()
+            saldo_atual = saldo_info.get('saldo_atual', 0.0)
+            total_receitas = saldo_info.get('total_receitas', 0.0)
+            total_despesas = saldo_info.get('total_despesas', 0.0)
+            
+            # Obter as 10 atividades mais recentes do banco de dados
+            atividades_recentes = get_recent_activities(limit=10)
+            
+            # Adicionar saldo atual como primeira atividade
+            if saldo_atual is not None:
+                saldo_formatado = f'R$ {saldo_atual:,.2f}'.replace('.', 'X').replace(',', '.').replace('X', ',')
+                receitas_formatado = f'R$ {total_receitas:,.2f}'.replace('.', 'X').replace(',', '.').replace('X', ',')
+                despesas_formatado = f'R$ {total_despesas:,.2f}'.replace('.', 'X').replace(',', '.').replace('X', ',')
+                
+                atividades_recentes.insert(0, {
+                    'titulo': 'Saldo Atual',
+                    'descricao': f'Seu saldo atual é de {saldo_formatado}',
+                    'tempo': 'Agora',
+                    'icone': 'wallet2',
+                    'cor': 'success' if saldo_atual >= 0 else 'danger',
+                    'detalhes': {
+                        'receitas': receitas_formatado,
+                        'despesas': despesas_formatado
+                    }
+                })
+        except Exception as e:
+            logger.error(f"Erro ao obter dados do dashboard: {str(e)}")
+        
+        # Obter data atual para exibição
+        hoje = datetime.now()
+        
+        # Obter saudação com base no horário
+        hora = hoje.hour
         saudacao = 'Bom dia' if 5 <= hora < 12 else 'Boa tarde' if 12 <= hora < 18 else 'Boa noite'
+        
+        # Nome do mês em português
+        meses = [
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ]
+        mes_atual = meses[hoje.month - 1]
+        
+        # Garantir que os dicionários tenham todas as chaves necessárias
+        dados_transacoes = {
+            'total': dados_transacoes.get('total', 0),
+            'este_mes': dados_transacoes.get('este_mes', 0),
+            'variacao': dados_transacoes.get('variacao', 0),
+            'variacao_percentual': dados_transacoes.get('variacao_percentual', 0)
+        }
+        
+        dados_categorias = {
+            'total': dados_categorias.get('total', 0),
+            'novas_este_mes': dados_categorias.get('novas_este_mes', 0)
+        }
+        
+        return render_template(
+            'index.html',
+            active_page='home',
+            ano_atual=hoje.year,
+            mes_atual=mes_atual,
+            hoje=hoje,
+            dados_transacoes=dados_transacoes,
+            total_alertas_ativos=total_alertas_ativos,
+            dados_categorias=dados_categorias,
+            saudacao=saudacao,
+            atividades_recentes=atividades_recentes,
+            saldo_atual=saldo_atual or 0.0,
+            total_receitas=total_receitas or 0.0,
+            total_despesas=total_despesas or 0.0
+        )
+        
+    except Exception as e:
+        logger.error(f"Erro na rota index: {str(e)}")
+        # Em caso de erro, tenta retornar a página com valores padrão
         return render_template(
             'index.html',
             active_page='home',
             ano_atual=datetime.now().year,
-            total_transacoes=total_transacoes,
-            total_alertas_ativos=total_alertas_ativos,
-            total_categorias=total_categorias,
-            saudacao=saudacao
+            mes_atual='Maio',
+            hoje=datetime.now(),
+            dados_transacoes={'total': 0, 'este_mes': 0, 'variacao': 0, 'variacao_percentual': 0},
+            total_alertas_ativos=0,
+            dados_categorias={'total': 0, 'novas_este_mes': 0},
+            saudacao='Olá',
+            atividades_recentes=[],
+            saldo_atual=0.0,
+            total_receitas=0.0,
+            total_despesas=0.0
         )
+        
     except Exception as e:
-        logger.error(f"Erro na rota index: {e}")
-        return render_template('error.html', error_message=str(e)), 500
+        logger.error(f"Erro na rota index: {str(e)}")
+        # Em caso de erro, tenta retornar a página com valores padrão
+        return render_template(
+            'index.html',
+            active_page='home',
+            ano_atual=datetime.now().year,
+            total_transacoes=0,
+            total_alertas_ativos=0,
+            total_categorias=0,
+            saudacao='Olá',
+            saldo_atual=0.0,
+            total_receitas=0.0,
+            total_despesas=0.0
+        )
 
 # Rotas de redirecionamento
 @app.route('/upload')
@@ -136,6 +247,10 @@ def redirect_upload():
 @app.route('/dashboard')
 def redirect_dashboard():
     return redirect(url_for('dashboard.dashboard'))
+
+@app.route('/alertas-manuais')
+def redirect_alertas_manuais():
+    return redirect(url_for('alertas_manuais.index'))
 
 # Rota para verificar o token CSRF
 @app.route('/api/check_csrf', methods=['GET'])

@@ -111,7 +111,19 @@ O **Análise Financeira Inteligente** é uma solução abrangente desenvolvida p
 
 ```
 analise_financeira/
-├── alertas_manuais/           # Módulo de gerenciamento de alertas
+├── alertas_automaticos/     # Módulo de alertas automáticos
+│   ├── static/               # Arquivos estáticos (CSS, JS)
+│   │   ├── css/
+│   │   └── js/
+│   │       └── alertas_automaticos.js  # Lógica do frontend
+│   ├── templates/            # Templates HTML
+│   │   └── alertas_automaticos/
+│   │       └── index_automatico.html
+│   ├── __init__.py          # Inicialização do módulo
+│   ├── routes.py            # Rotas do Flask
+│   └── config.py            # Configurações do módulo
+│
+├── alertas_manuais/        # Módulo de gerenciamento de alertas
 │   ├── static/               # Arquivos estáticos (CSS, JS)
 │   │   ├── css/
 │   │   └── js/
@@ -130,75 +142,81 @@ analise_financeira/
 │   └── templates/           # Templates HTML
 │
 ├── dashboard_arq/          # Módulo principal do dashboard
-│   ├── src/                 # Lógica de negócios
-│   │   ├── acoes.py         # Ações do dashboard
-│   │   ├── despesas.py      # Lógica de despesas
-│   │   ├── receitas.py      # Lógica de receitas
-│   │   ├── routes.py        # Rotas do dashboard
-│   │   └── dashboard_utils.py # Utilitários
 │   ├── static/              # Arquivos estáticos
-│   └── templates/           # Templates HTML
+│   │   ├── css/
+│   │   │   └── style.css  # Estilos principais
+│   │   └── js/
+│   │       ├── main.js   # Lógica principal
+│   │       └── clock.js    # Relógio do dashboard
+│   ├── templates/           # Templates HTML
+│   ├── __init__.py         # Inicialização do módulo
+│   ├── routes.py           # Rotas do dashboard
+│   └── utils.py            # Utilitários
 │
-├── upload_arq/             # Módulo de upload de arquivos
-│   ├── src/                 # Lógica de processamento
-│   │   ├── file_processor.py # Processamento de arquivos
-│   │   └── routes.py        # Rotas de upload
-│   └── static/              # Arquivos estáticos
+├── upload_arq/            # Módulo de upload de arquivos
+│   ├── static/             # Arquivos estáticos
+│   └── routes.py           # Rotas de upload
 │
-├── banco/                  # Banco de dados SQLite
+├── banco/                 # Banco de dados SQLite
 │   └── financas.db
 │
-├── logs/                   # Arquivos de log
+├── logs/                  # Arquivos de log
 │   ├── dashboard.log
 │   └── alertas.log
 │
-├── static/                 # Arquivos estáticos globais
+├── static/                # Arquivos estáticos globais
 │   ├── css/
 │   └── js/
 │
-├── templates/              # Templates globais
-│   ├── base.html
-│   └── index.html
+├── templates/             # Templates globais
+│   ├── base.html          # Template base
+│   └── index.html         # Página inicial
 │
-├── test/                  # Testes
-│   ├── unit/               # Testes unitários
-│   └── integration/        # Testes de integração
+├── test/                 # Testes
+│   ├── unit/              # Testes unitários
+│   └── integration/       # Testes de integração
 │
-├── .env.example           # Variáveis de ambiente de exemplo
-├── .gitignore              # Arquivos ignorados pelo Git
-├── main.py                 # Ponto de entrada da aplicação
-├── requirements.txt        # Dependências do projeto
+├── .env.example          # Variáveis de ambiente de exemplo
+├── .gitignore             # Arquivos ignorados pelo Git
+├── main.py                # Ponto de entrada da aplicação
+├── requirements.txt       # Dependências do projeto
+├── logger.py              # Configuração do logger
+├── utils.py               # Utilitários globais
 └── README.md              # Documentação
 ```
 
 ### 📅 Histórico de Atualizações
 
-### 🔥 Últimas Atualizações (v2.3.0 - Maio/2025)
+### 🔥 Últimas Atualizações (v2.4.0 - Maio/2025)
 
-#### 🚀 Nova Seção de Atividades Recentes
-- ✅ Visão unificada de transações e alertas
-- ✅ Destaque visual para alertas importantes
-- ✅ Filtros por tipo e prioridade
-- ✅ Atualização em tempo real
-- ✅ Design responsivo para todos os dispositivos
-
-#### 🔔 Aprimoramentos no Sistema de Alertas
-- ✅ Exibição em destaque no dashboard
-- ✅ Priorização visual (Alta/Média/Baixa)
-- ✅ Valores de referência destacados
-- ✅ Ícones e cores intuitivas
-- ✅ Integração com transações existentes
+#### 🚀 Novo Módulo de Alertas Automáticos
+- ✅ Interface intuitiva para gerenciamento de alertas
+- ✅ Sistema de priorização de alertas (Alta/Média/Baixa)
+- ✅ Filtros avançados por tipo, prioridade e status
+- ✅ Marcação de alertas como lidos/não lidos
+- ✅ Contador de alertas não lidos
+- ✅ Execução manual de análise de alertas
+- ✅ Feedback visual aprimorado para ações
 
 #### 🎨 Melhorias na Interface
-- ✅ Cards redesenhados com melhor hierarquia visual
-- ✅ Animações suaves para melhor experiência
+- ✅ Cards do dashboard redesenhados
 - ✅ Ícones e indicadores visuais aprimorados
-- ✅ Melhor feedback visual para ações
-- ✅ Otimização para dispositivos móveis
+- ✅ Melhor responsividade em dispositivos móveis
+- ✅ Animações suaves para melhor experiência
+- ✅ Melhor feedback visual para ações do usuário
+
+#### 🛠️ Aprimoramentos Técnicos
+- ✅ Arquitetura modular aprimorada
+- ✅ Código mais limpo e organizado
+- ✅ Melhor tratamento de erros
+- ✅ Logs mais detalhados
+- ✅ Melhor documentação do código
 
 #### ⚡ Melhorias de Performance
-- ✅ Carregamento mais rápido do dashboard
+- ✅ Carregamento mais rápido das páginas
 - ✅ Processamento otimizado de dados
+- ✅ Consultas ao banco de dados mais eficientes
+- ✅ Cache inteligente para melhor desempenho
 - ✅ Cache inteligente para consultas frequentes
 - ✅ Redução no consumo de recursos
 - ✅ Melhor tratamento de erros

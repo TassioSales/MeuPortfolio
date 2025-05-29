@@ -20,7 +20,7 @@ def check_database():
     
     # Criar tabela formatada para mostrar as colunas
     table = PrettyTable()
-    table.field_names = ["ID", "Nome", "Tipo", "Não Nulo", "Padrão", "PK"]
+    table.field_names = ["ID", "Nome", "tipo", "Não Nulo", "Padrão", "PK"]
     
     for col in columns:
         table.add_row(col)

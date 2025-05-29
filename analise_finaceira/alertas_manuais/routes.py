@@ -168,7 +168,7 @@ def api_alertas():
         # Calcular o offset
         offset = (pagina - 1) * itens_por_pagina
         
-        logger.debug(f'Parâmetros API - Status: {status}, Prioridade: {prioridade}, Tipo: {tipo}, Busca: {busca}, Página: {pagina}, Itens por página: {itens_por_pagina}')
+        logger.debug(f'Parâmetros API - Status: {status}, Prioridade: {prioridade}, tipo: {tipo}, Busca: {busca}, Página: {pagina}, Itens por página: {itens_por_pagina}')
         
         # Construir a consulta base
         query = """
@@ -231,7 +231,7 @@ def api_alertas():
         
         # Processar resultados
         alertas = []
-        valor_total = 0
+        valor = 0
         
         for row in cursor.fetchall():
             alerta_dict = dict(row)
@@ -242,7 +242,7 @@ def api_alertas():
             
             # Calcular valor total (soma dos valores de referência)
             if alerta_dict.get('valor_referencia'):
-                valor_total += float(alerta_dict['valor_referencia'])
+                valor += float(alerta_dict['valor_referencia'])
                 
             alertas.append(alerta_dict)
         
@@ -256,7 +256,7 @@ def api_alertas():
             'data': alertas,
             'total': total_registros,
             'ativos': total_ativos,  # Retorna a contagem real de alertas ativos
-            'valor_total': valor_total,
+            'valor': valor,
             'pagina_atual': pagina,
             'total_paginas': (total_registros + itens_por_pagina - 1) // itens_por_pagina if itens_por_pagina > 0 else 1,
             'request_id': request_id
@@ -320,7 +320,7 @@ def novo_alerta():
         if 'tipo_alerta' in dados and dados['tipo_alerta'] not in ['receita', 'despesa']:
             return jsonify({
                 'sucesso': False,
-                'mensagem': 'Tipo de alerta inválido. Use "receita" ou "despesa"'
+                'mensagem': 'tipo de alerta inválido. Use "receita" ou "despesa"'
             }), 400, response_headers
         
         if campos_faltantes:
@@ -364,16 +364,16 @@ def novo_alerta():
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
         """, (
             1,  # TODO: Obter ID do usuário logado
-            dados.get('tipo_alerta', 'despesa'),  # Tipo de alerta (receita/despesa)
+            dados.get('tipo_alerta', 'despesa'),  # tipo de alerta (receita/despesa)
             dados.get('titulo', 'Sem título').strip(),  # Título do alerta (vai para a coluna descricao)
             valor_referencia,  # Valor de referência
-            dados.get('categoria', 'outros').strip().lower() if dados.get('categoria') else 'outros',  # Categoria
+            dados.get('categoria', 'outros').strip().lower() if dados.get('categoria') else 'outros',  # categoria
             data_inicio if data_inicio else None,  # Data de início (opcional)
             data_fim if data_fim else None,  # Data de término (opcional)
             dados.get('prioridade', 'média').lower(),  # Prioridade (padrão: média)
             bool(dados.get('notificar_email', True)),  # Notificar por email
             bool(dados.get('notificar_app', True)),  # Notificar no app
-            dados.get('status', 'ativo') == 'ativo'  # Ativo baseado no status
+            dados.get('status', 'ativo') == 'ativo'  # ativo baseado no status
         ))
         
         # Obter o ID do alerta inserido
@@ -481,7 +481,7 @@ def atualizar_alerta(alerta_id):
         if 'tipo_alerta' in dados and dados['tipo_alerta'] not in ['receita', 'despesa']:
             return jsonify({
                 'sucesso': False,
-                'mensagem': 'Tipo de alerta inválido. Use "receita" ou "despesa"'
+                'mensagem': 'tipo de alerta inválido. Use "receita" ou "despesa"'
             }), 400, response_headers
             
         # Processar valores numéricos
@@ -612,7 +612,7 @@ def excluir_alerta(alerta_id):
         # Registrar detalhes do alerta que será excluído
         logger.info(
             f'[{request_id}] Dados do alerta a ser excluído - '
-            f'ID: {alerta[0]}, Tipo: {alerta[1]}, '
+            f'ID: {alerta[0]}, tipo: {alerta[1]}, '
             f'Prioridade: {alerta[3]}, Criado em: {alerta[5]}'
         )
         

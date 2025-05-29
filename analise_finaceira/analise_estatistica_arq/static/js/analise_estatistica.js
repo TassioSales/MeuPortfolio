@@ -79,15 +79,15 @@ document.getElementById('analiseForm').addEventListener('submit', async function
                                     <td>${result.basica.periodo || 'N/A'}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Total de Ativos</th>
+                                    <th scope="row">Total de ativos</th>
                                     <td>${result.basica.total_ativos}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Ativos com Ganhos</th>
+                                    <th scope="row">ativos com Ganhos</th>
                                     <td>${result.basica.ativos_ganhos}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Ativos com Perdas</th>
+                                    <th scope="row">ativos com Perdas</th>
                                     <td>${result.basica.ativos_perdas}</td>
                                 </tr>
                             </tbody>
@@ -243,7 +243,7 @@ document.getElementById('analiseForm').addEventListener('submit', async function
             html += `
                 <div class="card mb-4 fade-in">
                     <div class="card-body">
-                        <h3 class="text-primary">Análise por Ativo</h3>
+                        <h3 class="text-primary">Análise por ativo</h3>
                         <table class="table result-table">
                             <tbody>
                                 <tr>
@@ -255,7 +255,7 @@ document.getElementById('analiseForm').addEventListener('submit', async function
                                     <td>${JSON.stringify(result.ativo.top5_perdedores)}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Distribuição por Tipo</th>
+                                    <th scope="row">Distribuição por tipo</th>
                                     <td>${JSON.stringify(result.ativo.distribuicao_tipo)}</td>
                                 </tr>
                             </tbody>
@@ -375,7 +375,7 @@ document.getElementById('analiseForm').addEventListener('submit', async function
                         <table class="table result-table">
                             <tbody>
                                 <tr>
-                                    <th scope="row">Correlação entre Ativos</th>
+                                    <th scope="row">Correlação entre ativos</th>
                                     <td>${JSON.stringify(result.correlacao.ativos)}</td>
                                 </tr>
                                 <tr>

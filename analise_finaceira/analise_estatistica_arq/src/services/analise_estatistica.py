@@ -45,7 +45,7 @@ class AnaliseEstatisticaService:
             'minimo_retorno': retornos.min(),
             'maximo_retorno': retornos.max(),
             'quartis_retorno': retornos.quantile([0.25, 0.5, 0.75]).tolist(),
-            'valor_total': transacoes['valor'].sum(),
+            'valor': transacoes['valor'].sum(),
             'valor_medio': transacoes['valor'].mean(),
             'valor_mediana': transacoes['valor'].median(),
             'desvio_padrao_valor': transacoes['valor'].std(),
@@ -187,7 +187,7 @@ class AnaliseEstatisticaService:
             }
         }
 
-    # Análise por Ativo
+    # Análise por ativo
     def analisar_ativos(self, transacoes: pd.DataFrame, n: int = 5) -> Dict:
         """Analisa métricas por ativo."""
         if transacoes.empty:

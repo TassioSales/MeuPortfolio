@@ -303,7 +303,7 @@ def process_csv(file_path):
                     logger.debug(f"{col}: {df[col].head().tolist()}")
             
             logger.debug(f"Colunas encontradas após leitura: {df.columns.tolist()}")
-            logger.debug(f"Tipos de dados iniciais:\n{df.dtypes}")
+            logger.debug(f"tipos de dados iniciais:\n{df.dtypes}")
             logger.debug(f"Primeiras linhas do arquivo:\n{df.head().to_string()}")
             
         except Exception as e:

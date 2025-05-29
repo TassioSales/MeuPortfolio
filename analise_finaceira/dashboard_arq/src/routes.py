@@ -489,11 +489,11 @@ def limpar_dados():
         logger.debug(f"Raw JSON data: {data}")
         
         if not isinstance(data, dict):
-            logger.error(f"Dados JSON inválidos. Tipo recebido: {type(data)}")
+            logger.error(f"Dados JSON inválidos. tipo recebido: {type(data)}")
             return render_template(
                 'erro.html',
                 mensagem="Erro ao limpar dados",
-                detalhes=f"Dados JSON inválidos. Tipo recebido: {type(data)}"
+                detalhes=f"Dados JSON inválidos. tipo recebido: {type(data)}"
             ), 400
         
         logger.debug(f"Dados recebidos: {data}")

@@ -66,7 +66,7 @@ def check_table_structure(conn, table_name):
             
         print(f"\nColunas da tabela {table_name}:")
         print("-" * 60)
-        print(f"{'Nome':<20} {'Tipo':<15} {'Não Nulo':<10} {'Valor Padrão'}")
+        print(f"{'Nome':<20} {'tipo':<15} {'Não Nulo':<10} {'Valor Padrão'}")
         print("-" * 60)
         
         for col in columns:
@@ -158,35 +158,35 @@ def check_transactions_data(conn):
                     ELSE 'Zero'
                 END as tipo,
                 COUNT(*) as total,
-                SUM(ABS(valor)) as valor_total
+                SUM(ABS(valor)) as valor
             FROM transacoes
             GROUP BY tipo;
         """)
         
         print("\nResumo de Transações:")
         print("-" * 60)
-        print(f"{'Tipo':<15} {'Quantidade':>15} {'Valor Total':>20}")
+        print(f"{'tipo':<15} {'Quantidade':>15} {'Valor Total':>20}")
         print("-" * 60)
         
         for row in cursor.fetchall():
-            print(f"{row['tipo']:<15} {row['total']:>15,} {row['valor_total']:>20,.2f}")
+            print(f"{row['tipo']:<15} {row['total']:>15,} {row['valor']:>20,.2f}")
         
         # Verificar categorias mais comuns
         cursor.execute("""
-            SELECT categoria, COUNT(*) as total, SUM(ABS(valor)) as valor_total
+            SELECT categoria, COUNT(*) as total, SUM(ABS(valor)) as valor
             FROM transacoes
             GROUP BY categoria
-            ORDER BY valor_total DESC
+            ORDER BY valor DESC
             LIMIT 10;
         """)
         
-        print("\nTop 10 Categorias:")
+        print("\nTop 10 categorias:")
         print("-" * 60)
-        print(f"{'Categoria':<30} {'Qtd':>10} {'Valor Total':>20}")
+        print(f"{'categoria':<30} {'Qtd':>10} {'Valor Total':>20}")
         print("-" * 60)
         
         for row in cursor.fetchall():
-            print(f"{row['categoria']:<30} {row['total']:>10,} {row['valor_total']:>20,.2f}")
+            print(f"{row['categoria']:<30} {row['total']:>10,} {row['valor']:>20,.2f}")
         
     except sqlite3.Error as e:
         print(f"Erro ao verificar dados de transações: {e}")
@@ -209,9 +209,9 @@ def check_data_consistency(conn):
             ORDER BY total_transacoes DESC;
         """)
         
-        print("\nUso de Categorias:")
+        print("\nUso de categorias:")
         print("-" * 80)
-        print(f"{'Categoria':<30} {'Transações':>15} {'Meses com Transações':>25}")
+        print(f"{'categoria':<30} {'Transações':>15} {'Meses com Transações':>25}")
         print("-" * 80)
         
         for row in cursor.fetchall():

@@ -156,7 +156,7 @@ def gerar_grafico_despesas_por_categoria(meses_atras=12):
             print(f"{i}. {categoria}: R$ {total:,.2f}")
         
         # Criar DataFrame com os resultados
-        df = pd.DataFrame(resultados, columns=['Categoria', 'Valor'])
+        df = pd.DataFrame(resultados, columns=['categoria', 'Valor'])
         total = df['Valor'].sum()
         df['Porcentagem'] = (df['Valor'] / total) * 100
         
@@ -167,18 +167,18 @@ def gerar_grafico_despesas_por_categoria(meses_atras=12):
         fig = px.pie(
             df,
             values='Valor',
-            names='Categoria',
+            names='categoria',
             hole=0.5,  # Cria o efeito de rosca
-            title=f'DESPESAS POR CATEGORIA (ÚLTIMOS {meses_atras} MESES)<br>'
+            title=f'DESPESAS POR categoria (ÚLTIMOS {meses_atras} MESES)<br>'
                   f'<span style="color:gray; font-size:0.8em">Total: {format_currency(total)}</span>',
             color_discrete_sequence=px.colors.sequential.Viridis,
-            category_orders={"Categoria": df['Categoria'].tolist()}
+            category_orders={"categoria": df['categoria'].tolist()}
         )
         
         # Configurar o título separadamente
         fig.update_layout(
             title={
-                'text': f'DISTRIBUIÇÃO DE DESPESAS POR CATEGORIA<br>'
+                'text': f'DISTRIBUIÇÃO DE DESPESAS POR categoria<br>'
                        f'<span style="color:gray; font-size:0.8em">Período: Últimos {meses_atras} meses | Total: {format_currency(total)}</span>',
                 'x': 0.5,
                 'xanchor': 'center',
@@ -192,7 +192,7 @@ def gerar_grafico_despesas_por_categoria(meses_atras=12):
             showlegend=True,
             legend=dict(
                 title=dict(
-                    text='<b>CATEGORIAS</b>',
+                    text='<b>categoriaS</b>',
                     font=dict(size=12, color='#2c3e50')
                 ),
                 orientation="v",
@@ -266,8 +266,8 @@ def gerar_grafico_despesas_por_categoria(meses_atras=12):
         # Adicionar informações adicionais no rodapé
         fig.add_annotation(
             text=f"📅 Período: Últimos {meses_atras} meses • "
-                 f"📊 {len(df)} Categorias • "
-                 f"🔝 Maior: {df['Categoria'].iloc[0]} ({df['Porcentagem'].iloc[0]:.1f}%)",
+                 f"📊 {len(df)} categorias • "
+                 f"🔝 Maior: {df['categoria'].iloc[0]} ({df['Porcentagem'].iloc[0]:.1f}%)",
             x=0.5,
             y=-0.15,
             xref="paper",

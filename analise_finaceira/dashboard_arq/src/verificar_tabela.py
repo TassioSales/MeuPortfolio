@@ -34,7 +34,7 @@ def verificar_tabela_transacoes():
         cursor.execute("PRAGMA table_info(transacoes)")
         colunas = cursor.fetchall()
         for col in colunas:
-            logger.info(f"Coluna: {col[1]} - Tipo: {col[2]} - Não Nulo: {col[3]} - PK: {col[5]}")
+            logger.info(f"Coluna: {col[1]} - tipo: {col[2]} - Não Nulo: {col[3]} - PK: {col[5]}")
         
         # Mostrar dados da tabela
         logger.info("\n=== Dados da Tabela transacoes ===")
@@ -81,7 +81,7 @@ def verificar_tabela_transacoes():
         logger.info("=== ESTRUTURA DA TABELA ===")
         cursor.execute("PRAGMA table_info(transacoes)")
         columns = cursor.fetchall()
-        print("{:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format('Nome', 'Tipo', 'Não Nulo', 'PK', 'Default', 'ID'))
+        print("{:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format('Nome', 'tipo', 'Não Nulo', 'PK', 'Default', 'ID'))
         print("-" * 90)
         for col in columns:
             print("{:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format(
@@ -109,9 +109,9 @@ def verificar_tabela_transacoes():
                 print(f"{col_name}: {value}")
         
         # Verificar tipos de dados
-        print("\n=== TIPOS DE DADOS ===")
+        print("\n=== tipoS DE DADOS ===")
         df = pd.read_sql_query("SELECT * FROM transacoes LIMIT 100", conn)
-        print("\nTipos de dados:")
+        print("\ntipos de dados:")
         print(df.dtypes)
         
         # Verificar valores nulos
@@ -128,7 +128,7 @@ def verificar_tabela_transacoes():
             'categoria': df['categoria'].unique(),
             'forma_pagamento': df['forma_pagamento'].unique()
         }
-        print("\nTipos únicos:")
+        print("\ntipos únicos:")
         for field, values in unique_values.items():
             print(f"\n{field}: {len(values)} valores únicos")
             print(values)

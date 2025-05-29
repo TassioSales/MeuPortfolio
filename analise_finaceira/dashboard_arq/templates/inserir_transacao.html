@@ -112,7 +112,7 @@
                                     </label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i class="bi bi-arrow-left-right"></i></span>
-                                        {{ form.tipo(class="form-select", onchange="atualizarCategorias()") }}
+                                        {{ form.tipo(class="form-select", onchange="atualizarcategorias()") }}
                                     </div>
                                     {% if form.tipo.errors %}
                                         <div class="invalid-feedback d-block">
@@ -352,8 +352,8 @@
                                     <th class="ps-4">Data</th>
                                     <th>Descrição</th>
                                     <th class="text-end">Valor</th>
-                                    <th>Tipo</th>
-                                    <th>Categoria</th>
+                                    <th>tipo</th>
+                                    <th>categoria</th>
                                     <th class="text-center">Ações</th>
                                 </tr>
                             </thead>
@@ -450,7 +450,7 @@ const logger = {
 </script>
 <script>
     // Atualiza as categorias com base no tipo selecionado
-    function atualizarCategorias() {
+    function atualizarcategorias() {
         const tipo = document.getElementById('tipo').value;
         const categoriaSelect = document.getElementById('categoria');
         
@@ -561,10 +561,10 @@ const logger = {
 
     // Inicializa as categorias ao carregar a página
     document.addEventListener('DOMContentLoaded', function() {
-        atualizarCategorias();
+        atualizarcategorias();
         
         // Adiciona evento de mudança para o campo de tipo
-        document.getElementById('tipo').addEventListener('change', atualizarCategorias);
+        document.getElementById('tipo').addEventListener('change', atualizarcategorias);
         
         // Adiciona eventos para cálculo automático do valor
         document.getElementById('preco').addEventListener('input', calcularValorTotal);

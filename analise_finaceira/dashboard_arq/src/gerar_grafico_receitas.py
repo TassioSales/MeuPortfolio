@@ -61,7 +61,7 @@ def obter_receitas_por_categoria(meses_atras=12):
     """
     conn = None
     try:
-        print("\n=== OBTENDO RECEITAS POR CATEGORIA ===")
+        print("\n=== OBTENDO RECEITAS POR categoria ===")
         print(f"Meses a serem considerados: {meses_atras}")
         
         # Conectar ao banco
@@ -103,7 +103,7 @@ def obter_receitas_por_categoria(meses_atras=12):
             receitas_por_categoria[categoria] = total
         receitas_logger.debug(f"Total de registros encontrados: {len(resultados) if resultados else 0}")
         if receitas_por_categoria:
-            print(f"Categorias: {list(receitas_por_categoria.keys())}")
+            print(f"categorias: {list(receitas_por_categoria.keys())}")
             
         return receitas_por_categoria
         
@@ -190,7 +190,7 @@ def gerar_grafico_receitas_por_categoria(meses_atras=12):
         resultados = sorted(receitas_por_categoria.items(), key=lambda x: x[1], reverse=True)
         
         # Criar DataFrame com os resultados
-        df = pd.DataFrame(resultados, columns=['Categoria', 'Valor'])
+        df = pd.DataFrame(resultados, columns=['categoria', 'Valor'])
         total = df['Valor'].sum()
         df['Porcentagem'] = (df['Valor'] / total) * 100
         
@@ -201,7 +201,7 @@ def gerar_grafico_receitas_por_categoria(meses_atras=12):
         print(f"Total de categorias: {len(df)}")
         print(f"Valor total: R$ {total:,.2f}")
         for i, (_, row) in enumerate(df.iterrows(), 1):
-            print(f"{i:2d}. {row['Categoria']}: R$ {row['Valor']:,.2f} ({row['Porcentagem']:.1f}%)")
+            print(f"{i:2d}. {row['categoria']}: R$ {row['Valor']:,.2f} ({row['Porcentagem']:.1f}%)")
         
         # Usar a mesma paleta de cores do gráfico de despesas
         
@@ -209,18 +209,18 @@ def gerar_grafico_receitas_por_categoria(meses_atras=12):
         fig = px.pie(
             df,
             values='Valor',
-            names='Categoria',
+            names='categoria',
             hole=0.5,  # Cria o efeito de rosca
-            title=f'DISTRIBUIÇÃO DE RECEITAS POR CATEGORIA<br>'
+            title=f'DISTRIBUIÇÃO DE RECEITAS POR categoria<br>'
                   f'<span style="color:gray; font-size:0.8em">Período: Últimos {meses_atras} meses | Total: {format_currency(total)}</span>',
             color_discrete_sequence=px.colors.sequential.Plasma,  # Usando uma paleta diferente do gráfico de despesas
-            category_orders={"Categoria": df['Categoria'].tolist()}
+            category_orders={"categoria": df['categoria'].tolist()}
         )
         
         # Configurar o layout
         fig.update_layout(
             title={
-                'text': f'DISTRIBUIÇÃO DE RECEITAS POR CATEGORIA<br>'
+                'text': f'DISTRIBUIÇÃO DE RECEITAS POR categoria<br>'
                        f'<span style="color:gray; font-size:0.8em">Período: Últimos {meses_atras} meses | Total: {format_currency(total)}</span>',
                 'x': 0.5,
                 'xanchor': 'center',
@@ -234,7 +234,7 @@ def gerar_grafico_receitas_por_categoria(meses_atras=12):
             showlegend=True,
             legend=dict(
                 title=dict(
-                    text='<b>CATEGORIAS</b>',
+                    text='<b>categoriaS</b>',
                     font=dict(size=12, color='#1a5276')
                 ),
                 orientation="v",
@@ -307,8 +307,8 @@ def gerar_grafico_receitas_por_categoria(meses_atras=12):
         
         # Adicionar informações adicionais no rodapé
         fig.add_annotation(
-            text=f"📅 Período: Últimos {meses_atras} meses • 📊 {len(df)} Categorias • "
-                 f"🔝 Maior: {df['Categoria'].iloc[0]} ({df['Porcentagem'].iloc[0]:.1f}%)",
+            text=f"📅 Período: Últimos {meses_atras} meses • 📊 {len(df)} categorias • "
+                 f"🔝 Maior: {df['categoria'].iloc[0]} ({df['Porcentagem'].iloc[0]:.1f}%)",
             x=0.5,
             y=-0.15,
             xref="paper",

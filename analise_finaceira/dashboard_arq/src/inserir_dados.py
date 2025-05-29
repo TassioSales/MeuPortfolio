@@ -18,7 +18,7 @@ inserir_logger = get_logger("dashboard.inserir_dados")
 inserir_bp = Blueprint('inserir', __name__, url_prefix='/inserir')
 
 # Lista de categorias comuns
-CATEGORIAS_RECEITAS = [
+categoriaS_RECEITAS = [
     ('salario', 'Salário'),
     ('freelance', 'Freelance'),
     ('investimentos', 'Investimentos'),
@@ -26,7 +26,7 @@ CATEGORIAS_RECEITAS = [
     ('outros', 'Outros')
 ]
 
-CATEGORIAS_DESPESAS = [
+categoriaS_DESPESAS = [
     ('alimentacao', 'Alimentação'),
     ('moradia', 'Moradia'),
     ('transporte', 'Transporte'),
@@ -46,14 +46,14 @@ class TransacaoForm(FlaskForm):
         DataRequired(message='O valor é obrigatório'),
         NumberRange(min=0.01, message='O valor deve ser maior que zero')
     ], places=2)
-    tipo = SelectField('Tipo', choices=[
+    tipo = SelectField('tipo', choices=[
         ('receita', 'Receita'),
         ('despesa', 'Despesa')
     ], validators=[DataRequired()])
-    categoria = SelectField('Categoria', validators=[DataRequired()])
+    categoria = SelectField('categoria', validators=[DataRequired()])
     
     # Campos de operação
-    tipo_operacao = SelectField('Tipo de Operação', choices=[
+    tipo_operacao = SelectField('tipo de Operação', choices=[
         ('', 'Selecione...'),
         ('compra', 'Compra'),
         ('venda', 'Venda'),
@@ -61,7 +61,7 @@ class TransacaoForm(FlaskForm):
         ('juros', 'Juros'),
         ('outro', 'Outro')
     ])
-    ativo = StringField('Ativo')
+    ativo = StringField('ativo')
     forma_pagamento = SelectField('Forma de Pagamento', choices=[
         ('', 'Selecione...'),
         ('dinheiro', 'Dinheiro'),
@@ -105,9 +105,9 @@ class TransacaoForm(FlaskForm):
     
     def atualizar_categorias(self):
         if self.tipo.data == 'receita':
-            self.categoria.choices = CATEGORIAS_RECEITAS
+            self.categoria.choices = categoriaS_RECEITAS
         else:
-            self.categoria.choices = CATEGORIAS_DESPESAS
+            self.categoria.choices = categoriaS_DESPESAS
 
 def conectar_banco():
     """Conecta ao banco de dados SQLite."""

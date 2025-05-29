@@ -5,7 +5,7 @@ const CONFIG = {
     paginaAtual: 1,
     totalItens: 0,
     totalPaginas: 0,
-    filtrosAtivos: {
+    filtrosativos: {
         busca: '',
         prioridade: '',
         tipo: '',
@@ -26,13 +26,13 @@ function inicializarElementos() {
     const loadingAlertas = document.getElementById('loading-alertas');
     const nenhumAlerta = document.getElementById('nenhum-alerta');
     const totalAlertas = document.getElementById('total-alertas');
-    const alertasAtivos = document.getElementById('alertas-ativos');
+    const alertasativos = document.getElementById('alertas-ativos');
     const valorTotal = document.getElementById('valor-total');
     const searchInput = document.getElementById('searchInput');
     
     // Filtros
     const filtroPrioridade = document.getElementById('filtro-prioridade');
-    const filtroTipo = document.getElementById('filtro-tipo');
+    const filtrotipo = document.getElementById('filtro-tipo');
     const filtroPeriodo = document.getElementById('filtro-periodo');
     const filtroStatus = document.getElementById('filtro-status');
     const limparFiltros = document.getElementById('limpar-filtros');
@@ -53,11 +53,11 @@ function inicializarElementos() {
         loadingAlertas: !!loadingAlertas,
         nenhumAlerta: !!nenhumAlerta,
         totalAlertas: !!totalAlertas,
-        alertasAtivos: !!alertasAtivos,
+        alertasativos: !!alertasativos,
         valorTotal: !!valorTotal,
         searchInput: !!searchInput,
         filtroPrioridade: !!filtroPrioridade,
-        filtroTipo: !!filtroTipo,
+        filtrotipo: !!filtrotipo,
         filtroPeriodo: !!filtroPeriodo,
         filtroStatus: !!filtroStatus,
         limparFiltros: !!limparFiltros,
@@ -86,11 +86,11 @@ function inicializarElementos() {
         loadingAlertas,
         nenhumAlerta,
         totalAlertas,
-        alertasAtivos,
+        alertasativos,
         valorTotal,
         searchInput,
         filtroPrioridade,
-        filtroTipo,
+        filtrotipo,
         filtroPeriodo,
         filtroStatus,
         limparFiltros,
@@ -151,7 +151,7 @@ const Utils = {
     },
     
     // Obtém o ícone baseado no tipo de alerta
-    getIconeTipo: (tipo) => {
+    getIconetipo: (tipo) => {
         const icones = {
             'despesa': 'bi-arrow-up-circle text-danger',
             'receita': 'bi-arrow-down-circle text-success',
@@ -269,7 +269,7 @@ function renderizarAlertas(alertas) {
             }
         }
         
-        // Tipo de alerta
+        // tipo de alerta
         const tipoAlerta = card.querySelector('#tipo-alerta');
         const iconeContainer = card.querySelector('.alerta-tipo-container');
         const iconeBadge = card.querySelector('.alerta-tipo-container .badge:last-child');
@@ -320,20 +320,20 @@ function renderizarAlertas(alertas) {
             iconeBadge.style.borderColor = 'currentColor';
             
             tipoAlerta.textContent = tipoFormatado;
-            tipoAlerta.setAttribute('title', `Tipo: ${tipoFormatado}`);
-            iconeBadge.setAttribute('title', `Tipo: ${tipoFormatado}`);
+            tipoAlerta.setAttribute('title', `tipo: ${tipoFormatado}`);
+            iconeBadge.setAttribute('title', `tipo: ${tipoFormatado}`);
         }
         
         // Status (badge no canto superior esquerdo)
         const statusBadge = card.querySelector('.badge-status');
         if (statusBadge) {
-            const estaAtivo = alerta.ativo !== undefined ? alerta.ativo : true;
-            statusBadge.setAttribute('data-status', estaAtivo);
+            const estaativo = alerta.ativo !== undefined ? alerta.ativo : true;
+            statusBadge.setAttribute('data-status', estaativo);
             statusBadge.innerHTML = `
-                <i class="bi ${estaAtivo ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i>
-                <span class="d-none d-sm-inline">${estaAtivo ? 'Ativo' : 'Inativo'}</span>
+                <i class="bi ${estaativo ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i>
+                <span class="d-none d-sm-inline">${estaativo ? 'ativo' : 'Inativo'}</span>
             `;
-            statusBadge.setAttribute('title', `Alerta ${estaAtivo ? 'ativo' : 'inativo'}`);
+            statusBadge.setAttribute('title', `Alerta ${estaativo ? 'ativo' : 'inativo'}`);
         }
         
         // Prioridade
@@ -475,11 +475,11 @@ async function carregarAlertas() {
         
         // Constrói a URL com os parâmetros de filtro
         const params = new URLSearchParams();
-        if (CONFIG.filtrosAtivos.busca) params.append('busca', CONFIG.filtrosAtivos.busca);
-        if (CONFIG.filtrosAtivos.prioridade) params.append('prioridade', CONFIG.filtrosAtivos.prioridade);
-        if (CONFIG.filtrosAtivos.tipo) params.append('tipo', CONFIG.filtrosAtivos.tipo);
-        if (CONFIG.filtrosAtivos.periodo) params.append('periodo', CONFIG.filtrosAtivos.periodo);
-        if (CONFIG.filtrosAtivos.status) params.append('status', CONFIG.filtrosAtivos.status);
+        if (CONFIG.filtrosativos.busca) params.append('busca', CONFIG.filtrosativos.busca);
+        if (CONFIG.filtrosativos.prioridade) params.append('prioridade', CONFIG.filtrosativos.prioridade);
+        if (CONFIG.filtrosativos.tipo) params.append('tipo', CONFIG.filtrosativos.tipo);
+        if (CONFIG.filtrosativos.periodo) params.append('periodo', CONFIG.filtrosativos.periodo);
+        if (CONFIG.filtrosativos.status) params.append('status', CONFIG.filtrosativos.status);
         
         // Adiciona parâmetros de paginação
         params.append('pagina', CONFIG.paginaAtual);
@@ -502,8 +502,8 @@ async function carregarAlertas() {
             // Atualiza as estatísticas
             if (ELEMENTOS.totalAlertas) {
                 ELEMENTOS.totalAlertas.textContent = resultado.total || 0;
-                ELEMENTOS.alertasAtivos.textContent = resultado.ativos || 0;
-                ELEMENTOS.valorTotal.textContent = Utils.formatarMoeda(resultado.valor_total || 0);
+                ELEMENTOS.alertasativos.textContent = resultado.ativos || 0;
+                ELEMENTOS.valorTotal.textContent = Utils.formatarMoeda(resultado.valor || 0);
             }
             
             // Renderiza os alertas
@@ -544,10 +544,10 @@ function aplicarFiltros() {
     CONFIG.paginaAtual = 1;
     
     // Atualiza os filtros ativos
-    CONFIG.filtrosAtivos = {
+    CONFIG.filtrosativos = {
         busca: ELEMENTOS.searchInput ? ELEMENTOS.searchInput.value.trim() : '',
         prioridade: ELEMENTOS.filtroPrioridade ? ELEMENTOS.filtroPrioridade.value : '',
-        tipo: ELEMENTOS.filtroTipo ? ELEMENTOS.filtroTipo.value : '',
+        tipo: ELEMENTOS.filtrotipo ? ELEMENTOS.filtrotipo.value : '',
         periodo: ELEMENTOS.filtroPeriodo ? ELEMENTOS.filtroPeriodo.value : '',
         status: ELEMENTOS.filtroStatus ? ELEMENTOS.filtroStatus.value : ''
     };
@@ -560,7 +560,7 @@ function aplicarFiltros() {
 function limparFiltros() {
     if (ELEMENTOS.searchInput) ELEMENTOS.searchInput.value = '';
     if (ELEMENTOS.filtroPrioridade) ELEMENTOS.filtroPrioridade.value = '';
-    if (ELEMENTOS.filtroTipo) ELEMENTOS.filtroTipo.value = '';
+    if (ELEMENTOS.filtrotipo) ELEMENTOS.filtrotipo.value = '';
     if (ELEMENTOS.filtroPeriodo) ELEMENTOS.filtroPeriodo.value = '';
     if (ELEMENTOS.filtroStatus) ELEMENTOS.filtroStatus.value = '';
     
@@ -583,8 +583,8 @@ function configurarFiltros() {
         ELEMENTOS.filtroPrioridade.addEventListener('change', aplicarFiltros);
     }
     
-    if (ELEMENTOS.filtroTipo) {
-        ELEMENTOS.filtroTipo.addEventListener('change', aplicarFiltros);
+    if (ELEMENTOS.filtrotipo) {
+        ELEMENTOS.filtrotipo.addEventListener('change', aplicarFiltros);
     }
     
     if (ELEMENTOS.filtroPeriodo) {

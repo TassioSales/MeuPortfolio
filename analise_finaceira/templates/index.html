@@ -501,6 +501,16 @@ body {
                 <a href="{{ url_for('alertas_manuais.index') }}" class="btn btn-primary mt-2">Acessar Alertas Manuais</a>
             </div>
         </div>
+        <div class="card main-card">
+            <div class="card-body">
+                <div class="card-icon">
+                    <i class="bi bi-robot"></i>
+                </div>
+                <h5 class="card-title mb-2">Alertas Automáticos</h5>
+                <p class="card-text">Acompanhe alertas gerados automaticamente baseados nas suas transações.</p>
+                <a href="{{ url_for('alertas_automaticos.index') }}" class="btn btn-primary mt-2">Acessar Alertas Automáticos</a>
+            </div>
+        </div>
     </div>
     <div class="row justify-content-center mb-4">
         <div class="col-lg-6 col-md-8">
@@ -510,6 +520,7 @@ body {
                     <ul class="mb-0 ps-3">
                         <li><i class="bi bi-speedometer2 me-2 text-primary"></i> Acesse o <b>Dashboard</b> para uma visão geral rápida de suas finanças com gráficos interativos.</li>
                         <li><i class="bi bi-bell me-2 text-warning"></i> Configure <b>Alertas Personalizados</b> para monitorar gastos, recebimentos e metas financeiras.</li>
+                        <li><i class="bi bi-robot me-2 text-info"></i> Monitore <b>Alertas Automáticos</b> que identificam padrões e transações incomuns.</li>
                         <li><i class="bi bi-upload me-2 text-success"></i> Utilize o <b>Upload Rápido</b> para importar extratos bancários em segundos.</li>
                         <li><i class="bi bi-tags me-2 text-info"></i> Organize com <b>categorias Inteligentes</b> que aprendem com seu histórico.</li>
                         <li><i class="bi bi-graph-up me-2 text-danger"></i> Acompanhe tendências de gastos com relatórios mensais e anuais.</li>
@@ -522,7 +533,20 @@ body {
                 <div class="card-body p-4">
                     <h5 class="card-title mb-3 text-primary"><i class="bi bi-megaphone me-2"></i>Novidades</h5>
                     <ul class="mb-0 ps-3">
-                        <li><b>26/05/2025:</b> Melhorias no painel principal:</li>
+                        <li><b>28/05/2025:</b> Novos recursos nos Alertas Automáticos:</li>
+                        <li><b>•</b> Interface completamente redesenhada e intuitiva</li>
+                        <li><b>•</b> Sistema de priorização de alertas</li>
+                        <li><b>•</b> Filtros avançados por tipo, prioridade e status</li>
+                        <li><b>•</b> Marcação de alertas como lidos/não lidos</li>
+                        <li><b>•</b> Contador de alertas não lidos</li>
+                        <li><b>•</b> Execução manual de análise de alertas</li>
+                        <li><b>•</b> Melhor feedback visual para ações do usuário</li>
+                        
+                        <li class="mt-2"><b>28/05/2025:</b> Melhorias gerais:</li>
+                        <li><b>•</b> Otimização de desempenho</li>
+                        <li><b>•</b> Correção de bugs reportados</li>
+                        
+                        <li class="mt-2"><b>26/05/2025:</b> Melhorias no painel principal:</li>
                         <li><b>•</b> Novo sistema de alertas visuais com priorização</li>
                         <li><b>•</b> Exibição unificada de transações e alertas</li>
                         <li><b>•</b> Melhor feedback visual para ações importantes</li>
@@ -538,16 +562,6 @@ body {
                         <li><b>•</b> Tabela de transações redesenhada com melhor usabilidade</li>
                         <li><b>•</b> Filtros avançados otimizados para melhor desempenho</li>
                         <li><b>•</b> Colunas fixas para melhor navegação em telas grandes</li>
-                        
-                        <li class="mt-2"><b>21/05/2025:</b> Melhorias no gerenciamento de transações:</li>
-                        <li><b>•</b> Sistema de edição de transações aprimorado</li>
-                        <li><b>•</b> Validação robusta de tipos de dados</li>
-                        <li><b>•</b> Tratamento automático de valores negativos</li>
-                        
-                        <li class="mt-2"><b>20/05/2025:</b> Melhorias no sistema:</li>
-                        <li><b>•</b> Upload de arquivos com suporte a mais colunas</li>
-                        <li><b>•</b> Processamento mais rápido de arquivos grandes</li>
-                        <li><b>•</b> Melhor tratamento de erros e mensagens</li>
                     </ul>
                 </div>
             </div>

@@ -100,7 +100,7 @@ def get_dashboard_highlights() -> Tuple[Dict[str, Any], int, Dict[str, Any]]:
         """)
         total_categorias = cursor.fetchone()[0] or 0
         
-        # Categorias adicionadas este mês
+        # categorias adicionadas este mês
         cursor.execute("""
             SELECT COUNT(DISTINCT categoria) 
             FROM transacoes 

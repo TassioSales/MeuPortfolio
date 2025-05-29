@@ -94,7 +94,7 @@ def obter_despesas_por_categoria() -> Dict[str, float]:
         
         query = """
         SELECT 
-            COALESCE(categoria, 'Sem Categoria') as categoria,
+            COALESCE(categoria, 'Sem categoria') as categoria,
             ROUND(SUM(ABS(valor)), 2) as total
         FROM transacoes
         WHERE date(data) >= date(?)

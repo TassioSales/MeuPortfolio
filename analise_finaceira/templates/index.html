@@ -425,7 +425,7 @@ body {
         <!-- Card de Alertas -->
         <div class="dashboard-highlight">
             <div class="highlight-value">{{ total_alertas_ativos|default(0) }}</div>
-            <div class="highlight-label">Alertas Ativos</div>
+            <div class="highlight-label">Alertas ativos</div>
             <div class="highlight-trend {{ 'down' if total_alertas_ativos > 0 else 'up' }}">
                 {% if total_alertas_ativos > 0 %}
                     <i class="bi bi-exclamation-triangle"></i> {{ total_alertas_ativos }} ativo(s)
@@ -442,10 +442,10 @@ body {
             </div>
         </div>
         
-        <!-- Card de Categorias -->
+        <!-- Card de categorias -->
         <div class="dashboard-highlight">
             <div class="highlight-value">{{ dados_categorias.get('total', 0) }}</div>
-            <div class="highlight-label">Categorias</div>
+            <div class="highlight-label">categorias</div>
             <div class="highlight-trend {{ 'up' if dados_categorias.get('novas_este_mes', 0) > 0 else '' }}">
                 {% if dados_categorias.get('novas_este_mes', 0) > 0 %}
                     <i class="bi bi-plus-circle"></i> {{ dados_categorias.novas_este_mes }} nova(s)
@@ -511,7 +511,7 @@ body {
                         <li><i class="bi bi-speedometer2 me-2 text-primary"></i> Acesse o <b>Dashboard</b> para uma visão geral rápida de suas finanças com gráficos interativos.</li>
                         <li><i class="bi bi-bell me-2 text-warning"></i> Configure <b>Alertas Personalizados</b> para monitorar gastos, recebimentos e metas financeiras.</li>
                         <li><i class="bi bi-upload me-2 text-success"></i> Utilize o <b>Upload Rápido</b> para importar extratos bancários em segundos.</li>
-                        <li><i class="bi bi-tags me-2 text-info"></i> Organize com <b>Categorias Inteligentes</b> que aprendem com seu histórico.</li>
+                        <li><i class="bi bi-tags me-2 text-info"></i> Organize com <b>categorias Inteligentes</b> que aprendem com seu histórico.</li>
                         <li><i class="bi bi-graph-up me-2 text-danger"></i> Acompanhe tendências de gastos com relatórios mensais e anuais.</li>
                         <li><i class="bi bi-phone me-2 text-primary"></i> Acesse de qualquer dispositivo com nossa interface responsiva.</li>
                         <li><i class="bi bi-shield-lock me-2 text-success"></i> Seus dados estão seguros com criptografia de ponta a ponta.</li>

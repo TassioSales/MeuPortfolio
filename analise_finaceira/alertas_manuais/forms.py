@@ -26,7 +26,7 @@ class AlertaForm(FlaskForm):
     ]
     
     STATUS_CHOICES = [
-        ('ativo', 'Ativo'),
+        ('ativo', 'ativo'),
         ('inativo', 'Inativo'),
         ('resolvido', 'Resolvido')
     ]

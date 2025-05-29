@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicializar gráfico de categorias
     let categoriaChart = null;
-    const initCategoriaChart = (data) => {
+    const initcategoriaChart = (data) => {
         const ctx = document.getElementById('grafico-categorias').getContext('2d');
         
         // Filtrar apenas categorias com despesas
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Atualizar a interface
             updateTotals(summaryData);
-            initCategoriaChart(summaryData);
+            initcategoriaChart(summaryData);
             fillTransactionsTable(transactionsData);
             initFluxoChart(transactionsData);
             

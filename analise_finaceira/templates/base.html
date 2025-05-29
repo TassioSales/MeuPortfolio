@@ -40,7 +40,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ 'active' if active_page == 'alertas_automaticos' else '' }}" 
-                           href="{{ url_for('alertas_automaticos.index') if 'alertas_automaticos.index' in url_for.__self__.view_functions else '#' }}">
+                           href="{{ url_for('alertas_automaticos.index') }}">
                             <i class="bi bi-alarm me-2"></i>Alertas Automáticos
                         </a>
                     </li>

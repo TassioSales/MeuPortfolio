@@ -60,6 +60,7 @@ try:
     from dashboard_arq.src.transacoes import obter_saldo_atual
     from analise_estatistica_arq.src.__init__ import analise_bp as analise_estatistica_bp
     from alertas_manuais import init_app as init_alertas_manuais
+    from alertas_automaticos import create_blueprint as create_alertas_automaticos_bp
     
     # Habilitar proteção CSRF
     csrf = CSRFProtect()
@@ -87,6 +88,14 @@ try:
     init_alertas_manuais(app)
     logger.info("Módulo de alertas manuais inicializado")
     print("Módulo de alertas manuais inicializado com sucesso")
+    
+    # Inicializar o módulo de alertas automáticos
+    print("Iniciando inicialização do módulo de alertas automáticos...")
+    from alertas_automaticos import create_blueprint as create_alertas_automaticos_bp
+    alertas_automaticos_bp = create_alertas_automaticos_bp()
+    app.register_blueprint(alertas_automaticos_bp, url_prefix='/alertas-automaticos')
+    logger.info("Módulo de alertas automáticos inicializado")
+    print("Módulo de alertas automáticos inicializado com sucesso")
 except ImportError as e:
     logger.error(f"Erro ao importar blueprints: {e}")
     raise
@@ -251,6 +260,10 @@ def redirect_dashboard():
 @app.route('/alertas-manuais')
 def redirect_alertas_manuais():
     return redirect(url_for('alertas_manuais.index'))
+
+@app.route('/alertas-automaticos')
+def redirect_alertas_automaticos():
+    return redirect(url_for('alertas_automaticos.index'))
 
 # Rota para verificar o token CSRF
 @app.route('/api/check_csrf', methods=['GET'])

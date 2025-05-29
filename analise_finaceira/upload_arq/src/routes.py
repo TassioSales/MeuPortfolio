@@ -73,7 +73,7 @@ def upload_file():
         
         # Verifica a extensão do arquivo
         if not allowed_file(file.filename):
-            error_msg = f'Tipo de arquivo não permitido: {file.filename}. Use apenas arquivos CSV ou PDF.'
+            error_msg = f'tipo de arquivo não permitido: {file.filename}. Use apenas arquivos CSV ou PDF.'
             logger.warning(error_msg)
             if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return jsonify({'success': False, 'message': error_msg}), 400
@@ -103,7 +103,7 @@ def upload_file():
                     logger.debug("Iniciando processamento de arquivo PDF")
                     success, message = process_pdf(file_path)
                 else:
-                    error_msg = f"Tipo de arquivo não suportado: {filename}"
+                    error_msg = f"tipo de arquivo não suportado: {filename}"
                     logger.error(error_msg)
                     raise ValueError(error_msg)
                 

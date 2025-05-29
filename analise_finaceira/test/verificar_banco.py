@@ -63,7 +63,7 @@ def verificar_estrutura_banco():
         
         # Exibir informações sobre as colunas
         print("\n🔍 Colunas:")
-        print(f"{'Nome':<20} {'Tipo':<15} {'Pode ser NULL':<15} {'Valor Padrão':<15} {'Chave Primária'}")
+        print(f"{'Nome':<20} {'tipo':<15} {'Pode ser NULL':<15} {'Valor Padrão':<15} {'Chave Primária'}")
         print("-" * 80)
         
         for coluna in colunas:

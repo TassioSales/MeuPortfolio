@@ -105,7 +105,7 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="filtro-tipo" class="form-label">Tipo</label>
+                            <label for="filtro-tipo" class="form-label">tipo</label>
                             <select id="filtro-tipo" class="form-select">
                                 <option value="">Todos</option>
                                 <option value="Receita">Receita</option>
@@ -113,7 +113,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="filtro-ativo" class="form-label">Ativo</label>
+                            <label for="filtro-ativo" class="form-label">ativo</label>
                             <select id="filtro-ativo" class="form-select">
                                 <option value="">Todos</option>
                                 {% set ativos = transactions['ativo'].dropna().unique().tolist() %}
@@ -125,7 +125,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="filtro-tipo-operacao" class="form-label">Tipo de Operação</label>
+                            <label for="filtro-tipo-operacao" class="form-label">tipo de Operação</label>
                             <select id="filtro-tipo-operacao" class="form-select">
                                 <option value="">Todos</option>
                                 {% set tipos_operacao = transactions['tipo_operacao'].dropna().unique().tolist() %}
@@ -138,7 +138,7 @@
                         </div>
                         <!-- Linha 2 de Filtros -->
                         <div class="col-md-4">
-                            <label for="filtro-categoria" class="form-label">Categoria</label>
+                            <label for="filtro-categoria" class="form-label">categoria</label>
                             <select id="filtro-categoria" class="form-select" disabled>
                                 <option value="">Todas as categorias</option>
                             </select>
@@ -301,13 +301,13 @@
                         <th>Data</th>
                         <th>Descrição</th>
                         <th class="text-end">Valor</th>
-                        <th>Tipo</th>
-                        <th>Tipo Operação</th>
-                        <th>Categoria</th>
+                        <th>tipo</th>
+                        <th>tipo Operação</th>
+                        <th>categoria</th>
                         <th>Preço</th>
                         <th>Quantidade</th>
                         <th>Taxa</th>
-                        <th>Ativo</th>
+                        <th>ativo</th>
                         <th>Forma de Pagamento</th>
                         <th>Indicador 1</th>
                         <th>Indicador 2</th>
@@ -435,9 +435,9 @@ $(document).ready(function() {
     }
 
     // Função para carregar categorias baseadas no tipo selecionado
-    function carregarCategorias(tipo) {
-        var filtroCategoria = $('#filtro-categoria');
-        filtroCategoria.prop('disabled', true).html('<option value="">Carregando...</option>');
+    function carregarcategorias(tipo) {
+        var filtrocategoria = $('#filtro-categoria');
+        filtrocategoria.prop('disabled', true).html('<option value="">Carregando...</option>');
 
         $.ajax({
             url: '{{ url_for("upload.get_categorias") }}',
@@ -451,21 +451,21 @@ $(document).ready(function() {
                         options += '<option value="' + categoria + '">' + categoria + '</option>';
                     }
                 });
-                filtroCategoria.html(options).prop('disabled', false);
+                filtrocategoria.html(options).prop('disabled', false);
             },
             error: function(xhr, status, error) {
                 console.error('Erro ao carregar categorias:', error);
-                filtroCategoria.html('<option value="">Erro ao carregar</option>').prop('disabled', false);
+                filtrocategoria.html('<option value="">Erro ao carregar</option>').prop('disabled', false);
             }
         });
     }
 
     // Carrega as categorias iniciais
-    carregarCategorias('');
+    carregarcategorias('');
 
     // Atualiza categorias quando o tipo for alterado
     $('#filtro-tipo').on('change', function() {
-        carregarCategorias($(this).val());
+        carregarcategorias($(this).val());
         aplicarFiltros();
     });
 
@@ -488,10 +488,10 @@ $(document).ready(function() {
                 }
 
                 var COL_DATA = 0;
-                var COL_TIPO = 3;
-                var COL_TIPO_OPERACAO = 4;
-                var COL_CATEGORIA = 5;
-                var COL_ATIVO = 9;
+                var COL_tipo = 3;
+                var COL_tipo_OPERACAO = 4;
+                var COL_categoria = 5;
+                var COL_ativo = 9;
                 var COL_FORMA_PAGAMENTO = 10;
 
                 if (anoSelecionado) {
@@ -502,21 +502,21 @@ $(document).ready(function() {
                 }
 
                 if (tipoSelecionado) {
-                    var tipo = data[COL_TIPO] ? data[COL_TIPO].toString().trim().toLowerCase() : '';
+                    var tipo = data[COL_tipo] ? data[COL_tipo].toString().trim().toLowerCase() : '';
                     if (tipo !== tipoSelecionado.toLowerCase()) {
                         return false;
                     }
                 }
 
                 if (tipoOperacaoSelecionado) {
-                    var tipoOp = data[COL_TIPO_OPERACAO] ? data[COL_TIPO_OPERACAO].toString().trim() : '';
+                    var tipoOp = data[COL_tipo_OPERACAO] ? data[COL_tipo_OPERACAO].toString().trim() : '';
                     if (tipoOp !== tipoOperacaoSelecionado) {
                         return false;
                     }
                 }
 
                 if (categoriaSelecionada) {
-                    var categoria = data[COL_CATEGORIA] ? data[COL_CATEGORIA].toString().trim() : '';
+                    var categoria = data[COL_categoria] ? data[COL_categoria].toString().trim() : '';
                     if (categoria !== categoriaSelecionada) {
                         return false;
                     }
@@ -530,7 +530,7 @@ $(document).ready(function() {
                 }
 
                 if (ativoSelecionado) {
-                    var ativo = data[COL_ATIVO] ? data[COL_ATIVO].toString().trim() : '';
+                    var ativo = data[COL_ativo] ? data[COL_ativo].toString().trim() : '';
                     if (ativo !== ativoSelecionado) {
                         return false;
                     }
@@ -572,7 +572,7 @@ $(document).ready(function() {
         table.page('first').draw('page');
         table.page.len(25).draw();
         $('#filtro-registros').val('25');
-        carregarCategorias('');
+        carregarcategorias('');
     }
 
     // Configurar botão de limpar filtros

@@ -20,7 +20,7 @@ def consulta_alertas():
             logger.info("Nenhum alerta encontrado na tabela.")
         else:
             logger.info(f"Total de registros encontrados: {len(rows)}")
-            logger.info(f"{'ID':<5} {'Ativo':<5} {'Descrição':<30} {'Início':<12} {'Fim':<12}")
+            logger.info(f"{'ID':<5} {'ativo':<5} {'Descrição':<30} {'Início':<12} {'Fim':<12}")
             logger.info('-'*70)
             for row in rows:
                 logger.info(f"{row[0]:<5} {row[2]:<5} {row[1]:<30} {row[3]:<12} {row[4]:<12}")

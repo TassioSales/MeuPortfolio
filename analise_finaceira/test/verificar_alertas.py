@@ -28,7 +28,7 @@ def verificar_tabela_alertas():
         if not schema_rows:
             print("Não foi possível obter o esquema da tabela 'alertas_financas'.")
         else:
-            print(f"{'Coluna':<20} | {'Tipo':<15} | {'Not Null':<8} | {'Default':<10} | {'PK':<3}")
+            print(f"{'Coluna':<20} | {'tipo':<15} | {'Not Null':<8} | {'Default':<10} | {'PK':<3}")
             print("-" * 70)
             for row in schema_rows:
                 print(f"{row['name']:<20} | {row['type']:<15} | {str(bool(row['notnull'])):<8} | {str(row['dflt_value']):<10} | {str(bool(row['pk'])):<3}")

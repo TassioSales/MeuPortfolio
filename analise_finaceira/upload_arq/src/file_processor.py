@@ -59,8 +59,8 @@ class FileProcessor:
             invalid_types = df[~df['tipo'].isin(valid_types)]
             
             if not invalid_types.empty:
-                logger.error("Tipos inválidos encontrados no CSV. Use 'receita' ou 'despesa'")
-                return False, f"Tipos inválidos encontrados. Use 'receita' ou 'despesa'"
+                logger.error("tipos inválidos encontrados no CSV. Use 'receita' ou 'despesa'")
+                return False, f"tipos inválidos encontrados. Use 'receita' ou 'despesa'"
             
             # Converte valores para numérico
             try:

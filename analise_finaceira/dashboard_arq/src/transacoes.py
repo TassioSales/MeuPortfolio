@@ -56,7 +56,7 @@ def obter_transacoes_recentes(limite: int = 10) -> List[Dict[str, Any]]:
             strftime('%d/%m/%Y', data) as data_formatada,
             descricao,
             valor,
-            COALESCE(categoria, 'Sem Categoria') as categoria,
+            COALESCE(categoria, 'Sem categoria') as categoria,
             tipo
         FROM transacoes
         ORDER BY date(data) DESC, id DESC

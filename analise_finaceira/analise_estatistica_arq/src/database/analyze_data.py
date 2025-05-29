@@ -24,7 +24,7 @@ def analyze_database():
         
         print("\n\n=== Estrutura da Tabela ===")
         table = PrettyTable()
-        table.field_names = ["ID", "Nome", "Tipo", "Não Nulo", "Padrão", "PK"]
+        table.field_names = ["ID", "Nome", "tipo", "Não Nulo", "Padrão", "PK"]
         for col in columns:
             table.add_row(col)
         print(table)
@@ -44,9 +44,9 @@ def analyze_database():
             # Estatísticas básicas
             print("\n\n=== Estatísticas ===")
             print("\nQuantidade de registros:", len(df))
-            print("\nTipos de operações:")
+            print("\ntipos de operações:")
             print(df['tipo'].value_counts())
-            print("\nCategorias:")
+            print("\ncategorias:")
             print(df['categoria'].value_counts())
             
             # Analisar valores
@@ -70,8 +70,8 @@ def analyze_database():
             print(df.groupby(['tipo', 'forma_pagamento']).size())
             
             # Analisar por tipo de operação
-            print("\n\n=== Análise de Tipos de Operação ===")
-            print("\nTipos de operação por categoria:")
+            print("\n\n=== Análise de tipos de Operação ===")
+            print("\ntipos de operação por categoria:")
             print(df.groupby(['categoria', 'tipo_operacao']).size())
         else:
             print("\nNenhum registro encontrado na tabela.")
@@ -113,7 +113,7 @@ def analyze_database():
     if common_cols:
         print("\n\n=== Análise das Colunas Comuns ===")
         df_common = df_csv[common_cols]
-        print("\nTipos de dados das colunas comuns:")
+        print("\ntipos de dados das colunas comuns:")
         print(df_common.dtypes)
         print("\nQuantidade de valores nulos nas colunas comuns:")
         print(df_common.isnull().sum())

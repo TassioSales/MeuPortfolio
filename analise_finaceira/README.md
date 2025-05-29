@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-2.0+-yellow.svg)](https://flask.palletsprojects.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status: Ativo](https://img.shields.io/badge/Status-Ativo-brightgreen.svg)]()
+[![Status: ativo](https://img.shields.io/badge/Status-ativo-brightgreen.svg)]()
 
 [![Arquitetura Modular](https://img.shields.io/badge/arquitetura-modular-ff69b4)](https://github.com/TassioSales/MeuPortfolio/tree/main/analise_financeira)
 [![Segurança Avançada](https://img.shields.io/badge/segurança-avançada-yellowgreen)](https://github.com/TassioSales/MeuPortfolio/tree/main/analise_financeira)
@@ -256,7 +256,7 @@ analise_financeira/
 ### 📈 Métricas
 - **Cobertura de Testes**: 85%
 - **Tempo de Atividade**: 99.9%
-- **Usuários Ativos**: 1.2K+
+- **Usuários ativos**: 1.2K+
 - **Transações Processadas**: 1M+
 
 ### 🤝 Contribuição
@@ -292,18 +292,18 @@ logger.info("Mensagem informativa")
 
 A tabela `transacoes` armazena todas as transações financeiras do sistema. Abaixo está a estrutura completa dos campos:
 
-| Coluna | Tipo | Obrigatório | Descrição | Exemplo |
+| Coluna | tipo | Obrigatório | Descrição | Exemplo |
 |--------|------|-------------|-----------|----------|
 | `data` | Data | ✅ Sim | Data da transação | 2025-05-22 |
 | `descricao` | Texto | ✅ Sim | Descrição da transação | Supermercado |
 | `valor` | Número | ✅ Sim | Valor da transação (use . como separador decimal) | 150.75 |
-| `tipo` | Texto | ✅ Sim | Tipo da transação | receita/despesa |
-| `categoria` | Texto | ❌ Opcional | Categoria da transação | Alimentação |
+| `tipo` | Texto | ✅ Sim | tipo da transação | receita/despesa |
+| `categoria` | Texto | ❌ Opcional | categoria da transação | Alimentação |
 | `preco` | Número | ❌ Opcional | Preço unitário (para investimentos) | 45.20 |
 | `quantidade` | Número | ❌ Opcional | Quantidade (para investimentos) | 10 |
-| `tipo_operacao` | Texto | ❌ Opcional | Tipo de operação | compra/venda |
+| `tipo_operacao` | Texto | ❌ Opcional | tipo de operação | compra/venda |
 | `taxa` | Número | ❌ Opcional | Taxa da operação (em %) | 0.5 |
-| `ativo` | Texto | ❌ Opcional | Ativo financeiro relacionado | PETR4, BTC |
+| `ativo` | Texto | ❌ Opcional | ativo financeiro relacionado | PETR4, BTC |
 | `forma_pagamento` | Texto | ❌ Opcional | Forma de pagamento utilizada | Cartão, PIX |
 | `indicador1` | Número | ❌ Opcional | Indicador personalizado 1 | 1.5 |
 | `indicador2` | Número | ❌ Opcional | Indicador personalizado 2 | 2.3 |

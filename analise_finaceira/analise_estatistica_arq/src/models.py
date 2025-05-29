@@ -12,8 +12,8 @@ class Transacao(Base):
     taxa = Column(Float)  # Taxas/custos da operação
     preco = Column(Float)  # Preço unitário
     ativo = Column(String)  # Nome do ativo
-    tipo = Column(String)  # Tipo de ativo (ação, ETF, etc)
-    categoria = Column(String)  # Categoria da operação
+    tipo = Column(String)  # tipo de ativo (ação, ETF, etc)
+    categoria = Column(String)  # categoria da operação
     descricao = Column(String)  # Descrição detalhada
     indicador1 = Column(Float)  # Indicador técnico 1 (opcional)
     indicador2 = Column(Float)  # Indicador técnico 2 (opcional)

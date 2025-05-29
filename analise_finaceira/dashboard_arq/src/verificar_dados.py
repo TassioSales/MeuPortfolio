@@ -37,7 +37,7 @@ def verificar_dados_receitas():
         columns = cursor.fetchall()
         logger.info("\n=== Estrutura da Tabela transacoes ===")
         for col in columns:
-            logger.info(f"Coluna: {col[1]} - Tipo: {col[2]} - Não Nulo: {col[3]} - PK: {col[5]}")
+            logger.info(f"Coluna: {col[1]} - tipo: {col[2]} - Não Nulo: {col[3]} - PK: {col[5]}")
         
         # Verificar total de registros
         cursor.execute("SELECT COUNT(*) FROM transacoes")
@@ -52,9 +52,9 @@ def verificar_dados_receitas():
             ORDER BY tipo
         """)
         tipos = cursor.fetchall()
-        logger.info("\n=== Distribuição por Tipo ===")
+        logger.info("\n=== Distribuição por tipo ===")
         for tipo, qtd, total in tipos:
-            logger.info(f"Tipo: {tipo} - Registros: {qtd} - Total: R$ {total:,.2f}")
+            logger.info(f"tipo: {tipo} - Registros: {qtd} - Total: R$ {total:,.2f}")
         
         # Verificar distribuição por tipo_operacao
         cursor.execute("""
@@ -65,7 +65,7 @@ def verificar_dados_receitas():
             ORDER BY tipo_operacao
         """)
         operacoes = cursor.fetchall()
-        logger.info("\n=== Distribuição por Tipo de Operação ===")
+        logger.info("\n=== Distribuição por tipo de Operação ===")
         for operacao, qtd, total in operacoes:
             logger.info(f"Operação: {operacao} - Registros: {qtd} - Total: R$ {total:,.2f}")
         
@@ -78,9 +78,9 @@ def verificar_dados_receitas():
             ORDER BY total DESC
         """)
         categorias = cursor.fetchall()
-        logger.info("\n=== Categorias ===")
+        logger.info("\n=== categorias ===")
         for cat, qtd, total in categorias:
-            logger.info(f"Categoria: {cat} - Registros: {qtd} - Total: R$ {total:,.2f}")
+            logger.info(f"categoria: {cat} - Registros: {qtd} - Total: R$ {total:,.2f}")
         
         # Verificar valores extremos
         cursor.execute("""
@@ -124,9 +124,9 @@ def verificar_dados_receitas():
             ORDER BY total DESC
         """)
         ativos = cursor.fetchall()
-        logger.info("\n=== Ativos ===")
+        logger.info("\n=== ativos ===")
         for ativo, qtd, total in ativos:
-            logger.info(f"Ativo: {ativo} - Registros: {qtd} - Total: R$ {total:,.2f}")
+            logger.info(f"ativo: {ativo} - Registros: {qtd} - Total: R$ {total:,.2f}")
         
         # Verificar indicadores
         cursor.execute("""

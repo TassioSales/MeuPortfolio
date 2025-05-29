@@ -31,7 +31,7 @@ def verificar_estrutura_tabela():
         
         print("\nEstrutura da tabela 'alertas_financas':")
         print("-" * 80)
-        print(f"{'Nome':<20} | {'Tipo':<15} | Pode ser NULL | Valor Padrão")
+        print(f"{'Nome':<20} | {'tipo':<15} | Pode ser NULL | Valor Padrão")
         print("-" * 80)
         
         for coluna in colunas:

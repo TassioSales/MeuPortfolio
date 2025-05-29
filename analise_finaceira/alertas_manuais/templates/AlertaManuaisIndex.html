@@ -73,12 +73,12 @@
             </div>
         </div>
         
-        <!-- Card de Alertas Ativos -->
+        <!-- Card de Alertas ativos -->
         <div class="col-md-4">
             <div class="stat-card bg-success">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stat-title">Alertas Ativos</div>
+                        <div class="stat-title">Alertas ativos</div>
                         <div class="stat-value" id="alertas-ativos">0</div>
                         <div class="small mt-1 opacity-75">Monitoramento ativo</div>
                     </div>
@@ -126,7 +126,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label for="filtro-tipo" class="form-label small text-muted mb-1">Tipo</label>
+                    <label for="filtro-tipo" class="form-label small text-muted mb-1">tipo</label>
                     <select class="form-select form-select-sm" id="filtro-tipo">
                         <option value="">Todos os tipos</option>
                         <option value="despesa">Despesa</option>
@@ -148,7 +148,7 @@
                     <label for="filtro-status" class="form-label small text-muted mb-1">Status</label>
                     <select class="form-select form-select-sm" id="filtro-status">
                         <option value="">Todos os status</option>
-                        <option value="ativo">Ativo</option>
+                        <option value="ativo">ativo</option>
                         <option value="inativo">Inativo</option>
                     </select>
                 </div>
@@ -272,7 +272,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div class="alerta-tipo-container">
                                     <span class="badge" id="tipo-alerta">
-                                        <!-- Tipo de alerta -->
+                                        <!-- tipo de alerta -->
                                     </span>
                                     <span class="badge">
                                         <!-- Ícone será adicionado dinamicamente -->
@@ -334,7 +334,7 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="tipo_alerta" class="form-label">Tipo de Alerta <span class="text-danger">*</span></label>
+                        <label for="tipo_alerta" class="form-label">tipo de Alerta <span class="text-danger">*</span></label>
                         <select class="form-select" id="tipo_alerta" name="tipo_alerta" required>
                             <option value="receita">Receita</option>
                             <option value="despesa" selected>Despesa</option>
@@ -360,7 +360,7 @@
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label for="categoria" class="form-label">Categoria</label>
+                            <label for="categoria" class="form-label">categoria</label>
                             <input type="text" class="form-control" id="categoria" name="categoria" 
                                    placeholder="Ex: Finanças, Manutenção, etc.">
                         </div>
@@ -404,7 +404,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                             <select class="form-select" id="status" name="status" required>
-                                <option value="ativo" selected>Ativo</option>
+                                <option value="ativo" selected>ativo</option>
                                 <option value="inativo">Inativo</option>
                                 <option value="resolvido">Resolvido</option>
                             </select>
@@ -554,8 +554,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Atualiza a barra de progresso dos alertas ativos
     function atualizarProgressoAlertas() {
         const totalAlertas = parseInt(document.getElementById('total-alertas').textContent) || 1;
-        const alertasAtivos = parseInt(document.getElementById('alertas-ativos').textContent) || 0;
-        const progresso = Math.round((alertasAtivos / totalAlertas) * 100);
+        const alertasativos = parseInt(document.getElementById('alertas-ativos').textContent) || 0;
+        const progresso = Math.round((alertasativos / totalAlertas) * 100);
         
         const progressBar = document.getElementById('alertas-ativos-progress');
         if (progressBar) {

@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Optional, Any, Union
 import os
 from twilio.rest import Client
-from ..models.alertas import Alerta, TipoAlerta, StatusAlerta
+from ..models.alerta import Alerta, TipoAlerta, StatusAlerta
 from ..models.usuario import Usuario, PreferenciasNotificacao
 from .. import db, app
 from ..utils.logger import logger

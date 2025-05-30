@@ -9,7 +9,9 @@ import pandas as pd
 import numpy as np
 import logging
 
-from src.models import db, Ativo, HistoricoPreco, Alerta, CarteiraAtivo
+from src.models import db, Ativo, HistoricoPreco
+from src.models.alerta import Alerta
+from src.models.carteira import CarteiraAtivo
 from src.services.analise_pred import predict_prices
 from src.utils.formatacao import format_currency, format_percentage
 from src.utils.logger import setup_logger

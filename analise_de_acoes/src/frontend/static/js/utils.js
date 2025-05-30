@@ -263,6 +263,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Export functions
+export {
+    formatCurrency,
+    formatPercentage,
+    formatNumber,
+    formatDate,
+    getValueColor,
+    debounce,
+    throttle,
+    showLoading,
+    hideLoading,
+    showToast
+};
+
+// Manter compatibilidade com código legado
 window.Utils = {
     formatCurrency,
     formatPercentage,

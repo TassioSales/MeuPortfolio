@@ -1,0 +1,464 @@
+{% extends "base.html" %}
+
+{% block title %}Pesquisa de Ativos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pesquisa.css') }}">
+<style>
+    /* Estilos específicos para a página de Pesquisa */
+    .search-container {
+        padding: 2rem;
+    }
+    
+    .search-header {
+        margin-bottom: 2rem;
+    }
+    
+    .search-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+    }
+    
+    .search-box {
+        position: relative;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        font-size: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 50px;
+        background-color: var(--darker);
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(0, 255, 0, 0.25);
+        outline: none;
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+    }
+    
+    .filters-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 200px;
+    }
+    
+    .filter-label {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .filter-select {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        background-color: var(--darker);
+        color: var(--text-primary);
+        cursor: pointer;
+    }
+    
+    .filter-select:focus {
+        border-color: var(--primary);
+        outline: none;
+    }
+    
+    .results-container {
+        margin-top: 2rem;
+    }
+    
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .results-title {
+        font-size: 1.3rem;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+    
+    .results-count {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+    
+    .assets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .asset-card {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left: 4px solid var(--primary);
+    }
+    
+    .asset-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .asset-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+    
+    .asset-info {
+        flex: 1;
+    }
+    
+    .asset-symbol {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .asset-name {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+    
+    .asset-price {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0.5rem 0;
+    }
+    
+    .asset-change {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .change-positive {
+        background-color: rgba(0, 255, 0, 0.1);
+        color: var(--positive);
+    }
+    
+    .change-negative {
+        background-color: rgba(255, 0, 0, 0.1);
+        color: var(--negative);
+    }
+    
+    .asset-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .stat-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-value {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+    
+    .asset-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .btn-add {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .loading {
+        text-align: center;
+        padding: 3rem 0;
+    }
+    
+    .spinner-border {
+        width: 2rem;
+        height: 2rem;
+        border-width: 0.2em;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 3rem 0;
+        color: var(--text-secondary);
+    }
+    
+    @media (max-width: 768px) {
+        .assets-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .filters-container {
+            flex-direction: column;
+        }
+        
+        .filter-group {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <!-- Cabeçalho -->
+    <div class="search-header text-center">
+        <h1 class="search-title">Pesquisar Ativos</h1>
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Buscar ativo (ex: PETR4, BTC, OIBR3)" autocomplete="off">
+        </div>
+    </div>
+    
+    <!-- Filtros -->
+    <div class="filters-container">
+        <div class="filter-group">
+            <label for="marketFilter" class="filter-label">Mercado</label>
+            <select id="marketFilter" class="filter-select">
+                <option value="all">Todos os Mercados</option>
+                <option value="stocks">Ações</option>
+                <option value="crypto">Criptomoedas</option>
+                <option value="fii">Fundos Imobiliários</option>
+                <option value="etf">ETFs</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="exchangeFilter" class="filter-label">Bolsa</label>
+            <select id="exchangeFilter" class="filter-select">
+                <option value="all">Todas as Bolsas</option>
+                <option value="B3">B3 (Brasil)</option>
+                <option value="NASDAQ">NASDAQ</option>
+                <option value="NYSE">NYSE</option>
+                <option value="BINANCE">Binance</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="sectorFilter" class="filter-label">Setor</label>
+            <select id="sectorFilter" class="filter-select">
+                <option value="all">Todos os Setores</option>
+                <option value="finance">Financeiro</option>
+                <option value="energy">Energia</option>
+                <option value="technology">Tecnologia</option>
+                <option value="healthcare">Saúde</option>
+                <option value="consumer">Consumo</option>
+                <option value="utilities">Utilidades Públicas</option>
+                <option value="materials">Materiais Básicos</option>
+                <option value="industrial">Bens Industriais</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="sortFilter" class="filter-label">Ordenar por</label>
+            <select id="sortFilter" class="filter-select">
+                <option value="volume">Maior Volume</option>
+                <option value="liquidity">Maior Liquidez</option>
+                <option value="performance">Melhor Desempenho</option>
+                <option value="dividend">Maior Dividend Yield</option>
+                <option value="alphabetical">Ordem Alfabética</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- Resultados -->
+    <div class="results-container">
+        <div class="results-header">
+            <h2 class="results-title">Resultados da Busca</h2>
+            <div class="results-count">
+                <span id="resultsCount">0</span> ativos encontrados
+            </div>
+        </div>
+        
+        <div id="loadingIndicator" class="loading" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Carregando...</span>
+            </div>
+            <p class="mt-2">Buscando ativos...</p>
+        </div>
+        
+        <div id="noResults" class="no-results" style="display: none;">
+            <i class="fas fa-search fa-3x mb-3" style="opacity: 0.5;"></i>
+            <h3>Nenhum ativo encontrado</h3>
+            <p>Tente ajustar os filtros ou buscar por outro termo.</p>
+        </div>
+        
+        <div id="assetsGrid" class="assets-grid">
+            <!-- Os ativos serão inseridos aqui via JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Detalhes do Ativo -->
+<div class="modal fade" id="assetDetailModal" tabindex="-1" aria-labelledby="assetDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assetDetailModalLabel">Detalhes do Ativo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 id="detailSymbol">PETR4.SA</h4>
+                        <p id="detailName" class="text-muted">Petróleo Brasileiro S.A. - Petrobras</p>
+                        
+                        <div class="mt-4">
+                            <h5>Informações Principais</h5>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Preço Atual:</span>
+                                    <span class="info-value" id="detailPrice">R$ 32,15</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Variação (24h):</span>
+                                    <span class="info-value positive" id="detailChange">+2.45%</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Mín. 52 Sem.:</span>
+                                    <span class="info-value" id="detail52wLow">R$ 25,10</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Máx. 52 Sem.:</span>
+                                    <span class="info-value" id="detail52wHigh">R$ 35,20</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Volume 24h:</span>
+                                    <span class="info-value" id="detailVolume">45.2M</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Valor de Mercado:</span>
+                                    <span class="info-value" id="detailMarketCap">R$ 412.5B</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5>Indicadores</h5>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">P/L:</span>
+                                    <span class="info-value" id="detailPE">5.2</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">P/VP:</span>
+                                    <span class="info-value" id="detailPB">1.8</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Div. Yield:</span>
+                                    <span class="info-value" id="detailDivYield">12.5%</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">ROE:</span>
+                                    <span class="info-value" id="detailROE">28.7%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container" style="height: 250px;">
+                            <div id="assetDetailChart"></div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5>Adicionar à Carteira</h5>
+                            <form id="addToPortfolioForm">
+                                <input type="hidden" id="assetId" value="">
+                                <div class="mb-3">
+                                    <label for="quantity" class="form-label">Quantidade</label>
+                                    <input type="number" class="form-control" id="quantity" min="0.00000001" step="0.00000001" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="avgPrice" class="form-label">Preço Médio (R$)</label>
+                                    <input type="number" class="form-control" id="avgPrice" min="0.01" step="0.01" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Adicionar à Carteira</button>
+                            </form>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5>Configurar Alerta</h5>
+                            <form id="setAlertForm">
+                                <div class="mb-3">
+                                    <label for="alertType" class="form-label">Tipo de Alerta</label>
+                                    <select class="form-select" id="alertType" required>
+                                        <option value="price_above">Preço acima de</option>
+                                        <option value="price_below">Preço abaixo de</option>
+                                        <option value="percent_up">Alta de %</option>
+                                        <option value="percent_down">Queda de %</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="alertValue" class="form-label">Valor</label>
+                                    <input type="number" class="form-control" id="alertValue" min="0.01" step="0.01" required>
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary w-100">Criar Alerta</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<!-- Custom JS -->
+<script type="module" src="{{ url_for('static', filename='js/pesquisa.js') }}"></script>
+{% endblock %}

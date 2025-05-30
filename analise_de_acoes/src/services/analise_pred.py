@@ -11,9 +11,20 @@ from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
+import sys
+import warnings
+
+# Tenta importar o TensorFlow, mas não falha se não estiver disponível
+try:
+    import tensorflow as tf
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import LSTM, Dense, Dropout
+    TENSORFLOW_AVAILABLE = True
+except ImportError:
+    warnings.warn("TensorFlow não está instalado. Usando implementação simulada.")
+    from .tensorflow_stub import Sequential, LSTM, Dense, Dropout
+    TENSORFLOW_AVAILABLE = False
+
 from ..models.ativo import Ativo, HistoricoPreco
 from .. import db
 from ..utils.logger import logger
@@ -75,7 +86,7 @@ class AnalisePred:
             logger.error(f"Erro ao preparar dados para análise preditiva: {str(e)}")
             raise
     
-    def create_model(self, input_shape: Tuple[int, int]) -> tf.keras.Model:
+    def create_model(self, input_shape: Tuple[int, int]):
         """
         Cria o modelo de machine learning.
         
@@ -98,20 +109,31 @@ class AnalisePred:
             logger.error(f"Erro ao criar modelo {self.model_type}: {str(e)}")
             raise
     
-    def _create_linear_model(self, input_shape: Tuple[int, int]) -> tf.keras.Model:
+    def _create_linear_model(self, input_shape: Tuple[int, int]):
         """Cria um modelo de regressão linear."""
-        model = Sequential([
-            tf.keras.layers.Flatten(input_shape=input_shape),
-            Dense(self.forecast_days)
-        ])
+        if not TENSORFLOW_AVAILABLE:
+            warnings.warn("TensorFlow não está disponível. Usando modelo linear simples.")
+            return LinearRegression()
+            
+        model = Sequential()
+        if TENSORFLOW_AVAILABLE:
+            import tensorflow.keras.layers as layers
+            model.add(layers.Flatten(input_shape=input_shape))
+        else:
+            from .tensorflow_stub import Flatten
+            model.add(Flatten(input_shape=input_shape))
+        model.add(Dense(self.forecast_days))
         
         model.compile(optimizer='adam', loss='mse')
         return model
     
-    def _create_random_forest_model(self, input_shape: Tuple[int, int]) -> tf.keras.Model:
+    def _create_random_forest_model(self, input_shape: Tuple[int, int]):
         """Cria um modelo de Random Forest."""
-        # O RandomForestRegressor do scikit-learn não é um modelo Keras
-        # Portanto, usamos uma camada personalizada para encapsulá-lo
+        if not TENSORFLOW_AVAILABLE:
+            warnings.warn("TensorFlow não está disponível. Usando RandomForestRegressor diretamente.")
+            return RandomForestRegressor(n_estimators=100, random_state=42)
+        
+        # Se chegamos aqui, TENSORFLOW_AVAILABLE é True
         class RandomForestWrapper(tf.keras.Model):
             def __init__(self, input_shape, forecast_days):
                 super(RandomForestWrapper, self).__init__()
@@ -136,8 +158,12 @@ class AnalisePred:
         
         return RandomForestWrapper(input_shape, self.forecast_days)
     
-    def _create_lstm_model(self, input_shape: Tuple[int, int]) -> tf.keras.Model:
+    def _create_lstm_model(self, input_shape: Tuple[int, int]):
         """Cria um modelo LSTM."""
+        if not TENSORFLOW_AVAILABLE:
+            warnings.warn("TensorFlow não está disponível. Usando RandomForest como substituto para LSTM.")
+            return RandomForestRegressor(n_estimators=100, random_state=42)
+            
         model = Sequential([
             LSTM(50, return_sequences=True, input_shape=input_shape),
             Dropout(0.2),
@@ -167,19 +193,45 @@ class AnalisePred:
         """
         try:
             # Redimensiona os dados para o formato esperado pelo modelo
-            if len(X.shape) == 2:
+            if len(X.shape) == 2 and TENSORFLOW_AVAILABLE:
                 X = X.reshape((X.shape[0], X.shape[1], 1))
             
             # Cria o modelo
-            self.model = self.create_model((X.shape[1], X.shape[2]))
+            input_shape = (X.shape[1], X.shape[2]) if TENSORFLOW_AVAILABLE else (X.shape[1],)
+            self.model = self.create_model(input_shape)
             
             # Treina o modelo
-            if self.model_type == 'random_forest':
-                # Para Random Forest, usamos o método fit personalizado
-                self.model.fit(X, y)
-                history = {'loss': [0], 'val_loss': [0]}  # Placeholder
+            if not TENSORFLOW_AVAILABLE or self.model_type == 'random_forest':
+                # Para modelos scikit-learn ou quando o TensorFlow não está disponível
+                if len(X.shape) > 2:
+                    X_flat = X.reshape(X.shape[0], -1)
+                else:
+                    X_flat = X
+                
+                if validation_split > 0:
+                    from sklearn.model_selection import train_test_split
+                    X_train, X_val, y_train, y_val = train_test_split(
+                        X_flat, y, test_size=validation_split, random_state=42
+                    )
+                    self.model.fit(X_train, y_train)
+                    
+                    # Calcula métricas de treino e validação
+                    train_score = self.model.score(X_train, y_train)
+                    val_score = self.model.score(X_val, y_val)
+                    
+                    history = {
+                        'loss': [1 - train_score],
+                        'val_loss': [1 - val_score]
+                    }
+                else:
+                    self.model.fit(X_flat, y)
+                    train_score = self.model.score(X_flat, y)
+                    history = {
+                        'loss': [1 - train_score],
+                        'val_loss': [0]  # Placeholder
+                    }
             else:
-                # Para outros modelos, usamos o método fit padrão do Keras
+                # Para modelos Keras
                 history = self.model.fit(
                     X, y,
                     epochs=epochs,
@@ -205,17 +257,30 @@ class AnalisePred:
         Returns:
             np.ndarray: Previsões do modelo.
         """
-        if not self.is_trained or self.model is None:
-            raise RuntimeError("O modelo não foi treinado. Chame o método train() primeiro.")
-        
         try:
+            if not self.is_trained or self.model is None:
+                raise ValueError("O modelo não foi treinado. Chame o método train() primeiro.")
+                
             # Redimensiona os dados para o formato esperado pelo modelo
-            if len(X.shape) == 2:
+            if TENSORFLOW_AVAILABLE and len(X.shape) == 2:
                 X = X.reshape((X.shape[0], X.shape[1], 1))
+            
+            # Para modelos scikit-learn, achata os dados se necessário
+            if not TENSORFLOW_AVAILABLE or isinstance(self.model, (LinearRegression, RandomForestRegressor)):
+                if len(X.shape) > 2:
+                    X = X.reshape(X.shape[0], -1)
             
             # Faz as previsões
             predictions = self.model.predict(X)
             
+            # Se for um modelo Keras, pode retornar um array aninhado
+            if hasattr(predictions, 'numpy'):
+                predictions = predictions.numpy()
+            
+            # Garante que as previsões tenham o formato esperado (n_samples, forecast_days)
+            if len(predictions.shape) == 1:
+                predictions = predictions.reshape(-1, 1)
+                
             # Desfaz a normalização
             if hasattr(self, 'scaler'):
                 # Cria um array temporário com o mesmo formato dos dados originais
@@ -302,14 +367,30 @@ class AnalisePred:
             last_window = X[-1:]
             future_predictions = []
             
-            for _ in range(self.forecast_days):
-                # Faz a previsão para o próximo dia
-                next_pred = self.model.predict(last_window)
-                future_predictions.append(next_pred[0][0])
+            # Prepara a janela para previsão
+            if not TENSORFLOW_AVAILABLE or isinstance(self.model, (LinearRegression, RandomForestRegressor)):
+                # Para modelos scikit-learn, achatamos a janela
+                last_window_flat = last_window.reshape(1, -1)
                 
-                # Atualiza a janela para incluir a previsão
-                last_window = np.roll(last_window, -1, axis=1)
-                last_window[0, -1, 0] = next_pred[0][0]
+                # Fazemos previsões para todos os dias de uma vez
+                future_predictions = self.model.predict(last_window_flat)[0]
+                
+                # Se o modelo retornar apenas um valor, repetimos para todos os dias
+                if len(future_predictions) == 1:
+                    future_predictions = [future_predictions[0]] * self.forecast_days
+                    
+                # Garantimos que temos o número correto de previsões
+                future_predictions = future_predictions[:self.forecast_days]
+            else:
+                # Para modelos Keras, usamos a abordagem sequencial
+                for _ in range(self.forecast_days):
+                    # Faz a previsão para o próximo dia
+                    next_pred = self.model.predict(last_window)
+                    future_predictions.append(next_pred[0][0])
+                    
+                    # Atualiza a janela para incluir a previsão
+                    last_window = np.roll(last_window, -1, axis=1)
+                    last_window[0, -1, 0] = next_pred[0][0]
             
             # Desfaz a normalização das previsões futuras
             temp = np.zeros((len(future_predictions), 1))
@@ -318,7 +399,7 @@ class AnalisePred:
             
             # Prepara as datas futuras
             last_date = pd.to_datetime(historical_data[-1]['timestamp'])
-            future_dates = [last_date + timedelta(days=i+1) for i in range(self.forecast_days)]
+            future_dates = [last_date + timedelta(days=i+1) for i in range(len(future_predictions))]
             
             return {
                 'model_type': self.model_type,
@@ -332,29 +413,94 @@ class AnalisePred:
                 ],
                 'training_history': history
             }
-            
         except Exception as e:
             logger.error(f"Erro ao executar previsão: {str(e)}")
             raise
+
+def predict_prices(symbol: str, days: int = 7, model_type: str = 'lstm', look_back: int = 30) -> Dict:
+    """
+    Função de alto nível para prever preços futuros de um ativo.
+    
+    Args:
+        symbol (str): Símbolo do ativo (ex: 'PETR4.SA', 'BTC-USD')
+        days (int): Número de dias para prever (padrão: 7)
+        model_type (str): Tipo de modelo a ser utilizado ('linear', 'random_forest', 'lstm')
+        look_back (int): Número de dias anteriores a serem considerados (padrão: 30)
+        
+    Returns:
+        Dict: Dicionário com as previsões e métricas de avaliação
+    """
+    try:
+        # Obtém os dados históricos do ativo
+        # Aqui você deve implementar a lógica para obter os dados históricos reais
+        # Por exemplo, usando o YFinanceService ou outra fonte de dados
+        
+        # Exemplo de implementação simulada
+        logger.warning("Usando dados simulados para previsão. Implemente a obtenção de dados reais.")
+        
+        # Cria uma instância do serviço de análise preditiva
+        analise = AnalisePred(model_type=model_type, look_back=look_back, forecast_days=days)
+        
+        # Prepara os dados (substitua por dados reais)
+        # X, y = analise.prepare_data(historical_data)
+        
+        # Treina o modelo (comente esta linha se estiver usando dados simulados)
+        # analise.train(X, y)
+        
+        # Faz previsões (comente esta linha se estiver usando dados simulados)
+        # predictions = analise.predict(X[-1:])
+        
+        # Retorno de exemplo com dados simulados
+        return {
+            'symbol': symbol,
+            'predictions': [
+                {'date': (datetime.now() + timedelta(days=i)).strftime('%Y-%m-%d'), 
+                 'price': 100 + i * 0.5}  # Exemplo de previsão linear
+                for i in range(1, days + 1)
+            ],
+            'model_type': model_type,
+            'look_back': look_back,
+            'forecast_days': days,
+            'metrics': {
+                'mse': 0.0,  # Exemplo de métricas
+                'mae': 0.0,
+                'r2': 1.0
+            },
+            'warning': 'Dados simulados. Implemente a obtenção de dados reais.'
+        }
+        
+    except Exception as e:
+        logger.error(f"Erro ao prever preços para {symbol}: {str(e)}")
+        return {
+            'error': f'Erro ao prever preços: {str(e)}',
+            'symbol': symbol
+        }
 
 # Exemplo de uso:
 if __name__ == "__main__":
     # Exemplo de dados históricos (substitua por dados reais)
     historical_data = [
-        {'timestamp': '2023-01-01', 'close': 100},
-        {'timestamp': '2023-01-02', 'close': 102},
-        # ... mais dados históricos ...
+        {'timestamp': '2023-01-01', 'open': 100, 'high': 105, 'low': 95, 'close': 102, 'volume': 1000},
+        {'timestamp': '2023-01-02', 'open': 102, 'high': 108, 'low': 101, 'close': 105, 'volume': 1200},
+        # Adicione mais dados históricos conforme necessário
     ]
     
-    # Cria uma instância do analisador preditivo
-    analyzer = AnalisePred(model_type='lstm', look_back=30, forecast_days=7)
+    # Cria uma instância do serviço
+    analise = AnalisePred(model_type='linear', look_back=5, forecast_days=3)
     
-    # Executa a previsão
-    try:
-        results = analyzer.forecast(historical_data)
-        print(f"Previsões para os próximos {analyzer.forecast_days} dias:")
-        for pred in results['predictions']:
-            print(f"{pred['date']}: {pred['predicted_price']:.2f}")
-        print(f"\nMétricas de desempenho: {results['metrics']}")
-    except Exception as e:
-        print(f"Erro ao executar previsão: {str(e)}")
+    # Prepara os dados
+    X, y = analise.prepare_data(historical_data)
+    
+    # Treina o modelo
+    analise.train(X, y)
+    
+    # Faz previsões
+    predictions = analise.predict(X[-1:])
+    print(f"Previsões: {predictions}")
+    
+    # Exemplo de uso da função predict_prices
+    print("\nExemplo de uso da função predict_prices:")
+    result = predict_prices("PETR4.SA", days=5)
+    print(f"Previsões para {result['symbol']}:")
+    for pred in result['predictions']:
+        print(f"{pred['date']}: R$ {pred['price']:.2f}")

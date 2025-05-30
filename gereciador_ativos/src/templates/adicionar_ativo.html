@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Adicionar Ativo{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Adicionar Novo Ativo</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('adicionar_ativo') }}">
+                        <div class="mb-3">
+                            <label for="ticker" class="form-label">Código do Ativo (Ticker)</label>
+                            <input type="text" class="form-control" id="ticker" name="ticker" required 
+                                   placeholder="Ex: PETR4.SA, AAPL, BOVA11.SA">
+                            <div class="form-text">
+                                Para ações brasileiras, adicione .SA ao final (ex: PETR4.SA). Para moedas, use o par (ex: USDBRL=X).
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="quantidade" class="form-label">Quantidade</label>
+                                <input type="number" class="form-control" id="quantidade" name="quantidade" 
+                                       step="0.000001" min="0.000001" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="preco_medio" class="form-label">Preço Médio (R$)</label>
+                                <input type="number" class="form-control" id="preco_medio" name="preco_medio" 
+                                       step="0.01" min="0.01" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="data_compra" class="form-label">Data da Compra</label>
+                            <input type="date" class="form-control" id="data_compra" name="data_compra" 
+                                   value="{{ now.strftime('%Y-%m-%d') }}" required>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="reset" class="btn btn-outline-secondary me-md-2">
+                                <i class="bi bi-x-circle"></i> Limpar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Salvar Ativo
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Exemplos de Tickers</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Exemplo</th>
+                                    <th>Descrição</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ação Brasileira</td>
+                                    <td><code>PETR4.SA</code></td>
+                                    <td>Petrobras PN</td>
+                                </tr>
+                                <tr>
+                                    <td>Ação Americana</td>
+                                    <td><code>AAPL</code></td>
+                                    <td>Apple Inc.</td>
+                                </tr>
+                                <tr>
+                                    <td>ETF</td>
+                                    <td><code>BOVA11.SA</code></td>
+                                    <td>ETF BOVA11 - Ibovespa</td>
+                                </tr>
+                                <tr>
+                                    <td>Moeda</td>
+                                    <td><code>USDBRL=X</code></td>
+                                    <td>Dólar Americano</td>
+                                </tr>
+                                <tr>
+                                    <td>Ouro</td>
+                                    <td><code>GC=F</code></td>
+                                    <td>Ouro (Futuro)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Preenche automaticamente os campos com base no ticker
+    document.getElementById('ticker').addEventListener('blur', async function() {
+        const ticker = this.value.trim();
+        if (!ticker) return;
+        
+        try {
+            const response = await fetch(`/api/ativo/${ticker}`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.preco_atual) {
+                    document.getElementById('preco_medio').value = data.preco_atual.toFixed(2);
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao buscar dados do ativo:', error);
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

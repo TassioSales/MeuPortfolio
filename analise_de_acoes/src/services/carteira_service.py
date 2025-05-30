@@ -1911,6 +1911,554 @@ class CarteiraService:
         ativo: bool = True
     ) -> Dict:
         """
+        Agenda um relatório periódico para ser enviado ao usuário.
+        
+        Args:
+            usuario_id (int): ID do usuário.
+            frequencia (str): Frequência do relatório ('diario', 'semanal', 'mensal').
+            hora (str, optional): Hária do envio no formato 'HH:MM'. Padrão: '09:00'.
+            dias_semana (List[int], optional): Dias da semana (0-6, onde 0 é segunda-feira).
+                Obrigatório se frequencia for 'semanal'.
+            dia_mes (int, optional): Dia do mês (1-31). Obrigatório se frequencia for 'mensal'.
+            ativo (bool, optional): Se o agendamento está ativo. Padrão: True.
+            
+        Returns:
+            Dict: Dicionário com os detalhes do agendamento criado/atualizado.
+            
+        Raises:
+            ValueError: Se os parâmetros forem inválidos.
+            Exception: Se ocorrer um erro ao agendar o relatório.
+        """
+        try:
+            # Valida os parâmetros
+            if frequencia not in ['diario', 'semanal', 'mensal']:
+                raise ValueError("Frequência inválida. Use 'diario', 'semanal' ou 'mensal'.")
+                
+            # Valida a hora
+            try:
+                hora_obj = datetime.strptime(hora, '%H:%M')
+                hora_formatada = hora_obj.strftime('%H:%M')
+            except ValueError:
+                raise ValueError("Formato de hora inválido. Use 'HH:MM'.")
+                
+            # Valida os dias da semana se for semanal
+            if frequencia == 'semanal':
+                if not dias_semana or not all(0 <= d <= 6 for d in dias_semana):
+                    raise ValueError("Para frequência semanal, informe pelo menos um dia da semana (0-6).")
+            else:
+                dias_semana = None
+                
+            # Valida o dia do mês se for mensal
+            if frequencia == 'mensal':
+                if not (1 <= (dia_mes or 0) <= 31):
+                    raise ValueError("Para frequência mensal, informe um dia do mês entre 1 e 31.")
+            else:
+                dia_mes = None
+            
+            # Verifica se já existe um agendamento para este usuário e frequência
+            agendamento = AgendamentoRelatorio.query.filter_by(
+                usuario_id=usuario_id,
+                frequencia=frequencia
+            ).first()
+            
+            if agendamento:
+                # Atualiza o agendamento existente
+                agendamento.hora = hora_formatada
+                agendamento.dias_semana = json.dumps(dias_semana) if dias_semana else None
+                agendamento.dia_mes = dia_mes
+                agendamento.ativo = ativo
+                agendamento.ultima_execucao = None
+                agendamento.proxima_execucao = calcular_proxima_execucao(
+                    frequencia, 
+                    hora_formatada, 
+                    dias_semana, 
+                    dia_mes
+                )
+                agendamento.ultima_atualizacao = datetime.utcnow()
+            else:
+                # Cria um novo agendamento
+                proxima_execucao = calcular_proxima_execucao(
+                    frequencia, 
+                    hora_formatada, 
+                    dias_semana, 
+                    dia_mes
+                )
+                
+                agendamento = AgendamentoRelatorio(
+                    usuario_id=usuario_id,
+                    frequencia=frequencia,
+                    hora=hora_formatada,
+                    dias_semana=json.dumps(dias_semana) if dias_semana else None,
+                    dia_mes=dia_mes,
+                    ativo=ativo,
+                    proxima_execucao=proxima_execucao,
+                    data_criacao=datetime.utcnow(),
+                    ultima_atualizacao=datetime.utcnow()
+                )
+                db.session.add(agendamento)
+            
+            db.session.commit()
+            
+            # Retorna os detalhes do agendamento
+            return {
+                'id': agendamento.id,
+                'usuario_id': agendamento.usuario_id,
+                'frequencia': agendamento.frequencia,
+                'hora': agendamento.hora,
+                'dias_semana': json.loads(agendamento.dias_semana) if agendamento.dias_semana else None,
+                'dia_mes': agendamento.dia_mes,
+                'ativo': agendamento.ativo,
+                'proxima_execucao': agendamento.proxima_execucao.isoformat() if agendamento.proxima_execucao else None,
+                'ultima_execucao': agendamento.ultima_execucao.isoformat() if agendamento.ultima_execucao else None,
+                'data_criacao': agendamento.data_criacao.isoformat(),
+                'ultima_atualizacao': agendamento.ultima_atualizacao.isoformat()
+            }
+            
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Erro ao agendar relatório periódico: {str(e)}")
+            raise
+    
+    @staticmethod
+    def obter_agendamentos_usuario(usuario_id: int, apenas_ativos: bool = True) -> List[Dict]:
+        """
+        Obtém os agendamentos de relatório de um usuário.
+        
+        Args:
+            usuario_id (int): ID do usuário.
+            apenas_ativos (bool, optional): Se True, retorna apenas os agendamentos ativos. Padrão: True.
+            
+        Returns:
+            List[Dict]: Lista de agendamentos do usuário.
+        """
+        try:
+            query = AgendamentoRelatorio.query.filter_by(usuario_id=usuario_id)
+            
+            if apenas_ativos:
+                query = query.filter_by(ativo=True)
+                
+            agendamentos = query.order_by(AgendamentoRelatorio.frequencia).all()
+            
+            return [{
+                'id': a.id,
+                'frequencia': a.frequencia,
+                'hora': a.hora,
+                'dias_semana': json.loads(a.dias_semana) if a.dias_semana else None,
+                'dia_mes': a.dia_mes,
+                'ativo': a.ativo,
+                'proxima_execucao': a.proxima_execucao.isoformat() if a.proxima_execucao else None,
+                'ultima_execucao': a.ultima_execucao.isoformat() if a.ultima_execucao else None,
+                'data_criacao': a.data_criacao.isoformat(),
+                'ultima_atualizacao': a.ultima_atualizacao.isoformat()
+            } for a in agendamentos]
+            
+        except Exception as e:
+            logger.error(f"Erro ao obter agendamentos do usuário {usuario_id}: {str(e)}")
+            raise
+    
+    @staticmethod
+    def remover_agendamento(agendamento_id: int, usuario_id: int) -> bool:
+        """
+        Remove um agendamento de relatório.
+        
+        Args:
+            agendamento_id (int): ID do agendamento a ser removido.
+            usuario_id (int): ID do usuário dono do agendamento.
+            
+        Returns:
+            bool: True se o agendamento foi removido com sucesso, False caso contrário.
+            
+        Raises:
+            ValueError: Se o agendamento não for encontrado ou não pertencer ao usuário.
+        """
+        try:
+            agendamento = AgendamentoRelatorio.query.filter_by(
+                id=agendamento_id,
+                usuario_id=usuario_id
+            ).first()
+            
+            if not agendamento:
+                raise ValueError("Agendamento não encontrado ou você não tem permissão para removê-lo.")
+            
+            db.session.delete(agendamento)
+            db.session.commit()
+            
+            return True
+            
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Erro ao remover agendamento {agendamento_id}: {str(e)}")
+            raise
+    
+    @staticmethod
+    def obter_metricas_avancadas(usuario_id: int, carteira_id: int = None) -> Dict:
+        """
+        Obtém métricas avançadas sobre as carteiras e operações do usuário.
+        
+        Args:
+            usuario_id (int): ID do usuário.
+            carteira_id (int, optional): ID da carteira para filtrar as métricas.
+                Se None, considera todas as carteiras do usuário.
+                
+        Returns:
+            Dict: Dicionário com as métricas calculadas.
+        """
+        try:
+            # Consulta base para operações
+            query = db.session.query(
+                Operacao,
+                Ativo.ticker,
+                Carteira.nome.label('carteira_nome')
+            ).join(
+                Ativo, Operacao.ativo_id == Ativo.id
+            ).join(
+                Carteira, Operacao.carteira_id == Carteira.id
+            ).filter(
+                Operacao.usuario_id == usuario_id
+            )
+            
+            # Filtra por carteira, se especificado
+            if carteira_id:
+                query = query.filter(Operacao.carteira_id == carteira_id)
+            
+            # Executa a consulta
+            operacoes = query.order_by(Operacao.data_operacao).all()
+            
+            if not operacoes:
+                return {
+                    'mensagem': 'Nenhuma operação encontrada para os critérios fornecidos.',
+                    'dados': {}
+                }
+            
+            # Inicializa as estruturas de dados para as métricas
+            metricas = {
+                'geral': {
+                    'total_operacoes': 0,
+                    'total_investido': Decimal('0'),
+                    'total_retirado': Decimal('0'),
+                    'lucro_prejuizo': Decimal('0'),
+                    'retorno_percentual': Decimal('0'),
+                    'ticket_medio_operacao': Decimal('0'),
+                    'operacoes_por_mes': {},
+                    'meses_ativos': set(),
+                    'estatisticas_por_tipo': {},
+                    'ativos_operados': set(),
+                    'carteiras_utilizadas': set()
+                },
+                'por_ano': {},
+                'por_ativo': {},
+                'por_carteira': {},
+                'por_tipo_operacao': {},
+                'evolucao_patrimonio': []
+            }
+            
+            # Variáveis para cálculo de patrimônio
+            saldo_acumulado = Decimal('0')
+            primeiro_ano = None
+            ultimo_ano = None
+            
+            # Processa cada operação
+            for operacao, ticker, carteira_nome in operacoes:
+                # Atualiza métricas gerais
+                metricas['geral']['total_operacoes'] += 1
+                
+                # Atualiza totais por tipo de operação
+                if operacao.tipo in [TipoOperacao.COMPRA, TipoOperacao.TRANSFERENCIA_ENTRADA]:
+                    metricas['geral']['total_investido'] += operacao.valor_total or Decimal('0')
+                    saldo_acumulado += operacao.valor_total or Decimal('0')
+                elif operacao.tipo in [TipoOperacao.VENDA, TipoOperacao.TRANSFERENCIA_SAIDA]:
+                    metricas['geral']['total_retirado'] += operacao.valor_total or Decimal('0')
+                    saldo_acumulado -= operacao.valor_total or Decimal('0')
+                
+                # Atualiza métricas por ano
+                ano = operacao.data_operacao.year
+                if ano not in metricas['por_ano']:
+                    metricas['por_ano'][ano] = {
+                        'total_operacoes': 0,
+                        'total_investido': Decimal('0'),
+                        'total_retirado': Decimal('0'),
+                        'meses_ativos': set()
+                    }
+                
+                metricas['por_ano'][ano]['total_operacoes'] += 1
+                
+                if operacao.tipo in [TipoOperacao.COMPRA, TipoOperacao.TRANSFERENCIA_ENTRADA]:
+                    metricas['por_ano'][ano]['total_investido'] += operacao.valor_total or Decimal('0')
+                elif operacao.tipo in [TipoOperacao.VENDA, TipoOperacao.TRANSFERENCIA_SAIDA]:
+                    metricas['por_ano'][ano]['total_retirado'] += operacao.valor_total or Decimal('0')
+                
+                mes_ano = operacao.data_operacao.strftime('%Y-%m')
+                metricas['por_ano'][ano]['meses_ativos'].add(mes_ano)
+                metricas['geral']['meses_ativos'].add(mes_ano)
+                
+                # Atualiza métricas por ativo
+                if ticker not in metricas['por_ativo']:
+                    metricas['por_ativo'][ticker] = {
+                        'total_operacoes': 0,
+                        'total_comprado': Decimal('0'),
+                        'total_vendido': Decimal('0'),
+                        'saldo': Decimal('0'),
+                        'primeira_operacao': operacao.data_operacao,
+                        'ultima_operacao': operacao.data_operacao
+                    }
+                else:
+                    if operacao.data_operacao < metricas['por_ativo'][ticker]['primeira_operacao']:
+                        metricas['por_ativo'][ticker]['primeira_operacao'] = operacao.data_operacao
+                    if operacao.data_operacao > metricas['por_ativo'][ticker]['ultima_operacao']:
+                        metricas['por_ativo'][ticker]['ultima_operacao'] = operacao.data_operacao
+                
+                metricas['por_ativo'][ticker]['total_operacoes'] += 1
+                
+                if operacao.tipo == TipoOperacao.COMPRA:
+                    metricas['por_ativo'][ticker]['total_comprado'] += operacao.valor_total or Decimal('0')
+                    metricas['por_ativo'][ticker]['saldo'] += operacao.valor_total or Decimal('0')
+                elif operacao.tipo == TipoOperacao.VENDA:
+                    metricas['por_ativo'][ticker]['total_vendido'] += operacao.valor_total or Decimal('0')
+                    metricas['por_ativo'][ticker]['saldo'] -= operacao.valor_total or Decimal('0')
+                
+                # Atualiza métricas por carteira
+                if carteira_nome not in metricas['por_carteira']:
+                    metricas['por_carteira'][carteira_nome] = {
+                        'total_operacoes': 0,
+                        'total_investido': Decimal('0'),
+                        'total_retirado': Decimal('0'),
+                        'saldo': Decimal('0')
+                    }
+                
+                metricas['por_carteira'][carteira_nome]['total_operacoes'] += 1
+                
+                if operacao.tipo in [TipoOperacao.COMPRA, TipoOperacao.TRANSFERENCIA_ENTRADA]:
+                    metricas['por_carteira'][carteira_nome]['total_investido'] += operacao.valor_total or Decimal('0')
+                    metricas['por_carteira'][carteira_nome]['saldo'] += operacao.valor_total or Decimal('0')
+                elif operacao.tipo in [TipoOperacao.VENDA, TipoOperacao.TRANSFERENCIA_SAIDA]:
+                    metricas['por_carteira'][carteira_nome]['total_retirado'] += operacao.valor_total or Decimal('0')
+                    metricas['por_carteira'][carteira_nome]['saldo'] -= operacao.valor_total or Decimal('0')
+                
+                # Atualiza métricas por tipo de operação
+                tipo_op = operacao.tipo.value
+                if tipo_op not in metricas['por_tipo_operacao']:
+                    metricas['por_tipo_operacao'][tipo_op] = {
+                        'total_operacoes': 0,
+                        'valor_total': Decimal('0'),
+                        'ticket_medio': Decimal('0')
+                    }
+                
+                metricas['por_tipo_operacao'][tipo_op]['total_operacoes'] += 1
+                metricas['por_tipo_operacao'][tipo_op]['valor_total'] += operacao.valor_total or Decimal('0')
+                
+                # Atualiza conjuntos para contagens únicas
+                metricas['geral']['ativos_operados'].add(ticker)
+                metricas['geral']['carteiras_utilizadas'].add(carteira_nome)
+                
+                # Atualiza primeiro e último ano para cálculo de evolução
+                if primeiro_ano is None or operacao.data_operacao.year < primeiro_ano:
+                    primeiro_ano = operacao.data_operacao.year
+                if ultimo_ano is None or operacao.data_operacao.year > ultimo_ano:
+                    ultimo_ano = operacao.data_operacao.year
+            
+            # Calcula métricas derivadas
+            metricas['geral']['lucro_prejuizo'] = (
+                metricas['geral']['total_retirado'] - metricas['geral']['total_investido']
+            )
+            
+            if metricas['geral']['total_investido'] > 0:
+                metricas['geral']['retorno_percentual'] = (
+                    (metricas['geral']['lucro_prejuizo'] / metricas['geral']['total_investido']) * 100
+                )
+            
+            if metricas['geral']['total_operacoes'] > 0:
+                metricas['geral']['ticket_medio_operacao'] = (
+                    (metricas['geral']['total_investido'] + metricas['geral']['total_retirado']) / 
+                    metricas['geral']['total_operacoes']
+                )
+            
+            # Calcula ticket médio por tipo de operação
+            for tipo_op, dados in metricas['por_tipo_operacao'].items():
+                if dados['total_operacoes'] > 0:
+                    dados['ticket_medio'] = dados['valor_total'] / dados['total_operacoes']
+            
+            # Calcula a evolução do patrimônio ao longo do tempo
+            if primeiro_ano is not None and ultimo_ano is not None:
+                for ano in range(primeiro_ano, ultimo_ano + 1):
+                    for mes in range(1, 13):
+                        mes_ano = f"{ano}-{mes:02d}"
+                        # Aqui você implementaria a lógica para calcular o patrimônio em cada mês
+                        # Esta é uma implementação simplificada
+                        pass
+            
+            # Converte Decimal para float para serialização
+            for key in ['total_investido', 'total_retirado', 'lucro_prejuizo', 'retorno_percentual', 'ticket_medio_operacao']:
+                if key in metricas['geral']:
+                    metricas['geral'][key] = float(metricas['geral'][key])
+            
+            for ano in metricas['por_ano']:
+                for key in ['total_investido', 'total_retirado']:
+                    metricas['por_ano'][ano][key] = float(metricas['por_ano'][ano][key])
+                metricas['por_ano'][ano]['meses_ativos'] = sorted(list(metricas['por_ano'][ano]['meses_ativos']))
+            
+            for ativo in metricas['por_ativo'].values():
+                for key in ['total_comprado', 'total_vendido', 'saldo']:
+                    ativo[key] = float(ativo[key])
+                ativo['primeira_operacao'] = ativo['primeira_operacao'].isoformat()
+                ativo['ultima_operacao'] = ativo['ultima_operacao'].isoformat()
+            
+            for carteira in metricas['por_carteira'].values():
+                for key in ['total_investido', 'total_retirado', 'saldo']:
+                    carteira[key] = float(carteira[key])
+            
+            for tipo_op in metricas['por_tipo_operacao'].values():
+                for key in ['valor_total', 'ticket_medio']:
+                    tipo_op[key] = float(tipo_op[key])
+            
+            # Adiciona contagens únicas
+            metricas['geral']['total_ativos_unicos'] = len(metricas['geral']['ativos_operados'])
+            metricas['geral']['total_carteiras_utilizadas'] = len(metricas['geral']['carteiras_utilizadas'])
+            metricas['geral']['total_meses_ativos'] = len(metricas['geral']['meses_ativos'])
+            
+            # Remove conjuntos para serialização
+            for key in ['ativos_operados', 'carteiras_utilizadas', 'meses_ativos']:
+                if key in metricas['geral']:
+                    metricas['geral'][key] = list(metricas['geral'][key])
+            
+            return {
+                'mensagem': 'Métricas calculadas com sucesso.',
+                'dados': metricas,
+                'metadados': {
+                    'data_geracao': datetime.utcnow().isoformat(),
+                    'usuario_id': usuario_id,
+                    'carteira_id': carteira_id
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"Erro ao calcular métricas avançadas: {str(e)}")
+            raise
+    
+    @staticmethod
+    def calcular_proxima_execucao(
+        frequencia: str,
+        hora: str,
+        dias_semana: List[int] = None,
+        dia_mes: int = None
+    ) -> datetime:
+        """
+        Calcula a próxima data de execução com base na frequência e configurações.
+        
+        Args:
+            frequencia (str): Frequência do agendamento ('diario', 'semanal', 'mensal').
+            hora (str): Hora do agendamento no formato 'HH:MM'.
+            dias_semana (List[int], optional): Dias da semana (0-6, onde 0 é segunda-feira).
+            dia_mes (int, optional): Dia do mês (1-31).
+                
+        Returns:
+            datetime: Próxima data de execução calculada.
+        """
+        try:
+            agora = datetime.utcnow()
+            hora_parts = list(map(int, hora.split(':')))
+            
+            if frequencia == 'diario':
+                # Próxima execução é hoje ou amanhã na hora especificada
+                proxima = agora.replace(
+                    hour=hora_parts[0],
+                    minute=hora_parts[1],
+                    second=0,
+                    microsecond=0
+                )
+                
+                if proxima <= agora:
+                    proxima += timedelta(days=1)
+                    
+            elif frequencia == 'semanal':
+                if not dias_semana:
+                    raise ValueError("Dias da semana são obrigatórios para frequência semanal.")
+                
+                # Encontra o próximo dia da semana a partir de hoje
+                dia_atual = agora.weekday()  # 0 = segunda, 6 = domingo
+                dias_para_proximo = None
+                
+                # Ordena os dias da semana para garantir a ordem correta
+                dias_semana_ordenados = sorted(dias_semana)
+                
+                # Encontra o próximo dia da semana
+                for dia in dias_semana_ordenados:
+                    if dia > dia_atual:
+                        dias_para_proximo = dia - dia_atual
+                        break
+                
+                # Se não encontrou um dia maior que hoje, pega o primeiro dia da próxima semana
+                if dias_para_proximo is None:
+                    dias_para_proximo = (7 - dia_atual) + dias_semana_ordenados[0]
+                
+                proxima = (agora + timedelta(days=dias_para_proximo)).replace(
+                    hour=hora_parts[0],
+                    minute=hora_parts[1],
+                    second=0,
+                    microsecond=0
+                )
+                
+            elif frequencia == 'mensal':
+                if not dia_mes:
+                    raise ValueError("Dia do mês é obrigatório para frequência mensal.")
+                
+                # Encontra o próximo dia do mês
+                dia_atual = agora.day
+                mes_atual = agora.month
+                ano_atual = agora.year
+                
+                if dia_mes > dia_atual:
+                    # O dia ainda não passou este mês
+                    proxima = datetime(
+                        year=ano_atual,
+                        month=mes_atual,
+                        day=min(dia_mes, 28),  # Evita problemas com fevereiro
+                        hour=hora_parts[0],
+                        minute=hora_parts[1],
+                        second=0,
+                        microsecond=0
+                    )
+                    
+                    # Ajusta para o último dia do mês se o dia for inválido
+                    ultimo_dia_mes = (datetime(ano_atual, mes_atual % 12 + 1, 1) - timedelta(days=1)).day
+                    if dia_mes > ultimo_dia_mes:
+                        proxima = proxima.replace(day=ultimo_dia_mes)
+                    
+                    if proxima <= agora:
+                        # Se já passou a hora de hoje, vai para o próximo mês
+                        mes_atual += 1
+                        if mes_atual > 12:
+                            mes_atual = 1
+                            ano_atual += 1
+                else:
+                    # O dia já passou, vai para o próximo mês
+                    mes_atual += 1
+                    if mes_atual > 12:
+                        mes_atual = 1
+                        ano_atual += 1
+                
+                proxima = datetime(
+                    year=ano_atual,
+                    month=mes_atual,
+                    day=min(dia_mes, 28),  # Evita problemas com fevereiro
+                    hour=hora_parts[0],
+                    minute=hora_parts[1],
+                    second=0,
+                    microsecond=0
+                )
+                
+                # Ajusta para o último dia do mês se o dia for inválido
+                ultimo_dia_mes = (datetime(ano_atual, mes_atual % 12 + 1, 1) - timedelta(days=1)).day
+                if dia_mes > ultimo_dia_mes:
+                    proxima = proxima.replace(day=ultimo_dia_mes)
+            else:
+                raise ValueError(f"Frequência inválida: {frequencia}")
+            
+            return proxima
+            
+        except Exception as e:
+            logger.error(f"Erro ao calcular próxima execução: {str(e)}")
+            raise
+        """
         Agenda o envio periódico de relatórios de desempenho.
         
         Args:

@@ -46,23 +46,23 @@
                         </a>
                     </li>
                     <li class="{% if active_page == 'carteira' %}active{% endif %}">
-                        <a href="#">
+                        <a href="{{ url_for('carteira.get_carteira') }}">
                             <i class="fas fa-wallet"></i> Carteira
                         </a>
                     </li>
                     <li class="{% if active_page == 'pesquisa' %}active{% endif %}">
-                        <a href="#">
+                        <a href="{{ url_for('pesquisa') }}">
                             <i class="fas fa-search"></i> Pesquisa
                         </a>
                     </li>
                     <li class="nav-section">Alertas</li>
                     <li class="{% if active_page == 'alertas_compra' %}active{% endif %}">
-                        <a href="#">
+                        <a href="{{ url_for('alertas.get_alertas_compra') }}">
                             <i class="fas fa-bell"></i> Alertas de Compra
                         </a>
                     </li>
                     <li class="{% if active_page == 'alertas_venda' %}active{% endif %}">
-                        <a href="#">
+                        <a href="{{ url_for('alertas.get_alertas_venda') }}">
                             <i class="fas fa-bell"></i> Alertas de Venda
                         </a>
                     </li>
@@ -108,8 +108,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
     
     {% block extra_js %}{% endblock %}
     

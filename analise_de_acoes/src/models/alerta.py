@@ -19,6 +19,10 @@ class Alerta(db.Model):
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     ativo_id = db.Column(db.Integer, db.ForeignKey('ativos.id'))
     symbol = db.Column(db.String(20), nullable=False)  # Store symbol directly for easier access
+    
+    # Relationships
+    ativo = db.relationship('Ativo', back_populates='alertas')
+    usuario = db.relationship('Usuario', back_populates='alertas')
     tipo = db.Column(db.String(10), nullable=False)  # compra, venda
     preco_alvo = db.Column(db.Float, nullable=False)
     condicao = db.Column(db.String(10), nullable=False)  # acima, abaixo

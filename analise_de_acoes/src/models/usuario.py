@@ -16,8 +16,11 @@ class Usuario(UserMixin, db.Model):
     ativo = db.Column(db.Boolean, default=True)
     
     # Relationships
-    carteira = db.relationship('Carteira', backref='usuario', lazy=True, cascade='all, delete-orphan')
-    alertas = db.relationship('Alerta', backref='usuario', lazy=True, cascade='all, delete-orphan')
+    # Relacionamento com Carteira
+    carteiras = db.relationship('Carteira', back_populates='usuario_rel', lazy=True, cascade='all, delete-orphan')
+    
+    # Relacionamento com Alerta
+    alertas = db.relationship('Alerta', back_populates='usuario', lazy=True, cascade='all, delete-orphan')
     
     def __init__(self, username, email, senha_hash, nivel_acesso='user'):
         self.username = username

@@ -30,28 +30,43 @@ class RelatorioService:
         """
         total_geral, totais_por_tipo = carteira.calcular_valor_total()
         
+        # Converte total_geral para Decimal para garantir consistência
+        total_geral_decimal = Decimal(str(total_geral)) if total_geral is not None else Decimal('0')
+        
         distribuicao_tipos = []
         for tipo, valor in totais_por_tipo.items():
-            percentual = (float(valor) / float(total_geral) * 100) if total_geral > 0 else 0.0
+            valor_decimal = Decimal(str(valor))
+            percentual = (valor_decimal / total_geral_decimal * Decimal('100')) if total_geral_decimal > Decimal('0') else Decimal('0')
             distribuicao_tipos.append({
                 'tipo': tipo,
-                'valor': float(valor),
-                'percentual': round(float(percentual), 2)
+                'valor': float(valor_decimal),
+                'percentual': float(percentual.quantize(Decimal('0.01')))
             })
         
         distribuicao_tipos.sort(key=lambda x: x['valor'], reverse=True)
         
-        total_investido = sum(item.valor_total for item in carteira.itens.values() if item.valor_total is not None)
-        resultado_bruto = float(total_geral) - float(total_investido) if total_geral is not None else 0.0
-        resultado_percentual = (resultado_bruto / float(total_investido) * 100) if total_investido > 0 else 0.0
+        # Calcula o total investido como Decimal
+        total_investido = sum(
+            Decimal(str(item.valor_total)) 
+            for item in carteira.itens.values() 
+            if item.valor_total is not None
+        )
+        
+        # Calcula resultados como Decimal
+        resultado_bruto = total_geral_decimal - total_investido if total_geral is not None else Decimal('0')
+        resultado_percentual = (
+            (resultado_bruto / total_investido * Decimal('100')) 
+            if total_investido > Decimal('0') 
+            else Decimal('0')
+        )
         
         return {
             'nome_carteira': carteira.nome,
             'data_geracao': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
-            'total_investido': float(total_investido),
-            'valor_atual': float(total_geral) if total_geral is not None else 0.0,
-            'resultado_bruto': round(resultado_bruto, 2),
-            'resultado_percentual': round(float(resultado_percentual), 2),
+            'total_investido': float(total_investido.quantize(Decimal('0.01'))),
+            'valor_atual': float(total_geral_decimal.quantize(Decimal('0.01'))) if total_geral is not None else 0.0,
+            'resultado_bruto': float(resultado_bruto.quantize(Decimal('0.01'))),
+            'resultado_percentual': float(resultado_percentual.quantize(Decimal('0.01'))),
             'total_ativos': len(carteira.itens),
             'distribuicao_tipos': distribuicao_tipos,
             'moeda_principal': 'BRL'
@@ -80,10 +95,11 @@ class RelatorioService:
                 continue
                 
             ativo = item.ativo
-            valor_total = float(item.valor_total) if item.valor_total is not None else 0.0
-            valor_atual = float(item.valor_atual) if item.valor_atual is not None else 0.0
-            resultado = float(item.resultado) if item.resultado is not None else 0.0
-            resultado_percentual = float(item.resultado_percentual) if item.resultado_percentual is not None else 0.0
+            # Converte os valores para Decimal primeiro para manter a precisão
+            valor_total = Decimal(str(item.valor_total)) if item.valor_total is not None else Decimal('0')
+            valor_atual = Decimal(str(item.valor_atual)) if item.valor_atual is not None else Decimal('0')
+            resultado = Decimal(str(item.resultado)) if item.resultado is not None else Decimal('0')
+            resultado_percentual = Decimal(str(item.resultado_percentual)) if item.resultado_percentual is not None else Decimal('0')
             
             detalhes = {}
             if hasattr(ativo, 'dados_mercado') and ativo.dados_mercado:
@@ -94,6 +110,7 @@ class RelatorioService:
                     'valor_mercado': ativo.dados_mercado.get('valorDeMercado', 0.0)
                 }
             
+            # Converte para float apenas no final, para exibição
             ativo_info = {
                 'ticker': ativo.ticker,
                 'nome': ativo.nome,
@@ -102,13 +119,13 @@ class RelatorioService:
                 'quantidade': float(item.quantidade) if item.quantidade is not None else 0.0,
                 'preco_medio': float(item.preco_medio) if item.preco_medio is not None else 0.0,
                 'preco_atual': float(ativo.preco_atual) if ativo.preco_atual is not None else 0.0,
-                'valor_total': round(valor_total, 2),
-                'valor_atual': round(valor_atual, 2),
-                'resultado_bruto': round(resultado, 2),
-                'resultado_percentual': round(resultado_percentual, 2),
                 'moeda': ativo.moeda or 'BRL',
                 'ultima_atualizacao': ativo.ultima_atualizacao.strftime('%d/%m/%Y %H:%M') if hasattr(ativo, 'ultima_atualizacao') and ativo.ultima_atualizacao else 'N/A',
-                'detalhes': detalhes
+                'detalhes': detalhes,
+                'valor_total': float(valor_total.quantize(Decimal('0.01'))),
+                'valor_atual': float(valor_atual.quantize(Decimal('0.01'))),
+                'resultado': float(resultado.quantize(Decimal('0.01'))),
+                'resultado_percentual': float(resultado_percentual.quantize(Decimal('0.01')))
             }
             
             ativos_detalhados.append(ativo_info)
@@ -132,6 +149,7 @@ class RelatorioService:
             relatorio = RelatorioService.gerar_relatorio_detalhado(carteira)
             
             with pd.ExcelWriter(caminho_arquivo, engine='openpyxl') as writer:
+                # Formata os valores numéricos para garantir precisão
                 resumo_data = {
                     'Métrica': [
                         'Nome da Carteira',
@@ -145,11 +163,11 @@ class RelatorioService:
                     'Valor': [
                         relatorio['nome_carteira'],
                         relatorio['data_geracao'],
-                        round(relatorio['total_investido'], 2),
-                        round(relatorio['valor_atual'], 2),
-                        round(relatorio['resultado_bruto'], 2),
-                        round(relatorio['resultado_percentual'], 2),
-                        relatorio['total_ativos']
+                        float(Decimal(str(relatorio['total_investido'])).quantize(Decimal('0.01'))),
+                        float(Decimal(str(relatorio['valor_atual'])).quantize(Decimal('0.01'))) if relatorio['valor_atual'] is not None else 0.0,
+                        float(Decimal(str(relatorio['resultado_bruto'])).quantize(Decimal('0.01'))),
+                        float(Decimal(str(relatorio['resultado_percentual'])).quantize(Decimal('0.01'))),
+                        int(relatorio['total_ativos'])
                     ]
                 }
                 

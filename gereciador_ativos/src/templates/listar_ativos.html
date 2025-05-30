@@ -3,6 +3,34 @@
 {% block title %}Meus Ativos{% endblock %}
 
 {% block content %}
+<!-- Toast de Sucesso -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toastSucesso" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Sucesso</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Fechar"></button>
+        </div>
+        <div class="toast-body">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <span id="toastMensagem">Operação realizada com sucesso!</span>
+        </div>
+    </div>
+</div>
+
+<!-- Toast de Erro -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toastErro" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Erro</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Fechar"></button>
+        </div>
+        <div class="toast-body">
+            <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+            <span id="toastMensagemErro">Ocorreu um erro ao processar sua solicitação.</span>
+        </div>
+    </div>
+</div>
+
 <div class="container-fluid">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Meus Ativos</h1>
@@ -75,7 +103,7 @@
                     </thead>
                     <tbody>
                         {% for ativo in ativos %}
-                        <tr>
+                        <tr data-ticker="{{ ativo.ticker }}">
                             <td><strong>{{ ativo.ticker }}</strong></td>
                             <td>{{ ativo.nome }}</td>
                             <td class="text-end">{{ "%0.6f"|format(ativo.quantidade|float) }}</td>
@@ -83,8 +111,8 @@
                             <td class="text-end">R$ {{ "%0.2f"|format(ativo.preco_atual|float) if ativo.preco_atual else 'N/A' }}</td>
                             <td class="text-end">R$ {{ "%0.2f"|format(ativo.valor_total|float) }}</td>
                             <td class="text-end">R$ {{ "%0.2f"|format(ativo.valor_atual|float) if ativo.valor_atual else 'N/A' }}</td>
-                            <td class="text-end {% if ativo.resultado_bruto >= 0 %}text-success{% else %}text-danger{% endif %}">
-                                R$ {{ "%0.2f"|format(ativo.resultado_bruto|float) if ativo.resultado_bruto is not none else 'N/A' }}
+                            <td class="text-end {% if ativo.resultado >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                R$ {{ "%0.2f"|format(ativo.resultado|float) if ativo.resultado is not none else 'N/A' }}
                                 <br>
                                 <small>({{ "%0.2f"|format(ativo.resultado_percentual|float) if ativo.resultado_percentual is not none else '0.00' }}%)</small>
                             </td>
@@ -138,6 +166,46 @@
     </div>
 </div>
 
+<!-- Modal de Edição de Ativo -->
+<div class="modal fade" id="modalEditarAtivo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Ativo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <form id="formEditarAtivo" method="POST" action="{{ url_for('editar_ativo') }}">
+                <input type="hidden" name="ticker_original" id="ticker_original">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="ticker" class="form-label">Ticker</label>
+                        <input type="text" class="form-control" id="ticker" name="ticker" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quantidade" class="form-label">Quantidade</label>
+                        <input type="number" class="form-control" id="quantidade" name="quantidade" step="0.000001" min="0.000001" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="preco_medio" class="form-label">Preço Médio (R$)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="text" class="form-control" id="preco_medio" name="preco_medio" 
+                                   inputmode="decimal" pattern="[0-9]+([,][0-9]{1,2})?" 
+                                   title="Digite um valor monetário válido (ex: 1234,56)" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Modal de Confirmação de Exclusão -->
 <div class="modal fade" id="modalExcluir" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -179,12 +247,161 @@
     function confirmarExclusao(ticker) {
         tickerAtual = ticker;
         document.getElementById('tickerParaExcluir').textContent = ticker;
-        const form = document.getElementById('formExcluir');
-        form.action = `/excluir_ativo/${ticker}`;
         
         const modal = new bootstrap.Modal(document.getElementById('modalExcluir'));
         modal.show();
     }
+    
+    // Manipular envio do formulário de exclusão
+    document.getElementById('formExcluir').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalExcluir'));
+        const btnSubmit = this.querySelector('button[type="submit"]');
+        const btnText = btnSubmit.innerHTML;
+        
+        try {
+            // Desabilita o botão e mostra indicador de carregamento
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Excluindo...';
+            
+            // Envia a requisição para o servidor
+            const response = await fetch(`/excluir_ativo/${tickerAtual}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCSRFToken()
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.mensagem || 'Erro ao excluir ativo');
+            }
+            
+            if (data.sucesso) {
+                // Mostra mensagem de sucesso
+                const toast = new bootstrap.Toast(document.getElementById('toastSucesso'));
+                document.getElementById('toastMensagem').textContent = data.mensagem;
+                toast.show();
+                
+                // Fecha o modal
+                modal.hide();
+                
+                // Recarrega a página após um curto atraso
+                setTimeout(() => {
+                    window.location.href = data.redirect || window.location.href;
+                }, 1500);
+            } else {
+                throw new Error(data.mensagem || 'Erro ao excluir ativo');
+            }
+        } catch (error) {
+            console.error('Erro ao excluir ativo:', error);
+            
+            // Mostra mensagem de erro
+            const toast = new bootstrap.Toast(document.getElementById('toastErro'));
+            document.getElementById('toastMensagemErro').textContent = error.message || 'Erro ao excluir ativo';
+            toast.show();
+            
+            // Habilita o botão novamente
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = btnText;
+        }
+    });
+    
+    // Função para obter o token CSRF
+    function getCSRFToken() {
+        return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    }
+    
+    // Função para mostrar notificação
+    function mostrarNotificacao(titulo, mensagem, tipo = 'info') {
+        const toastContainer = document.createElement('div');
+        toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+        toastContainer.style.zIndex = '1111';
+        
+        const toastId = 'toast-' + Date.now();
+        
+        const toastHTML = `
+            <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-${tipo} text-white">
+                    <strong class="me-auto">${titulo}</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Fechar"></button>
+                </div>
+                <div class="toast-body">
+                    <i class="bi ${tipo === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'} me-2"></i>
+                    ${mensagem}
+                </div>
+            </div>
+        `;
+        
+        toastContainer.innerHTML = toastHTML;
+        document.body.appendChild(toastContainer);
+        
+        const toastElement = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastElement, { autohide: true, delay: 3000 });
+        
+        // Remove o toast do DOM após ser escondido
+        toastElement.addEventListener('hidden.bs.toast', function() {
+            document.body.removeChild(toastContainer);
+        });
+        
+        toast.show();
+    }
+    
+    // Manipular envio do formulário de edição
+    document.getElementById('formEditarAtivo').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const form = this;
+        const formData = new FormData(form);
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalEditarAtivo'));
+        
+        try {
+            // Desabilita o botão e mostra indicador de carregamento
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+            
+            // Envia a requisição para o servidor
+            const response = await fetch('{{ url_for("editar_ativo") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: new URLSearchParams(new FormData(form)).toString()
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.mensagem || 'Erro ao editar ativo');
+            }
+            
+            // Fecha o modal imediatamente
+            modal.hide();
+            
+            // Mostra mensagem de sucesso
+            mostrarNotificacao('Sucesso', 'Ativo atualizado com sucesso!', 'success');
+            
+            // Recarrega a página após 1 segundo para mostrar a notificação
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+            
+        } catch (error) {
+            console.error('Erro ao editar ativo:', error);
+            mostrarNotificacao('Erro', error.message || 'Erro ao editar ativo', 'danger');
+            
+            // Reativa o botão em caso de erro
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        }
+    });
     
     // Ordenação da tabela
     document.addEventListener('DOMContentLoaded', function() {
@@ -202,10 +419,80 @@
         });
     });
     
+    // Inicializa a formatação do campo de preço médio quando o modal é aberto
+    document.getElementById('modalEditarAtivo').addEventListener('show.bs.modal', function() {
+        const precoMedioInput = document.getElementById('preco_medio');
+        
+        // Formata o valor monetário ao digitar
+        const formatarValorMonetario = function(e) {
+            // Obtém o valor digitado e remove caracteres não numéricos, exceto vírgula
+            let value = this.value.replace(/[^\d,]/g, '');
+            
+            // Remove zeros à esquerda, mas mantém um zero se o valor for zero
+            value = value.replace(/^0+/, '') || '0';
+            
+            // Se houver mais de uma vírgula, mantém apenas a primeira
+            const parts = value.split(',');
+            if (parts.length > 2) {
+                value = parts[0] + ',' + parts.slice(1).join('');
+            }
+            
+            // Limita a 2 casas decimais
+            if (parts.length === 2 && parts[1].length > 2) {
+                value = parts[0] + ',' + parts[1].substring(0, 2);
+            }
+            
+            // Atualiza o valor do campo
+            this.value = value;
+        };
+        
+        // Remove event listeners antigos para evitar duplicação
+        precoMedioInput.removeEventListener('input', formatarValorMonetario);
+        // Adiciona o event listener
+        precoMedioInput.addEventListener('input', formatarValorMonetario);
+    });
+    
+    // Função para formatar valor monetário
+    function formatarValorMonetario(valor) {
+        // Remove qualquer formatação existente e converte para número
+        const numero = parseFloat(valor.toString()
+            .replace(/[^\d,]/g, '')
+            .replace(',', '.'));
+            
+        // Formata para 2 casas decimais
+        return isNaN(numero) ? '' : numero.toFixed(2).replace('.', ',');
+    }
+    
     // Função para editar ativo
     function editarAtivo(ticker) {
-        // Implementar lógica de edição
-        console.log('Editando ativo:', ticker);
+        // Encontra a linha da tabela com o ticker correspondente
+        const row = document.querySelector(`tr[data-ticker="${ticker}"]`);
+        if (!row) {
+            console.error('Ativo não encontrado:', ticker);
+            mostrarNotificacao('Erro', 'Ativo não encontrado', 'error');
+            return;
+        }
+        
+        try {
+            // Obtém os dados da linha
+            const cells = row.cells;
+            const tickerText = cells[0].querySelector('strong').textContent.trim();
+            const quantidade = cells[2].textContent.trim();
+            const precoMedio = cells[3].textContent.trim();
+            
+            // Preenche o formulário do modal com os dados do ativo
+            document.getElementById('ticker_original').value = tickerText;
+            document.getElementById('ticker').value = tickerText;
+            document.getElementById('quantidade').value = quantidade;
+            document.getElementById('preco_medio').value = formatarValorMonetario(precoMedio);
+            
+            // Exibe o modal
+            const modal = new bootstrap.Modal(document.getElementById('modalEditarAtivo'));
+            modal.show();
+        } catch (error) {
+            console.error('Erro ao preparar edição:', error);
+            mostrarNotificacao('Erro', 'Erro ao preparar edição do ativo', 'error');
+        }
     }
 </script>
 {% endblock %}

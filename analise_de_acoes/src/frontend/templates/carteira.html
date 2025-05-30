@@ -1,0 +1,703 @@
+{% extends "base.html" %}
+
+{% block title %}Minha Carteira{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Estilos específicos para a página de Carteira */
+    .carteira-container {
+        padding: 2rem;
+    }
+    
+    .carteira-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .carteira-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .carteira-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .summary-card {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+    }
+    
+    .summary-card-title {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary-card-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .summary-card-change {
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        margin-top: 0.5rem;
+    }
+    
+    .carteira-table {
+        width: 100%;
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+    }
+    
+    .carteira-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .carteira-table th, 
+    .carteira-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .carteira-table th {
+        background: var(--darker);
+        color: var(--text-secondary);
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .carteira-table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .carteira-table .positive {
+        color: var(--positive);
+    }
+    
+    .carteira-table .negative {
+        color: var(--negative);
+    }
+    
+    .carteira-charts {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .chart-container {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+    }
+    
+    .chart-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .chart-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+    
+    .chart {
+        height: 300px;
+        width: 100%;
+    }
+    
+    .add-asset-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .add-asset-btn i {
+        font-size: 1rem;
+    }
+    
+    @media (max-width: 992px) {
+        .carteira-charts {
+            grid-template-columns: 1fr;
+        }
+        
+        .carteira-summary {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .carteira-summary {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="carteira-container">
+    <!-- Cabeçalho -->
+    <div class="carteira-header">
+        <h1 class="carteira-title">Minha Carteira</h1>
+        <button class="btn btn-primary add-asset-btn" data-bs-toggle="modal" data-bs-target="#addAssetModal">
+            <i class="fas fa-plus"></i> Adicionar Ativo
+        </button>
+    </div>
+    
+    <!-- Resumo da Carteira -->
+    <div class="carteira-summary">
+        <div class="summary-card">
+            <div class="summary-card-title">Valor Total</div>
+            <div class="summary-card-value" id="total-value">R$ 0,00</div>
+            <div class="summary-card-change positive" id="total-change">
+                <i class="fas fa-caret-up"></i> 0.00%
+            </div>
+        </div>
+        
+        <div class="summary-card">
+            <div class="summary-card-title">Lucro/Prejuízo</div>
+            <div class="summary-card-value positive" id="total-profit">R$ 0,00</div>
+            <div class="summary-card-change positive" id="profit-percentage">0.00%</div>
+        </div>
+        
+        <div class="summary-card">
+            <div class="summary-card-title">Total Investido</div>
+            <div class="summary-card-value" id="total-invested">R$ 0,00</div>
+            <div class="summary-card-change">Desde o início</div>
+        </div>
+        
+        <div class="summary-card">
+            <div class="summary-card-title">Ativos na Carteira</div>
+            <div class="summary-card-value" id="assets-count">0</div>
+            <div class="summary-card-change">Total de ativos</div>
+        </div>
+    </div>
+    
+    <!-- Tabela de Ativos -->
+    <div class="carteira-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ativo</th>
+                    <th>Quantidade</th>
+                    <th>Preço Médio</th>
+                    <th>Preço Atual</th>
+                    <th>Valor Investido</th>
+                    <th>Valor Atual</th>
+                    <th>Lucro/Prejuízo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="assets-table-body">
+                <!-- Os ativos serão inseridos aqui via JavaScript -->
+                <tr>
+                    <td colspan="8" class="text-center py-4">Nenhum ativo encontrado. Adicione seu primeiro ativo.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Gráficos -->
+    <div class="carteira-charts">
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Desempenho da Carteira</h3>
+            </div>
+            <div id="portfolio-performance-chart" class="chart"></div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Distribuição por Ativo</h3>
+            </div>
+            <div id="portfolio-distribution-chart" class="chart"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Adicionar Ativo -->
+<div class="modal fade" id="addAssetModal" tabindex="-1" aria-labelledby="addAssetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAssetModalLabel">Adicionar Ativo à Carteira</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addAssetForm">
+                    <div class="mb-3">
+                        <label for="assetSymbol" class="form-label">Ativo</label>
+                        <input type="text" class="form-control" id="assetSymbol" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assetQuantity" class="form-label">Quantidade</label>
+                        <input type="number" class="form-control" id="assetQuantity" step="0.00000001" min="0.00000001" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assetPrice" class="form-label">Preço Médio (R$)</label>
+                        <input type="number" class="form-control" id="assetPrice" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="purchaseDate" class="form-label">Data da Compra</label>
+                        <input type="date" class="form-control" id="purchaseDate" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="saveAssetBtn">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Ativo -->
+<div class="modal fade" id="editAssetModal" tabindex="-1" aria-labelledby="editAssetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAssetModalLabel">Editar Ativo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editAssetForm">
+                    <input type="hidden" id="editAssetId">
+                    <div class="mb-3">
+                        <label for="editAssetSymbol" class="form-label">Ativo</label>
+                        <input type="text" class="form-control" id="editAssetSymbol" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAssetQuantity" class="form-label">Quantidade</label>
+                        <input type="number" class="form-control" id="editAssetQuantity" step="0.00000001" min="0.00000001" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAssetPrice" class="form-label">Preço Médio (R$)</label>
+                        <input type="number" class="form-control" id="editAssetPrice" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPurchaseDate" class="form-label">Data da Compra</label>
+                        <input type="date" class="form-control" id="editPurchaseDate" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger me-auto" id="deleteAssetBtn">Excluir</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="updateAssetBtn">Atualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Inicialização quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+        // Carregar dados da carteira
+        loadPortfolioData();
+        
+        // Configurar eventos dos botões
+        setupEventListeners();
+        
+        // Configurar data atual como padrão para o campo de data
+        document.getElementById('purchaseDate').valueAsDate = new Date();
+    });
+    
+    // Carregar dados da carteira
+    async function loadPortfolioData() {
+        try {
+            // Mostrar loading
+            const loadingElement = document.createElement('div');
+            loadingElement.className = 'loading';
+            loadingElement.textContent = 'Carregando dados da carteira...';
+            document.querySelector('.carteira-container').prepend(loadingElement);
+            
+            // Fazer requisição para a API
+            const response = await fetch('/api/carteira', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin' // Importante para enviar cookies de autenticação
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Erro HTTP! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Verificar se a resposta tem a estrutura esperada
+                if (result.data) {
+                    // Estrutura os dados para o formato esperado pelas funções de atualização
+                    const portfolioData = {
+                        totalValue: result.data.valor_atual || 0,
+                        totalInvested: result.data.total_investido || 0,
+                        totalProfit: result.data.lucro_prejuizo || 0,
+                        profitPercentage: result.data.lucro_prejuizo_percentual || 0,
+                        assetsCount: result.data.ativos ? result.data.ativos.length : 0,
+                        totalChange: result.data.lucro_prejuizo_percentual || 0
+                    };
+                    
+                    // Atualizar a interface com os dados recebidos
+                    updatePortfolioSummary(portfolioData);
+                    updateAssetsTable(result.data.ativos || []);
+                    updatePortfolioCharts(portfolioData);
+                } else {
+                    // Se não houver dados, inicializa com valores zerados
+                    const emptyData = {
+                        totalValue: 0,
+                        totalInvested: 0,
+                        totalProfit: 0,
+                        profitPercentage: 0,
+                        assetsCount: 0,
+                        totalChange: 0
+                    };
+                    updatePortfolioSummary(emptyData);
+                    updateAssetsTable([]);
+                    updatePortfolioCharts(emptyData);
+                }
+            } else {
+                console.error('Erro na resposta da API:', result.error);
+                alert('Erro ao carregar os dados da carteira: ' + (result.error || 'Erro desconhecido'));
+            }
+        } catch (error) {
+            console.error('Erro ao carregar carteira:', error);
+            alert('Erro ao se conectar ao servidor. Verifique sua conexão e tente novamente.');
+        } finally {
+            // Remover loading
+            const loadingElement = document.querySelector('.loading');
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+        }
+    }
+    
+    // Atualizar o resumo da carteira
+    function updatePortfolioSummary(data) {
+        document.getElementById('total-value').textContent = `R$ ${data.totalValue.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById('total-invested').textContent = `R$ ${data.totalInvested.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById('total-profit').textContent = `R$ ${data.totalProfit.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById('profit-percentage').textContent = `${data.profitPercentage >= 0 ? '+' : ''}${data.profitPercentage.toFixed(2)}%`;
+        document.getElementById('assets-count').textContent = data.assetsCount;
+        
+        // Atualizar o indicador de variação
+        const changeElement = document.getElementById('total-change');
+        changeElement.innerHTML = `
+            <i class="fas fa-caret-${data.totalChange >= 0 ? 'up' : 'down'}"></i> 
+            ${Math.abs(data.totalChange).toFixed(2)}%
+        `;
+        changeElement.className = `summary-card-change ${data.totalChange >= 0 ? 'positive' : 'negative'}`;
+    }
+    
+    // Atualizar a tabela de ativos
+    function updateAssetsTable(assets) {
+        const tbody = document.getElementById('assets-table-body');
+        
+        if (assets.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-4">Nenhum ativo encontrado. Adicione seu primeiro ativo.</td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        
+        assets.forEach(asset => {
+            const row = document.createElement('tr');
+            row.dataset.id = asset.id;
+            row.innerHTML = `
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="me-2">
+                            <i class="fas ${asset.symbol.includes('USDT') ? 'fa-coins' : 'fa-chart-line'}"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold">${asset.symbol}</div>
+                            <div class="text-muted small">${asset.name}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>${asset.quantity.toLocaleString('pt-BR', {maximumFractionDigits: 8})}</td>
+                <td>R$ ${asset.avgPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                <td>R$ ${asset.currentPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                <td>R$ ${asset.invested.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                <td>R$ ${asset.currentValue.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                <td class="${asset.profit >= 0 ? 'positive' : 'negative'}">
+                    R$ ${Math.abs(asset.profit).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                    <div class="small">${asset.profitPercentage >= 0 ? '+' : ''}${asset.profitPercentage.toFixed(2)}%</div>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary edit-asset" data-id="${asset.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+        
+        // Adicionar eventos de clique aos botões de edição
+        document.querySelectorAll('.edit-asset').forEach(button => {
+            button.addEventListener('click', function() {
+                const assetId = parseInt(this.dataset.id);
+                editAsset(assetId);
+            });
+        });
+    }
+    
+    // Atualizar os gráficos da carteira
+    function updatePortfolioCharts(data) {
+        // Elementos dos containers dos gráficos
+        const performanceChartEl = document.getElementById('portfolio-performance-chart');
+        const distributionChartEl = document.getElementById('portfolio-distribution-chart');
+        const chartsContainer = document.querySelector('.carteira-charts');
+        
+        // Verificar se há dados para exibir
+        if (!data.assets || data.assets.length === 0) {
+            // Se não houver ativos, exibir mensagem e esconder os gráficos
+            chartsContainer.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-chart-pie fa-4x mb-3" style="color: #6c757d;"></i>
+                    <h4>Nenhum dado disponível</h4>
+                    <p class="text-muted">Adicione ativos à sua carteira para visualizar os gráficos.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Se chegou aqui, há ativos para exibir
+        chartsContainer.style.display = 'grid'; // Garante que o container está visível
+        
+        // Dados para o gráfico de desempenho (exemplo com dados estáticos por enquanto)
+        const performanceData = [
+            {x: 'Jan', y: 10000},
+            {x: 'Fev', y: 10500},
+            {x: 'Mar', y: 10800},
+            {x: 'Abr', y: 11200},
+            {x: 'Mai', y: 11500},
+            {x: 'Jun', y: 11800},
+            {x: 'Jul', y: 12200},
+            {x: 'Ago', y: data.totalValue || 12500}
+        ];
+        
+        // Configuração do layout do gráfico de desempenho
+        const performanceLayout = {
+            title: 'Evolução do Patrimônio',
+            xaxis: {title: 'Data'},
+            yaxis: {title: 'Valor (R$)'},
+            showlegend: false,
+            margin: {t: 30, b: 30, l: 50, r: 30},
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: '#fff'},
+            xaxis: {gridcolor: 'rgba(255,255,255,0.1)'},
+            yaxis: {gridcolor: 'rgba(255,255,255,0.1)'}
+        };
+        
+        // Configuração do layout do gráfico de distribuição
+        const distributionLayout = {
+            title: 'Distribuição por Ativo',
+            showlegend: true,
+            legend: {
+                orientation: 'h',
+                y: -0.2
+            },
+            margin: {t: 30, b: 30, l: 30, r: 30},
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: '#fff'}
+        };
+        
+        try {
+            // Renderizar o gráfico de desempenho
+            Plotly.newPlot('portfolio-performance-chart', [{
+                x: performanceData.map(d => d.x),
+                y: performanceData.map(d => d.y),
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#00FF00', width: 3},
+                marker: {color: '#00FF00', size: 8}
+            }], performanceLayout, {responsive: true});
+            
+            // Renderizar o gráfico de distribuição apenas se houver ativos
+            if (data.assets && data.assets.length > 0) {
+                Plotly.newPlot('portfolio-distribution-chart', [{
+                    labels: data.assets.map(a => a.symbol || 'Sem nome'),
+                    values: data.assets.map(a => a.currentValue || 0),
+                    type: 'pie',
+                    textinfo: 'label+percent',
+                    textposition: 'inside',
+                    hoverinfo: 'label+value+percent',
+                    hole: 0.4,
+                    marker: {
+                        colors: ['#00FF00', '#00CC00', '#009900', '#006600', '#003300']
+                    }
+                }], distributionLayout, {responsive: true});
+            }
+        } catch (error) {
+            console.error('Erro ao renderizar gráficos:', error);
+            chartsContainer.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-4x mb-3" style="color: #ffc107;"></i>
+                    <h4>Erro ao carregar gráficos</h4>
+                    <p class="text-muted">Ocorreu um erro ao tentar carregar os gráficos.</p>
+                    <button class="btn btn-sm btn-outline-warning mt-2" onclick="location.reload()">
+                        <i class="fas fa-sync-alt"></i> Tentar novamente
+                    </button>
+                </div>
+            `;
+        }
+    }
+    
+    // Configurar eventos dos botões
+    function setupEventListeners() {
+        // Salvar novo ativo
+        document.getElementById('saveAssetBtn').addEventListener('click', saveNewAsset);
+        
+        // Atualizar ativo existente
+        document.getElementById('updateAssetBtn').addEventListener('click', updateAsset);
+        
+        // Excluir ativo
+        document.getElementById('deleteAssetBtn').addEventListener('click', deleteAsset);
+        
+        // Fechar o modal ao salvar
+        const modals = ['addAssetModal', 'editAssetModal'];
+        modals.forEach(modalId => {
+            document.getElementById(modalId).addEventListener('hidden.bs.modal', function () {
+                const form = this.querySelector('form');
+                if (form) form.reset();
+            });
+        });
+    }
+    
+    // Salvar novo ativo
+    function saveNewAsset() {
+        const symbol = document.getElementById('assetSymbol').value.trim().toUpperCase();
+        const quantity = parseFloat(document.getElementById('assetQuantity').value);
+        const price = parseFloat(document.getElementById('assetPrice').value);
+        const purchaseDate = document.getElementById('purchaseDate').value;
+        
+        if (!symbol || isNaN(quantity) || isNaN(price) || !purchaseDate) {
+            alert('Por favor, preencha todos os campos corretamente.');
+            return;
+        }
+        
+        // Simular salvamento - substituir por chamada à API real
+        console.log('Novo ativo adicionado:', {symbol, quantity, price, purchaseDate});
+        
+        // Fechar o modal e recarregar os dados
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addAssetModal'));
+        modal.hide();
+        
+        // Mostrar mensagem de sucesso
+        Utils.showToast('Ativo adicionado com sucesso!', 'success');
+        
+        // Recarregar os dados da carteira após um pequeno atraso
+        setTimeout(loadPortfolioData, 500);
+    }
+    
+    // Editar ativo existente
+    function editAsset(assetId) {
+        // Simular busca do ativo - substituir por chamada à API real
+        const asset = {
+            id: 1,
+            symbol: 'PETR4.SA',
+            quantity: 100,
+            avgPrice: 28.50,
+            purchaseDate: '2023-01-15'
+        };
+        
+        // Preencher o formulário de edição
+        document.getElementById('editAssetId').value = asset.id;
+        document.getElementById('editAssetSymbol').value = asset.symbol;
+        document.getElementById('editAssetQuantity').value = asset.quantity;
+        document.getElementById('editAssetPrice').value = asset.avgPrice;
+        document.getElementById('editPurchaseDate').value = asset.purchaseDate;
+        
+        // Exibir o modal de edição
+        const modal = new bootstrap.Modal(document.getElementById('editAssetModal'));
+        modal.show();
+    }
+    
+    // Atualizar ativo
+    function updateAsset() {
+        const id = document.getElementById('editAssetId').value;
+        const quantity = parseFloat(document.getElementById('editAssetQuantity').value);
+        const price = parseFloat(document.getElementById('editAssetPrice').value);
+        const purchaseDate = document.getElementById('editPurchaseDate').value;
+        
+        if (isNaN(quantity) || isNaN(price) || !purchaseDate) {
+            alert('Por favor, preencha todos os campos corretamente.');
+            return;
+        }
+        
+        // Simular atualização - substituir por chamada à API real
+        console.log('Ativo atualizado:', {id, quantity, price, purchaseDate});
+        
+        // Fechar o modal e recarregar os dados
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editAssetModal'));
+        modal.hide();
+        
+        // Mostrar mensagem de sucesso
+        Utils.showToast('Ativo atualizado com sucesso!', 'success');
+        
+        // Recarregar os dados da carteira após um pequeno atraso
+        setTimeout(loadPortfolioData, 500);
+    }
+    
+    // Excluir ativo
+    function deleteAsset() {
+        if (!confirm('Tem certeza que deseja excluir este ativo?')) {
+            return;
+        }
+        
+        const id = document.getElementById('editAssetId').value;
+        
+        // Simular exclusão - substituir por chamada à API real
+        console.log('Ativo excluído:', id);
+        
+        // Fechar o modal e recarregar os dados
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editAssetModal'));
+        modal.hide();
+        
+        // Mostrar mensagem de sucesso
+        Utils.showToast('Ativo excluído com sucesso!', 'success');
+        
+        // Recarregar os dados da carteira após um pequeno atraso
+        setTimeout(loadPortfolioData, 500);
+    }
+    
+    // Redimensionar gráficos quando a janela for redimensionada
+    window.addEventListener('resize', function() {
+        if (typeof Plotly !== 'undefined') {
+            Plotly.Plots.resize('portfolio-performance-chart');
+            Plotly.Plots.resize('portfolio-distribution-chart');
+        }
+    });
+</script>
+{% endblock %}

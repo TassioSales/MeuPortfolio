@@ -1770,6 +1770,12 @@ function exibirDadosAtivo(dados) {
         precoMedioInput.value = parseFloat(dadosAtivo.preco_atual).toFixed(2);
     }
     
+    // Atualiza o campo ticker no formulário
+    const tickerInput = document.getElementById('tickerAtivo');
+    if (tickerInput && dadosAtivo.ticker) {
+        tickerInput.value = dadosAtivo.ticker;
+    }
+    
     // Atualiza os dados adicionais do ativo
     const moeda = dadosAtivo.moeda === 'BRL' ? 'R$ ' : '$ ';
     
@@ -2055,21 +2061,36 @@ async function adicionarAtivoACarteira() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRFToken': getCSRFToken()
             },
             body: JSON.stringify(dados)
         });
         
+        // Verifica se a resposta é JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            throw new Error('Resposta inválida do servidor');
+        }
+        
         const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.mensagem || 'Erro ao adicionar ativo à carteira');
+        }
         
         if (data.sucesso) {
             // Mostra mensagem de sucesso
-            const modal = new bootstrap.Modal(document.getElementById('modalConfirmacao'));
-            modal.show();
+            mostrarAviso(data.mensagem || 'Ativo adicionado com sucesso!', 'success');
             
-            // Atualiza a página após 1,5 segundos
+            // Redireciona para a lista de ativos após 1,5 segundos
             setTimeout(() => {
-                window.location.reload();
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    window.location.href = '/ativos';
+                }
             }, 1500);
         } else {
             throw new Error(data.mensagem || 'Erro ao adicionar ativo à carteira');

@@ -9,7 +9,9 @@ import logging
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.express as px
-from ..models.ativo import Ativo, HistoricoPreco, Carteira, Alerta
+from ..models.ativo import Ativo, HistoricoPreco
+from ..models.carteira import Carteira
+from ..models.alerta import Alerta
 from ..models.usuario import Usuario
 from .. import db
 from ..utils.logger import logger

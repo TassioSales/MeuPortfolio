@@ -1,7 +1,7 @@
 import os
 import sys
 from pathlib import Path
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, json
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -22,11 +22,10 @@ from src.models.carteira import Carteira
 from src.models.alerta import Alerta
 from src.utils.logger import logger
 
-# Import blueprints (to be created)
-# from routes.api import api_bp
-# from routes.auth import auth_bp
-# from routes.carteira import carteira_bp
-# from routes.alertas import alertas_bp
+# Import blueprints
+from src.routes.carteira import carteira_bp
+from src.routes.alertas import alertas_bp
+from flask_cors import CORS  # Import para lidar com CORS
 
 def create_app():
     """Create and configure the Flask application."""
@@ -53,11 +52,18 @@ def create_app():
         """Load user by ID for Flask-Login."""
         return Usuario.query.get(int(user_id))
     
+    # Configura CORS para permitir requisições do frontend
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": ["http://localhost:5000", "http://127.0.0.1:5000"],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
+    
     # Register blueprints
-    # app.register_blueprint(api_bp, url_prefix='/api')
-    # app.register_blueprint(auth_bp, url_prefix='/auth')
-    # app.register_blueprint(carteira_bp, url_prefix='/carteira')
-    # app.register_blueprint(alertas_bp, url_prefix='/alertas')
+    app.register_blueprint(carteira_bp, url_prefix='/api/carteira')
+    app.register_blueprint(alertas_bp, url_prefix='/api/alertas')
     
     # Create database tables
     with app.app_context():
@@ -80,7 +86,13 @@ def create_app():
     @login_required
     def index():
         """Main dashboard route."""
-        return render_template('index.html')
+        return render_template('index.html', active_page='dashboard')
+        
+    @app.route('/pesquisa')
+    @login_required
+    def pesquisa():
+        """Pesquisa de ativos."""
+        return render_template('pesquisa.html', active_page='pesquisa')
     
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -127,6 +139,80 @@ def create_app():
         if not asset:
             return jsonify({'error': 'Asset not found'}), 404
         return jsonify(asset.to_dict())
+        
+    @app.route('/api/assets/search', methods=['GET'])
+    @login_required
+    def search_assets():
+        """Search assets with filters."""
+        try:
+            # Get query parameters
+            query = request.args.get('q', '').strip().lower()
+            market = request.args.get('market', 'all')
+            exchange = request.args.get('exchange', 'all')
+            sector = request.args.get('sector', 'all')
+            sort_by = request.args.get('sort_by', 'volume')
+            
+            # Start with base query
+            assets_query = Ativo.query
+            
+            # Apply filters
+            if query:
+                assets_query = assets_query.filter(
+                    (Ativo.symbol.ilike(f'%{query}%')) | 
+                    (Ativo.nome.ilike(f'%{query}%'))
+                )
+                
+            if market != 'all':
+                assets_query = assets_query.filter(Ativo.tipo == market)
+                
+            if exchange != 'all':
+                assets_query = assets_query.filter(Ativo.bolsa == exchange)
+                
+            if sector != 'all':
+                assets_query = assets_query.filter(Ativo.setor == sector)
+            
+            # Apply sorting
+            if sort_by == 'volume':
+                assets_query = assets_query.order_by(Ativo.volume_24h.desc())
+            elif sort_by == 'liquidity':
+                assets_query = assets_query.order_by((Ativo.volume_24h * Ativo.preco_atual).desc())
+            elif sort_by == 'performance':
+                assets_query = assets_query.order_by(Ativo.variacao_24h.desc())
+            elif sort_by == 'dividend':
+                assets_query = assets_query.order_by(Ativo.dividend_yield.desc())
+            elif sort_by == 'alphabetical':
+                assets_query = assets_query.order_by(Ativo.symbol.asc())
+            
+            # Execute query
+            assets = assets_query.all()
+            
+            # Convert to list of dicts
+            result = [{
+                'id': asset.id,
+                'symbol': asset.symbol,
+                'name': asset.nome,
+                'price': float(asset.preco_atual) if asset.preco_atual else None,
+                'change': float(asset.variacao_24h) if asset.variacao_24h else None,
+                'changePercent': float(asset.variacao_percentual_24h) if asset.variacao_percentual_24h else None,
+                'volume': float(asset.volume_24h) if asset.volume_24h else None,
+                'marketCap': float(asset.valor_mercado) if asset.valor_mercado else None,
+                'peRatio': float(asset.pe_ratio) if asset.pe_ratio else None,
+                'pbRatio': float(asset.pb_ratio) if asset.pb_ratio else None,
+                'dividendYield': float(asset.dividend_yield) if asset.dividend_yield else None,
+                'roe': float(asset.roe) if asset.roe else None,
+                'sector': asset.setor,
+                'exchange': asset.bolsa,
+                'type': asset.tipo,
+                'high52w': float(asset.max_52s) if asset.max_52s else None,
+                'low52w': float(asset.min_52s) if asset.min_52s else None,
+                'chartData': json.loads(asset.historico_precos) if asset.historico_precos else []
+            } for asset in assets]
+            
+            return jsonify(result)
+            
+        except Exception as e:
+            app.logger.error(f'Error in search_assets: {str(e)}')
+            return jsonify({'error': 'Internal server error'}), 500
     
     # Background tasks
     def price_updater():
@@ -152,4 +238,4 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=settings.DEBUG, host='0.0.0.0', port=5000)
+    app.run(debug=settings.DEBUG, host='0.0.0.0', port=5001)

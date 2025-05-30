@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Meus Ativos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Meus Ativos</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ url_for('adicionar_ativo') }}" class="btn btn-sm btn-outline-primary me-2">
+                <i class="bi bi-plus-circle"></i> Adicionar Ativo
+            </a>
+            <a href="{{ url_for('exportar') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-download"></i> Exportar
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form class="row g-3" id="filtroForm">
+                <div class="col-md-3">
+                    <label for="filtroTipo" class="form-label">Tipo</label>
+                    <select class="form-select" id="filtroTipo" name="tipo">
+                        <option value="">Todos</option>
+                        <option value="Ação">Ações</option>
+                        <option value="FII">Fundos Imobiliários</option>
+                        <option value="ETF">ETFs</option>
+                        <option value="Renda Fixa">Renda Fixa</option>
+                        <option value="Criptomoeda">Criptomoedas</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="filtroSetor" class="form-label">Setor</label>
+                    <input type="text" class="form-control" id="filtroSetor" name="setor" placeholder="Ex: Financeiro">
+                </div>
+                <div class="col-md-3">
+                    <label for="filtroResultado" class="form-label">Resultado</label>
+                    <select class="form-select" id="filtroResultado" name="resultado">
+                        <option value="">Todos</option>
+                        <option value="lucro">Com Lucro</option>
+                        <option value="prejuizo">Com Prejuízo</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-funnel"></i> Filtrar
+                    </button>
+                    <button type="reset" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i> Limpar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabela de Ativos -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="tabelaAtivos">
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Nome</th>
+                            <th class="text-end">Quantidade</th>
+                            <th class="text-end">Preço Médio</th>
+                            <th class="text-end">Preço Atual</th>
+                            <th class="text-end">Valor Investido</th>
+                            <th class="text-end">Valor Atual</th>
+                            <th class="text-end">Resultado</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ativo in ativos %}
+                        <tr>
+                            <td><strong>{{ ativo.ticker }}</strong></td>
+                            <td>{{ ativo.nome }}</td>
+                            <td class="text-end">{{ "%0.6f"|format(ativo.quantidade|float) }}</td>
+                            <td class="text-end">R$ {{ "%0.2f"|format(ativo.preco_medio|float) }}</td>
+                            <td class="text-end">R$ {{ "%0.2f"|format(ativo.preco_atual|float) if ativo.preco_atual else 'N/A' }}</td>
+                            <td class="text-end">R$ {{ "%0.2f"|format(ativo.valor_total|float) }}</td>
+                            <td class="text-end">R$ {{ "%0.2f"|format(ativo.valor_atual|float) if ativo.valor_atual else 'N/A' }}</td>
+                            <td class="text-end {% if ativo.resultado_bruto >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                R$ {{ "%0.2f"|format(ativo.resultado_bruto|float) if ativo.resultado_bruto is not none else 'N/A' }}
+                                <br>
+                                <small>({{ "%0.2f"|format(ativo.resultado_percentual|float) if ativo.resultado_percentual is not none else '0.00' }}%)</small>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ url_for('detalhar_ativo', ticker=ativo.ticker) }}" 
+                                       class="btn btn-outline-primary" title="Detalhes">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-outline-secondary" 
+                                            onclick="editarAtivo('{{ ativo.ticker }}')" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger" 
+                                            onclick="confirmarExclusao('{{ ativo.ticker }}')" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                    <p class="mt-2 mb-0">Nenhum ativo cadastrado</p>
+                                    <a href="{{ url_for('adicionar_ativo') }}" class="btn btn-sm btn-primary mt-2">
+                                        <i class="bi bi-plus-circle"></i> Adicionar Primeiro Ativo
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-active">
+                            <th colspan="5" class="text-end">TOTAL</th>
+                            <th class="text-end">R$ {{ "%0.2f"|format(totais.total_investido|float) }}</th>
+                            <th class="text-end">R$ {{ "%0.2f"|format(totais.valor_atual|float) if totais.valor_atual else 'N/A' }}</th>
+                            <th class="text-end {% if totais.resultado_bruto >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                R$ {{ "%0.2f"|format(totais.resultado_bruto|float) if totais.resultado_bruto is not none else 'N/A' }}
+                                <br>
+                                <small>({{ "%0.2f"|format(totais.resultado_percentual|float) if totais.resultado_percentual is not none else '0.00' }}%)</small>
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="modalExcluir" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este ativo? Esta ação não pode ser desfeita.</p>
+                <p class="mb-0"><strong>Ticker:</strong> <span id="tickerParaExcluir"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formExcluir" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Confirmar Exclusão
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Filtros
+    document.getElementById('filtroForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Implementar lógica de filtragem
+        console.log('Filtrando...');
+    });
+    
+    // Confirmar exclusão
+    let tickerAtual = '';
+    
+    function confirmarExclusao(ticker) {
+        tickerAtual = ticker;
+        document.getElementById('tickerParaExcluir').textContent = ticker;
+        const form = document.getElementById('formExcluir');
+        form.action = `/excluir_ativo/${ticker}`;
+        
+        const modal = new bootstrap.Modal(document.getElementById('modalExcluir'));
+        modal.show();
+    }
+    
+    // Ordenação da tabela
+    document.addEventListener('DOMContentLoaded', function() {
+        new DataTable('#tabelaAtivos', {
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese-Brasil.json'
+            },
+            order: [[6, 'desc']], // Ordena por Valor Atual por padrão
+            pageLength: 25,
+            responsive: true,
+            dom: '<"top"f>rt<"bottom"lip><"clear">',
+            columnDefs: [
+                { orderable: false, targets: [8] } // Desabilita ordenação na coluna de ações
+            ]
+        });
+    });
+    
+    // Função para editar ativo
+    function editarAtivo(ticker) {
+        // Implementar lógica de edição
+        console.log('Editando ativo:', ticker);
+    }
+</script>
+{% endblock %}

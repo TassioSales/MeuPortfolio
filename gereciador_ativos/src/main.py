@@ -4,7 +4,7 @@ Ponto de entrada principal da aplicação Gerenciador de Ativos.
 import os
 import sys
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Adiciona o diretório src ao PATH para garantir que os imports funcionem
 sys.path.insert(0, str(Path(__file__).parent))
@@ -36,13 +36,80 @@ app.config.from_object(config)
 yfinance_service = YFinanceService()
 relatorio_service = RelatorioService()
 
-# Exemplo de carteira (substituir por banco de dados em produção)
-carteira = Carteira(
-    nome="Minha Carteira",
-    descricao="Carteira de investimentos pessoal"
-)
+# Caminho para o arquivo de dados da carteira
+CARTAO_DE_DADOS = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'carteira.json')
+
+# Cria o diretório de dados se não existir
+os.makedirs(os.path.dirname(CARTAO_DE_DADOS), exist_ok=True)
+
+# Tenta carregar a carteira do arquivo, ou cria uma nova se não existir
+try:
+    if os.path.exists(CARTAO_DE_DADOS):
+        carteira = Carteira.carregar_de_arquivo(CARTAO_DE_DADOS)
+        logger.info(f"Carteira carregada de {CARTAO_DE_DADOS} com {len(carteira.itens)} ativos")
+    else:
+        carteira = Carteira(
+            nome="Minha Carteira",
+            descricao="Carteira de investimentos pessoal"
+        )
+        # Salva a carteira vazia
+        carteira.salvar_para_arquivo(CARTAO_DE_DADOS)
+        logger.info("Nova carteira criada")
+except Exception as e:
+    logger.error(f"Erro ao carregar a carteira: {str(e)}")
+    # Cria uma nova carteira em caso de erro
+    carteira = Carteira(
+        nome="Minha Carteira",
+        descricao="Carteira de investimentos pessoal"
+    )
 
 # Rotas da aplicação
+
+@app.route('/excluir_ativo/<string:ticker>', methods=['POST'])
+def excluir_ativo(ticker: str):
+    """
+    Remove um ativo da carteira.
+    
+    Args:
+        ticker: Ticker do ativo a ser removido
+        
+    Returns:
+        JSON com o resultado da operação
+    """
+    try:
+        # Verifica se o ativo existe na carteira
+        if ticker.upper() not in [item.ativo.ticker for item in carteira.itens.values()]:
+            return jsonify({
+                'sucesso': False,
+                'mensagem': f'Ativo {ticker} não encontrado na carteira.'
+            }), 404
+            
+        # Remove o ativo da carteira
+        carteira.remover_ativo(ticker)
+        
+        # Salva as alterações no arquivo
+        try:
+            carteira.salvar_para_arquivo(CARTAO_DE_DADOS)
+            logger.info(f"Carteira salva com sucesso após remoção em: {CARTAO_DE_DADOS}")
+        except Exception as e:
+            logger.error(f"Erro ao salvar carteira após remoção: {str(e)}", exc_info=True)
+            return jsonify({
+                'sucesso': False,
+                'mensagem': f'Erro ao salvar carteira após remoção: {str(e)}'
+            }), 500
+        
+        return jsonify({
+            'sucesso': True,
+            'mensagem': f'Ativo {ticker} removido com sucesso!',
+            'redirect': url_for('listar_ativos')
+        })
+        
+    except Exception as e:
+        logger.error(f'Erro ao excluir ativo {ticker}: {str(e)}', exc_info=True)
+        return jsonify({
+            'sucesso': False,
+            'mensagem': f'Erro ao excluir ativo: {str(e)}'
+        }), 500
 
 @app.route('/')
 def index():
@@ -77,35 +144,53 @@ def adicionar_ativo():
     """Adiciona um novo ativo à carteira."""
     if request.method == 'POST':
         logger.info("Iniciando processo de adição de ativo...")
-        # Valida os dados do formulário
-        ticker = request.form.get('ticker', '').strip()
-        quantidade = request.form.get('quantidade', '0').replace(',', '.')
-        preco_medio = request.form.get('preco_medio', '0').replace(',', '.')
-        data_compra = request.form.get('data_compra', '')
         
-        logger.info(f"Dados do formulário - Ticker: {ticker}, Quantidade: {quantidade}, Preço Médio: {preco_medio}")
+        # Verifica se a requisição é JSON
+        is_json_request = request.headers.get('Content-Type') == 'application/json'
+        
+        # Obtém os dados do formulário ou do JSON
+        if is_json_request:
+            data = request.get_json()
+            ticker = data.get('ticker', '').strip()
+            quantidade = str(data.get('quantidade', '0')).replace(',', '.')
+            preco_medio = str(data.get('preco_medio', '0')).replace(',', '.')
+            data_compra = data.get('data_compra', '')
+        else:
+            ticker = request.form.get('ticker', '').strip()
+            quantidade = request.form.get('quantidade', '0').replace(',', '.')
+            preco_medio = request.form.get('preco_medio', '0').replace(',', '.')
+            data_compra = request.form.get('data_compra', '')
+        
+        logger.info(f"Dados recebidos - Ticker: {ticker}, Quantidade: {quantidade}, Preço Médio: {preco_medio}")
+        
+        # Função para retornar erro
+        def retornar_erro(mensagem, status=400):
+            if is_json_request or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                response = jsonify({'sucesso': False, 'mensagem': mensagem})
+                response.headers['Content-Type'] = 'application/json'
+                return response, status
+            else:
+                flash(mensagem, 'error')
+                return render_template('adicionar_ativo.html', now=datetime.now())
         
         # Valida o ticker
         valido, mensagem = validar_ticker(ticker)
         if not valido:
             logger.warning(f"Ticker inválido: {mensagem}")
-            flash(f'Erro no ticker: {mensagem}', 'error')
-            return render_template('adicionar_ativo.html')
+            return retornar_erro(f'Erro no ticker: {mensagem}')
         
         # Valida a quantidade
         valido, resultado = validar_quantidade(quantidade)
         if not valido:
             logger.warning(f"Quantidade inválida: {resultado}")
-            flash(f'Erro na quantidade: {resultado}', 'error')
-            return render_template('adicionar_ativo.html')
+            return retornar_erro(f'Erro na quantidade: {resultado}')
         quantidade_float = float(resultado)
         
         # Valida o preço médio
         valido, resultado = validar_valor(preco_medio, minimo=0.01)
         if not valido:
             logger.warning(f"Preço médio inválido: {resultado}")
-            flash(f'Erro no preço médio: {resultado}', 'error')
-            return render_template('adicionar_ativo.html')
+            return retornar_erro(f'Erro no preço médio: {resultado}')
         preco_medio_float = float(resultado)
         
         # Busca informações do ativo
@@ -113,8 +198,7 @@ def adicionar_ativo():
         ativo = yfinance_service.buscar_ativo(ticker)
         if not ativo:
             logger.error(f"Não foi possível encontrar informações para o ativo: {ticker}")
-            flash(f'Não foi possível encontrar informações para o ativo {ticker}', 'error')
-            return render_template('adicionar_ativo.html', now=datetime.now())
+            return retornar_erro(f'Não foi possível encontrar informações para o ativo {ticker}', 404)
         
         logger.info(f"Ativo encontrado: {ativo.nome} (Tipo: {ativo.tipo}, Preço Atual: {ativo.preco_atual})")
         
@@ -124,17 +208,39 @@ def adicionar_ativo():
             logger.info(f"Ativo {ticker} adicionado à carteira com sucesso!")
             logger.info(f"Total de itens na carteira: {len(carteira.itens)}")
             
+            # Salva as alterações no arquivo
+            try:
+                carteira.salvar_para_arquivo(CARTAO_DE_DADOS)
+                logger.info(f"Carteira salva com sucesso em: {CARTAO_DE_DADOS}")
+            except Exception as e:
+                logger.error(f"Erro ao salvar carteira: {str(e)}", exc_info=True)
+                return retornar_erro(f'Erro ao salvar carteira: {str(e)}', 500)
+            
             # Log dos itens atuais na carteira
             for ticker_item, item in carteira.itens.items():
                 logger.info(f"Item na carteira - Ticker: {ticker_item}, Quantidade: {item.quantidade}, Preço Médio: {item.preco_medio}")
             
-            flash(f'Ativo {ticker} adicionado com sucesso!', 'success')
-            return redirect(url_for('listar_ativos'))
+            if is_json_request:
+                response = jsonify({
+                    'sucesso': True, 
+                    'mensagem': f'Ativo {ticker} adicionado com sucesso!',
+                    'redirect': url_for('listar_ativos')
+                })
+                response.headers['Content-Type'] = 'application/json'
+                return response
+            else:
+                flash(f'Ativo {ticker} adicionado com sucesso!', 'success')
+                return redirect(url_for('listar_ativos'))
+                
         except Exception as e:
             logger.error(f"Erro ao adicionar ativo à carteira: {str(e)}", exc_info=True)
-            flash(f'Erro ao adicionar ativo: {str(e)}', 'error')
-            return render_template('adicionar_ativo.html', now=datetime.now())
+            return retornar_erro(f'Erro ao adicionar ativo: {str(e)}', 500)
     
+    # Se for uma requisição GET, renderiza o template normalmente
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        response = jsonify({'erro': 'Método não permitido'})
+        response.headers['Content-Type'] = 'application/json'
+        return response, 405
     return render_template('adicionar_ativo.html', now=datetime.now())
 
 
@@ -165,6 +271,84 @@ def listar_ativos():
     return render_template('listar_ativos.html', ativos=ativos, totais=totais)
 
 
+@app.route('/editar_ativo', methods=['POST'])
+def editar_ativo():
+    """Edita um ativo existente na carteira."""
+    try:
+        # Verifica se é uma requisição AJAX
+        is_json_request = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        
+        # Obtém os dados do formulário
+        ticker_original = request.form.get('ticker_original', '').strip().upper()
+        novo_ticker = request.form.get('ticker', '').strip().upper()
+        quantidade = request.form.get('quantidade', '0').replace(',', '.')
+        preco_medio = request.form.get('preco_medio', '0').replace(',', '.')
+        
+        # Validações
+        if not ticker_original or not novo_ticker or not quantidade or not preco_medio:
+            return jsonify({'sucesso': False, 'mensagem': 'Todos os campos são obrigatórios'}), 400
+            
+        try:
+            quantidade_float = float(quantidade)
+            preco_medio_float = float(preco_medio)
+            
+            if quantidade_float <= 0 or preco_medio_float <= 0:
+                return jsonify({'sucesso': False, 'mensagem': 'Quantidade e preço médio devem ser maiores que zero'}), 400
+                
+        except ValueError:
+            return jsonify({'sucesso': False, 'mensagem': 'Valores inválidos para quantidade ou preço médio'}), 400
+        
+        # Verifica se o ativo existe na carteira
+        if ticker_original not in carteira.itens:
+            return jsonify({'sucesso': False, 'mensagem': 'Ativo não encontrado na carteira'}), 404
+        
+        # Atualiza o ativo
+        item = carteira.itens[ticker_original]
+        
+        # Se o ticker foi alterado, remove o antigo e adiciona um novo
+        if ticker_original != novo_ticker:
+            # Verifica se o novo ticker já existe (exceto se for o mesmo ativo com letras maiúsculas/minúsculas diferentes)
+            if novo_ticker in carteira.itens and novo_ticker.upper() != ticker_original.upper():
+                return jsonify({'sucesso': False, 'mensagem': 'Já existe um ativo com este ticker'}), 400
+            
+            # Remove o ativo antigo
+            del carteira.itens[ticker_original]
+            
+            # Cria um novo ativo com os dados atualizados
+            novo_ativo = Ativo(
+                ticker=novo_ticker,
+                nome=item.ativo.nome,  # Mantém o nome original
+                tipo=item.ativo.tipo,  # Mantém o tipo original
+                preco_atual=item.ativo.preco_atual,  # Mantém o preço atual
+                moeda=item.ativo.moeda  # Mantém a moeda
+            )
+            
+            # Adiciona o novo ativo à carteira
+            carteira.adicionar_ativo(novo_ativo, quantidade_float, preco_medio_float)
+        else:
+            # Apenas atualiza a quantidade e o preço médio
+            item.quantidade = quantidade_float
+            item.preco_medio = preco_medio_float
+        
+        # Salva as alterações
+        try:
+            carteira.salvar_para_arquivo(CARTAO_DE_DADOS)
+            logger.info(f"Carteira salva em {CARTAO_DE_DADOS}")
+        except Exception as e:
+            logger.error(f"Erro ao salvar a carteira: {str(e)}")
+            return jsonify({'sucesso': False, 'mensagem': f'Erro ao salvar a carteira: {str(e)}'}), 500
+        
+        return jsonify({
+            'sucesso': True, 
+            'mensagem': f'Ativo {novo_ticker} atualizado com sucesso!',
+            'redirect': url_for('listar_ativos')
+        })
+        
+    except Exception as e:
+        logger.error(f"Erro ao editar ativo: {str(e)}", exc_info=True)
+        return jsonify({'sucesso': False, 'mensagem': f'Erro ao editar ativo: {str(e)}'}), 500
+
+
 @app.route('/ativo/<ticker>')
 def detalhar_ativo(ticker: str):
     """Exibe os detalhes de um ativo específico."""
@@ -175,13 +359,17 @@ def detalhar_ativo(ticker: str):
     item = carteira.itens[ticker]
     historico = yfinance_service.buscar_historico(ticker, periodo='1y')
     
+    # Get current timestamp in local timezone
+    agora = datetime.now(timezone.utc).astimezone()
+    
     return render_template(
         'detalhar_ativo.html', 
         item=item,
         historico=historico,
         formatar_moeda=formatar_moeda,
         formatar_percentual=formatar_percentual,
-        formatar_data=formatar_data
+        formatar_data=formatar_data,
+        agora=agora
     )
 
 

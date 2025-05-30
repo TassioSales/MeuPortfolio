@@ -1,26 +1,32 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
-from datetime import datetime
-import os
-import sys
-from pathlib import Path
+"""
+Módulo de modelos do banco de dados.
+"""
 
-# Adiciona o diretório raiz ao path para permitir importações absolutas
-BASE_DIR = Path(__file__).resolve().parent.parent
-if str(BASE_DIR) not in sys.path:
-    sys.path.append(str(BASE_DIR))
+# Importa o db do pacote principal para evitar importações circulares
+from src import db
+from .usuario import Usuario
+from .ativo import Ativo, HistoricoPreco
+from .carteira import Carteira, CarteiraAtivo
+from .alerta import Alerta
+from .operacao import Operacao, TipoOperacao, StatusOperacao
 
-# Initialize SQLAlchemy
-db = SQLAlchemy()
-
-# Import settings after db is defined
-from src.config.settings import SQLALCHEMY_DATABASE_URI
-
-# Import models after db is defined to avoid circular imports
-# These imports must be after db is created
+# Create a dictionary of all models for easy access
+models = {
+    'Usuario': Usuario,
+    'Ativo': Ativo,
+    'HistoricoPreco': HistoricoPreco,
+    'Carteira': Carteira,
+    'CarteiraAtivo': CarteiraAtivo,
+    'Alerta': Alerta,
+    'Operacao': Operacao,
+    'TipoOperacao': TipoOperacao,
+    'StatusOperacao': StatusOperacao
+}
 
 def init_db(app):
     """Initialize the database with the Flask app."""
+    from src.config.settings import SQLALCHEMY_DATABASE_URI
+    
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
@@ -37,7 +43,8 @@ def init_db(app):
                 username='admin',
                 email='admin@example.com',
                 senha_hash=generate_password_hash('admin123'),
-                nivel_acesso='admin'
+                nivel_acesso='admin',
+                ativo=True
             )
             db.session.add(admin)
             db.session.commit()

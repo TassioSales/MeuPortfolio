@@ -6,7 +6,9 @@ from typing import List, Dict, Optional, Tuple, Any
 from decimal import Decimal, ROUND_HALF_UP
 import logging
 from sqlalchemy import func, and_, or_
-from ..models.ativo import Ativo, HistoricoPreco, Carteira, Operacao, TipoOperacao, StatusOperacao
+from ..models.ativo import Ativo, HistoricoPreco
+from ..models.operacao import Operacao, TipoOperacao, StatusOperacao
+from ..models.carteira import Carteira
 from ..models.usuario import Usuario
 from .. import db
 from ..utils.logger import logger

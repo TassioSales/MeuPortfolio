@@ -196,16 +196,28 @@ class BinanceService:
             logger.error(f"Erro ao buscar estatísticas de 24h na Binance para {symbol}: {str(e)}")
             return None
 
+def get_binance_data(symbol):
+    """
+    Função de compatibilidade para obter dados da Binance.
+    
+    Args:
+        symbol (str): Símbolo do ativo (ex: 'BTCUSDT')
+        
+    Returns:
+        dict: Dados do ativo ou None em caso de erro
+    """
+    return BinanceService.get_price(symbol)
+
 # Exemplo de uso:
 if __name__ == "__main__":
     # Teste de obtenção de preço
     btc_price = BinanceService.get_price("BTCUSDT")
     print(f"Preço do BTC: {btc_price}")
     
-    # Teste de obtenção de dados históricos
-    btc_history = BinanceService.get_historical_data("BTCUSDT", interval='1h', limit=24)
-    print(f"Dados históricos (últimas 24h): {len(btc_history)} registros")
+    # Teste de histórico
+    btc_history = BinanceService.get_historical_data("BTCUSDT", "1d", 30)
+    print(f"Histórico de 30 dias do BTC: {btc_history}")
     
-    # Teste de estatísticas de 24h
-    btc_stats = BinanceService.get_24h_stats("BTCUSDT")
-    print(f"Variação 24h: {btc_stats['price_change_percent']}%" if btc_stats else "Erro ao buscar estatísticas")
+    # Teste de múltiplos símbolos
+    prices = BinanceService.get_prices(["BTCUSDT", "ETHUSDT", "BNBUSDT"])
+    print(f"Preços múltiplos: {prices}")

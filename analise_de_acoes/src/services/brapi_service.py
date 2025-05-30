@@ -252,15 +252,30 @@ class BrapiService:
             logger.error(f"Erro ao buscar ativos na Brapi: {str(e)}")
             return None
 
+def get_brapi_data(symbol):
+    """
+    Função de compatibilidade para obter dados da Brapi.
+    
+    Args:
+        symbol (str): Símbolo do ativo (ex: 'PETR4')
+        
+    Returns:
+        dict: Dados do ativo ou None em caso de erro
+    """
+    brapi = BrapiService()
+    return brapi.get_quote([symbol])[0] if symbol else None
+
 # Exemplo de uso:
 if __name__ == "__main__":
     # Cria uma instância do serviço (opcional: passar a chave da API)
     brapi = BrapiService()
     
-    # Teste de cotação
-    cotacao = brapi.get_quote("PETR4,VALE3,ITUB4")
-    print(f"Cotações: {cotacao}")
+    # Testa a obtenção de cotações
+    cotacoes = brapi.get_quote(["PETR4", "VALE3", "ITUB4"])
+    print("Cotações:", cotacoes)
     
-    # Teste de dados históricos
-    historico = brapi.get_historical_data("PETR4", range='1y', interval='1d')
-    print(f"Dados históricos: {len(historico['data']) if historico and 'data' in historico else 0} registros" if historico else "Erro ao buscar histórico")
+    # Testa a obtenção de dados históricos
+    historico = brapi.get_historical_data("PETR4", "2023-01-01", "2023-01-31")
+    print("\nHistórico (primeiros 5 registros):")
+    for item in historico[:5]:
+        print(f"{item['date']}: {item['close']}")

@@ -8,7 +8,9 @@ import pandas as pd
 import yfinance as yf
 import logging
 
-from src.models import db, Ativo, Carteira, Alerta, HistoricoPreco
+from src.models import db, Ativo, HistoricoPreco
+from src.models.carteira import Carteira
+from src.models.alerta import Alerta
 from src.services.binance_service import get_binance_data
 from src.services.brapi_service import get_brapi_data
 from src.services.yfinance_service import get_yfinance_data
@@ -108,73 +110,8 @@ def ativo_detalhes(ticker):
         flash('Ocorreu um erro ao carregar os detalhes do ativo.', 'error')
         return redirect(url_for('main.ativos'))
 
-@main_bp.route('/carteira')
-@login_required
-def carteira():
-    """Show user's portfolio."""
-    try:
-        portfolio = Carteira.query.filter_by(usuario_id=current_user.id).first()
-        
-        if not portfolio:
-            # Create a new portfolio if it doesn't exist
-            portfolio = Carteira(
-                usuario_id=current_user.id,
-                saldo=0.0,
-                valor_total=0.0,
-                lucro_prejuizo=0.0,
-                variacao_percentual=0.0,
-                ativos=[]
-            )
-            db.session.add(portfolio)
-            db.session.commit()
-        
-        # Get portfolio assets with current prices
-        portfolio_assets = []
-        total_value = 0.0
-        
-        for asset in portfolio.ativos:
-            # Get current price from the most recent history
-            latest_price = HistoricoPreco.query.filter_by(
-                ativo_id=asset.ativo_id
-            ).order_by(HistoricoPreco.data.desc()).first()
-            
-            if latest_price:
-                current_price = float(latest_price.preco)
-                asset_value = current_price * asset.quantidade
-                total_value += asset_value
-                
-                # Calculate profit/loss
-                cost_basis = float(asset.preco_medio) * asset.quantidade
-                pnl = asset_value - cost_basis
-                pnl_pct = (pnl / cost_basis) * 100 if cost_basis > 0 else 0
-                
-                portfolio_assets.append({
-                    'id': asset.id,
-                    'ticker': asset.ativo.ticker,
-                    'nome': asset.ativo.nome,
-                    'quantidade': asset.quantidade,
-                    'preco_medio': asset.preco_medio,
-                    'preco_atual': current_price,
-                    'valor_total': asset_value,
-                    'lucro_prejuizo': pnl,
-                    'variacao_percentual': pnl_pct
-                })
-        
-        # Update portfolio total value
-        portfolio.valor_total = total_value
-        db.session.commit()
-        
-        return render_template(
-            'carteira/index.html',
-            portfolio=portfolio,
-            assets=portfolio_assets,
-            format_currency=format_currency,
-            format_percentage=format_percentage
-        )
-    except Exception as e:
-        main_logger.error(f'Error loading portfolio: {str(e)}')
-        flash('Ocorreu um erro ao carregar sua carteira.', 'error')
-        return redirect(url_for('main.dashboard'))
+# A rota de carteira foi movida para o blueprint carteira_bp
+# Consulte o arquivo src/routes/carteira.py para a implementação
 
 @main_bp.route('/alertas')
 @login_required

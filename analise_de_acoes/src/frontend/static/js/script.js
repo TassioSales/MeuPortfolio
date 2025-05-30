@@ -2,6 +2,14 @@
  * Main application script
  */
 
+// Importar funções utilitárias
+import { showToast } from './utils.js';
+
+// Tornar funções disponíveis globalmente
+window.Utils = {
+    showToast
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize components
     initSidebar();
@@ -21,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show welcome message
     setTimeout(() => {
-        Utils.showToast('Bem-vindo ao Análise de Ações!', 'success');
+        showToast('Bem-vindo ao Análise de Ações!', 'success');
     }, 1000);
 });
 

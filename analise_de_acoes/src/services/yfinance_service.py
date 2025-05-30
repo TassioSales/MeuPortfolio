@@ -251,15 +251,31 @@ class YFinanceService:
             logger.error(f"Erro ao buscar ativos no Yahoo Finance: {str(e)}")
             return []
 
+def get_yfinance_data(symbol):
+    """
+    Função de compatibilidade para obter dados do Yahoo Finance.
+    
+    Args:
+        symbol (str): Símbolo do ativo (ex: 'PETR4.SA')
+        
+    Returns:
+        dict: Dados do ativo ou None em caso de erro
+    """
+    return YFinanceService.get_ticker_info(symbol)
+
 # Exemplo de uso:
 if __name__ == "__main__":
     # Teste de informações de um ativo
     info = YFinanceService.get_ticker_info("PETR4.SA")
     print(f"Informações do ativo: {info}")
     
-    # Teste de dados históricos
-    historico = YFinanceService.get_historical_data("PETR4.SA", period='1mo', interval='1d')
-    print(f"Dados históricos: {len(historico['data']) if historico and 'data' in historico else 0} registros" if historico else "Erro ao buscar histórico")
+    # Teste de histórico de preços
+    historico = YFinanceService.get_historical_data("PETR4.SA", "1mo")
+    print(f"Histórico de preços (primeiros 5 registros): {historico[:5]}")
+    
+    # Teste de múltiplos ativos
+    ativos = YFinanceService.get_multiple_tickers(["PETR4.SA", "VALE3.SA", "ITUB4.SA"])
+    print(f"Cotações múltiplas: {ativos}")
     
     # Teste de busca
     resultados = YFinanceService.search_assets("petrobras")

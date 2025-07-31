@@ -1,0 +1,43 @@
+/* assets/styles.css */
+
+/* Melhora a aparência geral dos botões */
+.stButton>button {
+    border-radius: 20px;
+    border: 1px solid #1E90FF;
+    color: #1E90FF;
+    background-color: transparent;
+    padding: 10px 24px;
+    font-weight: bold;
+}
+
+.stButton>button:hover {
+    border-color: #FF4B4B;
+    color: #FF4B4B;
+}
+
+/* Estilo para o botão primário (usado nos forms) */
+.stButton>button[kind="primary"] {
+    background-color: #1E90FF;
+    color: white;
+    border: none;
+}
+
+.stButton>button[kind="primary"]:hover {
+    background-color: #0066CC;
+    color: white;
+}
+
+/* Adiciona uma sombra sutil aos containers e cartões */
+div[data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"],
+div[data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] > [data-testid="stExpander"] {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+    transition: 0.3s;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Títulos das páginas com uma cor mais destacada */
+h1, h2 {
+    color: #1E90FF;
+}

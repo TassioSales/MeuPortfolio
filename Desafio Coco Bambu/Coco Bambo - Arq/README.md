@@ -413,16 +413,16 @@ let
 in
     #"Colunas Divididas"
 
-### Visão Geral do Dashboard
+## Visão Geral do Dashboard
 
 O dashboard foi projetado seguindo princípios de design thinking e análise de negócios, organizado em camadas analíticas que permitem uma navegação intuitiva dos indicadores macro até os detalhes operacionais.
 
-### Principais Análises
-              <img src="image/Captura de tela 2025-08-20 215038.png" alt="Detalhes do Dashboard" class="dashboard-image" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05);">
-              <p class="img-caption">Visão detalhada das métricas e análises do dashboard interativo</p>
-            </div>
-            
-            <div class="metrics-grid">
+## Principais Análises
+
+![Detalhes do Dashboard](image/Captura%20de%20tela%202025-08-20%20215038.png)
+*Visão detalhada das métricas e análises do dashboard interativo*
+
+## Métricas Principais
               <div class="metric">
                 <div class="label">Receita Total</div>
                 <div class="value">R$ 21.40 bi</div>

@@ -175,9 +175,6 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 📅 *Última atualização: 20 de Agosto de 2025*  
 👤 *Desenvolvido por Tassio Lucian de Jesus Sales*
 
-
-
-
   h3 i {
     color: var(--secondary);
     font-size: 1.2em;

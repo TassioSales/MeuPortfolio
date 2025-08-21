@@ -825,6 +825,8 @@ O dashboard entregue permite um acompanhamento claro, interativo e estratégico,
 
 ## 📊 Destaques
 
+### ✅ Destaques Positivos
+
 - **Nordeste**: Melhor performance, superando metas com destaque em lojas âncora
 - **Modelos "Conceito" e "Buffet"**: Menor participação no faturamento, mas maior eficiência em superar orçamento
 - **Junho/2025**: Crescimento expressivo de **+10.9%** (YoY), sinalizando retomada positiva
@@ -846,6 +848,8 @@ O dashboard entregue permite um acompanhamento claro, interativo e estratégico,
 
 - Replicação das melhores práticas dos modelos "Conceito" e "Buffet"
 - Análise detalhada das lojas com desempenho abaixo da média
+- Treinamento de equipes nas regiões com menor desempenho
+
 ### 3. Aprofundamento Analítico
 
 - Investigação das causas do crescimento de junho

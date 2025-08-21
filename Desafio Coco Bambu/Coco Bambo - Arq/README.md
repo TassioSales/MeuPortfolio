@@ -437,12 +437,11 @@ O dashboard foi projetado seguindo princípios de design thinking e análise de 
 ### 📊 Desempenho Mensal
 - Análise comparativa mês a mês entre receita realizada e orçada
 - Destaque para sazonalidades e desvios significativos
-              
-  #### 📅 Comparativo Anual
-- Visão comparativa (YoY) que permite identificar tendências e padrões de crescimento ao longo dos anos.
-              </div>
-              
-#### 🌎 Análise Geográfica
+
+### 📅 Comparativo Anual
+- Visão comparativa (YoY) que permite identificar tendências e padrões de crescimento ao longo dos anos
+
+### 🌎 Análise Geográfica
 - Distribuição de receita por região/UF
 - Identificação de mercados-chave e oportunidades de expansão
 

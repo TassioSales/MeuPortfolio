@@ -563,34 +563,26 @@ O dashboard foi projetado seguindo princípios de design thinking e análise de 
 - Visão comparativa (YoY) que permite identificar tendências e padrões de crescimento ao longo dos anos.
               </div>
               
-              <div style="background: #f8f9fa; padding: 1.25rem; border-radius: var(--border-radius); border-left: 4px solid #51cf66;">
-                <h5 style="margin-top: 0; color: #2c3e50; font-size: 1.1rem;"><i class="fas fa-map-marked-alt" style="color: #51cf66;"></i> Análise Geográfica</h5>
-                <p>Distribuição de receita por região/UF, identificando mercados-chave e oportunidades de expansão.</p>
+#### 🌎 Análise Geográfica
+- Distribuição de receita por região/UF
+- Identificação de mercados-chave e oportunidades de expansão
+
+#### 📊 Performance por Modelo
+- Avaliação da eficiência dos diferentes modelos de negócio
+- Comparação de desempenho em atingir as metas orçadas
               </div>
               
-              <div style="background: #f8f9fa; padding: 1.25rem; border-radius: var(--border-radius); border-left: 4px solid #fcc419;">
-                <h5 style="margin-top: 0; color: #2c3e50; font-size: 1.1rem;"><i class="fas fa-sitemap" style="color: #fcc419;"></i> Performance por Modelo</h5>
-                <p>Avaliação da eficiência dos diferentes modelos de negócio em atingir as metas orçadas.</p>
-              </div>
-              
-              <div style="background: #f8f9fa; padding: 1.25rem; border-radius: var(--border-radius); border-left: 4px solid #868e96;">
-                <h5 style="margin-top: 0; color: #2c3e50; font-size: 1.1rem;"><i class="fas fa-chart-bar" style="color: #868e96;"></i> Ranking de Lojas</h5>
-                <p>Identificação das melhores e piores performances por unidade, permitindo ações direcionadas.</p>
-              </div>
-              
-              <div style="background: #f8f9fa; padding: 1.25rem; border-radius: var(--border-radius); border-left: 4px solid #5f3dc4;">
-                <h5 style="margin-top: 0; color: #2c3e50; font-size: 1.1rem;"><i class="fas fa-chart-area" style="color: #5f3dc4;"></i> Composição da Receita</h5>
-                <p>Análise da evolução da margem bruta e composição de custos ao longo do tempo.</p>
+#### 🏆 Ranking de Lojas
+- Identificação das melhores e piores performances por unidade
+- Permite ações direcionadas baseadas em dados
+
+#### 📈 Composição da Receita
+- Análise da evolução da margem bruta
+- Composição de custos ao longo do tempo
               </div>
             </div>
             
-            <div class="alert alert-warning" style="margin: 2rem 0 1rem;">
-              <i class="fas fa-lightbulb" style="color: #f59f00;"></i>
-              <div>
-                <strong>Dica de Navegação</strong><br>
-                Utilize os filtros interativos para explorar os dados em diferentes níveis de detalhamento e períodos temporais.
-              </div>
-            </div>
+> 💡 **Dica de Navegação:** Utilize os filtros interativos para explorar os dados em diferentes níveis de detalhamento e períodos temporais.
           </div>
           
 ## 3. Métricas de Negócio (DAX)
@@ -696,60 +688,32 @@ DIVIDE(
 )
             </div>
             
-> **Nota:**
-              <div>
-                <strong>Otimização de Performance</strong><br>
-                Todas as medidas foram otimizadas para desempenho, utilizando funções DAX eficientes e boas práticas de modelagem tabular.
-              </div>
+> **Nota de Otimização:** Todas as medidas foram otimizadas para desempenho, utilizando funções DAX eficientes e boas práticas de modelagem tabular.
             </div>
           </div>
           
 ## 4. Análise de Resultados e Insights Estratégicos
             
-            <div class="alert" style="background: #f8f9fa; margin: 1.5rem 0; padding: 1.5rem; border-radius: var(--border-radius);">
-              <div style="text-align: center;">
-                <h4 style="margin-top: 0; color: var(--primary);">Sumário Executivo</h4>
-                <p>A análise revelou crescimento anual positivo de <strong>1.59%</strong>, com a rede superando o orçamento em <strong class="positive">2.06%</strong>. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.</p>
+## 📊 Sumário Executivo
+
+A análise revelou crescimento anual positivo de **1.59%**, com a rede superando o orçamento em **2.06%**. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.
                 
-                <div class="metrics-grid" style="margin: 1.5rem auto; max-width: 800px;">
-                  <div class="metric">
-                    <div class="label">Receita Total</div>
-                    <div class="value">R$ 21.40 bi</div>
-                    <div class="subtext">Período analisado</div>
-                  </div>
-                  <div class="metric">
-                    <div class="label">Resultado vs Orçamento</div>
-                    <div class="value positive">+2.06%</div>
-                    <div class="subtext">Acima da meta</div>
-                  </div>
-                  <div class="metric">
-                    <div class="label">Crescimento Anual</div>
-                    <div class="value positive">+1.59%</div>
-                    <div class="subtext">Comparação YoY</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+### 📊 Métricas Principais
+
+| Métrica | Valor |
+|---------|-------|
+| Receita Total | R$ 21.40 bi |
+| Resultado vs Orçamento | +2.06% (Acima da meta) |
+| Crescimento Anual (YoY) | +1.59% |
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2rem 0;">
-              <div class="alert alert-success">
-                <i class="fas fa-check-circle"></i>
-                <div>
-                  <h5 style="margin: 0 0 0.5rem 0;">✅ Destaques Positivos</h5>
-                  <ul style="margin: 0; padding-left: 1.25rem;">
-                    <li><strong>Nordeste:</strong> Melhor performance, superando metas com destaque em lojas âncora</li>
-                    <li><strong>Modelos "Conceito" e "Buffet":</strong> Menor participação no faturamento, mas maior eficiência em superar orçamento</li>
-                    <li><strong>Junho/2025:</strong> Crescimento expressivo de <strong>+10.9%</strong> (YoY), sinalizando retomada positiva</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div class="alert alert-warning">
-                <i class="fas fa-exclamation-triangle"></i>
-                <div>
-                  <h5 style="margin: 0 0 0.5rem 0;">⚠️ Pontos de Atenção</h5>
-                  <ul style="margin: 0; padding-left: 1.25rem;">
-                    <li><strong>Modelo "Restaurante" (R$ 17.09 bi):</strong> Apesar de representar o maior volume, ficou abaixo do orçamento</li>
+### ✅ Destaques Positivos
+
+- **Nordeste**: Melhor performance, superando metas com destaque em lojas âncora
+- **Modelos "Conceito" e "Buffet"**: Menor participação no faturamento, mas maior eficiência em superar orçamento
+- **Junho/2025**: Crescimento expressivo de **+10.9%** (YoY), sinalizando retomada positiva
+### ⚠️ Pontos de Atenção
+
+- **Modelo "Restaurante" (R$ 17.09 bi)**: Apesar de representar o maior volume, ficou abaixo do orçamento
                     <li><strong>Modelo "VASTO":</strong> Apresenta resultado negativo frente ao planejado</li>
                     <li><strong>Custos:</strong> Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores</li>
                   </ul>
@@ -762,73 +726,83 @@ DIVIDE(
 
 - Revisão de contratos com fornecedores de insumos
 - Implementação de programas de redução de desperdício
-                    <li>Análise de substituição de itens de alto custo</li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <h5 style="margin: 0 0 0.75rem 0; color: var(--primary); font-size: 1rem;">2. Melhoria de Desempenho</h5>
-                  <ul style="margin: 0; padding-left: 1.25rem;">
-                    <li>Replicação das melhores práticas dos modelos "Conceito" e "Buffet"</li>
-                    <li>Análise detalhada das lojas com desempenho abaixo da média</li>
-                    <li>Treinamento de equipes nas regiões com menor desempenho</li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <h5 style="margin: 0 0 0.75rem 0; color: var(--primary); font-size: 1rem;">3. Aprofundamento Analítico</h5>
-                  <ul style="margin: 0; padding-left: 1.25rem;">
-                    <li>Investigação das causas do crescimento de junho</li>
-                    <li>Análise de sazonalidade para melhor planejamento orçamentário</li>
-                    <li>Segmentação de clientes por perfil de consumo</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div class="alert" style="background: #f8f9fa; margin-top: 1.5rem; padding: 1rem; border-radius: var(--border-radius); font-size: 0.9em;">
-                <i class="fas fa-info-circle" style="color: var(--secondary);"></i>
-                <strong>Nota:</strong> Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.
-              </div>
-            </div>
----
+- Análise de substituição de itens de alto custo
 
-📅 *Relatório gerado em 20 de Agosto de 2025*  
+### 2. Melhoria de Desempenho
+
+- Replicação das melhores práticas dos modelos "Conceito" e "Buffet"
+- Análise detalhada das lojas com desempenho abaixo da média
+- Treinamento de equipes nas regiões com menor desempenho
+### 3. Aprofundamento Analítico
+
+- Investigação das causas do crescimento de junho
+- Análise de sazonalidade para melhor planejamento orçamentário
+- Segmentação de clientes por perfil de consumo
+
+> **Nota:** Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.
+            </div>
 👤 *Desenvolvido por Tassio Lucian de Jesus Sales*  
 🔒 *Confidencial - Uso exclusivo da Coco Bambu*
-  <h4>📊 Desempenho Mensal</h4>
-  <p>Receita vs Orçamento mês a mês, destacando sazonalidade e desvios.</p>
-  
-  <h4>📅 Comparativo Anual (Matriz)</h4>
-  <p>Receita de um mês comparada ao mesmo mês do ano anterior (YoY same month).</p>
-  
-  <h4>🌎 Performance Geográfica</h4>
-  <p>Visualização por cidade/UF com comparação ao orçamento.</p>
-  
-  <h4>📊 Treemap por Modelo de Negócio</h4>
-  <p>Receita x Eficiência em bater metas.</p>
-  
-  <h4>💲 Composição de Custos (Rosca)</h4>
-  <p>Estrutura de custos de matéria-prima.</p>
-  
-  <h4>🏆 Ranking de Lojas (Barras)</h4>
-  <p>Top 5 melhores e piores em relação ao orçamento.</p>
-  
-  <h4>📈 Composição da Receita (Área Empilhada)</h4>
-  <p>Evolução da Margem Bruta ao longo do tempo.</p>
-</div>
 
-<h2>3. Métricas de Negócio (DAX)</h2>
+## 📊 Análises Principais
 
+### Desempenho Mensal
+- Receita vs Orçamento mês a mês
+- Destaque para sazonalidade e desvios
+
+### Comparativo Anual (Matriz)
+- Receita de um mês comparada ao mesmo mês do ano anterior (YoY same month)
+
+### Performance Geográfica
+- Visualização por cidade/UF
+- Comparação ao orçamento por região
+
+### Treemap por Modelo de Negócio
+- Análise de receita vs eficiência em bater metas
+
+### Evolução de Margem
+- Análise da margem bruta ao longo do tempo
+- Segmentação por modelo de negócio
+
+### Filtros Principais
+- Período (Ano/Mês)
+- Região/UF
+- Modelo de Negócio
+- Comparativo Ano Anterior
+
+## 📈 Composição da Receita (Área Empilhada)
+- Evolução da Margem Bruta ao longo do tempo.
+
+## 3. Métricas de Negócio (DAX)
+
+### Medidas de Receita
+- Receita Total
+- Orçamento Receita
+- Receita Ano Anterior
+- Crescimento Anual %
+- Variação % vs Orçamento
+- Receita por Região
+- Receita por Tipo de Loja
+- Receita por Item
+- Receita Acumulada
+
+### Medidas de Custo e Rentabilidade
+- Custo de Matéria Prima
+- Margem Bruta
+- Margem Bruta %
+- Custo por Unidade Vendida
 <div class="dax-code">
-  <span style="color: #7f8c8d;">-- Medidas de Receita</span><br>
-  <span style="color: #2c3e50; font-weight: bold;">Receita Total</span> = CALCULATE(SUM(Fato[valor]), Campos[conta] = <span style="color: #27ae60;">"1 FATURAMENTO"</span>)<br>
-  <span style="color: #2c3e50; font-weight: bold;">Orçamento Receita</span> = CALCULATE(SUM(Fato[valor_orcado]), Campos[conta] = <span style="color: #27ae60;">"1 FATURAMENTO"</span>)<br>
-  <span style="color: #2c3e50; font-weight: bold;">Receita Ano Anterior</span> = CALCULATE([Receita Total], SAMEPERIODLASTYEAR('Calendario'[Date]))<br>
-  <span style="color: #2c3e50; font-weight: bold;">Crescimento Anual %</span> = DIVIDE([Receita Total] - [Receita Ano Anterior], [Receita Ano Anterior])<br>
-  <span style="color: #2c3e50; font-weight: bold;">Variação % vs Orçamento</span> = DIVIDE([Receita Total] - [Orçamento Receita], [Orçamento Receita])<br>
-  <span style="color: #2c3e50; font-weight: bold;">Receita por Região</span> = CALCULATE([Receita Total], ALLEXCEPT(Lojas, Lojas[regiao]))<br>
-  <span style="color: #2c3e50; font-weight: bold;">Receita por Tipo de Loja</span> = CALCULATE([Receita Total], ALLEXCEPT(Lojas, Lojas[tipo_loja]))<br>
-  <span style="color: #2c3e50; font-weight: bold;">Receita por Item</span> = CALCULATE([Receita Total], ALLEXCEPT(Campos, Campos[item]))<br>
+```dax
+// Medidas de Receita
+Receita Total = CALCULATE(SUM(Fato[valor]), Campos[conta] = "1 FATURAMENTO")
+Orçamento Receita = CALCULATE(SUM(Fato[valor_orcado]), Campos[conta] = "1 FATURAMENTO")
+Receita Ano Anterior = CALCULATE([Receita Total], SAMEPERIODLASTYEAR('Calendario'[Date]))
+Crescimento Anual % = DIVIDE([Receita Total] - [Receita Ano Anterior], [Receita Ano Anterior])
+Variação % vs Orçamento = DIVIDE([Receita Total] - [Orçamento Receita], [Orçamento Receita])
+Receita por Região = CALCULATE([Receita Total], ALLEXCEPT(Lojas, Lojas[regiao]))
+Receita por Tipo de Loja = CALCULATE([Receita Total], ALLEXCEPT(Lojas, Lojas[tipo_loja]))
+Receita por Item = CALCULATE([Receita Total], ALLEXCEPT(Campos, Campos[item]))
+```
   <span style="color: #2c3e50; font-weight: bold;">Receita Acumulada</span> = CALCULATE([Receita Total], DATESYTD('Calendario'[Date]))<br>
   <br>
   <span style="color: #7f8c8d;">-- Medidas de Custo e Rentabilidade</span><br>

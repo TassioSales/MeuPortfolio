@@ -34,6 +34,7 @@ A arquitetura do projeto foi desenvolvida com foco em performance, escalabilidad
 ### Tratamento e Preparação dos Dados (Power Query - ETL)
 
 #### Processo ETL Robusto
+
 Foram implementadas transformações avançadas no Power Query para garantir a qualidade e consistência dos dados.
 
 | Categoria | Detalhes |
@@ -211,6 +212,7 @@ A arquitetura do projeto foi desenvolvida com foco em performance, escalabilidad
 ### Tratamento e Preparação dos Dados (Power Query - ETL)
 
 #### Processo ETL Robusto
+
 Foram implementadas transformações avançadas no Power Query para garantir a qualidade e consistência dos dados.
 
 | Categoria | Detalhes |
@@ -614,11 +616,11 @@ DIVIDE(
 ```
 
 ## 4. Análise de Resultados e Insights Estratégicos
-            
-## Sumário Executivo
 
-A análise revelou crescimento anual positivo de **1.59%**, com a rede superando o orçamento em **2.06%**. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.
-                
+### Sumário Executivo
+
+A análise revelou crescimento anual positivo de **1.59%**, com a rede superando o orçamento em **2.06%**. Foram identificadas diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.
+
 ### Métricas Principais
 
 | Métrica | Valor |
@@ -626,49 +628,42 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 | Receita Total | R$ 21.40 bi |
 | Resultado vs Orçamento | +2.06% (Acima da meta) |
 | Crescimento Anual (YoY) | +1.59% |
-            
+
 ### Destaques Positivos
 
 - **Nordeste**: Melhor performance, superando metas com destaque em lojas âncora
 - **Modelos "Conceito" e "Buffet"**: Menor participação no faturamento, mas maior eficiência em superar orçamento
 - **Junho/2025**: Crescimento expressivo de **+10.9%** (YoY), sinalizando retomada positiva
+
 ### Pontos de Atenção
 
 - **Modelo "Restaurante" (R$ 17.09 bi)**: Apesar de representar o maior volume, ficou abaixo do orçamento
 - **Modelo "VASTO"**: Apresenta resultado negativo frente ao planejado
 - **Custos**: Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores
-            
-### Recomendações Estratégicas
-### 1. Otimização de Custos
 
+### Recomendações Estratégicas
+
+#### 1. Otimização de Custos
 - Revisão de contratos com fornecedores de insumos
 - Implementação de programas de redução de desperdício
 - Análise de substituição de itens de alto custo
 
-### 2. Melhoria de Desempenho
-
+#### 2. Melhoria de Desempenho
 - Replicação das melhores práticas dos modelos "Conceito" e "Buffet"
 - Análise detalhada das lojas com desempenho abaixo da média
 - Treinamento de equipes nas regiões com menor desempenho
-### 3. Aprofundamento Analítico
 
+#### 3. Aprofundamento Analítico
 - Investigação das causas do crescimento de junho
 - Análise de sazonalidade para melhor planejamento orçamentário
 - Segmentação de clientes por perfil de consumo
 
-> Nota: Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.
-            
-## Análises Principais
+> **Nota:** Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.
 
-### Desempenho Mensal
-- Receita vs Orçamento mês a mês
-- Destaque para sazonalidade e desvios
+---
 
-### Comparativo Anual (Matriz)
-- Receita de um mês comparada ao mesmo mês do ano anterior (YoY same month)
-
-### Performance Geográfica
-- Visualização por cidade/UF
+📅 *Última atualização: 20 de Agosto de 2025*  
+👤 *Desenvolvido por Tassio Lucian de Jesus Sales*
 - Comparação ao orçamento por região
 
 ### Treemap por Modelo de Negócio
@@ -701,35 +696,84 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 - Receita Acumulada
 
 ### Medidas de Custo e Rentabilidade
-- Custo de Matéria Prima
-- Margem Bruta
-- Margem Bruta %
-- Custo por Unidade Vendida
 ```dax
 // Medidas de Receita
-Receita Total = CALCULATE(SUM(Fato[valor]), Campos[conta] = "1 FATURAMENTO")
-Orçamento Receita = CALCULATE(SUM(Fato[valor_orcado]), Campos[conta] = "1 FATURAMENTO")
-Receita Ano Anterior = CALCULATE([Receita Total], SAMEPERIODLASTYEAR('Calendario'[Date]))
-Crescimento Anual % = DIVIDE([Receita Total] - [Receita Ano Anterior], [Receita Ano Anterior])
-Variação % vs Orçamento = DIVIDE([Receita Total] - [Orçamento Receita], [Orçamento Receita])
-Receita por Região = CALCULATE([Receita Total], ALLEXCEPT(Lojas, Lojas[regiao]))
-Receita por Tipo de Loja = CALCULATE([Receita Total], ALLEXCEPT(Lojas, Lojas[tipo_loja]))
-Receita por Item = CALCULATE([Receita Total], ALLEXCEPT(Campos, Campos[item]))
-Receita Acumulada = CALCULATE([Receita Total], DATESYTD('Calendario'[Date]))
+Receita Total = 
+CALCULATE(
+    SUM(Fato[valor]), 
+    Campos[conta] = "1 FATURAMENTO"
+)
+
+Orçamento Receita = 
+CALCULATE(
+    SUM(Fato[valor_orcado]), 
+    Campos[conta] = "1 FATURAMENTO"
+)
+
+Receita Ano Anterior = 
+CALCULATE(
+    [Receita Total], 
+    SAMEPERIODLASTYEAR('Calendario'[Date])
+)
+
+Crescimento Anual % = 
+DIVIDE(
+    [Receita Total] - [Receita Ano Anterior], 
+    [Receita Ano Anterior]
+)
+
+Variação % vs Orçamento = 
+DIVIDE(
+    [Receita Total] - [Orçamento Receita], 
+    [Orçamento Receita]
+)
+
+Receita por Região = 
+CALCULATE(
+    [Receita Total], 
+    ALLEXCEPT(Lojas, Lojas[regiao])
+)
+
+Receita por Tipo de Loja = 
+CALCULATE(
+    [Receita Total], 
+    ALLEXCEPT(Lojas, Lojas[tipo_loja])
+)
+
+Receita por Item = 
+CALCULATE(
+    [Receita Total], 
+    ALLEXCEPT(Campos, Campos[item])
+)
+
+Receita Acumulada = 
+CALCULATE(
+    [Receita Total], 
+    DATESYTD('Calendario'[Date])
+)
 
 // Medidas de Custo e Rentabilidade
-Custo de Matéria Prima = CALCULATE(SUM(Fato[valor]), Campos[conta] = "2 MATERIA PRIMA") * -1
-Margem Bruta = [Receita Total] - [Custo de Matéria Prima]
-Margem Bruta % = DIVIDE([Margem Bruta], [Receita Total])
+Custo de Matéria Prima = 
+CALCULATE(
+    SUM(Fato[valor]), 
+    Campos[conta] = "2 MATERIA PRIMA"
+) * -1
+
+Margem Bruta = 
+[Receita Total] - [Custo de Matéria Prima]
+
+Margem Bruta % = 
+DIVIDE(
+    [Margem Bruta], 
+    [Receita Total]
+)
 ```
 
 ## 4. Análise de Resultados e Insights Estratégicos
 
-## 📊 Sumário Executivo
+A análise revelou crescimento anual positivo de **1.59%**, com a rede superando o orçamento em **2.06%**. Foram identificadas diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.
 
-A análise revelou crescimento anual positivo de **1.59%**, com a rede superando o orçamento em **2.06%**. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.
-
-## Métricas Principais
+### Métricas Principais
 
 | Métrica | Valor |
 |---------|-------|
@@ -737,41 +781,34 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 | Resultado vs Orçamento | +2.06% (Acima da meta) |
 | Crescimento Anual (YoY) | +1.59% |
 
-## Conclusão
-
-O dashboard entregue permite um acompanhamento claro, interativo e estratégico, servindo como ferramenta de apoio para a alta gestão da rede Coco Bambu na tomada de decisão, com foco em crescimento sustentável e eficiência operacional.
-
-## 📊 Destaques
-
-### ✅ Destaques Positivos
+### Destaques Positivos
 
 - **Nordeste**: Melhor performance, superando metas com destaque em lojas âncora
 - **Modelos "Conceito" e "Buffet"**: Menor participação no faturamento, mas maior eficiência em superar orçamento
 - **Junho/2025**: Crescimento expressivo de **+10.9%** (YoY), sinalizando retomada positiva
 
-### ⚠️ Pontos de Atenção
+### Pontos de Atenção
 
 - **Modelo "Restaurante" (R$ 17.09 bi)**: Apesar de representar o maior volume, ficou abaixo do orçamento
 - **Modelo "VASTO"**: Apresenta resultado negativo frente ao planejado
 - **Custos**: Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores
 
-## 📌 Recomendações Estratégicas
+### Recomendações Estratégicas
 
-### 1. Otimização de Custos
-
+#### 1. Otimização de Custos
 - Revisão de contratos com fornecedores de insumos
 - Implementação de programas de redução de desperdício
+- Análise de substituição de itens de alto custo
 
-### 2. Melhoria de Desempenho
-
+#### 2. Melhoria de Desempenho
 - Replicação das melhores práticas dos modelos "Conceito" e "Buffet"
 - Análise detalhada das lojas com desempenho abaixo da média
 - Treinamento de equipes nas regiões com menor desempenho
 
-### 3. Aprofundamento Analítico
-
+#### 3. Aprofundamento Analítico
 - Investigação das causas do crescimento de junho
 - Análise de sazonalidade para melhor planejamento orçamentário
+- Segmentação de clientes por perfil de consumo
 
 > **Nota:** Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.
 

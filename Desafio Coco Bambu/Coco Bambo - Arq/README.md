@@ -445,12 +445,11 @@ O dashboard foi projetado seguindo princípios de design thinking e análise de 
 - Distribuição de receita por região/UF
 - Identificação de mercados-chave e oportunidades de expansão
 
-#### 📊 Performance por Modelo
+### 📊 Performance por Modelo
 - Avaliação da eficiência dos diferentes modelos de negócio
 - Comparação de desempenho em atingir as metas orçadas
-              </div>
-              
-#### 🏆 Ranking de Lojas
+
+### 🏆 Ranking de Lojas
 - Identificação das melhores e piores performances por unidade
 - Permite ações direcionadas baseadas em dados
 

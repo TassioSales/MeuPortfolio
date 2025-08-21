@@ -611,19 +611,15 @@ DIVIDE(
         Campos[conta] = "1 FATURAMENTO"
     )
 )
-            </div>
-            
-> **Nota de Otimização:** Todas as medidas foram otimizadas para desempenho, utilizando funções DAX eficientes e boas práticas de modelagem tabular.
-            </div>
-          </div>
-          
+```
+
 ## 4. Análise de Resultados e Insights Estratégicos
             
-## 📊 Sumário Executivo
+## Sumário Executivo
 
 A análise revelou crescimento anual positivo de **1.59%**, com a rede superando o orçamento em **2.06%**. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.
                 
-### 📊 Métricas Principais
+### Métricas Principais
 
 | Métrica | Valor |
 |---------|-------|
@@ -631,18 +627,18 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 | Resultado vs Orçamento | +2.06% (Acima da meta) |
 | Crescimento Anual (YoY) | +1.59% |
             
-### ✅ Destaques Positivos
+### Destaques Positivos
 
 - **Nordeste**: Melhor performance, superando metas com destaque em lojas âncora
 - **Modelos "Conceito" e "Buffet"**: Menor participação no faturamento, mas maior eficiência em superar orçamento
 - **Junho/2025**: Crescimento expressivo de **+10.9%** (YoY), sinalizando retomada positiva
-### ⚠️ Pontos de Atenção
+### Pontos de Atenção
 
 - **Modelo "Restaurante" (R$ 17.09 bi)**: Apesar de representar o maior volume, ficou abaixo do orçamento
 - **Modelo "VASTO"**: Apresenta resultado negativo frente ao planejado
 - **Custos**: Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores
             
-### 📌 Recomendações Estratégicas
+### Recomendações Estratégicas
 ### 1. Otimização de Custos
 
 - Revisão de contratos com fornecedores de insumos
@@ -660,12 +656,9 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 - Análise de sazonalidade para melhor planejamento orçamentário
 - Segmentação de clientes por perfil de consumo
 
-> **Nota:** Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.
-            </div>
-👤 *Desenvolvido por Tassio Lucian de Jesus Sales*  
-🔒 *Confidencial - Uso exclusivo da Coco Bambu*
-
-## 📊 Análises Principais
+> Nota: Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.
+            
+## Análises Principais
 
 ### Desempenho Mensal
 - Receita vs Orçamento mês a mês

@@ -577,7 +577,7 @@ CALCULATE(
 )
 ```
 
-> **Dica de Performance:** Todas as medidas foram otimizadas para desempenho, utilizando funções iteradoras apenas quando necessário e evitando contextos de filtro desnecessários.
+> 💡 **Dica de Performance:** Todas as medidas foram otimizadas para desempenho, utilizando funções iteradoras apenas quando necessário e evitando contextos de filtro desnecessários.
 
 # Métricas de Custo e Rentabilidade
 

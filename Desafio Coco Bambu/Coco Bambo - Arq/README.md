@@ -175,25 +175,7 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 📅 *Última atualização: 20 de Agosto de 2025*  
 👤 *Desenvolvido por Tassio Lucian de Jesus Sales*
 
-  }
 
-  h2 {
-    font-size: 1.8rem;
-    margin-top: 2.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--light-gray);
-    position: relative;
-  }
-
-  h2::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100px;
-    height: 2px;
-    background: var(--secondary);
-  }
 
   h3 {
     font-size: 1.4rem;
@@ -459,22 +441,7 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
     background: rgba(0, 0, 0, 0.01);
   }
 
-  /* Responsive Design */
-  @media (max-width: 992px) {
-    .metrics-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
 
-  @media (max-width: 768px) {
-    .metrics-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .header-content {
-      flex-direction: column;
-      text-align: center;
-    }
 
 ---
 
@@ -482,26 +449,19 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 👤 *Desenvolvido por Tassio Lucian de Jesus Sales*
 **Candidato(a):** Tassio Lucian de Jesus Sales  
 **Data:** 20 de Agosto de 2025
-          </div>
-        </div>
-        
+
 ![Dashboard Overview](image/Captura%20de%20tela%202025-08-20%20215011.png)
 *Visão geral do dashboard interativo*
 
-    <main>
-      <section id="modelagem">
-        <div class="card">
-          <h2><i class="fas fa-sitemap"></i> 1. Decisões Estratégicas de Modelagem e ETL</h2>
+## 1. Decisões Estratégicas de Modelagem e ETL
 
-          <div class="info-box">
-            <h3><i class="fas fa-database"></i> Modelagem de Dados</h3>
-            <p>A arquitetura do projeto foi desenvolvida com foco em performance, escalabilidade e experiência do usuário final, permitindo que os insights fossem extraídos de forma rápida e intuitiva.</p>
-            
-            <div class="metrics-grid" style="margin: 1.5rem 0;">
-              <div class="metric">
-                <div class="label">Estrutura de Dados</div>
-                <div class="value">Esquema Estrela</div>
-                <div class="subtext">Modelo dimensional otimizado</div>
+### Modelagem de Dados
+
+A arquitetura do projeto foi desenvolvida com foco em performance, escalabilidade e experiência do usuário final, permitindo que os insights fossem extraídos de forma rápida e intuitiva.
+
+#### Principais Características
+
+- **Estrutura de Dados**: Esquema Estrela (Modelo dimensional otimizado)
               </div>
               <div class="metric">
                 <div class="label">Tabelas Principais</div>
@@ -952,23 +912,21 @@ DIVIDE(
 
 A análise revelou crescimento anual positivo de **1.59%**, com a rede superando o orçamento em **2.06%**. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.
   
-  <div style="display: flex; flex-wrap: wrap; gap: 15px; margin: 15px 0;">
-    <div style="flex: 1; min-width: 200px; background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-      <div style="font-size: 0.9em; color: #7f8c8d;">Receita Total</div>
-      <div style="font-size: 1.5em; font-weight: bold;">R$ 21.40 bi</div>
-    </div>
-    <div style="flex: 1; min-width: 200px; background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-      <div style="font-size: 0.9em; color: #7f8c8d;">Resultado vs Orçamento</div>
-      <div style="font-size: 1.5em; font-weight: bold; color: #27ae60;">+2.06%</div>
-      <div style="font-size: 0.8em; color: #7f8c8d;">Acima da meta</div>
-    </div>
-    <div style="flex: 1; min-width: 200px; background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-      <div style="font-size: 0.9em; color: #7f8c8d;">Crescimento Anual (YoY)</div>
-      <div style="font-size: 1.5em; font-weight: bold; color: #27ae60;">+1.59%</div>
-    </div>
-  </div>
-  
-  <div style="margin-top: 20px; background: #f0f8ff; padding: 15px; border-radius: 6px; border-left: 4px solid #3498db;">
+## 📊 Métricas Principais
+
+| Métrica | Valor |
+|---------|-------|
+| Receita Total | R$ 21.40 bi |
+| Resultado vs Orçamento | +2.06% (Acima da meta) |
+| Crescimento Anual (YoY) | +1.59% |
+## 📊 Métricas Principais
+
+| Métrica | Valor |
+|---------|-------|
+| Resultado vs Orçamento | +2.06% (Acima da meta) |
+| Crescimento Anual (YoY) | +1.59% |
+
+## 📌 Conclusão
 ### 📌 Conclusão
 
 O dashboard entregue permite um acompanhamento claro, interativo e estratégico, servindo como ferramenta de apoio para a alta gestão da rede Coco Bambu na tomada de decisão, com foco em crescimento sustentável e eficiência operacional.
@@ -992,26 +950,17 @@ O dashboard entregue permite um acompanhamento claro, interativo e estratégico,
 ### 1. Otimização de Custos
 
 -
-    <li>Revisão de contratos com fornecedores de insumos</li>
-    <li>Implementação de programas de redução de desperdício</li>
-  </ul>
-</div>
+- Revisão de contratos com fornecedores de insumos
+- Implementação de programas de redução de desperdício
 
-<div class="recommendation">
-  <h4>2. Melhoria de Desempenho</h4>
-  <ul>
-    <li>Replicação das melhores práticas dos modelos "Conceito" e "Buffet"</li>
-    <li>Análise detalhada das lojas com desempenho abaixo da média</li>
-  </ul>
-</div>
+### 2. Melhoria de Desempenho
 
-<div class="recommendation">
-  <h4>3. Aprofundamento Analítico</h4>
-  <ul>
-    <li>Investigação das causas do crescimento de junho</li>
-    <li>Análise de sazonalidade para melhor planejamento orçamentário</li>
-  </ul>
-</div>
+- Replicação das melhores práticas dos modelos "Conceito" e "Buffet"
+- Análise detalhada das lojas com desempenho abaixo da média
+### 3. Aprofundamento Analítico
+
+- Investigação das causas do crescimento de junho
+- Análise de sazonalidade para melhor planejamento orçamentário
 
 <div style="margin-top: 40px; padding: 15px; background: #f8f9fa; border-radius: 6px; text-align: center; font-size: 0.9em; color: #7f8c8d;">
   <p><strong>Nota:</strong> Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.</p>

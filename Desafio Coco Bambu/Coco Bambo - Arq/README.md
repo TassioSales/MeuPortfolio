@@ -453,21 +453,20 @@ O dashboard foi projetado seguindo princípios de design thinking e análise de 
 - Identificação das melhores e piores performances por unidade
 - Permite ações direcionadas baseadas em dados
 
-#### 📈 Composição da Receita
+### 📈 Composição da Receita
 - Análise da evolução da margem bruta
 - Composição de custos ao longo do tempo
-              </div>
-            </div>
-            
+
 > 💡 **Dica de Navegação:** Utilize os filtros interativos para explorar os dados em diferentes níveis de detalhamento e períodos temporais.
           </div>
           
 ## 3. Métricas de Negócio (DAX)
-            
-            <p>Foram desenvolvidas medidas DAX avançadas para atender às necessidades analíticas do negócio:</p>
-            
-            <h4><i class="fas fa-coins"></i> Medidas de Receita</h4>
-            <div class="dax-code">
+
+Foram desenvolvidas medidas DAX avançadas para atender às necessidades analíticas do negócio:
+
+### 💰 Medidas de Receita
+
+```dax
 // Receita Total
 Receita Total = 
 CALCULATE(

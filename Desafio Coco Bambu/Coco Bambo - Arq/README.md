@@ -177,14 +177,6 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 
 
 
-  h3 {
-    font-size: 1.4rem;
-    margin-top: 2rem;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
 
   h3 i {
     color: var(--secondary);
@@ -425,28 +417,8 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
   }
 
   th {
-    background: var(--primary);
-    color: white;
-    font-weight: 500;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 0.5px;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  tr:hover {
-    background: rgba(0, 0, 0, 0.01);
-  }
-
-
-
----
-
-📅 *Última atualização: 20 de Agosto de 2025*  
 👤 *Desenvolvido por Tassio Lucian de Jesus Sales*
+
 **Candidato(a):** Tassio Lucian de Jesus Sales  
 **Data:** 20 de Agosto de 2025
 
@@ -462,19 +434,8 @@ A arquitetura do projeto foi desenvolvida com foco em performance, escalabilidad
 #### Principais Características
 
 - **Estrutura de Dados**: Esquema Estrela (Modelo dimensional otimizado)
-              </div>
-              <div class="metric">
-                <div class="label">Tabelas Principais</div>
-                <div class="value">4</div>
-                <div class="subtext">Fato, Dimensões e Calendário</div>
-              </div>
-              <div class="metric">
-                <div class="label">Relacionamentos</div>
-                <div class="value">Otimizados</div>
-                <div class="subtext">Integridade referencial garantida</div>
-              </div>
-            </div>
-            
+- **Tabelas Principais**: 4 (Fato, Dimensões e Calendário)
+- **Relacionamentos**: Otimizados (Integridade referencial garantida)
             <h4><i class="fas fa-check-circle"></i> Principais Características</h4>
             <ul style="margin-top: 1rem;">
               <li><strong>Esquema Estrela (Star Schema)</strong> com tabela Fato centralizada para consultas eficientes</li>
@@ -558,15 +519,13 @@ in
         </div>
       </section>
 
-      <section id="arquitetura-visual" style="margin-top: 3rem;">
-        <div class="card">
-          <h2><i class="fas fa-chart-line"></i> 2. Arquitetura Visual e Análises Desenvolvidas</h2>
+## 2. Arquitetura Visual e Análises Desenvolvidas
 
-          <div class="info-box">
-            <h3><i class="fas fa-tachometer-alt"></i> Visão Geral do Dashboard</h3>
-            <p>O dashboard foi projetado seguindo princípios de design thinking e análise de negócios, organizado em camadas analíticas que permitem uma navegação intuitiva dos indicadores macro até os detalhes operacionais.</p>
-            
-            <div style="text-align: center; margin: 2rem 0;">
+### Visão Geral do Dashboard
+
+O dashboard foi projetado seguindo princípios de design thinking e análise de negócios, organizado em camadas analíticas que permitem uma navegação intuitiva dos indicadores macro até os detalhes operacionais.
+
+### Principais Análises
               <img src="image/Captura de tela 2025-08-20 215038.png" alt="Detalhes do Dashboard" class="dashboard-image" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05);">
               <p class="img-caption">Visão detalhada das métricas e análises do dashboard interativo</p>
             </div>
@@ -599,11 +558,9 @@ in
 
             <h4><i class="fas fa-chart-pie"></i> Principais Análises Desenvolvidas</h4>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
-              <div style="background: #f8f9fa; padding: 1.25rem; border-radius: var(--border-radius); border-left: 4px solid #4d6bff;">
-                <h5 style="margin-top: 0; color: #2c3e50; font-size: 1.1rem;"><i class="fas fa-chart-line" style="color: #4d6bff;"></i> Desempenho Mensal</h5>
-                <p>Análise comparativa mês a mês entre receita realizada e orçada, com destaque para sazonalidades e desvios significativos.</p>
-              </div>
+#### 📊 Desempenho Mensal
+- Análise comparativa mês a mês entre receita realizada e orçada
+- Destaque para sazonalidades e desvios significativos
               
               <div style="background: #f8f9fa; padding: 1.25rem; border-radius: var(--border-radius); border-left: 4px solid #ff6b6b;">
                 <h5 style="margin-top: 0; color: #2c3e50; font-size: 1.1rem;"><i class="fas fa-calendar-alt" style="color: #ff6b6b;"></i> Comparativo Anual</h5>
@@ -640,8 +597,7 @@ in
             </div>
           </div>
           
-          <div class="info-box" style="margin-top: 2rem;">
-            <h3><i class="fas fa-calculator"></i> 3. Métricas de Negócio (DAX)</h3>
+## 3. Métricas de Negócio (DAX)
             
             <p>Foram desenvolvidas medidas DAX avançadas para atender às necessidades analíticas do negócio:</p>
             
@@ -753,8 +709,7 @@ DIVIDE(
             </div>
           </div>
           
-          <div class="info-box success" style="margin-top: 2rem;">
-            <h3><i class="fas fa-chart-bar"></i> 4. Análise de Resultados e Insights Estratégicos</h3>
+## 4. Análise de Resultados e Insights Estratégicos
             
             <div class="alert" style="background: #f8f9fa; margin: 1.5rem 0; padding: 1.5rem; border-radius: var(--border-radius);">
               <div style="text-align: center;">
@@ -807,11 +762,7 @@ DIVIDE(
               </div>
             </div>
             
-            <div class="recommendation">
-              <h4><i class="fas fa-lightbulb"></i> Recomendações Estratégicas</h4>
-              
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
-                <div>
+### 📌 Recomendações Estratégicas
                   <h5 style="margin: 0 0 0.75rem 0; color: var(--primary); font-size: 1rem;">1. Otimização de Custos</h5>
                   <ul style="margin: 0; padding-left: 1.25rem;">
                     <li>Revisão de contratos com fornecedores de insumos</li>
@@ -844,26 +795,11 @@ DIVIDE(
                 <strong>Nota:</strong> Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-    </main>
-    
-    <footer style="text-align: center; margin: 3rem 0 2rem; color: var(--gray); font-size: 0.9rem;">
-      <p>Relatório gerado em 20 de Agosto de 2025 | Desenvolvido por Tassio Lucian de Jesus Sales</p>
-      <p style="font-size: 0.8em; opacity: 0.8; margin-top: 0.5rem;">Confidencial - Uso exclusivo da Coco Bambu</p>
-    </footer>
-  </div>
-      <div class="label">Crescimento Anual</div>
-      <div class="value positive">+1.59%</div>
-      <div>Comparação YoY</div>
-    </div>
-  </div>
-</div>
+---
 
-<h3>Análises Principais</h3>
-
-<div class="info-box">
+📅 *Relatório gerado em 20 de Agosto de 2025*  
+👤 *Desenvolvido por Tassio Lucian de Jesus Sales*  
+🔒 *Confidencial - Uso exclusivo da Coco Bambu*
   <h4>📊 Desempenho Mensal</h4>
   <p>Receita vs Orçamento mês a mês, destacando sazonalidade e desvios.</p>
   
@@ -902,37 +838,32 @@ DIVIDE(
   <br>
   <span style="color: #7f8c8d;">-- Medidas de Custo e Rentabilidade</span><br>
   <span style="color: #2c3e50; font-weight: bold;">Custo de Matéria Prima</span> = CALCULATE(SUM(Fato[valor]), Campos[conta] = <span style="color: #27ae60;">"2 MATERIA PRIMA"</span>) * -1<br>
-  <span style="color: #2c3e50; font-weight: bold;">Margem Bruta</span> = [Receita Total] - [Custo de Matéria Prima]<br>
-  <span style="color: #2c3e50; font-weight: bold;">Margem Bruta %</span> = DIVIDE([Margem Bruta], [Receita Total])
-</div>
+```dax
+Margem Bruta = [Receita Total] - [Custo de Matéria Prima]
+Margem Bruta % = DIVIDE([Margem Bruta], [Receita Total])
+```
 
-<h2>4. Análise de Resultados e Insights Estratégicos</h2>
+## 4. Análise de Resultados e Insights Estratégicos
 
 ## 📊 Sumário Executivo
 
 A análise revelou crescimento anual positivo de **1.59%**, com a rede superando o orçamento em **2.06%**. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.
-  
-## 📊 Métricas Principais
+
+## Métricas Principais
 
 | Métrica | Valor |
 |---------|-------|
 | Receita Total | R$ 21.40 bi |
 | Resultado vs Orçamento | +2.06% (Acima da meta) |
 | Crescimento Anual (YoY) | +1.59% |
-## 📊 Métricas Principais
 
-| Métrica | Valor |
-|---------|-------|
-| Resultado vs Orçamento | +2.06% (Acima da meta) |
-| Crescimento Anual (YoY) | +1.59% |
-
-## 📌 Conclusão
-### 📌 Conclusão
+## Conclusão
 
 O dashboard entregue permite um acompanhamento claro, interativo e estratégico, servindo como ferramenta de apoio para a alta gestão da rede Coco Bambu na tomada de decisão, com foco em crescimento sustentável e eficiência operacional.
 
-## 📊 Destaques
+## Destaques
 
+### Destaques Positivos
 ### ✅ Destaques Positivos
 
 - **Nordeste**: Melhor performance, superando metas com destaque em lojas âncora
@@ -962,9 +893,9 @@ O dashboard entregue permite um acompanhamento claro, interativo e estratégico,
 - Investigação das causas do crescimento de junho
 - Análise de sazonalidade para melhor planejamento orçamentário
 
-<div style="margin-top: 40px; padding: 15px; background: #f8f9fa; border-radius: 6px; text-align: center; font-size: 0.9em; color: #7f8c8d;">
-  <p><strong>Nota:</strong> Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.</p>
-</div>
+> **Nota:** Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.
 
-</body>
-</html>
+---
+
+📅 *Última atualização: 20 de Agosto de 2025*  
+👤 *Desenvolvido por Tassio Lucian de Jesus Sales*

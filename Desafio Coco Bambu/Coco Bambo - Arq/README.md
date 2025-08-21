@@ -175,43 +175,6 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 📅 *Última atualização: 20 de Agosto de 2025*  
 👤 *Desenvolvido por Tassio Lucian de Jesus Sales*
 
-  .header {
-    background: linear-gradient(135deg, var(--primary) 0%, #1a252f 100%);
-    color: white;
-    padding: 2.5rem 0;
-    margin-bottom: 2.5rem;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    position: relative;
-    box-shadow: var(--box-shadow);
-  }
-
-  .header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
-    opacity: 0.5;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    color: var(--dark);
-    margin-bottom: 1.25rem;
-    line-height: 1.3;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    margin: 0 0 0.5rem 0;
-    color: white;
-    position: relative;
-    display: inline-block;
-  }
-
   h1::after {
     content: '';
     position: absolute;
@@ -532,41 +495,13 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 
     h2 {
       font-size: 1.6rem;
-    }
-  }
+---
 
-  @media (max-width: 576px) {
-    .container {
-      padding: 0 15px;
-    }
-
-    .info-box, .card {
-      padding: 1.25rem;
-    }
-  }
-</style>
-</head>
-<body>
-  <div class="container">
-    <header class="header">
-      <div class="header-content" style="position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem;">
-        <div style="flex: 1; min-width: 300px;">
-          <h1>Análise Estratégica de Performance</h1>
-          <h2 style="color: rgba(255, 255, 255, 0.9); font-weight: 400; font-size: 1.5rem; margin-bottom: 1.5rem;">Coco Bambu</h2>
-          
-          <div style="background: rgba(255, 255, 255, 0.1); padding: 1.25rem; border-radius: var(--border-radius); backdrop-filter: blur(5px);">
-            <p style="margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
-              <i class="fas fa-project-diagram" style="width: 20px; text-align: center;"></i>
-              <strong>Projeto:</strong> Dashboard Estratégico de Análise de Receita e Orçamento
+📅 *Última atualização: 20 de Agosto de 2025*  
+👤 *Desenvolvido por Tassio Lucian de Jesus Sales*
             </p>
-            <p style="margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
-              <i class="fas fa-user-tie" style="width: 20px; text-align: center;"></i>
-              <strong>Candidato(a):</strong> Tassio Lucian de Jesus Sales
-            </p>
-            <p style="margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
-              <i class="far fa-calendar-alt" style="width: 20px; text-align: center;"></i>
-              <strong>Data:</strong> 20 de Agosto de 2025
-            </p>
+**Candidato(a):** Tassio Lucian de Jesus Sales  
+**Data:** 20 de Agosto de 2025
           </div>
         </div>
         
@@ -983,11 +918,6 @@ DIVIDE(
       <p style="font-size: 0.8em; opacity: 0.8; margin-top: 0.5rem;">Confidencial - Uso exclusivo da Coco Bambu</p>
     </footer>
   </div>
-</body>
-</html>
-      <div>Acima da meta</div>
-    </div>
-    <div class="metric">
       <div class="label">Crescimento Anual</div>
       <div class="value positive">+1.59%</div>
       <div>Comparação YoY</div>
@@ -1042,9 +972,9 @@ DIVIDE(
 
 <h2>4. Análise de Resultados e Insights Estratégicos</h2>
 
-<div class="info-box">
-  <h3>Sumário Executivo</h3>
-  <p>A análise revelou crescimento anual positivo de <strong>1.59%</strong>, com a rede superando o orçamento em <strong>2.06%</strong>. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.</p>
+## 📊 Sumário Executivo
+
+A análise revelou crescimento anual positivo de **1.59%**, com a rede superando o orçamento em **2.06%**. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.
   
   <div style="display: flex; flex-wrap: wrap; gap: 15px; margin: 15px 0;">
     <div style="flex: 1; min-width: 200px; background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
@@ -1068,21 +998,18 @@ DIVIDE(
   </div>
 </div>
 
-<div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 30px 0;">
-  <div style="flex: 1; min-width: 300px;">
-    <h3>✅ Destaques Positivos</h3>
-    <ul>
-      <li><strong>Nordeste:</strong> Melhor performance, superando metas com destaque em lojas âncora</li>
-      <li><strong>Modelos "Conceito" e "Buffet":</strong> Menor participação no faturamento, mas maior eficiência em superar orçamento</li>
-      <li><strong>Junho/2025:</strong> Crescimento expressivo de <strong>+10.9%</strong> (YoY), sinalizando retomada positiva</li>
-    </ul>
-  </div>
-  
-  <div style="flex: 1; min-width: 300px;">
-    <h3>⚠️ Pontos de Atenção</h3>
-    <ul>
-      <li><strong>Modelo "Restaurante" (R$ 17.09 bi):</strong> Apesar de representar o maior volume, ficou abaixo do orçamento</li>
-      <li><strong>Modelo "VASTO":</strong> Apresenta resultado negativo frente ao planejado</li>
+## 📊 Destaques
+
+### ✅ Destaques Positivos
+
+- **Nordeste**: Melhor performance, superando metas com destaque em lojas âncora
+- **Modelos "Conceito" e "Buffet"**: Menor participação no faturamento, mas maior eficiência em superar orçamento
+- **Junho/2025**: Crescimento expressivo de **+10.9%** (YoY), sinalizando retomada positiva
+
+### ⚠️ Pontos de Atenção
+
+- **Modelo "Restaurante" (R$ 17.09 bi)**: Apesar de representar o maior volume, ficou abaixo do orçamento
+- **Modelo "VASTO"**: Apresenta resultado negativo frente ao planejado</li>
       <li><strong>Custos:</strong> Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores</li>
     </ul>
   </div>

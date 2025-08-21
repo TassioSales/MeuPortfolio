@@ -423,34 +423,18 @@ O dashboard foi projetado seguindo princípios de design thinking e análise de 
 *Visão detalhada das métricas e análises do dashboard interativo*
 
 ## Métricas Principais
-              <div class="metric">
-                <div class="label">Receita Total</div>
-                <div class="value">R$ 21.40 bi</div>
-                <div class="subtext">Período analisado</div>
-              </div>
-              <div class="metric">
-                <div class="label">Resultado vs Orçamento</div>
-                <div class="value positive">+2.06%</div>
-                <div class="subtext">Acima da meta</div>
-              </div>
-              <div class="metric">
-                <div class="label">Crescimento Anual</div>
-                <div class="value positive">+1.59%</div>
-                <div class="subtext">Comparação YoY</div>
-              </div>
-            </div>
-  
-            <div class="alert alert-success" style="margin: 1.5rem 0;">
-              <i class="fas fa-chart-line" style="color: var(--success);"></i>
-              <div>
-                <strong>Destaque de Performance</strong><br>
-                O dashboard demonstra um crescimento anual consistente de 1.59% e superação do orçamento em 2.06%, indicando uma trajetória positiva para o negócio.
-              </div>
-            </div>
 
-            <h4><i class="fas fa-chart-pie"></i> Principais Análises Desenvolvidas</h4>
-            
-#### 📊 Desempenho Mensal
+| Métrica | Valor | Status |
+|---------|-------|--------|
+| Receita Total | R$ 21.40 bi | Período analisado |
+| Resultado vs Orçamento | +2.06% | ✅ Acima da meta |
+| Crescimento Anual | +1.59% | 📈 Comparação YoY |
+
+> 📊 **Destaque:** O dashboard demonstra um crescimento consistente e superação das metas orçamentárias, com destaque para o crescimento de 1.59% em relação ao ano anterior.
+
+## Principais Análises Desenvolvidas
+
+### 📊 Desempenho Mensal
 - Análise comparativa mês a mês entre receita realizada e orçada
 - Destaque para sazonalidades e desvios significativos
               

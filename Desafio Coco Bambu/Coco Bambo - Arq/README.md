@@ -823,10 +823,7 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 
 O dashboard entregue permite um acompanhamento claro, interativo e estratégico, servindo como ferramenta de apoio para a alta gestão da rede Coco Bambu na tomada de decisão, com foco em crescimento sustentável e eficiência operacional.
 
-## Destaques
-
-### Destaques Positivos
-### ✅ Destaques Positivos
+## 📊 Destaques
 
 - **Nordeste**: Melhor performance, superando metas com destaque em lojas âncora
 - **Modelos "Conceito" e "Buffet"**: Menor participação no faturamento, mas maior eficiência em superar orçamento
@@ -835,14 +832,13 @@ O dashboard entregue permite um acompanhamento claro, interativo e estratégico,
 ### ⚠️ Pontos de Atenção
 
 - **Modelo "Restaurante" (R$ 17.09 bi)**: Apesar de representar o maior volume, ficou abaixo do orçamento
-- **Modelo "VASTO"**: Apresenta resultado negativo frente ao planejado</li>
+- **Modelo "VASTO"**: Apresenta resultado negativo frente ao planejado
 - **Custos**: Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores
 
 ## 📌 Recomendações Estratégicas
 
 ### 1. Otimização de Custos
 
--
 - Revisão de contratos com fornecedores de insumos
 - Implementação de programas de redução de desperdício
 

@@ -387,11 +387,9 @@ Foram implementadas transformações avançadas no Power Query para garantir a q
 - Separação de Cidade/UF
 - Agregação por região
 - Preparação para visualizações de mapa
-              </div>
-            </div>
-            
-            <h4><i class="fas fa-code"></i> Exemplo de Código Power Query</h4>
-            <div class="dax-code">
+### Exemplo de Código Power Query
+
+```powerquery
 // Transformação de Data
 let
     Source = Excel.Workbook(File.Contents("Caminho\\Arquivo.xlsx"), null, true),
@@ -411,15 +409,9 @@ in
 // Separação Cidade-UF
 let
     Source = ...
-    #"Colunas Divididas" = Table.SplitColumn(Source, "cidade", 
-        Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"cidade", "uf"})
+    #"Colunas Divididas" = Table.SplitColumn(Source, "cidade", Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"cidade", "uf"})
 in
     #"Colunas Divididas"
-
-        </div>
-      </section>
-
-## 2. Arquitetura Visual e Análises Desenvolvidas
 
 ### Visão Geral do Dashboard
 

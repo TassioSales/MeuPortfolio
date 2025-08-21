@@ -473,67 +473,116 @@ CALCULATE(
     SUM(Fato[valor]), 
     Campos[conta] = "1 FATURAMENTO"
 )
+```
 
-// Orçamento de Receita
+### Orçamento de Receita
+```dax
 Orçamento Receita = 
 CALCULATE(
     SUM(Fato[valor_orcado]), 
     Campos[conta] = "1 FATURAMENTO"
 )
+```
 
-// Receita Ano Anterior
-Receita Ano Anterior = 
-CALCULATE(
-    [Receita Total], 
-    SAMEPERIODLASTYEAR('Calendario'[Date])
-)
-
-// Crescimento Anual %
-Crescimento Anual % = 
+### Variação Receita vs Orçamento
+```dax
+Variação Receita = 
 DIVIDE(
-    [Receita Total] - [Receita Ano Anterior], 
-    [Receita Ano Anual]
+    [Receita Total] - [Orçamento Receita],
+    [Orçamento Receita],
+    0
 )
+```
 
-// Variação % vs Orçamento
-Variação % vs Orçamento = 
+### Crescimento Anual (YoY)
+```dax
+Crescimento Anual = 
+VAR CurrentYear = [Receita Total]
+VAR PreviousYear = 
+    CALCULATE(
+        [Receita Total],
+        SAMEPERIODLASTYEAR(DimDate[Date])
+    )
+RETURN
+    DIVIDE(CurrentYear - PreviousYear, PreviousYear, 0)
+```
+
+## Medidas de Desempenho
+
+### Margem Bruta
+```dax
+Margem Bruta = 
+VAR Receita = [Receita Total]
+VAR Custos = 
+    CALCULATE(
+        SUM(Fato[valor]),
+        Campos[conta] IN {"2.1 INSUMOS", "2.2 DESPESAS OPERACIONAIS"}
+    )
+RETURN
+    DIVIDE(Receita - Custos, Receita, 0)
+```
+
+### Atingimento de Meta
+```dax
+Atingimento Meta = 
 DIVIDE(
-    [Receita Total] - [Orçamento Receita], 
-    [Orçamento Receita]
+    [Receita Total],
+    [Orçamento Receita],
+    0
 )
+```
 
-// Receita por Região
-Receita por Região = 
+### Média Móvel 3 Meses
+```dax
+MM3 = 
 CALCULATE(
-    [Receita Total], 
-    ALLEXCEPT(Lojas, Lojas[regiao])
+    AVERAGEX(
+        DATESINPERIOD(
+            DimDate[Date],
+            MAX(DimDate[Date]),
+            -3,
+            MONTH
+        ),
+        [Receita Total]
+    )
 )
+```
 
-// Receita por Tipo de Loja
-Receita por Tipo de Loja = 
-CALCULATE(
-    [Receita Total], 
-    ALLEXCEPT(Lojas, Lojas[tipo_loja])
-)
+## Medidas de Filtro
 
-// Receita por Item
-Receita por Item = 
+### Filtro de Período (YTD)
+```dax
+Receita YTD = 
 CALCULATE(
-    [Receita Total], 
-    ALLEXCEPT(Campos, Campos[item])
+    [Receita Total],
+    DATESYTD(DimDate[Date])
 )
+```
 
-// Receita Acumulada
-Receita Acumulada = 
+### Filtro de Período (MTD)
+```dax
+Receita MTD = 
 CALCULATE(
-    [Receita Total], 
-    DATESYTD('Calendario'[Date])
+    [Receita Total],
+    DATESMTD(DimDate[Date])
 )
-            </div>
-            
-            <h4 style="margin-top: 2rem;"><i class="fas fa-chart-line"></i> Medidas de Custo e Rentabilidade</h4>
-            <div class="dax-code">
-// Custo de Matéria Prima
+```
+
+### Filtro de Período (QTD)
+```dax
+Receita QTD = 
+CALCULATE(
+    [Receita Total],
+    DATESQTD(DimDate[Date])
+)
+```
+
+> **Dica de Performance:** Todas as medidas foram otimizadas para desempenho, utilizando funções iteradoras apenas quando necessário e evitando contextos de filtro desnecessários.
+
+# Métricas de Custo e Rentabilidade
+
+## Custo de Matéria Prima
+```dax
 Custo de Matéria Prima = 
 ABS(
     CALCULATE(

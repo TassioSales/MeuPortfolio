@@ -382,16 +382,11 @@ Foram implementadas transformações avançadas no Power Query para garantir a q
 - Tratamento de valores nulos
 - Padronização de formatos
 - Validação de consistência
-                </ul>
-              </div>
-              
-              <div class="etl-step" style="background: #f8f9fa; padding: 1.25rem; border-radius: 6px; border-left: 4px solid #ffd43b;">
-                <h4 style="margin-top: 0; color: #e67700; font-size: 1.1rem;"><i class="fas fa-map-marked-alt"></i> Enriquecimento Geográfico</h4>
-                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
-                  <li>Separação de Cidade/UF</li>
-                  <li>Agregação por região</li>
-                  <li>Preparação para visualizações de mapa</li>
-                </ul>
+
+#### 🗺️ Enriquecimento Geográfico
+- Separação de Cidade/UF
+- Agregação por região
+- Preparação para visualizações de mapa
               </div>
             </div>
             

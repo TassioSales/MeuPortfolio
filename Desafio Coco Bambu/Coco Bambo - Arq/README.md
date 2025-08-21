@@ -1,22 +1,179 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Análise Estratégica de Performance - Coco Bambu</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <style>
-  :root {
-    --primary: #2c3e50;
-    --secondary: #3498db;
-    --success: #27ae60;
-    --danger: #e74c3c;
-    --light: #f8f9fa;
-    --dark: #2c3e50;
-    --gray: #6c757d;
-    --light-gray: #e9ecef;
-    --border-radius: 8px;
+# Análise Estratégica de Performance - Coco Bambu
+
+## 📊 Visão Geral do Projeto
+
+**Dashboard Estratégico de Análise de Receita e Orçamento**  
+*Desenvolvido por: Tassio Lucian de Jesus Sales*  
+*Data: 20 de Agosto de 2025*
+
+---
+
+## 📋 Sumário
+
+1. [Decisões Estratégicas de Modelagem e ETL](#1-decisões-estratégicas-de-modelagem-e-etl)
+2. [Arquitetura Visual e Análises Desenvolvidas](#2-arquitetura-visual-e-análises-desenvolvidas)
+3. [Métricas de Negócio (DAX)](#3-métricas-de-negócio-dax)
+4. [Análise de Resultados e Insights Estratégicos](#4-análise-de-resultados-e-insights-estratégicos)
+
+---
+
+## 1. Decisões Estratégicas de Modelagem e ETL
+
+### Modelagem de Dados
+
+A arquitetura do projeto foi desenvolvida com foco em performance, escalabilidade e experiência do usuário final, permitindo que os insights fossem extraídos de forma rápida e intuitiva.
+
+#### Principais Características
+
+- **Esquema Estrela (Star Schema)** com tabela Fato centralizada para consultas eficientes
+- **Tabela Calendário em DAX** dinâmica para análises temporais avançadas (YoY, MTD, QTD, YTD)
+- Relacionamentos otimizados entre dimensões (Campos, Lojas) e fatos garantindo consistência
+- Hierarquias bem definidas para navegação intuitiva (Ano > Mês > Dia)
+- Medidas calculadas para métricas de negócio complexas
+
+### Tratamento e Preparação dos Dados (Power Query - ETL)
+
+#### Processo ETL Robusto
+Foram implementadas transformações avançadas no Power Query para garantir a qualidade e consistência dos dados.
+
+| Categoria | Detalhes |
+|-----------|----------|
+| 📅 **Transformação de Datas** | - Padronização do formato de data<br>- Extração de dia, mês, ano, trimestre<br>- Criação de hierarquias temporais |
+| 🧹 **Limpeza de Dados** | - Tratamento de valores nulos<br>- Padronização de formatos<br>- Validação de consistência |
+| 🗺️ **Enriquecimento Geográfico** | - Separação de Cidade/UF<br>- Agregação por região<br>- Preparação para visualizações de mapa |
+
+#### Exemplo de Código Power Query
+
+```powerquery
+// Transformação de Data
+let
+    Source = Excel.Workbook(File.Contents("Caminho\\Arquivo.xlsx"), null, true),
+    Fato_Sheet = Source{[Item="Fato",Kind="Sheet"]}[Data],
+    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Fato_Sheet, [PromoteAllScalars=true]),
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"mes_ano", type date}})
+in
+    #"Tipo Alterado"
+```
+
+---
+
+## 2. Arquitetura Visual e Análises Desenvolvidas
+
+### Visão Geral do Dashboard
+
+O dashboard foi projetado seguindo princípios de design thinking e análise de negócios, organizado em camadas analíticas que permitem uma navegação intuitiva dos indicadores macro até os detalhes operacionais.
+
+![Dashboard Overview](image/Captura%20de%20tela%202025-08-20%20215011.png)
+
+### Principais Análises
+
+#### 📊 Desempenho Mensal
+- Análise comparativa mês a mês entre receita realizada e orçada
+- Destaque para sazonalidades e desvios significativos
+
+#### 📅 Comparativo Anual (Matriz)
+- Receita de um mês comparada ao mesmo mês do ano anterior (YoY same month)
+- Identificação de tendências de crescimento
+
+#### 🌎 Performance Geográfica
+- Visualização por cidade/UF com comparação ao orçamento
+- Identificação de mercados estratégicos
+
+#### 📊 Treemap por Modelo de Negócio
+- Análise de receita vs eficiência em bater metas
+- Identificação de padrões por segmento
+
+---
+
+## 3. Métricas de Negócio (DAX)
+
+### Medidas de Receita
+
+```dax
+// Receita Total
+Receita Total = 
+CALCULATE(
+    SUM(Fato[valor]), 
+    Campos[conta] = "1 FATURAMENTO"
+)
+
+// Orçamento de Receita
+Orçamento Receita = 
+CALCULATE(
+    SUM(Fato[valor_orcado]), 
+    Campos[conta] = "1 FATURAMENTO"
+)
+
+// Crescimento Anual %
+Crescimento Anual % = 
+DIVIDE(
+    [Receita Total] - [Receita Ano Anterior], 
+    [Receita Ano Anual]
+)
+```
+
+### Medidas de Custo e Rentabilidade
+
+```dax
+// Custo de Matéria Prima
+Custo de Matéria Prima = 
+CALCULATE(
+    SUM(Fato[valor]), 
+    Campos[conta] = "2 MATERIA PRIMA"
+)
+
+// Margem Bruta
+Margem Bruta = 
+[Receita Total] - [Custo de Matéria Prima]
+```
+
+---
+
+## 4. Análise de Resultados e Insights Estratégicos
+
+### 📊 Sumário Executivo
+
+A análise revelou crescimento anual positivo de **1.59%**, com a rede superando o orçamento em **2.06%**. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.
+
+| Métrica | Valor |
+|---------|-------|
+| Receita Total | R$ 21.40 bi |
+| Resultado vs Orçamento | +2.06% (Acima da meta) |
+| Crescimento Anual (YoY) | +1.59% |
+
+### ✅ Destaques Positivos
+
+- **Nordeste**: Melhor performance, superando metas com destaque em lojas âncora
+- **Modelos "Conceito" e "Buffet"**: Menor participação no faturamento, mas maior eficiência em superar orçamento
+- **Junho/2025**: Crescimento expressivo de **+10.9%** (YoY), sinalizando retomada positiva
+
+### ⚠️ Pontos de Atenção
+- **Modelo "Restaurante" (R$ 17.09 bi)**: Apesar de representar o maior volume, ficou abaixo do orçamento
+- **Modelo "VASTO"**: Apresenta resultado negativo frente ao planejado
+- **Custos**: Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização
+
+### 📌 Recomendações Estratégicas
+
+#### 1. Otimização de Custos
+- Revisão de contratos com fornecedores de insumos
+- Implementação de programas de redução de desperdício
+
+#### 2. Melhoria de Desempenho
+- Replicação das melhores práticas dos modelos "Conceito" e "Buffet"
+- Análise detalhada das lojas com desempenho abaixo da média
+
+#### 3. Aprofundamento Analítico
+- Investigação das causas do crescimento de junho
+- Análise de sazonalidade para melhor planejamento orçamentário
+
+---
+
+> **Nota:** Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.
+
+---
+
+📅 *Última atualização: 20 de Agosto de 2025*  
+👤 *Desenvolvido por Tassio Lucian de Jesus Sales*
     --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
   }
@@ -667,7 +824,7 @@ CALCULATE(
 Crescimento Anual % = 
 DIVIDE(
     [Receita Total] - [Receita Ano Anterior], 
-    [Receita Ano Anterior]
+    [Receita Ano Anual]
 )
 
 // Variação % vs Orçamento
@@ -849,5 +1006,140 @@ DIVIDE(
       <p style="font-size: 0.8em; opacity: 0.8; margin-top: 0.5rem;">Confidencial - Uso exclusivo da Coco Bambu</p>
     </footer>
   </div>
+</body>
+</html>
+      <div>Acima da meta</div>
+    </div>
+    <div class="metric">
+      <div class="label">Crescimento Anual</div>
+      <div class="value positive">+1.59%</div>
+      <div>Comparação YoY</div>
+    </div>
+  </div>
+</div>
+
+<h3>Análises Principais</h3>
+
+<div class="info-box">
+  <h4>📊 Desempenho Mensal</h4>
+  <p>Receita vs Orçamento mês a mês, destacando sazonalidade e desvios.</p>
+  
+  <h4>📅 Comparativo Anual (Matriz)</h4>
+  <p>Receita de um mês comparada ao mesmo mês do ano anterior (YoY same month).</p>
+  
+  <h4>🌎 Performance Geográfica</h4>
+  <p>Visualização por cidade/UF com comparação ao orçamento.</p>
+  
+  <h4>📊 Treemap por Modelo de Negócio</h4>
+  <p>Receita x Eficiência em bater metas.</p>
+  
+  <h4>💲 Composição de Custos (Rosca)</h4>
+  <p>Estrutura de custos de matéria-prima.</p>
+  
+  <h4>🏆 Ranking de Lojas (Barras)</h4>
+  <p>Top 5 melhores e piores em relação ao orçamento.</p>
+  
+  <h4>📈 Composição da Receita (Área Empilhada)</h4>
+  <p>Evolução da Margem Bruta ao longo do tempo.</p>
+</div>
+
+<h2>3. Métricas de Negócio (DAX)</h2>
+
+<div class="dax-code">
+  <span style="color: #7f8c8d;">-- Medidas de Receita</span><br>
+  <span style="color: #2c3e50; font-weight: bold;">Receita Total</span> = CALCULATE(SUM(Fato[valor]), Campos[conta] = <span style="color: #27ae60;">"1 FATURAMENTO"</span>)<br>
+  <span style="color: #2c3e50; font-weight: bold;">Orçamento Receita</span> = CALCULATE(SUM(Fato[valor_orcado]), Campos[conta] = <span style="color: #27ae60;">"1 FATURAMENTO"</span>)<br>
+  <span style="color: #2c3e50; font-weight: bold;">Receita Ano Anterior</span> = CALCULATE([Receita Total], SAMEPERIODLASTYEAR('Calendario'[Date]))<br>
+  <span style="color: #2c3e50; font-weight: bold;">Crescimento Anual %</span> = DIVIDE([Receita Total] - [Receita Ano Anterior], [Receita Ano Anterior])<br>
+  <span style="color: #2c3e50; font-weight: bold;">Variação % vs Orçamento</span> = DIVIDE([Receita Total] - [Orçamento Receita], [Orçamento Receita])<br>
+  <span style="color: #2c3e50; font-weight: bold;">Receita por Região</span> = CALCULATE([Receita Total], ALLEXCEPT(Lojas, Lojas[regiao]))<br>
+  <span style="color: #2c3e50; font-weight: bold;">Receita por Tipo de Loja</span> = CALCULATE([Receita Total], ALLEXCEPT(Lojas, Lojas[tipo_loja]))<br>
+  <span style="color: #2c3e50; font-weight: bold;">Receita por Item</span> = CALCULATE([Receita Total], ALLEXCEPT(Campos, Campos[item]))<br>
+  <span style="color: #2c3e50; font-weight: bold;">Receita Acumulada</span> = CALCULATE([Receita Total], DATESYTD('Calendario'[Date]))<br>
+  <br>
+  <span style="color: #7f8c8d;">-- Medidas de Custo e Rentabilidade</span><br>
+  <span style="color: #2c3e50; font-weight: bold;">Custo de Matéria Prima</span> = CALCULATE(SUM(Fato[valor]), Campos[conta] = <span style="color: #27ae60;">"2 MATERIA PRIMA"</span>) * -1<br>
+  <span style="color: #2c3e50; font-weight: bold;">Margem Bruta</span> = [Receita Total] - [Custo de Matéria Prima]<br>
+  <span style="color: #2c3e50; font-weight: bold;">Margem Bruta %</span> = DIVIDE([Margem Bruta], [Receita Total])
+</div>
+
+<h2>4. Análise de Resultados e Insights Estratégicos</h2>
+
+<div class="info-box">
+  <h3>Sumário Executivo</h3>
+  <p>A análise revelou crescimento anual positivo de <strong>1.59%</strong>, com a rede superando o orçamento em <strong>2.06%</strong>. No entanto, existem diferenças significativas no desempenho entre diferentes modelos de negócio e regiões.</p>
+  
+  <div style="display: flex; flex-wrap: wrap; gap: 15px; margin: 15px 0;">
+    <div style="flex: 1; min-width: 200px; background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <div style="font-size: 0.9em; color: #7f8c8d;">Receita Total</div>
+      <div style="font-size: 1.5em; font-weight: bold;">R$ 21.40 bi</div>
+    </div>
+    <div style="flex: 1; min-width: 200px; background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <div style="font-size: 0.9em; color: #7f8c8d;">Resultado vs Orçamento</div>
+      <div style="font-size: 1.5em; font-weight: bold; color: #27ae60;">+2.06%</div>
+      <div style="font-size: 0.8em; color: #7f8c8d;">Acima da meta</div>
+    </div>
+    <div style="flex: 1; min-width: 200px; background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <div style="font-size: 0.9em; color: #7f8c8d;">Crescimento Anual (YoY)</div>
+      <div style="font-size: 1.5em; font-weight: bold; color: #27ae60;">+1.59%</div>
+    </div>
+  </div>
+  
+  <div style="margin-top: 20px; background: #f0f8ff; padding: 15px; border-radius: 6px; border-left: 4px solid #3498db;">
+    <h4 style="margin-top: 0; color: #2c3e50;">📌 Conclusão</h4>
+    <p>O dashboard entregue permite um acompanhamento claro, interativo e estratégico, servindo como ferramenta de apoio para a alta gestão da rede Coco Bambu na tomada de decisão, com foco em crescimento sustentável e eficiência operacional.</p>
+  </div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 30px 0;">
+  <div style="flex: 1; min-width: 300px;">
+    <h3>✅ Destaques Positivos</h3>
+    <ul>
+      <li><strong>Nordeste:</strong> Melhor performance, superando metas com destaque em lojas âncora</li>
+      <li><strong>Modelos "Conceito" e "Buffet":</strong> Menor participação no faturamento, mas maior eficiência em superar orçamento</li>
+      <li><strong>Junho/2025:</strong> Crescimento expressivo de <strong>+10.9%</strong> (YoY), sinalizando retomada positiva</li>
+    </ul>
+  </div>
+  
+  <div style="flex: 1; min-width: 300px;">
+    <h3>⚠️ Pontos de Atenção</h3>
+    <ul>
+      <li><strong>Modelo "Restaurante" (R$ 17.09 bi):</strong> Apesar de representar o maior volume, ficou abaixo do orçamento</li>
+      <li><strong>Modelo "VASTO":</strong> Apresenta resultado negativo frente ao planejado</li>
+      <li><strong>Custos:</strong> Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores</li>
+    </ul>
+  </div>
+</div>
+
+<h3>📌 Recomendações Estratégicas</h3>
+
+<div class="recommendation">
+  <h4>1. Otimização de Custos</h4>
+  <ul>
+    <li>Revisão de contratos com fornecedores de insumos</li>
+    <li>Implementação de programas de redução de desperdício</li>
+  </ul>
+</div>
+
+<div class="recommendation">
+  <h4>2. Melhoria de Desempenho</h4>
+  <ul>
+    <li>Replicação das melhores práticas dos modelos "Conceito" e "Buffet"</li>
+    <li>Análise detalhada das lojas com desempenho abaixo da média</li>
+  </ul>
+</div>
+
+<div class="recommendation">
+  <h4>3. Aprofundamento Analítico</h4>
+  <ul>
+    <li>Investigação das causas do crescimento de junho</li>
+    <li>Análise de sazonalidade para melhor planejamento orçamentário</li>
+  </ul>
+</div>
+
+<div style="margin-top: 40px; padding: 15px; background: #f8f9fa; border-radius: 6px; text-align: center; font-size: 0.9em; color: #7f8c8d;">
+  <p><strong>Nota:</strong> Este dashboard foi desenvolvido no Power BI, utilizando boas práticas de modelagem de dados e visualização, garantindo desempenho e usabilidade para tomada de decisão estratégica.</p>
+</div>
+
 </body>
 </html>

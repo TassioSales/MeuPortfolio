@@ -714,12 +714,8 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 ### ⚠️ Pontos de Atenção
 
 - **Modelo "Restaurante" (R$ 17.09 bi)**: Apesar de representar o maior volume, ficou abaixo do orçamento
-                    <li><strong>Modelo "VASTO":</strong> Apresenta resultado negativo frente ao planejado</li>
-                    <li><strong>Custos:</strong> Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+- **Modelo "VASTO"**: Apresenta resultado negativo frente ao planejado
+- **Custos**: Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores
             
 ### 📌 Recomendações Estratégicas
 ### 1. Otimização de Custos
@@ -791,7 +787,6 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 - Margem Bruta
 - Margem Bruta %
 - Custo por Unidade Vendida
-<div class="dax-code">
 ```dax
 // Medidas de Receita
 Receita Total = CALCULATE(SUM(Fato[valor]), Campos[conta] = "1 FATURAMENTO")
@@ -802,12 +797,10 @@ Variação % vs Orçamento = DIVIDE([Receita Total] - [Orçamento Receita], [Or�
 Receita por Região = CALCULATE([Receita Total], ALLEXCEPT(Lojas, Lojas[regiao]))
 Receita por Tipo de Loja = CALCULATE([Receita Total], ALLEXCEPT(Lojas, Lojas[tipo_loja]))
 Receita por Item = CALCULATE([Receita Total], ALLEXCEPT(Campos, Campos[item]))
-```
-  <span style="color: #2c3e50; font-weight: bold;">Receita Acumulada</span> = CALCULATE([Receita Total], DATESYTD('Calendario'[Date]))<br>
-  <br>
-  <span style="color: #7f8c8d;">-- Medidas de Custo e Rentabilidade</span><br>
-  <span style="color: #2c3e50; font-weight: bold;">Custo de Matéria Prima</span> = CALCULATE(SUM(Fato[valor]), Campos[conta] = <span style="color: #27ae60;">"2 MATERIA PRIMA"</span>) * -1<br>
-```dax
+Receita Acumulada = CALCULATE([Receita Total], DATESYTD('Calendario'[Date]))
+
+// Medidas de Custo e Rentabilidade
+Custo de Matéria Prima = CALCULATE(SUM(Fato[valor]), Campos[conta] = "2 MATERIA PRIMA") * -1
 Margem Bruta = [Receita Total] - [Custo de Matéria Prima]
 Margem Bruta % = DIVIDE([Margem Bruta], [Receita Total])
 ```

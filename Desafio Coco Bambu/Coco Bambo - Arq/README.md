@@ -512,9 +512,6 @@ let
         Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"cidade", "uf"})
 in
     #"Colunas Divididas"
-            </div>
-          </div>
-</div>
 
         </div>
       </section>
@@ -562,9 +559,8 @@ O dashboard foi projetado seguindo princípios de design thinking e análise de 
 - Análise comparativa mês a mês entre receita realizada e orçada
 - Destaque para sazonalidades e desvios significativos
               
-              <div style="background: #f8f9fa; padding: 1.25rem; border-radius: var(--border-radius); border-left: 4px solid #ff6b6b;">
-                <h5 style="margin-top: 0; color: #2c3e50; font-size: 1.1rem;"><i class="fas fa-calendar-alt" style="color: #ff6b6b;"></i> Comparativo Anual</h5>
-                <p>Visão comparativa (YoY) que permite identificar tendências e padrões de crescimento ao longo dos anos.</p>
+  #### 📅 Comparativo Anual
+- Visão comparativa (YoY) que permite identificar tendências e padrões de crescimento ao longo dos anos.
               </div>
               
               <div style="background: #f8f9fa; padding: 1.25rem; border-radius: var(--border-radius); border-left: 4px solid #51cf66;">
@@ -700,8 +696,7 @@ DIVIDE(
 )
             </div>
             
-            <div class="alert alert-info" style="margin: 1.5rem 0 0;">
-              <i class="fas fa-info-circle"></i>
+> **Nota:**
               <div>
                 <strong>Otimização de Performance</strong><br>
                 Todas as medidas foram otimizadas para desempenho, utilizando funções DAX eficientes e boas práticas de modelagem tabular.
@@ -763,10 +758,10 @@ DIVIDE(
             </div>
             
 ### 📌 Recomendações Estratégicas
-                  <h5 style="margin: 0 0 0.75rem 0; color: var(--primary); font-size: 1rem;">1. Otimização de Custos</h5>
-                  <ul style="margin: 0; padding-left: 1.25rem;">
-                    <li>Revisão de contratos com fornecedores de insumos</li>
-                    <li>Implementação de programas de redução de desperdício</li>
+### 1. Otimização de Custos
+
+- Revisão de contratos com fornecedores de insumos
+- Implementação de programas de redução de desperdício
                     <li>Análise de substituição de itens de alto custo</li>
                   </ul>
                 </div>

@@ -175,15 +175,6 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 📅 *Última atualização: 20 de Agosto de 2025*  
 👤 *Desenvolvido por Tassio Lucian de Jesus Sales*
 
-  h1::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 60px;
-    height: 4px;
-    background: var(--secondary);
-    border-radius: 2px;
   }
 
   h2 {
@@ -485,32 +476,17 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
       text-align: center;
     }
 
-    .header-image {
-      margin: 1.5rem auto 0;
-    }
-
-    h1 {
-      font-size: 2rem;
-    }
-
-    h2 {
-      font-size: 1.6rem;
 ---
 
 📅 *Última atualização: 20 de Agosto de 2025*  
 👤 *Desenvolvido por Tassio Lucian de Jesus Sales*
-            </p>
 **Candidato(a):** Tassio Lucian de Jesus Sales  
 **Data:** 20 de Agosto de 2025
           </div>
         </div>
         
-        <div class="header-image" style="flex: 0 0 auto;">
-          <img src="image/Captura de tela 2025-08-20 215011.png" alt="Dashboard Overview" style="max-width: 100%; max-height: 280px; border-radius: var(--border-radius); box-shadow: 0 8px 20px rgba(0,0,0,0.2); border: 3px solid rgba(255, 255, 255, 0.2);">
-          <p style="text-align: center; color: rgba(255, 255, 255, 0.8); font-size: 0.85rem; margin-top: 0.75rem;">Visão geral do dashboard interativo</p>
-        </div>
-      </div>
-    </header>
+![Dashboard Overview](image/Captura%20de%20tela%202025-08-20%20215011.png)
+*Visão geral do dashboard interativo*
 
     <main>
       <section id="modelagem">
@@ -993,10 +969,9 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
   </div>
   
   <div style="margin-top: 20px; background: #f0f8ff; padding: 15px; border-radius: 6px; border-left: 4px solid #3498db;">
-    <h4 style="margin-top: 0; color: #2c3e50;">📌 Conclusão</h4>
-    <p>O dashboard entregue permite um acompanhamento claro, interativo e estratégico, servindo como ferramenta de apoio para a alta gestão da rede Coco Bambu na tomada de decisão, com foco em crescimento sustentável e eficiência operacional.</p>
-  </div>
-</div>
+### 📌 Conclusão
+
+O dashboard entregue permite um acompanhamento claro, interativo e estratégico, servindo como ferramenta de apoio para a alta gestão da rede Coco Bambu na tomada de decisão, com foco em crescimento sustentável e eficiência operacional.
 
 ## 📊 Destaques
 
@@ -1010,16 +985,13 @@ A análise revelou crescimento anual positivo de **1.59%**, com a rede superando
 
 - **Modelo "Restaurante" (R$ 17.09 bi)**: Apesar de representar o maior volume, ficou abaixo do orçamento
 - **Modelo "VASTO"**: Apresenta resultado negativo frente ao planejado</li>
-      <li><strong>Custos:</strong> Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores</li>
-    </ul>
-  </div>
-</div>
+- **Custos**: Categoria "2.1 INSUMOS" = 82.78% dos custos totais → precisa de otimização e negociação com fornecedores
 
-<h3>📌 Recomendações Estratégicas</h3>
+## 📌 Recomendações Estratégicas
 
-<div class="recommendation">
-  <h4>1. Otimização de Custos</h4>
-  <ul>
+### 1. Otimização de Custos
+
+-
     <li>Revisão de contratos com fornecedores de insumos</li>
     <li>Implementação de programas de redução de desperdício</li>
   </ul>

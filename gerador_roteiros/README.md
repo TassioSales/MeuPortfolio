@@ -494,9 +494,249 @@ streamlit run app.py
 <table>
 <tr>
 <td width="20%" align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Clipboard/3D/clipboard_3d.png" width="30"><br>
+  **📋 Visão Geral**<br>
+  <small>Informações essenciais</small>
+</td>
+<td width="20%" align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Calendar/3D/calendar_3d.png" width="30"><br>
+  **📅 Cronograma**<br>
+  <small>Dia a dia detalhado</small>
+</td>
+<td width="20%" align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Fork%20and%20knife/3D/fork_and_knife_3d.png" width="30"><br>
+  **🍽️ Gastronomia**<br>
+  <small>Pratos e restaurantes</small>
+</td>
+<td width="20%" align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Cityscape%20at%20dusk/3D/cityscape_at_dusk_3d.png" width="30"><br>
+  **🌃 Vida Noturna**<br>
+  <small>Bares e eventos</small>
+</td>
+<td width="20%" align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Light%20bulb/3D/light_bulb_3d.png" width="30"><br>
+  **💡 Dicas**<br>
+  <small>Informações práticas</small>
+</td>
+</tr>
+</table>
 
-**📋 Visão Geral**  
-*Informações essenciais*
+---
+
+## 🎪 Exemplos de Uso
+
+### 🚀 **Execute Exemplos Prontos**
+
+O arquivo `examples.py` contém demonstrações completas para diferentes tipos de viagem:
+
+```bash
+# Execute os exemplos interativos
+python examples.py
+```
+
+<table>
+<tr>
+<td width="50%">
+
+#### 💕 **Viagem Romântica**
+- **Destino**: Paris, França
+- **Duração**: 5 dias
+- **Foco**: Experiências íntimas e gastronômicas
+- **Orçamento**: Luxo
+
+#### 👨‍👩‍👧‍👦 **Viagem em Família**
+- **Destino**: Orlando, EUA
+- **Duração**: 7 dias
+- **Foco**: Diversão para todas as idades
+- **Orçamento**: Médio
+
+</td>
+<td width="50%">
+
+#### 🏔️ **Aventura**
+- **Destino**: Patagônia, Chile
+- **Duração**: 10 dias
+- **Foco**: Trilhas e natureza
+- **Orçamento**: Econômico
+
+#### 💼 **Negócios**
+- **Destino**: São Paulo, Brasil
+- **Duração**: 3 dias
+- **Foco**: Reuniões e networking
+- **Orçamento**: Corporativo
+
+</td>
+</tr>
+</table>
+
+### 🎯 **Personalize os Exemplos**
+
+```python
+# Modifique os exemplos em examples.py
+exemplo_personalizado = {
+    "destino": "Seu destino",
+    "duracao": "Sua duração",
+    "tipo_viagem": "Seu tipo",
+    # ... outras configurações
+}
+```
+
+---
+
+## 🐳 Deploy com Docker
+
+### 🚀 **Método Rápido**
+
+```bash
+# Clone e execute com Docker Compose
+git clone [repo-url]
+cd gerador_roteiros
+docker-compose up -d
+```
+
+**🌐 Acesse:** `http://localhost:8501`
+
+### 🔧 **Build Manual**
+
+```bash
+# Build da imagem
+docker build -t gerador-roteiros .
+
+# Execute o container
+docker run -p 8501:8501 \
+  -e MISTRAL_API_KEY="sua_chave" \
+  -e GEMINI_API_KEY="sua_chave" \
+  gerador-roteiros
+```
+
+### ⚙️ **Configuração Avançada**
+
+```yaml
+# docker-compose.yml personalizado
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./logs:/app/logs
+```
+
+---
+
+## 🔧 Configuração Avançada
+
+### ⚙️ **Arquivo `settings.json`**
+
+O projeto inclui um sistema de configuração centralizado:
+
+```json
+{
+  "app": {
+    "name": "Gerador de Roteiros de Viagem com IA",
+    "version": "2.0.0",
+    "debug": false
+  },
+  "ai_providers": {
+    "mistral": {
+      "enabled": true,
+      "model": "mistral-large-latest"
+    },
+    "gemini": {
+      "enabled": true,
+      "models": ["gemini-2.0-flash-exp", "gemini-1.5-pro"]
+    }
+  }
+}
+```
+
+### 🎨 **Personalização da Interface**
+
+- **Cores**: Modifique o CSS em `app.py`
+- **Layout**: Ajuste componentes Streamlit
+- **Idioma**: Traduza textos nos arquivos Python
+
+### 📊 **Monitoramento e Logs**
+
+```python
+# Sistema de logging configurável
+import loguru
+
+# Logs automáticos em logs/app.log
+logger.info("Aplicação iniciada")
+logger.error("Erro na API")
+```
+
+---
+
+## 🤝 Contribuição
+
+### 🎯 **Como Contribuir**
+
+1. **Fork** o repositório
+2. **Clone** sua fork localmente
+3. **Crie** uma branch para sua feature
+4. **Desenvolva** e teste suas mudanças
+5. **Envie** um Pull Request
+
+### 📋 **Diretrizes**
+
+- Siga o padrão de código existente
+- Adicione testes para novas funcionalidades
+- Atualize a documentação quando necessário
+- Use commits descritivos
+
+### 🐛 **Reportar Bugs**
+
+Abra uma [issue](https://github.com/seu-usuario/gerador-roteiros/issues) com:
+- Descrição detalhada do problema
+- Passos para reproduzir
+- Ambiente (OS, Python, etc.)
+- Screenshots se aplicável
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a **Licença MIT** - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+---
+
+## 🙏 Agradecimentos
+
+### 🤖 **Tecnologias Utilizadas**
+- [Streamlit](https://streamlit.io/) - Framework web incrível
+- [Mistral AI](https://mistral.ai/) - IA de alta qualidade
+- [Google Gemini](https://deepmind.google/technologies/gemini/) - IA versátil
+- [Python](https://python.org/) - Linguagem poderosa
+
+### 🌟 **Inspirações**
+- Comunidade open source
+- Desenvolvedores que compartilham conhecimento
+- Viajantes que buscam experiências únicas
+
+---
+
+<div align="center">
+
+## ⭐ Apoie o Projeto
+
+Se este projeto foi útil para você, considere dar uma ⭐ no repositório!
+
+[![GitHub stars](https://img.shields.io/github/stars/seu-usuario/gerador-roteiros?style=social)](https://github.com/seu-usuario/gerador-roteiros/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/seu-usuario/gerador-roteiros?style=social)](https://github.com/seu-usuario/gerador-roteiros/network)
+
+**Desenvolvido com ❤️ para a comunidade de viajantes**
+
+---
+
+*© 2024 - Gerador de Roteiros de Viagem com IA*
+
+</div>
 
 </td>
 <td width="20%" align="center">

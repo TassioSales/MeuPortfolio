@@ -762,6 +762,6 @@ Se este projeto foi útil para você, considere dar uma ⭐ no repositório!
 
 ---
 
-*© 2024 - Gerador de Roteiros de Viagem com IA*
+*© 2025 - Gerador de Roteiros de Viagem com IA*
 
 </div>

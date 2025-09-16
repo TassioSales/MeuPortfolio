@@ -1,0 +1,97 @@
+{
+  "app": {
+    "name": "Gerador de Roteiros de Viagem com IA",
+    "version": "1.0.0",
+    "description": "Planejador de viagens inteligente que gera roteiros personalizados usando inteligência artificial",
+    "author": "Tássio Sales",
+    "license": "MIT"
+  },
+  "streamlit": {
+    "page_title": "Planejador de Viagens IA",
+    "page_icon": "🗺️",
+    "layout": "wide",
+    "initial_sidebar_state": "collapsed",
+    "theme": {
+      "primaryColor": "#667eea",
+      "backgroundColor": "#f6f7f9",
+      "secondaryBackgroundColor": "#ffffff",
+      "textColor": "#1f2937"
+    }
+  },
+  "ai_providers": {
+    "default_provider": "mistral",
+    "mistral": {
+      "model": "mistral-large-latest",
+      "temperature": 0.7,
+      "max_tokens": 4000,
+      "enabled": true
+    },
+    "gemini": {
+      "models": [
+        "gemini-2.5-flash",
+        "gemini-2.0-pro",
+        "gemini-1.5-pro-latest"
+      ],
+      "default_model": "gemini-2.5-flash",
+      "temperature": 0.7,
+      "enabled": true
+    },
+    "fallback": {
+      "enabled": true,
+      "offline_mode": true
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
+    "rotation": "1 day",
+    "retention": "7 days",
+    "files": {
+      "app_log": "logs/app.log",
+      "error_log": "logs/error.log"
+    }
+  },
+  "features": {
+    "vida_noturna": true,
+    "gastronomia": true,
+    "cronograma_detalhado": true,
+    "dicas_viagem": true,
+    "export_pdf": false,
+    "save_history": false,
+    "user_ratings": false
+  },
+  "limits": {
+    "max_duration_days": 60,
+    "min_duration_days": 1,
+    "max_travelers": 20,
+    "min_travelers": 1
+  },
+  "defaults": {
+    "duration": 7,
+    "travelers": 2,
+    "budget": "Intermediário",
+    "pace": "Moderado",
+    "accommodation": "Hotel 3*",
+    "walking_level": "Médio",
+    "climate": "Ameno"
+  },
+  "ui": {
+    "show_provider_selection": true,
+    "show_advanced_options": true,
+    "enable_dark_mode": true,
+    "responsive_design": true,
+    "animations": true
+  },
+  "security": {
+    "hide_api_keys": true,
+    "validate_inputs": true,
+    "rate_limiting": false,
+    "session_timeout": 3600
+  },
+  "development": {
+    "debug_mode": false,
+    "show_prompts": false,
+    "mock_ai_responses": false,
+    "enable_profiling": false
+  }
+}

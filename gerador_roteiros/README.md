@@ -2,151 +2,159 @@
 
 # 🗺️ Gerador de Roteiros de Viagem com IA
 
-<img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/World%20map/3D/world_map_3d.png" width="100" alt="World Map">
+<p align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/World%20map/3D/world_map_3d.png" width="120" alt="World Map">
+</p>
 
-### ✨ *Transforme seus sonhos de viagem em roteiros perfeitos com o poder da Inteligência Artificial* ✨
+<h3 align="center">✨ <em>Transforme seus sonhos de viagem em roteiros perfeitos</em> ✨</h3>
+<p align="center"><strong>Powered by Mistral AI & Google Gemini</strong></p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8+-3776ab?style=flat-square&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Streamlit-1.37+-ff4b4b?style=flat-square&logo=streamlit&logoColor=white" alt="Streamlit">
+  <img src="https://img.shields.io/badge/AI-Powered-ff7000?style=flat-square&logo=openai&logoColor=white" alt="AI">
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ed?style=flat-square&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/License-MIT-00d4aa?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
+</p>
+
+<p align="center">
+  <a href="#-início-rápido">
+    <img src="https://img.shields.io/badge/🚀-Início_Rápido-00d4aa?style=for-the-badge" alt="Início Rápido">
+  </a>
+  <a href="#-exemplos">
+    <img src="https://img.shields.io/badge/🎯-Ver_Exemplos-ff7000?style=for-the-badge" alt="Exemplos">
+  </a>
+  <a href="#-deploy">
+    <img src="https://img.shields.io/badge/🐳-Deploy-2496ed?style=for-the-badge" alt="Deploy">
+  </a>
+</p>
 
 ---
-
-![Python](https://img.shields.io/badge/Python-3.8+-3776ab?style=for-the-badge&logo=python&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.37+-ff4b4b?style=for-the-badge&logo=streamlit&logoColor=white)
-![Mistral AI](https://img.shields.io/badge/Mistral-AI-ff7000?style=for-the-badge&logo=ai&logoColor=white)
-![Google Gemini](https://img.shields.io/badge/Google-Gemini-4285f4?style=for-the-badge&logo=google&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge&logo=docker&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-00d4aa?style=for-the-badge&logo=opensourceinitiative&logoColor=white)
-
-[![🚀 Instalação Automática](https://img.shields.io/badge/🚀-Instalação_Automática-00d4aa?style=for-the-badge)](#-instalação-automática)
-[![📖 Documentação Completa](https://img.shields.io/badge/📖-Documentação_Completa-4285f4?style=for-the-badge)](#-documentação)
-[![🎯 Ver Exemplos](https://img.shields.io/badge/🎯-Ver_Exemplos-ff7000?style=for-the-badge)](#-exemplos-de-uso)
-[![🐳 Deploy Docker](https://img.shields.io/badge/🐳-Deploy_Docker-2496ed?style=for-the-badge)](#-deploy-com-docker)
-
----
-
-**🎯 Crie roteiros de viagem únicos e personalizados usando IA de última geração**  
-*Mistral AI • Google Gemini • Interface Moderna • Sistema de Fallback Robusto*
-
-</div>
-
----
-
-## 📋 Navegação Rápida
 
 <table>
 <tr>
-<td width="50%">
+<td align="center" width="25%">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Robot/3D/robot_3d.png" width="50"><br>
+  <strong>IA Dupla</strong><br>
+  <small>Mistral + Gemini</small>
+</td>
+<td align="center" width="25%">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Artist%20palette/3D/artist_palette_3d.png" width="50"><br>
+  <strong>Interface Moderna</strong><br>
+  <small>Design Responsivo</small>
+</td>
+<td align="center" width="25%">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Night%20with%20stars/3D/night_with_stars_3d.png" width="50"><br>
+  <strong>Vida Noturna</strong><br>
+  <small>Bares & Eventos</small>
+</td>
+<td align="center" width="25%">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Shield/3D/shield_3d.png" width="50"><br>
+  <strong>Sistema Robusto</strong><br>
+  <small>Fallback Inteligente</small>
+</td>
+</tr>
+</table>
 
-### 🚀 **Início Rápido**
-- [⚡ Instalação Automática](#-instalação-automática)
-- [🎯 Como Usar](#-como-usar)
-- [🎪 Exemplos de Uso](#-exemplos-de-uso)
-- [🐳 Deploy com Docker](#-deploy-com-docker)
+</div>
 
-### 📚 **Documentação**
-- [🎯 Visão Geral](#-visão-geral)
-- [✨ Funcionalidades](#-funcionalidades)
-- [🏗️ Arquitetura](#-arquitetura)
-- [📁 Estrutura do Projeto](#-estrutura-do-projeto)
+## 🚀 Início Rápido
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+### 📥 **1. Instalar**
+```bash
+git clone [repo-url]
+cd gerador_roteiros
+python setup.py
+```
+<sub>Setup automático completo</sub>
 
 </td>
-<td width="50%">
+<td width="33%" align="center">
 
-### 🛠️ **Desenvolvimento**
-- [🔧 Configuração Avançada](#-configuração-avançada)
-- [📊 API Reference](#-api-reference)
-- [🎨 Personalização](#-personalização)
-- [🐛 Troubleshooting](#-troubleshooting)
+### 🔑 **2. Configurar**
+```bash
+# Edite .streamlit/secrets.toml
+MISTRAL_API_KEY = "sua_chave"
+GEMINI_API_KEY = "sua_chave"
+```
+<sub>APIs Mistral + Gemini</sub>
 
-### 🤝 **Comunidade**
-- [🤝 Contribuição](#-contribuição)
-- [📄 Licença](#-licença)
-- [🙏 Agradecimentos](#-agradecimentos)
-- [⭐ Apoie o Projeto](#-apoie-o-projeto)
+</td>
+<td width="33%" align="center">
+
+### 🎯 **3. Executar**
+```bash
+streamlit run app.py
+# Acesse: localhost:8501
+```
+<sub>Interface web moderna</sub>
 
 </td>
 </tr>
 </table>
 
----
-
-## 🎯 Visão Geral
-
-O **Gerador de Roteiros de Viagem com IA** é uma aplicação web moderna e inteligente que utiliza modelos de linguagem avançados para criar roteiros de viagem personalizados e detalhados. A aplicação combina a facilidade de uso do Streamlit com o poder da inteligência artificial para oferecer uma experiência única de planejamento de viagens.
-
-### 🎪 Características Principais
-
-- **🤖 IA Dupla**: Integração com Mistral AI e Google Gemini
-- **🎯 Personalização Avançada**: Perfil detalhado do viajante
-- **📅 Flexibilidade de Datas**: Data específica, mês/ano ou IA escolhe
-- **🌃 Vida Noturna**: Sugestões detalhadas de bares, festas e eventos
-- **📱 Interface Responsiva**: Design moderno e intuitivo
-- **🔄 Fallback Inteligente**: Sistema de backup robusto
+> 💡 **Novo usuário?** Siga o [**Guia Completo**](#-guia-completo) • **Desenvolvedor?** Veja a [**Documentação**](#-documentação)
 
 ---
 
 ## ✨ Funcionalidades
 
-### 🎨 Interface do Usuário
+<div align="center">
+
+### 🎯 **O que torna este projeto especial?**
+
+</div>
 
 <table>
 <tr>
 <td width="50%">
 
-#### 📝 Formulário Inteligente
-- **Perfil Detalhado**: Tipo de viagem, faixa etária, número de viajantes
-- **Preferências**: Orçamento, ritmo, hospedagem, interesses
-- **Configurações Avançadas**: Restrições alimentares, nível de caminhada
-- **Datas Flexíveis**: Múltiplas opções de seleção de período
+#### 🤖 **Inteligência Artificial Avançada**
+- **Mistral AI** como modelo principal
+- **Google Gemini** como fallback automático
+- **Sistema offline** para máxima confiabilidade
+- **Prompts otimizados** para resultados precisos
 
-#### 🎯 Seleção de IA
-- **Mistral AI**: Modelo principal de alta qualidade
-- **Google Gemini**: Fallback confiável
-- **Seleção Manual**: Usuário escolhe o modelo preferido
-- **Fallback Offline**: Sistema de backup quando APIs falham
+#### 📱 **Interface Moderna**
+- **Design responsivo** para todos os dispositivos
+- **Modo escuro** automático
+- **Navegação intuitiva** em abas organizadas
+- **CSS customizado** para experiência premium
 
 </td>
 <td width="50%">
 
-#### 📊 Visualização de Resultados
-- **Interface em Abas**: Organização clara do conteúdo
-- **Visão Geral**: Informações essenciais da viagem
-- **Cronograma Detalhado**: Atividades dia a dia
-- **Gastronomia**: Pratos típicos e restaurantes
-- **Vida Noturna**: Bares, festas e eventos
-- **Dicas Práticas**: Mobilidade, comunicação e segurança
+#### 🎯 **Personalização Completa**
+- **Perfil detalhado** do viajante
+- **Seleção flexível** de datas
+- **Interesses específicos** e restrições
+- **Orçamento e ritmo** personalizáveis
+
+#### 🌃 **Recursos Únicos**
+- **Vida noturna especializada** (bares, festas, eventos)
+- **Gastronomia local** com restaurantes secretos
+- **Cronograma detalhado** hora por hora
+- **Dicas práticas** de especialistas
 
 </td>
 </tr>
 </table>
 
-### 🧠 Inteligência Artificial
-
-#### 🤖 Modelos Suportados
-
-| Modelo | Tipo | Características |
-|--------|------|-----------------|
-| **Mistral Large** | Principal | Alta qualidade, respostas detalhadas |
-| **Gemini 2.5 Flash** | Fallback | Rápido e eficiente |
-| **Gemini 2.0 Pro** | Alternativo | Balanceado |
-| **Gemini 1.5 Pro** | Estável | Versão confiável |
-
-#### 🎯 Personalização Avançada
-
-- **Análise de Perfil**: Considera idade, interesses e restrições
-- **Contexto Geográfico**: Adapta sugestões ao destino
-- **Sazonalidade**: Considera clima e eventos sazonais
-- **Orçamento**: Ajusta recomendações ao nível financeiro
-
----
-
 ## 🏗️ Arquitetura
+
+<div align="center">
 
 ```mermaid
 graph TB
-    A[👤 Usuário] --> B[🌐 Streamlit UI]
-    B --> C[📝 Formulário]
-    C --> D[🧠 Processamento IA]
+    A[👤 Usuário] --> B[🌐 Interface Streamlit]
+    B --> C[📝 Formulário Inteligente]
+    C --> D[🧠 Sistema de IA]
     
-    D --> E{🤖 Modelo Escolhido}
+    D --> E{🤖 Seleção de Modelo}
     E -->|Principal| F[🔮 Mistral AI]
     E -->|Fallback| G[💎 Google Gemini]
     E -->|Offline| H[📋 Gerador Local]
@@ -155,105 +163,143 @@ graph TB
     G --> I
     H --> I
     
-    I --> J[🎨 Interface Resultados]
-    J --> K[📱 Visualização Final]
-    
-    style A fill:#e1f5fe
-    style B fill:#f3e5f5
-    style D fill:#fff3e0
-    style I fill:#e8f5e8
-    style K fill:#fce4ec
+    I --> J[🎨 Resultados Organizados]
+    J --> K[📱 Interface Final]
 ```
 
-### 🔄 Fluxo de Dados
+</div>
 
-1. **Entrada**: Usuário preenche formulário detalhado
-2. **Processamento**: Sistema valida e formata dados
-3. **IA**: Modelo selecionado gera roteiro personalizado
-4. **Parsing**: Resposta é convertida para JSON estruturado
-5. **Apresentação**: Interface organiza e exibe resultados
+### 🔄 **Fluxo de Funcionamento**
 
----
+<table>
+<tr>
+<td width="20%" align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Memo/3D/memo_3d.png" width="40"><br>
+  <strong>1. Entrada</strong><br>
+  <small>Formulário detalhado</small>
+</td>
+<td width="20%" align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Gear/3D/gear_3d.png" width="40"><br>
+  <strong>2. Processamento</strong><br>
+  <small>Validação e formatação</small>
+</td>
+<td width="20%" align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Robot/3D/robot_3d.png" width="40"><br>
+  <strong>3. IA</strong><br>
+  <small>Geração inteligente</small>
+</td>
+<td width="20%" align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Puzzle%20piece/3D/puzzle_piece_3d.png" width="40"><br>
+  <strong>4. Parsing</strong><br>
+  <small>Estruturação JSON</small>
+</td>
+<td width="20%" align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Artist%20palette/3D/artist_palette_3d.png" width="40"><br>
+  <strong>5. Apresentação</strong><br>
+  <small>Interface organizada</small>
+</td>
+</tr>
+</table>
 
-## 🛠️ Tecnologias
+## 🛠️ Stack Tecnológico
 
-### 🐍 Backend
+<div align="center">
 
-| Tecnologia | Versão | Propósito |
-|------------|--------|-----------|
-| **Python** | 3.8+ | Linguagem principal |
-| **Streamlit** | 1.37+ | Framework web |
-| **Requests** | 2.31+ | Chamadas HTTP para APIs |
-| **Loguru** | 0.7+ | Sistema de logging |
-| **Python-dateutil** | 2.9+ | Manipulação de datas |
+### 🎯 **Tecnologias de Ponta para Máxima Performance**
 
-### 🤖 Inteligência Artificial
+</div>
 
-| Serviço | Biblioteca | Uso |
-|---------|------------|-----|
-| **Mistral AI** | `requests` | API principal |
-| **Google Gemini** | `google-genai` | Fallback |
-| **Offline** | Template local | Backup final |
+<table>
+<tr>
+<td width="33%" align="center">
 
-### 🎨 Frontend
+#### 🐍 **Backend**
+![Python](https://img.shields.io/badge/Python-3.8+-3776ab?style=flat-square&logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.37+-ff4b4b?style=flat-square&logo=streamlit)
+![Requests](https://img.shields.io/badge/Requests-2.31+-green?style=flat-square)
+![Loguru](https://img.shields.io/badge/Loguru-0.7+-blue?style=flat-square)
 
-| Tecnologia | Uso |
-|------------|-----|
-| **Streamlit Components** | Interface base |
-| **CSS Customizado** | Estilização avançada |
-| **HTML/Markdown** | Estrutura de conteúdo |
-| **Responsive Design** | Adaptação mobile |
+</td>
+<td width="33%" align="center">
+
+#### 🤖 **Inteligência Artificial**
+![Mistral](https://img.shields.io/badge/Mistral-AI-ff7000?style=flat-square)
+![Gemini](https://img.shields.io/badge/Google-Gemini-4285f4?style=flat-square)
+![OpenAI](https://img.shields.io/badge/Fallback-System-purple?style=flat-square)
+
+</td>
+<td width="33%" align="center">
+
+#### 🎨 **Frontend & Deploy**
+![CSS3](https://img.shields.io/badge/CSS3-Custom-1572b6?style=flat-square&logo=css3)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=flat-square&logo=docker)
+![GitHub](https://img.shields.io/badge/CI/CD-Actions-2088ff?style=flat-square&logo=github)
+
+</td>
+</tr>
+</table>
 
 ---
 
 ## 📁 Estrutura do Projeto
 
-<details>
-<summary><strong>🗂️ Clique para ver a estrutura completa</strong></summary>
+<div align="center">
 
+### 🗂️ **Organização Profissional e Modular**
+
+</div>
+
+<table>
+<tr>
+<td width="50%">
+
+#### 🎯 **Core da Aplicação**
 ```
-gerador_roteiros/
-├── 🎯 APLICAÇÃO PRINCIPAL
-│   ├── 📄 app.py                      # Interface principal Streamlit (661 linhas)
-│   └── 📁 pages/
-│       └── 📄 01_Roteiro.py          # Página de resultados com abas
-│
-├── 🧠 LÓGICA E CONFIGURAÇÃO
-│   ├── 📁 utils/
-│   │   ├── 📄 __init__.py            # Inicializador do pacote
-│   │   └── 📄 prompts.py             # Sistema de prompts para IA
-│   ├── 📄 settings.json              # ⭐ Configurações centralizadas
-│   └── 📄 examples.py                # ⭐ Exemplos e demonstrações
-│
-├── ⚙️ CONFIGURAÇÃO E DEPLOY
-│   ├── 📄 requirements.txt           # Dependências Python
-│   ├── 📄 pyproject.toml            # Configuração moderna do projeto
-│   ├── 📄 setup.py                   # ⭐ Script de configuração automática
-│   ├── 📄 Dockerfile                # Containerização Docker
-│   ├── 📄 docker-compose.yml        # Orquestração de containers
-│   └── 📁 .streamlit/
-│       ├── 📄 secrets.toml           # Chaves API (não versionado)
-│       └── 📄 config.toml            # Configurações Streamlit
-│
-├── 🔧 DESENVOLVIMENTO
-│   ├── 📄 .gitignore                # Exclusões do Git
-│   ├── 📄 .pre-commit-config.yaml   # Hooks de qualidade de código
-│   └── 📁 .github/
-│       └── 📁 workflows/
-│           └── 📄 ci.yml            # CI/CD automático
-│
-├── 📚 DOCUMENTAÇÃO
-│   ├── 📄 README.md                 # Este arquivo (documentação completa)
-│   └── 📄 LICENSE                   # Licença MIT
-│
-└── 📁 RUNTIME
-    ├── 📁 logs/                      # Logs da aplicação
-    │   ├── 📄 app.log               # Log geral
-    │   └── 📄 error.log             # Log de erros
-    └── 📁 venv/                     # Ambiente virtual Python
+📄 app.py              # Interface principal (661 linhas)
+📁 pages/
+  └── 01_Roteiro.py     # Resultados organizados
+📁 utils/
+  ├── __init__.py       # Pacote Python
+  └── prompts.py        # Sistema de IA
 ```
 
-</details>
+#### ⚙️ **Configuração & Deploy**
+```
+📄 setup.py            # ⭐ Setup automático
+📄 settings.json       # ⭐ Configurações
+📄 examples.py         # ⭐ Demonstrações
+📄 requirements.txt    # Dependências
+📄 Dockerfile          # Container
+📄 docker-compose.yml  # Orquestração
+```
+
+</td>
+<td width="50%">
+
+#### 🔧 **Desenvolvimento**
+```
+📄 .gitignore          # Exclusões Git
+📄 .pre-commit-config  # Qualidade código
+📁 .github/workflows/  # CI/CD automático
+📁 .streamlit/         # Config Streamlit
+  ├── secrets.toml     # 🔐 Chaves API
+  └── config.toml      # Configurações
+```
+
+#### 📚 **Documentação & Logs**
+```
+📄 README.md           # Documentação completa
+📄 LICENSE             # Licença MIT
+📁 logs/               # Sistema de logs
+  ├── app.log          # Log geral
+  └── error.log        # Log de erros
+```
+
+</td>
+</tr>
+</table>
+
+> 💡 **Arquivos destacados com ⭐ são novidades que facilitam setup e uso**
 
 ### 📋 Descrição dos Arquivos
 

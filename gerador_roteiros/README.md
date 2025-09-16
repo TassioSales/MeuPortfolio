@@ -266,20 +266,44 @@ gerador_roteiros/
 #### ⚙️ Arquivos de Configuração
 
 - **`requirements.txt`**: Dependências Python necessárias
+- **`settings.json`**: ⭐ **NOVO** - Configurações centralizadas do projeto
+- **`setup.py`**: ⭐ **NOVO** - Script de configuração automática
+- **`examples.py`**: ⭐ **NOVO** - Exemplos de uso e demonstrações
 - **`.streamlit/secrets.toml`**: Chaves de API (configurar localmente)
 - **`logs/`**: Diretório para arquivos de log
 
 ---
 
-## ⚡ Instalação
+## ⚡ Instalação Automática
 
-### 🔧 Pré-requisitos
+### 🚀 **Método Recomendado - Setup Automático**
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/seu-usuario/gerador-roteiros.git
+cd gerador_roteiros
+
+# 2. Execute o script de configuração automática
+python setup.py
+```
+
+**🎉 Pronto! O script `setup.py` fará automaticamente:**
+- ✅ Verificação da versão do Python (3.8+)
+- ✅ Criação de diretórios necessários
+- ✅ Instalação de dependências
+- ✅ Configuração de arquivos de exemplo
+- ✅ Criação do `.gitignore` e `settings.json`
+
+### 📋 **Pré-requisitos**
 
 - **Python 3.8+** instalado
 - **Git** para clonagem do repositório
 - **Chaves de API** para Mistral AI e/ou Google Gemini
 
-### 📥 Instalação Rápida
+### 🔧 **Instalação Manual (Alternativa)**
+
+<details>
+<summary><strong>Clique para ver instalação manual</strong></summary>
 
 ```bash
 # 1. Clone o repositório
@@ -306,41 +330,79 @@ cp .streamlit/secrets.toml.example .streamlit/secrets.toml
 streamlit run app.py
 ```
 
+</details>
+
 ### 🔑 Configuração das Chaves de API
 
-1. **Mistral AI**:
-   - Acesse [console.mistral.ai](https://console.mistral.ai)
-   - Crie uma conta e gere uma API key
-   - Adicione no arquivo `secrets.toml`
+<table>
+<tr>
+<td width="50%">
 
-2. **Google Gemini**:
-   - Acesse [makersuite.google.com](https://makersuite.google.com)
-   - Crie um projeto e gere uma API key
-   - Adicione no arquivo `secrets.toml`
+#### 🔮 **Mistral AI** (Principal)
+1. Acesse [console.mistral.ai](https://console.mistral.ai)
+2. Crie uma conta gratuita
+3. Gere uma API key
+4. Adicione no arquivo `secrets.toml`
+
+</td>
+<td width="50%">
+
+#### 💎 **Google Gemini** (Fallback)
+1. Acesse [makersuite.google.com](https://makersuite.google.com)
+2. Crie um projeto Google Cloud
+3. Gere uma API key
+4. Adicione no arquivo `secrets.toml`
+
+</td>
+</tr>
+</table>
 
 ### 📝 Exemplo de `secrets.toml`
 
 ```toml
-# Chaves de API - NUNCA commite este arquivo com chaves reais
+# 🔐 Chaves de API - NUNCA commite este arquivo com chaves reais
+
+# Mistral AI (obrigatória)
 MISTRAL_API_KEY = "sua_chave_mistral_aqui"
+
+# Google Gemini (opcional, usado como fallback)
 GEMINI_API_KEY = "sua_chave_gemini_aqui"
+
+# Configurações opcionais
+# DEBUG = false
+# LOG_LEVEL = "INFO"
 ```
+
+> 💡 **Dica**: O arquivo `secrets.toml` é criado automaticamente pelo `setup.py`
 
 ---
 
-## 🚀 Como Usar
+## 🎯 Como Usar
 
-### 🎯 Passo a Passo
+### 🚀 **Início Rápido**
 
-#### 1. **Acesse a Aplicação**
-- Abra o navegador em `http://localhost:8501`
-- A interface principal será carregada
+```bash
+# Após a instalação, execute:
+streamlit run app.py
+```
 
-#### 2. **Configure a IA**
-- Escolha entre Mistral ou Gemini como modelo principal
-- Selecione o modelo específico do Gemini (se aplicável)
+**🌐 Acesse:** `http://localhost:8501`
 
-#### 3. **Preencha o Formulário**
+### 🎯 **Passo a Passo Detalhado**
+
+#### 1. **🚀 Inicie a Aplicação**
+```bash
+streamlit run app.py
+```
+- Interface moderna será carregada no navegador
+- Sistema verificará automaticamente as APIs disponíveis
+
+#### 2. **🤖 Configure a IA**
+- **Mistral AI**: Modelo principal (recomendado)
+- **Google Gemini**: Fallback automático
+- Seleção de modelo específico do Gemini
+
+#### 3. **📝 Preencha o Formulário Inteligente**
 
 <table>
 <tr>
@@ -381,28 +443,151 @@ GEMINI_API_KEY = "sua_chave_gemini_aqui"
 - Aguarde o processamento da IA
 - Visualize os resultados organizados
 
-#### 5. **Explore os Resultados**
-- **Visão Geral**: Informações essenciais
-- **Cronograma**: Atividades dia a dia
-- **Gastronomia**: Pratos e restaurantes
-- **Vida Noturna**: Bares e eventos
-- **Dicas**: Informações práticas
+#### 5. **🎨 Explore os Resultados**
 
-### 🎨 Interface de Resultados
+<table>
+<tr>
+<td width="20%" align="center">
 
-A página de resultados é organizada em abas intuitivas:
+**📋 Visão Geral**  
+*Informações essenciais*
 
-```html
-📋 Visão Geral    🗓️ Cronograma    🍽️ Gastronomia    🌃 Vida Noturna    💡 Dicas
-```
+</td>
+<td width="20%" align="center">
 
-Cada aba contém informações específicas e bem organizadas para facilitar a navegação.
+**🗓️ Cronograma**  
+*Atividades dia a dia*
+
+</td>
+<td width="20%" align="center">
+
+**🍽️ Gastronomia**  
+*Pratos e restaurantes*
+
+</td>
+<td width="20%" align="center">
+
+**🌃 Vida Noturna**  
+*Bares e eventos*
+
+</td>
+<td width="20%" align="center">
+
+**💡 Dicas**  
+*Informações práticas*
+
+</td>
+</tr>
+</table>
+
+### 🎪 Interface de Resultados
+
+A página de resultados é organizada em **abas intuitivas** com:
+- 🎨 **Design responsivo** e moderno
+- 🌙 **Modo escuro** automático
+- 📱 **Adaptação mobile** perfeita
+- ⚡ **Navegação fluida** entre seções
 
 ---
 
-## 🔧 Configuração
+## 🎪 Exemplos de Uso
 
-### ⚙️ Configurações Avançadas
+### 🎯 **Demonstrações Interativas**
+
+O arquivo `examples.py` contém exemplos prontos para testar:
+
+```bash
+# Execute os exemplos
+python examples.py
+```
+
+**📋 Exemplos Inclusos:**
+- 💕 **Viagem Romântica**: Paris para casal
+- 👨‍👩‍👧‍👦 **Viagem em Família**: Orlando com crianças
+- 🏔️ **Viagem de Aventura**: Nepal para grupo
+- 💼 **Viagem de Negócios**: São Paulo executivo
+
+### 🎨 **Personalize seus Exemplos**
+
+```python
+# Exemplo de dados personalizados
+from examples import exemplo_viagem_romantica
+from utils.prompts import format_user_prompt_viagem
+
+# Carregue um exemplo
+dados = exemplo_viagem_romantica()
+
+# Modifique conforme necessário
+dados['destino'] = 'Santorini, Grécia'
+dados['duracao'] = 10
+
+# Gere o prompt
+prompt = format_user_prompt_viagem(dados)
+print(prompt)
+```
+
+---
+
+## 🐳 Deploy com Docker
+
+### 🚀 **Deploy Rápido**
+
+```bash
+# Usando Docker Compose (recomendado)
+docker-compose up -d
+
+# Ou usando Docker diretamente
+docker build -t gerador-roteiros .
+docker run -p 8501:8501 gerador-roteiros
+```
+
+### ⚙️ **Configuração Docker**
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./logs:/app/logs
+```
+
+---
+
+## 🔧 Configuração Avançada
+
+### ⚙️ **Arquivo `settings.json`**
+
+O projeto inclui um sistema de configuração centralizado:
+
+```json
+{
+  "ai_providers": {
+    "default_provider": "mistral",
+    "mistral": {
+      "model": "mistral-large-latest",
+      "temperature": 0.7
+    },
+    "gemini": {
+      "default_model": "gemini-2.5-flash",
+      "temperature": 0.7
+    }
+  },
+  "features": {
+    "vida_noturna": true,
+    "gastronomia": true,
+    "export_pdf": false
+  }
+}
+```
+
+### 🎨 **Configurações Avançadas**
 
 #### 🎨 Personalização da Interface
 
@@ -619,26 +804,72 @@ Este projeto está licenciado sob a **MIT License** - veja o arquivo [LICENSE](L
 
 ---
 
+## ⭐ Apoie o Projeto
+
+<div align="center">
+
+### 🌟 **Se este projeto foi útil, considere apoiar!** 🌟
+
+[![⭐ GitHub Stars](https://img.shields.io/github/stars/seu-usuario/gerador-roteiros?style=for-the-badge&logo=github&color=yellow)](https://github.com/seu-usuario/gerador-roteiros)
+[![🍴 Fork](https://img.shields.io/github/forks/seu-usuario/gerador-roteiros?style=for-the-badge&logo=github&color=blue)](https://github.com/seu-usuario/gerador-roteiros)
+[![👁️ Watch](https://img.shields.io/github/watchers/seu-usuario/gerador-roteiros?style=for-the-badge&logo=github&color=green)](https://github.com/seu-usuario/gerador-roteiros)
+
+**💡 Formas de Apoiar:**
+- ⭐ Dê uma estrela no GitHub
+- 🐛 Reporte bugs e sugestões
+- 🤝 Contribua com código
+- 📢 Compartilhe com amigos
+- 💬 Deixe feedback
+
+</div>
+
+---
+
 ## 🙏 Agradecimentos
 
-- **Streamlit Team** pela excelente framework
-- **Mistral AI** e **Google** pelas APIs de IA
-- **Comunidade Python** pelo suporte contínuo
-- **Contribuidores** que ajudaram a melhorar o projeto
+<table>
+<tr>
+<td width="25%" align="center">
+
+**🚀 Streamlit**  
+*Framework incrível*
+
+</td>
+<td width="25%" align="center">
+
+**🔮 Mistral AI**  
+*IA de qualidade*
+
+</td>
+<td width="25%" align="center">
+
+**💎 Google Gemini**  
+*Fallback confiável*
+
+</td>
+<td width="25%" align="center">
+
+**🐍 Python Community**  
+*Suporte contínuo*
+
+</td>
+</tr>
+</table>
 
 ---
 
 <div align="center">
 
-**⭐ Se este projeto foi útil, considere dar uma estrela! ⭐**
+### 🎯 **Desenvolvido com ❤️ para a comunidade de viajantes** 🎯
 
-[![GitHub stars](https://img.shields.io/github/stars/seu-usuario/gerador-roteiros?style=social)](https://github.com/seu-usuario/gerador-roteiros)
-[![GitHub forks](https://img.shields.io/github/forks/seu-usuario/gerador-roteiros?style=social)](https://github.com/seu-usuario/gerador-roteiros)
+**🌍 Explore o mundo com inteligência artificial! 🌍**
 
 ---
 
-**Desenvolvido com ❤️ para a comunidade de viajantes**
+*📅 Última atualização: Setembro 2025*  
+*🏷️ Versão: 1.0.0*  
+*📄 Licença: MIT*
 
-*Última atualização: Dezembro 2024*
+**[⬆️ Voltar ao topo](#-gerador-de-roteiros-de-viagem-com-ia)**
 
 </div>

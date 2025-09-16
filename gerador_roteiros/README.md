@@ -1,37 +1,70 @@
-# 🗺️ Gerador de Roteiros de Viagem com IA
-
 <div align="center">
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.37+-red?style=for-the-badge&logo=streamlit&logoColor=white)
-![AI](https://img.shields.io/badge/AI-Mistral%20%7C%20Gemini-purple?style=for-the-badge&logo=openai&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+# 🗺️ Gerador de Roteiros de Viagem com IA
 
-**Planejador de viagens inteligente que gera roteiros personalizados usando inteligência artificial**
+<img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/World%20map/3D/world_map_3d.png" width="100" alt="World Map">
 
-[![Demo](https://img.shields.io/badge/🚀-Ver_Demo-orange?style=for-the-badge)](https://github.com/seu-usuario/gerador-roteiros)
-[![Documentação](https://img.shields.io/badge/📚-Documentação-blue?style=for-the-badge)](#documentação)
-[![Instalação](https://img.shields.io/badge/⚡-Instalação_Rápida-green?style=for-the-badge)](#instalação)
+### ✨ *Transforme seus sonhos de viagem em roteiros perfeitos com o poder da Inteligência Artificial* ✨
+
+---
+
+![Python](https://img.shields.io/badge/Python-3.8+-3776ab?style=for-the-badge&logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.37+-ff4b4b?style=for-the-badge&logo=streamlit&logoColor=white)
+![Mistral AI](https://img.shields.io/badge/Mistral-AI-ff7000?style=for-the-badge&logo=ai&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google-Gemini-4285f4?style=for-the-badge&logo=google&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge&logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-00d4aa?style=for-the-badge&logo=opensourceinitiative&logoColor=white)
+
+[![🚀 Instalação Automática](https://img.shields.io/badge/🚀-Instalação_Automática-00d4aa?style=for-the-badge)](#-instalação-automática)
+[![📖 Documentação Completa](https://img.shields.io/badge/📖-Documentação_Completa-4285f4?style=for-the-badge)](#-documentação)
+[![🎯 Ver Exemplos](https://img.shields.io/badge/🎯-Ver_Exemplos-ff7000?style=for-the-badge)](#-exemplos-de-uso)
+[![🐳 Deploy Docker](https://img.shields.io/badge/🐳-Deploy_Docker-2496ed?style=for-the-badge)](#-deploy-com-docker)
+
+---
+
+**🎯 Crie roteiros de viagem únicos e personalizados usando IA de última geração**  
+*Mistral AI • Google Gemini • Interface Moderna • Sistema de Fallback Robusto*
 
 </div>
 
 ---
 
-## 📋 Índice
+## 📋 Navegação Rápida
 
+<table>
+<tr>
+<td width="50%">
+
+### 🚀 **Início Rápido**
+- [⚡ Instalação Automática](#-instalação-automática)
+- [🎯 Como Usar](#-como-usar)
+- [🎪 Exemplos de Uso](#-exemplos-de-uso)
+- [🐳 Deploy com Docker](#-deploy-com-docker)
+
+### 📚 **Documentação**
 - [🎯 Visão Geral](#-visão-geral)
 - [✨ Funcionalidades](#-funcionalidades)
-- [🏗️ Arquitetura](#️-arquitetura)
-- [🛠️ Tecnologias](#️-tecnologias)
+- [🏗️ Arquitetura](#-arquitetura)
 - [📁 Estrutura do Projeto](#-estrutura-do-projeto)
-- [⚡ Instalação](#-instalação)
-- [🚀 Como Usar](#-como-usar)
-- [🔧 Configuração](#-configuração)
+
+</td>
+<td width="50%">
+
+### 🛠️ **Desenvolvimento**
+- [🔧 Configuração Avançada](#-configuração-avançada)
 - [📊 API Reference](#-api-reference)
 - [🎨 Personalização](#-personalização)
 - [🐛 Troubleshooting](#-troubleshooting)
+
+### 🤝 **Comunidade**
 - [🤝 Contribuição](#-contribuição)
 - [📄 Licença](#-licença)
+- [🙏 Agradecimentos](#-agradecimentos)
+- [⭐ Apoie o Projeto](#-apoie-o-projeto)
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -175,23 +208,52 @@ graph TB
 
 ## 📁 Estrutura do Projeto
 
+<details>
+<summary><strong>🗂️ Clique para ver a estrutura completa</strong></summary>
+
 ```
 gerador_roteiros/
-├── 📄 app.py                          # Aplicação principal
-├── 📄 requirements.txt                # Dependências Python
-├── 📄 README.md                       # Documentação
-├── 📁 .streamlit/                     # Configurações Streamlit
-│   └── 📄 secrets.toml               # Chaves API (não versionado)
-├── 📁 pages/                          # Páginas secundárias
-│   └── 📄 01_Roteiro.py              # Página de resultados
-├── 📁 utils/                          # Utilitários
-│   ├── 📄 __init__.py                # Inicializador do pacote
-│   └── 📄 prompts.py                 # Prompts e formatação
-├── 📁 logs/                           # Logs da aplicação
-│   ├── 📄 app.log                    # Log geral
-│   └── 📄 error.log                  # Log de erros
-└── 📁 venv/                          # Ambiente virtual (não versionado)
+├── 🎯 APLICAÇÃO PRINCIPAL
+│   ├── 📄 app.py                      # Interface principal Streamlit (661 linhas)
+│   └── 📁 pages/
+│       └── 📄 01_Roteiro.py          # Página de resultados com abas
+│
+├── 🧠 LÓGICA E CONFIGURAÇÃO
+│   ├── 📁 utils/
+│   │   ├── 📄 __init__.py            # Inicializador do pacote
+│   │   └── 📄 prompts.py             # Sistema de prompts para IA
+│   ├── 📄 settings.json              # ⭐ Configurações centralizadas
+│   └── 📄 examples.py                # ⭐ Exemplos e demonstrações
+│
+├── ⚙️ CONFIGURAÇÃO E DEPLOY
+│   ├── 📄 requirements.txt           # Dependências Python
+│   ├── 📄 pyproject.toml            # Configuração moderna do projeto
+│   ├── 📄 setup.py                   # ⭐ Script de configuração automática
+│   ├── 📄 Dockerfile                # Containerização Docker
+│   ├── 📄 docker-compose.yml        # Orquestração de containers
+│   └── 📁 .streamlit/
+│       ├── 📄 secrets.toml           # Chaves API (não versionado)
+│       └── 📄 config.toml            # Configurações Streamlit
+│
+├── 🔧 DESENVOLVIMENTO
+│   ├── 📄 .gitignore                # Exclusões do Git
+│   ├── 📄 .pre-commit-config.yaml   # Hooks de qualidade de código
+│   └── 📁 .github/
+│       └── 📁 workflows/
+│           └── 📄 ci.yml            # CI/CD automático
+│
+├── 📚 DOCUMENTAÇÃO
+│   ├── 📄 README.md                 # Este arquivo (documentação completa)
+│   └── 📄 LICENSE                   # Licença MIT
+│
+└── 📁 RUNTIME
+    ├── 📁 logs/                      # Logs da aplicação
+    │   ├── 📄 app.log               # Log geral
+    │   └── 📄 error.log             # Log de erros
+    └── 📁 venv/                     # Ambiente virtual Python
 ```
+
+</details>
 
 ### 📋 Descrição dos Arquivos
 

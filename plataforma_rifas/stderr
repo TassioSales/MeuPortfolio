@@ -1,0 +1,46 @@
+[32m2025-09-25 13:00:22[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:00:22[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:06[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:01:06[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:10[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:01:10[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:11[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:01:11[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:11[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:01:11[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:14[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:01:14[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:16[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:01:16[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:25[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:01:25[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:25[0m | [31m[1mERROR   [0m | [36m__main__[0m:[36mmain[0m:[36m235[0m | [33munknown[0m - [31m[1mErro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value[0m
+[32m2025-09-25 13:01:28[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:01:29[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:29[0m | [31m[1mERROR   [0m | [36m__main__[0m:[36mmain[0m:[36m235[0m | [33munknown[0m - [31m[1mErro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value[0m
+[32m2025-09-25 13:01:36[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:01:37[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:38[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m25[0m | [33munknown[0m - [1mAplicação iniciada | session_id=39328797[0m
+[32m2025-09-25 13:01:38[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:01:38[0m | [31m[1mERROR   [0m | [36m__main__[0m:[36mmain[0m:[36m235[0m | [33munknown[0m - [31m[1mErro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value[0m
+[32m2025-09-25 13:03:52[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m124[0m | [33munknown[0m - [1mAplicação iniciada | session_id=c9267472[0m
+[32m2025-09-25 13:03:52[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:03:56[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m124[0m | [33munknown[0m - [1mAplicação iniciada | session_id=c9267472[0m
+[32m2025-09-25 13:03:56[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:04:01[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m124[0m | [33munknown[0m - [1mAplicação iniciada | session_id=c9267472[0m
+[32m2025-09-25 13:04:01[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:04:01[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m124[0m | [33munknown[0m - [1mAplicação iniciada | session_id=c9267472[0m
+[32m2025-09-25 13:04:01[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:04:01[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m124[0m | [33munknown[0m - [1mAplicação iniciada | session_id=c9267472[0m
+[32m2025-09-25 13:04:01[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:04:03[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m124[0m | [33munknown[0m - [1mAplicação iniciada | session_id=c9267472[0m
+[32m2025-09-25 13:04:03[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:04:08[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m124[0m | [33munknown[0m - [1mAplicação iniciada | session_id=c9267472[0m
+[32m2025-09-25 13:04:08[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:04:08[0m | [31m[1mERROR   [0m | [36m__main__[0m:[36mmain[0m:[36m334[0m | [33munknown[0m - [31m[1mErro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value[0m
+[32m2025-09-25 13:04:12[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m124[0m | [33munknown[0m - [1mAplicação iniciada | session_id=c9267472[0m
+[32m2025-09-25 13:04:12[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:04:12[0m | [31m[1mERROR   [0m | [36m__main__[0m:[36mmain[0m:[36m334[0m | [33munknown[0m - [31m[1mErro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value[0m
+[32m2025-09-25 13:04:13[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m124[0m | [33munknown[0m - [1mAplicação iniciada | session_id=c9267472[0m
+[32m2025-09-25 13:04:13[0m | [1mINFO    [0m | [36mmodules.db_data_manager[0m:[36mmigrate_from_json[0m:[36m109[0m | [33munknown[0m - [1mMigração JSON→SQLite concluída.[0m
+[32m2025-09-25 13:04:13[0m | [31m[1mERROR   [0m | [36m__main__[0m:[36mmain[0m:[36m334[0m | [33munknown[0m - [31m[1mErro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value[0m

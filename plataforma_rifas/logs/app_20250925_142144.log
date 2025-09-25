@@ -1,0 +1,61 @@
+2025-09-25 14:21:44.606 | INFO     | logger:success:103 | system | none - SUCCESS: Diretório de dados criado ou verificado com sucesso: D:\GithubGit\MeuPortfolio\plataforma_rifas\data
+2025-09-25 14:21:44.628 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 14:21:44.629 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 14:21:44.634 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.634 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.635 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.635 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.647 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 14:21:44.649 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 14:21:44.656 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.657 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.673 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 14:21:44.673 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 14:21:44.681 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.681 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.686 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.687 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.689 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.691 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.697 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-25 14:21:44.819 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.820 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.822 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-25 14:21:44.831 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.831 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.833 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.834 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.865 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.865 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.873 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-25 14:21:44.881 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.881 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.884 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-25 14:21:44.889 | DEBUG    | logger:debug:95 | system | none - Filtro de comprador Cleber aplicado para PDF
+2025-09-25 14:21:44.891 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.892 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.909 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.909 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.914 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.915 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.925 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.925 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:44.950 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:44.951 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:45.045 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:45.046 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:45.073 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:45.073 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:45.096 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:45.097 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:45.124 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:45.125 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:45.148 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:45.149 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:45.150 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-25 14:21:45.165 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:45.165 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:45.168 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-25 14:21:45.172 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:21:45.172 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:21:45.174 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação

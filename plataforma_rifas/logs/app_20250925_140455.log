@@ -1,0 +1,11 @@
+2025-09-25 14:04:55.276 | INFO     | logger:success:103 | system | none - SUCCESS: Diretório de dados criado ou verificado com sucesso: D:\GithubGit\MeuPortfolio\plataforma_rifas\data
+2025-09-25 14:04:55.293 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 14:04:55.296 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:04:55.297 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:04:55.303 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 14:04:55.303 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 14:04:55.309 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:04:55.310 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:04:55.317 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 14:04:55.318 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 14:04:55.320 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada

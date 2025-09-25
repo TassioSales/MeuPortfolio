@@ -1,0 +1,977 @@
+2025-09-25 13:53:52.735 | INFO     | logger:success:103 | system | none - SUCCESS: Diretório de dados criado ou verificado com sucesso: D:\GithubGit\MeuPortfolio\plataforma_rifas\data
+2025-09-25 13:53:54.986 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:53:54.996 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:53:54.997 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:53:55.013 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:53:55.013 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:53:55.445 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:53:55.446 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:53:55.450 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-25 13:54:10.953 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:54:10.959 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:10.960 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:10.972 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:54:10.973 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:54:10.993 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:10.994 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:11.003 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-25 13:54:13.814 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:54:13.819 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:13.819 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:13.831 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:54:13.833 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:54:13.846 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:13.847 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:13.854 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-25 13:54:14.799 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:54:14.802 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:14.803 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:14.819 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:54:14.821 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:54:14.831 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:14.832 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:15.132 | INFO     | logger:success:103 | system | 1 - SUCCESS: Usuário tassiolucian@gmail.com logado com sucesso
+2025-09-25 13:54:15.226 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:54:15.229 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:15.230 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:15.244 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:54:15.244 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:54:15.252 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:15.253 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:15.269 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:15.270 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:15.278 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-25 13:54:17.580 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:54:17.583 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:17.583 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:17.596 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:54:17.597 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:54:17.605 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:17.606 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:17.619 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:17.620 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:17.624 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:17.625 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:17.630 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:17.631 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:17.632 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-25 13:54:21.283 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.283 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.286 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.286 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.322 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.323 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.368 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-25 13:54:21.379 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.380 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.399 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-25 13:54:21.405 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.406 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.407 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.408 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.415 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.415 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.654 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.655 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.743 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.744 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.765 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.766 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.783 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.783 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.811 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.812 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.840 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.840 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.842 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-25 13:54:21.863 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.863 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.866 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-25 13:54:21.868 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:21.869 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:21.871 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação
+2025-09-25 13:54:36.686 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:54:36.689 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.689 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.702 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:54:36.702 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:54:36.709 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.710 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.715 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.716 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.720 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.721 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.723 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.724 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.725 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-25 13:54:36.740 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.740 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.745 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.745 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.788 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.788 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.795 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-25 13:54:36.811 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.811 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.816 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-25 13:54:36.822 | DEBUG    | logger:debug:95 | system | none - Filtro de comprador Cleber aplicado para PDF
+2025-09-25 13:54:36.827 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.828 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.832 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.833 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.848 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.849 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.882 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.882 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.968 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.969 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:36.988 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:36.988 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.006 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.006 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.026 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.026 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.056 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.056 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.058 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-25 13:54:37.081 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.082 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.086 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-25 13:54:37.089 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.090 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.093 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação
+2025-09-25 13:54:37.719 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:54:37.722 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.722 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.733 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:54:37.734 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:54:37.741 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.742 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.750 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.750 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.755 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.755 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.758 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.759 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.760 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-25 13:54:37.777 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.778 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.782 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.783 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.833 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.834 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.841 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-25 13:54:37.850 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.851 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.855 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-25 13:54:37.860 | DEBUG    | logger:debug:95 | system | none - Filtro de comprador Cleber aplicado para PDF
+2025-09-25 13:54:37.861 | DEBUG    | logger:debug:95 | system | none - Iniciando geração de PDF
+2025-09-25 13:54:37.867 | INFO     | logger:success:103 | system | none - SUCCESS: PDF consolidado gerado com sucesso
+2025-09-25 13:54:37.871 | ERROR    | logger:error:116 | system | none - Erro ao gerar PDF | Exception: 'bytearray' object has no attribute 'encode' | Traceback: Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 122, in _build_pdf_bytes
+    return pdf.output(dest='S').encode('latin-1')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x00000280E579A480>
+    └ <Thread(ScriptRunner.scriptThread, started 10752)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x00000280E579A200>
+    └ <Thread(ScriptRunner.scriptThread, started 10752)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 10752)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 10752)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='7964108b-4e47-42e1-a248-d51773bf832f', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 10752)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x00000280E5F71210>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x00000280E70C0180>
+    └ ScriptRunner(_session_id='7964108b-4e47-42e1-a248-d51773bf832f', _main_script_path='app.py', _session_state={$$ID-1e42ac3bdca...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='7964108b-4e47-42e1-a248-d51773bf832f', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000028084C267A0>
+        └ <function exec_func_with_error_handling at 0x00000280E7064180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000028084C267A0>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x00000280E682D7B0, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 669, in <module>
+    main()
+    └ <function main at 0x0000028084C27F60>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 380, in main
+    pdf_bytes = _build_pdf_bytes(vendas_sel, cfg, consolidate_buyer=comprador_pdf, nome_rifa=nome_rifa, tz_offset=tz_offset)
+                │                │           │                      │                        │                    └ 0
+                │                │           │                      │                        └ 'Rifa solidaria '
+                │                │           │                      └ 'Cleber'
+                │                │           └ {'id': 1, 'nome': 'Rifa solidaria ', 'valor_numero': 10.0, 'total_numeros': 200, 'sorteio_realizado': 0, 'sorteio_numero': No...
+                │                └ [{'numero': 24, 'comprador': 'Cleber', 'contato': '', 'timestamp': '2025-09-24T22:18:48.078148+00:00'}, {'numero': 10, 'compr...
+                └ <function log_exceptions.<locals>.decorator.<locals>.wrapper at 0x0000028084C26660>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 157, in wrapper
+    return func(*args, **kwargs)
+           │     │       └ {'consolidate_buyer': 'Cleber', 'nome_rifa': 'Rifa solidaria ', 'tz_offset': 0}
+           │     └ ([{'numero': 24, 'comprador': 'Cleber', 'contato': '', 'timestamp': '2025-09-24T22:18:48.078148+00:00'}, {'numero': 10, 'comp...
+           └ <function _build_pdf_bytes at 0x0000028084C26700>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 122, in _build_pdf_bytes
+    return pdf.output(dest='S').encode('latin-1')
+           │   └ <function FPDF.output at 0x00000280829934C0>
+           └ <fpdf.fpdf.FPDF object at 0x000002808416ABA0>
+
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+2025-09-25 13:54:37.921 | ERROR    | logger:error:116 | system | none - Falha ao gerar PDF para rifa Rifa solidaria  | Exception: "'numero'" | Traceback: Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 122, in _build_pdf_bytes
+    return pdf.output(dest='S').encode('latin-1')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 157, in wrapper
+    return func(*args, **kwargs)
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 183, in _build_pdf_bytes
+    raise RuntimeError(f"Falha ao gerar o PDF: {str(e)}") from e
+RuntimeError: Falha ao gerar o PDF: 'bytearray' object has no attribute 'encode'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 380, in main
+    pdf_bytes = _build_pdf_bytes(vendas_sel, cfg, consolidate_buyer=comprador_pdf, nome_rifa=nome_rifa, tz_offset=tz_offset)
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 160, in wrapper
+    logger.exception(
+    ~~~~~~~~~~~~~~~~^
+        f"Exceção não tratada em {func.__name__} | Args: {args} | Kwargs: {kwargs}",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        module=func.__module__,
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 131, in exception
+    self.error(message, exception=exception, **kwargs)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 116, in error
+    self.logger.opt(exception=exc_info).error(message, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\loguru\_logger.py", line 2090, in error
+    __self._log("ERROR", False, __self._options, __message, args, kwargs)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\loguru\_logger.py", line 2055, in _log
+    log_record["message"] = message.format(*args, **kwargs)
+                            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: "'numero'"
+
+Traceback (most recent call last):
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 122, in _build_pdf_bytes
+    return pdf.output(dest='S').encode('latin-1')
+           │   └ <function FPDF.output at 0x00000280829934C0>
+           └ <fpdf.fpdf.FPDF object at 0x000002808416ABA0>
+
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 157, in wrapper
+    return func(*args, **kwargs)
+           │     │       └ {'consolidate_buyer': 'Cleber', 'nome_rifa': 'Rifa solidaria ', 'tz_offset': 0}
+           │     └ ([{'numero': 24, 'comprador': 'Cleber', 'contato': '', 'timestamp': '2025-09-24T22:18:48.078148+00:00'}, {'numero': 10, 'comp...
+           └ <function _build_pdf_bytes at 0x0000028084C26700>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 183, in _build_pdf_bytes
+    raise RuntimeError(f"Falha ao gerar o PDF: {str(e)}") from e
+
+RuntimeError: Falha ao gerar o PDF: 'bytearray' object has no attribute 'encode'
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x00000280E579A480>
+    └ <Thread(ScriptRunner.scriptThread, started 10752)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x00000280E579A200>
+    └ <Thread(ScriptRunner.scriptThread, started 10752)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 10752)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 10752)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='7964108b-4e47-42e1-a248-d51773bf832f', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 10752)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x00000280E5F71210>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x00000280E70C0180>
+    └ ScriptRunner(_session_id='7964108b-4e47-42e1-a248-d51773bf832f', _main_script_path='app.py', _session_state={$$ID-1e42ac3bdca...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='7964108b-4e47-42e1-a248-d51773bf832f', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000028084C267A0>
+        └ <function exec_func_with_error_handling at 0x00000280E7064180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000028084C267A0>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x00000280E682D7B0, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 669, in <module>
+    main()
+    └ <function main at 0x0000028084C27F60>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 380, in main
+    pdf_bytes = _build_pdf_bytes(vendas_sel, cfg, consolidate_buyer=comprador_pdf, nome_rifa=nome_rifa, tz_offset=tz_offset)
+                │                │           │                      │                        │                    └ 0
+                │                │           │                      │                        └ 'Rifa solidaria '
+                │                │           │                      └ 'Cleber'
+                │                │           └ {'id': 1, 'nome': 'Rifa solidaria ', 'valor_numero': 10.0, 'total_numeros': 200, 'sorteio_realizado': 0, 'sorteio_numero': No...
+                │                └ [{'numero': 24, 'comprador': 'Cleber', 'contato': '', 'timestamp': '2025-09-24T22:18:48.078148+00:00'}, {'numero': 10, 'compr...
+                └ <function log_exceptions.<locals>.decorator.<locals>.wrapper at 0x0000028084C26660>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 160, in wrapper
+    logger.exception(
+    │      └ <function Logger.exception at 0x0000028082AE4A40>
+    └ <logger.Logger object at 0x0000028084208D50>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 131, in exception
+    self.error(message, exception=exception, **kwargs)
+    │    │     │                  │            └ {'function': '_build_pdf_bytes', 'module': '__main__'}
+    │    │     │                  └ RuntimeError("Falha ao gerar o PDF: 'bytearray' object has no attribute 'encode'")
+    │    │     └ 'Exceção não tratada em _build_pdf_bytes | Args: ([{\'numero\': 24, \'comprador\': \'Cleber\', \'contato\': \'\', \'timestamp...
+    │    └ <function Logger.error at 0x0000028082AE4900>
+    └ <logger.Logger object at 0x0000028084208D50>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 116, in error
+    self.logger.opt(exception=exc_info).error(message, **kwargs)
+    │    │      │             │               │          └ {'function': '_build_pdf_bytes', 'module': '__main__'}
+    │    │      │             │               └ 'Exceção não tratada em _build_pdf_bytes | Args: ([{\'numero\': 24, \'comprador\': \'Cleber\', \'contato\': \'\', \'timestamp...
+    │    │      │             └ (<class 'RuntimeError'>, RuntimeError("Falha ao gerar o PDF: 'bytearray' object has no attribute 'encode'"), <traceback objec...
+    │    │      └ <function Logger.opt at 0x0000028082A9B1A0>
+    │    └ <loguru.logger handlers=[(id=1, level=10, sink=<stderr>), (id=2, level=10, sink='D:\GithubGit\MeuPortfolio\plataforma_rifas\l...
+    └ <logger.Logger object at 0x0000028084208D50>
+
+KeyError: "'numero'"
+2025-09-25 13:54:37.939 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.940 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.943 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.943 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.954 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.955 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:37.979 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:37.979 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:38.098 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:38.099 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:38.120 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:38.121 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:38.142 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:38.143 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:38.165 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:38.165 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:38.193 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:38.193 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:38.195 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-25 13:54:38.211 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:38.212 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:38.216 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-25 13:54:38.219 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:38.220 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:38.222 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação
+2025-09-25 13:54:50.414 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:54:50.418 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.419 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.425 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:54:50.426 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:54:50.432 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.432 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.440 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.440 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.444 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.445 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.448 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.449 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.450 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-25 13:54:50.461 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.462 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.465 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.465 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.503 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.504 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.513 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-25 13:54:50.527 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.528 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.538 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-25 13:54:50.544 | DEBUG    | logger:debug:95 | system | none - Filtro de comprador Cleber aplicado para PDF
+2025-09-25 13:54:50.549 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.550 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.554 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.555 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.570 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.570 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.599 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.600 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.715 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.716 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.740 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.740 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.771 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.772 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.804 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.804 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.843 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.843 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.845 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-25 13:54:50.870 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.870 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.876 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-25 13:54:50.881 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:54:50.881 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:54:50.885 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação
+2025-09-25 13:55:06.876 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:55:06.879 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:06.880 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:06.890 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:55:06.890 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:55:06.895 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:06.896 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:06.902 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:06.902 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:06.905 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:06.906 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:06.908 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:06.908 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:06.911 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-25 13:55:06.922 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:06.922 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:06.927 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:06.928 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:06.968 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:06.968 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:06.975 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-25 13:55:06.984 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:06.984 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:06.990 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-25 13:55:06.992 | DEBUG    | logger:debug:95 | system | none - Filtro de comprador Gleison aplicado para PDF
+2025-09-25 13:55:06.996 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:06.996 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.002 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:07.002 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.015 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:07.016 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.035 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:07.036 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.102 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:07.103 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.120 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:07.121 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.136 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:07.136 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.158 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:07.158 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.190 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:07.190 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.192 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-25 13:55:07.205 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:07.206 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.209 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-25 13:55:07.211 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:07.212 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:07.214 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação
+2025-09-25 13:55:08.522 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:55:08.525 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.525 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.532 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:55:08.533 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:55:08.538 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.539 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.546 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.547 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.550 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.550 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.552 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.553 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.556 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-25 13:55:08.565 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.566 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.568 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.568 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.604 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.605 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.613 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-25 13:55:08.623 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.624 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.631 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-25 13:55:08.640 | DEBUG    | logger:debug:95 | system | none - Filtro de comprador Gleison aplicado para PDF
+2025-09-25 13:55:08.641 | DEBUG    | logger:debug:95 | system | none - Iniciando geração de PDF
+2025-09-25 13:55:08.648 | INFO     | logger:success:103 | system | none - SUCCESS: PDF consolidado gerado com sucesso
+2025-09-25 13:55:08.652 | ERROR    | logger:error:116 | system | none - Erro ao gerar PDF | Exception: 'bytearray' object has no attribute 'encode' | Traceback: Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 122, in _build_pdf_bytes
+    return pdf.output(dest='S').encode('latin-1')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x00000280E579A480>
+    └ <Thread(ScriptRunner.scriptThread, started 13104)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x00000280E579A200>
+    └ <Thread(ScriptRunner.scriptThread, started 13104)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 13104)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 13104)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='7964108b-4e47-42e1-a248-d51773bf832f', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 13104)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x00000280E5F71210>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x00000280E70C0180>
+    └ ScriptRunner(_session_id='7964108b-4e47-42e1-a248-d51773bf832f', _main_script_path='app.py', _session_state={$$ID-1e42ac3bdca...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='7964108b-4e47-42e1-a248-d51773bf832f', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000028084BCB380>
+        └ <function exec_func_with_error_handling at 0x00000280E7064180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000028084BCB380>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x00000280E682D7B0, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 669, in <module>
+    main()
+    └ <function main at 0x0000028084BCACA0>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 380, in main
+    pdf_bytes = _build_pdf_bytes(vendas_sel, cfg, consolidate_buyer=comprador_pdf, nome_rifa=nome_rifa, tz_offset=tz_offset)
+                │                │           │                      │                        │                    └ 0
+                │                │           │                      │                        └ 'Rifa solidaria '
+                │                │           │                      └ 'Gleison'
+                │                │           └ {'id': 1, 'nome': 'Rifa solidaria ', 'valor_numero': 10.0, 'total_numeros': 200, 'sorteio_realizado': 0, 'sorteio_numero': No...
+                │                └ [{'numero': 101, 'comprador': 'Gleison', 'contato': '', 'timestamp': '2025-09-24T22:18:48.078148+00:00'}]
+                └ <function log_exceptions.<locals>.decorator.<locals>.wrapper at 0x0000028084B5C220>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 157, in wrapper
+    return func(*args, **kwargs)
+           │     │       └ {'consolidate_buyer': 'Gleison', 'nome_rifa': 'Rifa solidaria ', 'tz_offset': 0}
+           │     └ ([{'numero': 101, 'comprador': 'Gleison', 'contato': '', 'timestamp': '2025-09-24T22:18:48.078148+00:00'}], {'id': 1, 'nome':...
+           └ <function _build_pdf_bytes at 0x0000028084BCB4C0>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 122, in _build_pdf_bytes
+    return pdf.output(dest='S').encode('latin-1')
+           │   └ <function FPDF.output at 0x00000280829934C0>
+           └ <fpdf.fpdf.FPDF object at 0x0000028084AE4910>
+
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+2025-09-25 13:55:08.665 | ERROR    | logger:error:116 | system | none - Falha ao gerar PDF para rifa Rifa solidaria  | Exception: "'numero'" | Traceback: Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 122, in _build_pdf_bytes
+    return pdf.output(dest='S').encode('latin-1')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 157, in wrapper
+    return func(*args, **kwargs)
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 183, in _build_pdf_bytes
+    raise RuntimeError(f"Falha ao gerar o PDF: {str(e)}") from e
+RuntimeError: Falha ao gerar o PDF: 'bytearray' object has no attribute 'encode'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 380, in main
+    pdf_bytes = _build_pdf_bytes(vendas_sel, cfg, consolidate_buyer=comprador_pdf, nome_rifa=nome_rifa, tz_offset=tz_offset)
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 160, in wrapper
+    logger.exception(
+    ~~~~~~~~~~~~~~~~^
+        f"Exceção não tratada em {func.__name__} | Args: {args} | Kwargs: {kwargs}",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        module=func.__module__,
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 131, in exception
+    self.error(message, exception=exception, **kwargs)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 116, in error
+    self.logger.opt(exception=exc_info).error(message, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\loguru\_logger.py", line 2090, in error
+    __self._log("ERROR", False, __self._options, __message, args, kwargs)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\loguru\_logger.py", line 2055, in _log
+    log_record["message"] = message.format(*args, **kwargs)
+                            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: "'numero'"
+
+Traceback (most recent call last):
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 122, in _build_pdf_bytes
+    return pdf.output(dest='S').encode('latin-1')
+           │   └ <function FPDF.output at 0x00000280829934C0>
+           └ <fpdf.fpdf.FPDF object at 0x0000028084AE4910>
+
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 157, in wrapper
+    return func(*args, **kwargs)
+           │     │       └ {'consolidate_buyer': 'Gleison', 'nome_rifa': 'Rifa solidaria ', 'tz_offset': 0}
+           │     └ ([{'numero': 101, 'comprador': 'Gleison', 'contato': '', 'timestamp': '2025-09-24T22:18:48.078148+00:00'}], {'id': 1, 'nome':...
+           └ <function _build_pdf_bytes at 0x0000028084BCB4C0>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 183, in _build_pdf_bytes
+    raise RuntimeError(f"Falha ao gerar o PDF: {str(e)}") from e
+
+RuntimeError: Falha ao gerar o PDF: 'bytearray' object has no attribute 'encode'
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x00000280E579A480>
+    └ <Thread(ScriptRunner.scriptThread, started 13104)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x00000280E579A200>
+    └ <Thread(ScriptRunner.scriptThread, started 13104)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 13104)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 13104)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='7964108b-4e47-42e1-a248-d51773bf832f', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 13104)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x00000280E5F71210>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x00000280E70C0180>
+    └ ScriptRunner(_session_id='7964108b-4e47-42e1-a248-d51773bf832f', _main_script_path='app.py', _session_state={$$ID-1e42ac3bdca...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='7964108b-4e47-42e1-a248-d51773bf832f', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000028084BCB380>
+        └ <function exec_func_with_error_handling at 0x00000280E7064180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000028084BCB380>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x00000280E682D7B0, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 669, in <module>
+    main()
+    └ <function main at 0x0000028084BCACA0>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 380, in main
+    pdf_bytes = _build_pdf_bytes(vendas_sel, cfg, consolidate_buyer=comprador_pdf, nome_rifa=nome_rifa, tz_offset=tz_offset)
+                │                │           │                      │                        │                    └ 0
+                │                │           │                      │                        └ 'Rifa solidaria '
+                │                │           │                      └ 'Gleison'
+                │                │           └ {'id': 1, 'nome': 'Rifa solidaria ', 'valor_numero': 10.0, 'total_numeros': 200, 'sorteio_realizado': 0, 'sorteio_numero': No...
+                │                └ [{'numero': 101, 'comprador': 'Gleison', 'contato': '', 'timestamp': '2025-09-24T22:18:48.078148+00:00'}]
+                └ <function log_exceptions.<locals>.decorator.<locals>.wrapper at 0x0000028084B5C220>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 160, in wrapper
+    logger.exception(
+    │      └ <function Logger.exception at 0x0000028082AE4A40>
+    └ <logger.Logger object at 0x000002808484E970>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 131, in exception
+    self.error(message, exception=exception, **kwargs)
+    │    │     │                  │            └ {'function': '_build_pdf_bytes', 'module': '__main__'}
+    │    │     │                  └ RuntimeError("Falha ao gerar o PDF: 'bytearray' object has no attribute 'encode'")
+    │    │     └ 'Exceção não tratada em _build_pdf_bytes | Args: ([{\'numero\': 101, \'comprador\': \'Gleison\', \'contato\': \'\', \'timesta...
+    │    └ <function Logger.error at 0x0000028082AE4900>
+    └ <logger.Logger object at 0x000002808484E970>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\logger.py", line 116, in error
+    self.logger.opt(exception=exc_info).error(message, **kwargs)
+    │    │      │             │               │          └ {'function': '_build_pdf_bytes', 'module': '__main__'}
+    │    │      │             │               └ 'Exceção não tratada em _build_pdf_bytes | Args: ([{\'numero\': 101, \'comprador\': \'Gleison\', \'contato\': \'\', \'timesta...
+    │    │      │             └ (<class 'RuntimeError'>, RuntimeError("Falha ao gerar o PDF: 'bytearray' object has no attribute 'encode'"), <traceback objec...
+    │    │      └ <function Logger.opt at 0x0000028082A9B1A0>
+    │    └ <loguru.logger handlers=[(id=1, level=10, sink=<stderr>), (id=2, level=10, sink='D:\GithubGit\MeuPortfolio\plataforma_rifas\l...
+    └ <logger.Logger object at 0x000002808484E970>
+
+KeyError: "'numero'"
+2025-09-25 13:55:08.685 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.686 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.690 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.691 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.700 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.701 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.722 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.723 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.801 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.801 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.822 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.823 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.839 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.840 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.862 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.863 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.890 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.891 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.892 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-25 13:55:08.911 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.912 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.916 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-25 13:55:08.919 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:08.922 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:08.925 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação
+2025-09-25 13:55:14.056 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:55:14.059 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.060 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.072 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:55:14.072 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:55:14.079 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.080 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.090 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.090 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.094 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.095 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.098 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.098 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.100 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-25 13:55:14.112 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.113 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.115 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.116 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.151 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.153 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.162 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-25 13:55:14.166 | INFO     | logger:info:99 | system | none - Consulta por número 1 na rifa Rifa solidaria 
+2025-09-25 13:55:14.176 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.177 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.182 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-25 13:55:14.189 | DEBUG    | logger:debug:95 | system | none - Filtro de comprador Gleison aplicado para PDF
+2025-09-25 13:55:14.193 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.193 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.195 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.196 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.206 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.207 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.240 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.242 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.350 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.351 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.381 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.382 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.404 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.405 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.432 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.433 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.470 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.471 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.473 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-25 13:55:14.494 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.495 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.497 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-25 13:55:14.503 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:14.504 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:14.505 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação
+2025-09-25 13:55:17.811 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:55:17.814 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.814 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.826 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:55:17.826 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:55:17.832 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.832 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.839 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.839 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.841 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.842 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.844 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.844 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.846 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-25 13:55:17.855 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.856 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.860 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.860 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.892 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.894 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.900 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-25 13:55:17.912 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.914 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.918 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-25 13:55:17.924 | DEBUG    | logger:debug:95 | system | none - Filtro de comprador Gleison aplicado para PDF
+2025-09-25 13:55:17.928 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.928 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.932 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.933 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.942 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.943 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:17.967 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:17.968 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.048 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.049 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.073 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.073 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.090 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.090 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.109 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.109 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.140 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.141 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.143 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-25 13:55:18.160 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.161 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.163 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-25 13:55:18.167 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.168 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.171 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação
+2025-09-25 13:55:18.430 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:55:18.432 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.433 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.440 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:55:18.440 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:55:18.446 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.447 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.454 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.455 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.457 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.458 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.460 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.461 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.463 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-25 13:55:18.472 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.472 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.474 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.475 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.508 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.508 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.516 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-25 13:55:18.527 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.527 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.531 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-25 13:55:18.537 | DEBUG    | logger:debug:95 | system | none - Filtro de comprador Gleison aplicado para PDF
+2025-09-25 13:55:18.544 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.545 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.550 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.551 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.564 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.565 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.595 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.596 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.728 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.729 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.764 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.764 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.791 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.791 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.831 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.832 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.894 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.895 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.897 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-25 13:55:18.919 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.920 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.923 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-25 13:55:18.929 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:55:18.929 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:55:18.932 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação
+2025-09-25 13:56:57.364 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:56:57.368 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:56:57.368 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:56:57.378 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:56:57.379 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:56:57.386 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:56:57.387 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:56:57.390 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-25 13:59:49.131 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:59:49.134 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:59:49.134 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:59:49.144 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:59:49.145 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:59:49.154 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:59:49.155 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:59:49.159 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-25 13:59:51.097 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:59:51.099 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:59:51.100 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:59:51.109 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:59:51.109 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:59:51.117 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:59:51.117 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:59:51.122 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-25 13:59:52.802 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:59:52.804 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:59:52.804 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:59:52.814 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:59:52.814 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:59:52.822 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:59:52.822 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:59:53.050 | INFO     | logger:success:103 | system | 1 - SUCCESS: Usuário tassiolucian@gmail.com logado com sucesso
+2025-09-25 13:59:53.106 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-25 13:59:53.107 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:59:53.108 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:59:53.117 | INFO     | modules.db_data_manager:migrate_from_json:109 | system | none - Migração JSON→SQLite concluída.
+2025-09-25 13:59:53.118 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-25 13:59:53.122 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:59:53.122 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:59:53.129 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices criados ou verificados com sucesso.
+2025-09-25 13:59:53.129 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso.
+2025-09-25 13:59:53.131 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada

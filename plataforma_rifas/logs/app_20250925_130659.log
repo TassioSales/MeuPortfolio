@@ -1,0 +1,2 @@
+2025-09-25 13:06:59.953 | INFO     | __main__:main:124 | system - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:06:59.961 | INFO     | modules.db_data_manager:migrate_from_json:109 | system - Migração JSON→SQLite concluída.

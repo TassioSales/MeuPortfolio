@@ -19,26 +19,14 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Virtual Environment
 venv/
 env/
 ENV/
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Streamlit
-.streamlit/secrets.toml
-.streamlit/config.toml
-
-# Logs
-logs/
-*.log
+.venv/
+.venv*
 
 # IDE
 .idea/
@@ -46,199 +34,220 @@ logs/
 *.swp
 *.swo
 *~
-
-# OS generated files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-$RECYCLE.BIN/
 
-# Windows
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+.secrets.toml
+.streamlit/secrets.toml
+
+# Arquivos de configuração local
+config_local.py
+
+# Arquivos de cache
+.cache/
+.pytest_cache/
+.mypy_cache/
+
+# Arquivos de banco de dados
+*.db
+*.sqlite3
+
+# Arquivos de sistema operacional
 Thumbs.db
 ehthumbs.db
 Desktop.ini
-$RECYCLE.BIN/
-*.cab
-*.msi
-*.msm
-*.msp
-*.lnk
 
-# Linux
+# Arquivos de sessão
+*.session
+
+# Arquivos de backup
+*.bak
+*.backup
+*.tmp
 *~
-.fuse_hidden*
-.directory
-.Trash-*
-.nfs*
 
-# Jupyter Notebook
+# Arquivos temporários
+temp/
+tmp/
+
+# Arquivos de ambiente virtual
+venv/
+ENV/
+
+# Arquivos de configuração do Jupyter Notebook
 .ipynb_checkpoints
 
-# Local development
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Testing
-.coverage
-htmlcov/
-.pytest_cache/
-
-# Project specific
-*.bak
-*~
-*.swp
-*.swo
-
-# Jupyter Notebook
-.ipynb_checkpoints/
-
-# VS Code
+# Arquivos de configuração do VS Code
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Pycharm
+# Arquivos de configuração do PyCharm
 .idea/
-.idea_modules/
-*.iml
-*.iws
-*.ipr
 
-# Local development
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+# Arquivos de configuração do Python
+.python-version
 
-# Testing
+# Arquivos de configuração do pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Arquivos de configuração do pytest
+.pytest_cache/
 .coverage
 htmlcov/
-.pytest_cache/
 
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Environment files
-.env.*
-!.env.example
-
-# Docker
-Dockerfile
-.dockerignore
-docker-compose*.yml
-
-# Virtual environment
-venv/
-ENV/
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Translations
-*.mo
-*.pot
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-# .python-version  # Removido para permitir versionamento do arquivo
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
+# Arquivos de configuração do mypy
 .mypy_cache/
-.dmypy.json
-dmypy.json
 
-# Pyre type checker
-.pyre/
+# Arquivos de configuração do setuptools
+*.egg-info/
 
-# pytype static type analyzer
-.pytype/
+# Arquivos de configuração do Jupyter
+.jupyter/
 
-# Cython debug symbols
-cython_debug/
+# Arquivos de configuração do Streamlit
+.streamlit/
+!streamlit/config.toml
+!streamlit/credentials.toml
+
+# Arquivos de configuração do Docker
+.dockerignore
+Dockerfile
+
+# Arquivos de configuração do Heroku
+Procfile
+
+# Arquivos de configuração do Git
+.gitattributes
+
+# Arquivos de configuração do Python
+*.pyc
+__pycache__/
+
+# Arquivos de configuração do Python
+.python-version
+
+# Arquivos de configuração do pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Arquivos de configuração do pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Arquivos de configuração do mypy
+.mypy_cache/
+
+# Arquivos de configuração do setuptools
+*.egg-info/
+
+# Arquivos de configuração do Jupyter
+.jupyter/
+
+# Arquivos de configuração do Streamlit
+.streamlit/
+!streamlit/config.toml
+!streamlit/credentials.toml
+
+# Arquivos de configuração do Docker
+.dockerignore
+Dockerfile
+
+# Arquivos de configuração do Heroku
+Procfile
+
+# Arquivos de configuração do Git
+.gitattributes
+
+# Arquivos de configuração do Python
+*.pyc
+__pycache__/
+
+# Arquivos de configuração do Python
+.python-version
+
+# Arquivos de configuração do pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Arquivos de configuração do pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Arquivos de configuração do mypy
+.mypy_cache/
+
+# Arquivos de configuração do setuptools
+*.egg-info/
+
+# Arquivos de configuração do Jupyter
+.jupyter/
+
+# Arquivos de configuração do Streamlit
+.streamlit/
+!streamlit/config.toml
+!streamlit/credentials.toml
+
+# Arquivos de configuração do Docker
+.dockerignore
+Dockerfile
+
+# Arquivos de configuração do Heroku
+Procfile
+
+# Arquivos de configuração do Git
+.gitattributes
+
+# Arquivos de configuração do Python
+*.pyc
+__pycache__/
+
+# Arquivos de configuração do Python
+.python-version
+
+# Arquivos de configuração do pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Arquivos de configuração do pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Arquivos de configuração do mypy
+.mypy_cache/
+
+# Arquivos de configuração do setuptools
+*.egg-info/
+
+# Arquivos de configuração do Jupyter
+.jupyter/
+
+# Arquivos de configuração do Streamlit
+.streamlit/
+!streamlit/config.toml
+!streamlit/credentials.toml
+
+# Arquivos de configuração do Docker
+.dockerignore
+Dockerfile
+
+# Arquivos de configuração do Heroku
+Procfile
+
+# Arquivos de configuração do Git
+.gitattributes
+
+# Arquivos de configuração do Python
+*.pyc
+__pycache__/

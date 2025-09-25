@@ -1297,3 +1297,11 @@ violations {
 2025-09-25 16:35:29.490 | INFO     | __main__:_call_mistral:336 - Iniciando chamada para API Mistral
 2025-09-25 16:35:29.490 | INFO     | __main__:_call_mistral:336 - Iniciando chamada para API Mistral
 2025-09-25 16:35:29.490 | INFO     | __main__:_call_mistral:336 - Iniciando chamada para API Mistral
+2025-09-25 16:36:22.335 | INFO     | __main__:_call_mistral:365 - Resposta Mistral recebida com 12340 caracteres
+2025-09-25 16:36:22.335 | INFO     | __main__:_call_mistral:365 - Resposta Mistral recebida com 12340 caracteres
+2025-09-25 16:36:22.335 | INFO     | __main__:_call_mistral:365 - Resposta Mistral recebida com 12340 caracteres
+2025-09-25 16:36:22.335 | INFO     | __main__:_call_mistral:365 - Resposta Mistral recebida com 12340 caracteres
+2025-09-25 16:36:22.346 | SUCCESS  | __main__:run_app:860 - Roteiro gerado com sucesso usando Mistral
+2025-09-25 16:36:22.346 | SUCCESS  | __main__:run_app:860 - Roteiro gerado com sucesso usando Mistral
+2025-09-25 16:36:22.346 | SUCCESS  | __main__:run_app:860 - Roteiro gerado com sucesso usando Mistral
+2025-09-25 16:36:22.346 | SUCCESS  | __main__:run_app:860 - Roteiro gerado com sucesso usando Mistral

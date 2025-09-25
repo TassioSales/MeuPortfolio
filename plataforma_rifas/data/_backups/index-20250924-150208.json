@@ -1,0 +1,11 @@
+{
+  "Rifa solidaria ": {
+    "valor_numero": 10.0,
+    "total_numeros": 200,
+    "sorteio": {
+      "realizado": false,
+      "numero": null,
+      "comprador": null
+    }
+  }
+}

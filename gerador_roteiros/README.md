@@ -6,8 +6,8 @@
   <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/World%20map/3D/world_map_3d.png" width="120" alt="World Map">
 </p>
 
-<h3 align="center">✨ <em>Planeje viagens inesquecíveis com roteiros personalizados</em> ✨</h3>
-<p align="center"><strong>Desenvolvido com Mistral AI & Google Gemini</strong></p>
+<h3 align="center">✨ <em>Planeje viagens inesquecíveis com roteiros detalhados e personalizados</em> ✨</h3>
+<p align="center"><strong>Alimentado por IA Avançada (Mistral AI & Google Gemini) - Versão 2025</strong></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.8%2B-3776ab?style=flat-square&logo=python&logoColor=white" alt="Python">
@@ -26,6 +26,9 @@
   </a>
   <a href="#-deploy-com-docker">
     <img src="https://img.shields.io/badge/🐳-Deploy-2496ed?style=for-the-badge" alt="Deploy">
+  </a>
+  <a href="#-melhorias-recentes">
+    <img src="https://img.shields.io/badge/✨-Novidades-9c27b0?style=for-the-badge" alt="Novidades">
   </a>
 </p>
 
@@ -57,6 +60,14 @@
 </table>
 
 </div>
+
+## ✨ Melhorias Recentes (Set/2025)
+
+- **Respostas Mais Detalhadas**: Agora com descrições mais ricas e informações aprofundadas sobre cada destino
+- **Experiência Aprimorada**: Interface mais limpa sem o menu lateral padrão do Streamlit
+- **Porta Padrão Atualizada**: Agora rodando na porta 8508 para evitar conflitos
+- **Otimização de Container**: Melhorias no Dockerfile para builds mais rápidos
+- **Segurança Reforçada**: Execução como usuário não-root no container
 
 ## 🚀 Início Rápido
 

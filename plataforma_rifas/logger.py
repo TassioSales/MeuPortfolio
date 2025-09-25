@@ -3,26 +3,26 @@ from __future__ import annotations
 from pathlib import Path
 from loguru import logger as _logger
 
-# Ensure log directory exists
 BASE_DIR = Path(__file__).resolve().parent
 LOG_DIR = BASE_DIR / "log"
-LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-# Configure log file
+try:
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+except Exception as e:
+    print(f"Erro ao criar diretório de logs: {e}")
+
 LOG_FILE = LOG_DIR / "app.log"
 
-# Remove default handler to avoid duplicate logs in some environments
 _logger.remove()
 
-# Console handler (info+)
 _logger.add(
-    sink=lambda msg: print(msg, end=""),
+    sink="stderr",
     level="INFO",
     colorize=True,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | <yellow>{extra[username]}</yellow> - <level>{message}</level>",
     enqueue=True,
 )
 
-# File handler with rotation and retention
 _logger.add(
     LOG_FILE,
     rotation="10 MB",
@@ -32,6 +32,12 @@ _logger.add(
     enqueue=True,
     backtrace=True,
     diagnose=True,
+    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} | {extra[username]} - {message}",
 )
 
-logger = _logger
+logger = _logger.bind(username="unknown")
+
+def add_user_context(username: str):
+    """Adiciona contexto de usuário ao logger."""
+    global logger
+    logger = _logger.bind(username=username)

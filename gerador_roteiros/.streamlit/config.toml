@@ -13,11 +13,12 @@ enableXsrfProtection = true
 gatherUsageStats = false
 
 [theme]
-# Configurações do tema
-primaryColor = "#667eea"
-backgroundColor = "#f0f2f6"
-secondaryBackgroundColor = "#ffffff"
-textColor = "#2c3e50"
+# Configurações do tema (forçado para escuro)
+base = "dark"
+primaryColor = "#8a5cf5"
+backgroundColor = "#0b0f14"
+secondaryBackgroundColor = "#111827"
+textColor = "#e5e7eb"
 font = "sans serif"
 
 [logger]

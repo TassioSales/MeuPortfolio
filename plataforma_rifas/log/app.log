@@ -1776,3 +1776,49 @@ streamlit.errors.StreamlitValueAboveMaxError: The `value` 2 is greater than the 
 2025-09-25 00:57:53.728 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
 2025-09-25 00:58:10.738 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=c956500b
 2025-09-25 00:58:10.791 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-25 13:00:22 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:00:22 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:06 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:01:06 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:10 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:01:10 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:11 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:01:11 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:11 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:01:11 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:14 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:01:14 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:16 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:01:16 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:25 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:01:25 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:25 | ERROR    | __main__:main:235 | unknown - Erro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value
+2025-09-25 13:01:28 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:01:29 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:29 | ERROR    | __main__:main:235 | unknown - Erro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value
+2025-09-25 13:01:36 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:01:37 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:38 | INFO     | __main__:main:25 | unknown - Aplicação iniciada | session_id=39328797
+2025-09-25 13:01:38 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:01:38 | ERROR    | __main__:main:235 | unknown - Erro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value
+2025-09-25 13:03:52 | INFO     | __main__:main:124 | unknown - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:03:52 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:03:56 | INFO     | __main__:main:124 | unknown - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:03:56 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:04:01 | INFO     | __main__:main:124 | unknown - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:04:01 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:04:01 | INFO     | __main__:main:124 | unknown - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:04:01 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:04:01 | INFO     | __main__:main:124 | unknown - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:04:01 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:04:03 | INFO     | __main__:main:124 | unknown - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:04:03 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:04:08 | INFO     | __main__:main:124 | unknown - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:04:08 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:04:08 | ERROR    | __main__:main:334 | unknown - Erro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value
+2025-09-25 13:04:12 | INFO     | __main__:main:124 | unknown - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:04:12 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:04:12 | ERROR    | __main__:main:334 | unknown - Erro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value
+2025-09-25 13:04:13 | INFO     | __main__:main:124 | unknown - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:04:13 | INFO     | modules.db_data_manager:migrate_from_json:109 | unknown - Migração JSON→SQLite concluída.
+2025-09-25 13:04:13 | ERROR    | __main__:main:334 | unknown - Erro ao gerar PDF: cannot access local variable '_build_pdf_bytes' where it is not associated with a value

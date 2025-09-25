@@ -808,10 +808,10 @@ def run_app() -> None:
             return
 
         if provider == "Mistral" and not get_api_key("MISTRAL"):
-            st.markdown('<div class="error-box">❌ Forneça a chave API Mistral manualmente ou em secrets.toml.</div>', unsafe_allow_html=True)
+            st.markdown('<div class="error-box">❌ Por favor, insira sua chave da API Mistral no painel lateral para continuar.</div>', unsafe_allow_html=True)
             return
         if provider == "Gemini" and not get_api_key("GEMINI"):
-            st.markdown('<div class="error-box">❌ Forneça a chave API Gemini manualmente ou em secrets.toml.</div>', unsafe_allow_html=True)
+            st.markdown('<div class="error-box">❌ Por favor, insira sua chave da API Gemini no painel lateral para continuar.</div>', unsafe_allow_html=True)
             return
 
         logger.info(f"Iniciando geração de roteiro para destino: {destino}")

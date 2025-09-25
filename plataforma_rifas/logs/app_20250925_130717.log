@@ -1,0 +1,4 @@
+2025-09-25 13:07:17.969 | INFO     | logger:info:89 | system - Aplicação iniciada | session_id=1d9525bf
+2025-09-25 13:07:17.969 | INFO     | logger:info:89 | system - Aplicação iniciada | session_id=c9267472
+2025-09-25 13:07:18.000 | INFO     | modules.db_data_manager:migrate_from_json:109 | system - Migração JSON→SQLite concluída.
+2025-09-25 13:07:18.138 | INFO     | modules.db_data_manager:migrate_from_json:109 | system - Migração JSON→SQLite concluída.

@@ -1,0 +1,32 @@
+# VCS
+.git
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Virtual env / local env
+venv/
+.venv/
+.env
+
+# Logs and app data
+log/
+data/_backups/
+data/_reservas/
+data/_sales/
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/*.json
+
+# Legacy/unused
+assets/
+image/
+modules/data_manager.py

@@ -169,9 +169,3 @@ def log_exceptions():
 
 # Logger global para uso direto (módulos antigos)
 logger = _logger
-
-# Exemplo de uso:
-# from logger import get_logger
-# logger = get_logger(__name__)
-# logger.info("Mensagem informativa")
-# logger.error("Ocorreu um erro", exception=e)

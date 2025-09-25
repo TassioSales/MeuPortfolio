@@ -11,7 +11,9 @@ import io
 import zipfile
 
 from . import database as db
-from logger import logger
+from logger import get_logger
+
+logger = get_logger(__name__)
 
 # ----------------- Util -----------------
 
@@ -25,8 +27,6 @@ DATA_DIR = BASE_DIR / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 INDEX_FILE = DATA_DIR / "index.json"
 
-# Ligamos o espelhamento para JSON (quando possível) para manter compatibilidade
-# Pode ser controlado por variável de ambiente JSON_MIRROR=true/false
 JSON_MIRROR = os.getenv("JSON_MIRROR", "true").lower() == "true"
 
 def _json_safe_filename(name: str) -> str:
@@ -40,48 +40,61 @@ def _json_rifa_path(nome_rifa: str) -> Path:
 def _json_index_load() -> Dict[str, Dict]:
     try:
         if INDEX_FILE.exists():
-            return json.loads(INDEX_FILE.read_text(encoding='utf-8') or '{}')
-    except Exception:
-        pass
-    return {}
+            data = json.loads(INDEX_FILE.read_text(encoding='utf-8') or '{}')
+            logger.debug(f"index.json carregado com {len(data)} rifas")
+            return data
+        logger.debug("index.json não encontrado")
+        return {}
+    except Exception as e:
+        logger.error("Falha ao carregar index.json", exception=e)
+        return {}
 
 def _json_index_save(index: Dict[str, Dict]) -> None:
     try:
         DATA_DIR.mkdir(parents=True, exist_ok=True)
         INDEX_FILE.write_text(json.dumps(index, ensure_ascii=False, indent=2), encoding='utf-8')
+        logger.debug("index.json salvo com sucesso")
     except Exception as e:
-        logger.warning(f"Mirror JSON: falha ao salvar index.json: {e}")
+        logger.warning("Falha ao salvar index.json", exception=e)
 
 def _json_dados_load(nome_rifa: str) -> Dict[str, str]:
     p = _json_rifa_path(nome_rifa)
     if not p.exists():
+        logger.debug(f"Arquivo JSON não encontrado para rifa {nome_rifa}")
         return {}
     try:
-        return json.loads(p.read_text(encoding='utf-8') or '{}')
-    except Exception:
+        data = json.loads(p.read_text(encoding='utf-8') or '{}')
+        logger.debug(f"Dados JSON carregados para rifa {nome_rifa}")
+        return data
+    except Exception as e:
+        logger.error(f"Falha ao carregar dados JSON para rifa {nome_rifa}", exception=e)
         return {}
 
 def _json_dados_save(nome_rifa: str, dados: Dict[str, str]) -> None:
     try:
         p = _json_rifa_path(nome_rifa)
         p.write_text(json.dumps(dados, ensure_ascii=False, indent=2), encoding='utf-8')
+        logger.debug(f"Dados JSON salvos para rifa {nome_rifa}")
     except Exception as e:
-        logger.warning(f"Mirror JSON: falha ao salvar {p.name}: {e}")
+        logger.warning(f"Falha ao salvar dados JSON para rifa {nome_rifa}", exception=e)
 
 def migrate_from_json() -> None:
     """Importa dados de JSON para SQLite se o DB estiver vazio para aquela rifa."""
     index = _json_index_load()
     if not index:
+        logger.info("Nenhum dado JSON para migrar")
         return
     conn = db.get_connection()
     try:
         with conn:
             cur = conn.cursor()
             for nome, cfg in index.items():
-                # Se rifa já existe no DB, pule
                 cur.execute("SELECT id FROM rifas WHERE nome = ?", (nome,))
                 row = cur.fetchone()
-                if not row:
+                if row:
+                    logger.debug(f"Rifa {nome} já existe no DB, pulando migração")
+                    continue
+                try:
                     cur.execute(
                         "INSERT INTO rifas (nome, valor_numero, total_numeros, config_json) VALUES (?, ?, ?, ?)",
                         (
@@ -93,55 +106,76 @@ def migrate_from_json() -> None:
                     )
                     cur.execute("SELECT id FROM rifas WHERE nome = ?", (nome,))
                     row = cur.fetchone()
-                rifa_id = row["id"]
-                # Vendas
-                dados = _json_dados_load(nome)
-                if dados:
-                    ts = _utcnow_iso()
-                    vendas = [(rifa_id, int(n), c, ts) for n, c in dados.items()]
-                    try:
-                        cur.executemany(
-                            "INSERT OR IGNORE INTO vendas (rifa_id, numero, comprador, timestamp) VALUES (?, ?, ?, ?)",
-                            vendas,
-                        )
-                    except Exception:
-                        pass
-        logger.info("Migração JSON→SQLite concluída.")
+                    rifa_id = row["id"]
+                    dados = _json_dados_load(nome)
+                    if dados:
+                        ts = _utcnow_iso()
+                        vendas = [(rifa_id, int(n), c, ts) for n, c in dados.items()]
+                        try:
+                            cur.executemany(
+                                "INSERT OR IGNORE INTO vendas (rifa_id, numero, comprador, timestamp) VALUES (?, ?, ?, ?)",
+                                vendas,
+                            )
+                            logger.success(f"Migração de {len(vendas)} vendas concluída para rifa {nome}")
+                        except Exception as e:
+                            logger.error(f"Falha ao migrar vendas para rifa {nome}", exception=e)
+                    logger.success(f"Rifa {nome} migrada com sucesso")
+                except Exception as e:
+                    logger.error(f"Falha ao migrar rifa {nome}", exception=e)
+                    continue
+        logger.success("Migração JSON→SQLite concluída")
     except Exception as e:
-        logger.exception(f"Falha na migração JSON→SQLite: {e}")
+        logger.error("Falha geral na migração JSON→SQLite", exception=e)
+    finally:
+        conn.close()
 
 def export_backup_json_zip() -> bytes:
     """Gera um ZIP com index.json e arquivos de rifas JSON."""
     mem = io.BytesIO()
-    with zipfile.ZipFile(mem, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
-        if INDEX_FILE.exists():
-            zf.writestr('index.json', INDEX_FILE.read_text(encoding='utf-8'))
-        for jf in DATA_DIR.glob('*.json'):
-            if jf.name == 'index.json':
-                continue
-            zf.writestr(jf.name, jf.read_text(encoding='utf-8'))
-    mem.seek(0)
-    return mem.getvalue()
+    try:
+        with zipfile.ZipFile(mem, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
+            if INDEX_FILE.exists():
+                zf.writestr('index.json', INDEX_FILE.read_text(encoding='utf-8'))
+                logger.debug("index.json adicionado ao backup ZIP")
+            for jf in DATA_DIR.glob('*.json'):
+                if jf.name == 'index.json':
+                    continue
+                zf.writestr(jf.name, jf.read_text(encoding='utf-8'))
+                logger.debug(f"{jf.name} adicionado ao backup ZIP")
+        mem.seek(0)
+        logger.success("Backup JSON ZIP gerado com sucesso")
+        return mem.getvalue()
+    except Exception as e:
+        logger.error("Falha ao gerar backup JSON ZIP", exception=e)
+        raise RuntimeError("Erro ao criar backup JSON ZIP") from e
 
 # ----------------- Users (Multiusuário) -----------------
 
 def _hash_password(password: str) -> str:
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+    try:
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+        logger.debug("Senha hasheada com sucesso")
+        return hashed
+    except Exception as e:
+        logger.error("Falha ao hashear senha", exception=e)
+        raise ValueError("Erro ao processar a senha") from e
 
 def _check_password(password: str, hashed: str) -> bool:
     try:
         return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
-    except Exception:
+    except Exception as e:
+        logger.error("Falha ao verificar senha", exception=e)
         return False
 
 def create_user(name: str, email: str, password: str) -> Tuple[bool, str, Optional[int]]:
     name = (name or '').strip()
     email = (email or '').strip().lower()
     if not name or not email or not password:
+        logger.warning("Tentativa de criar usuário com dados inválidos", name=name, email=email)
         return False, 'Dados inválidos.', None
-    # senha forte mínima: 8+, 1 maiúscula, 1 minúscula, 1 dígito
     if len(password) < 8 or not any(c.isupper() for c in password) or not any(c.islower() for c in password) or not any(c.isdigit() for c in password):
+        logger.warning("Tentativa de criar usuário com senha fraca", email=email)
         return False, 'Senha fraca. Use ao menos 8 caracteres, incluindo maiúscula, minúscula e número.', None
     conn = db.get_connection()
     try:
@@ -149,24 +183,33 @@ def create_user(name: str, email: str, password: str) -> Tuple[bool, str, Option
             cur = conn.cursor()
             cur.execute("SELECT id FROM users WHERE email = ?", (email,))
             if cur.fetchone():
+                logger.warning(f"Email {email} já cadastrado")
                 return False, 'E-mail já cadastrado.', None
+            hashed_password = _hash_password(password)
             cur.execute(
                 "INSERT INTO users (name, email, password_hash, created_at) VALUES (?, ?, ?, ?)",
-                (name, email, _hash_password(password), _utcnow_iso()),
+                (name, email, hashed_password, _utcnow_iso()),
             )
             cur.execute("SELECT id FROM users WHERE email = ?", (email,))
             row = cur.fetchone()
-            return True, 'Usuário criado com sucesso.', int(row['id']) if row else None
+            user_id = int(row['id']) if row else None
+            logger.success(f"Usuário criado com sucesso", user_id=user_id, email=email)
+            return True, 'Usuário criado com sucesso.', user_id
     except Exception as e:
-        logger.exception(f"DB: create_user erro: {e}")
-        return False, f"Erro: {e}", None
+        logger.error(f"Falha ao criar usuário {email}", exception=e)
+        return False, f"Erro ao criar usuário: {str(e)}", None
     finally:
         conn.close()
 
 def set_json_mirror(enabled: bool) -> None:
     """Ativa/desativa espelhamento JSON em tempo de execução."""
     global JSON_MIRROR
-    JSON_MIRROR = bool(enabled)
+    try:
+        JSON_MIRROR = bool(enabled)
+        logger.success(f"Espelhamento JSON {'ativado' if enabled else 'desativado'}")
+    except Exception as e:
+        logger.error("Falha ao configurar espelhamento JSON", exception=e)
+        raise ValueError("Erro ao configurar espelhamento JSON") from e
 
 def get_sales_by_weekday(nome_rifa: str, days: int = 30) -> List[Dict]:
     """Retorna quantidade de vendas por dia da semana (0=Domingo..6=Sábado) nos últimos N dias."""
@@ -184,7 +227,12 @@ def get_sales_by_weekday(nome_rifa: str, days: int = 30) -> List[Dict]:
             (nome_rifa, f'-{int(days)} days'),
         )
         res = {int(row['dow']): int(row['quantidade']) for row in cur.fetchall()}
-        return [dict(dow=d, quantidade=res.get(d, 0)) for d in range(7)]
+        data = [dict(dow=d, quantidade=res.get(d, 0)) for d in range(7)]
+        logger.debug(f"Vendas por dia da semana carregadas para rifa {nome_rifa}", days=days)
+        return data
+    except Exception as e:
+        logger.error(f"Falha ao obter vendas por dia da semana para rifa {nome_rifa}", exception=e)
+        return []
     finally:
         conn.close()
 
@@ -195,8 +243,10 @@ def get_revenue_by_day(nome_rifa: str, start_iso: Optional[str], end_iso: Option
         cur = conn.cursor()
         cur.execute("SELECT valor_numero FROM rifas WHERE nome = ?", (nome_rifa,))
         r = cur.fetchone()
-        valor_unit = float(r['valor_numero']) if r else 0.0
-
+        if not r:
+            logger.warning(f"Rifa {nome_rifa} não encontrada para cálculo de receita")
+            return []
+        valor_unit = float(r['valor_numero'])
         base_sql = (
             "SELECT DATE(v.timestamp) as dia, COUNT(v.id) as qtd FROM vendas v "
             "JOIN rifas r ON v.rifa_id = r.id WHERE r.nome = ?"
@@ -210,19 +260,29 @@ def get_revenue_by_day(nome_rifa: str, start_iso: Optional[str], end_iso: Option
             params.append(end_iso)
         base_sql += " GROUP BY DATE(v.timestamp) ORDER BY DATE(v.timestamp) ASC"
         cur.execute(base_sql, params)
-        return [dict(dia=row['dia'], receita=float(row['qtd']) * valor_unit, qtd=int(row['qtd'])) for row in cur.fetchall()]
+        data = [dict(dia=row['dia'], receita=float(row['qtd']) * valor_unit, qtd=int(row['qtd'])) for row in cur.fetchall()]
+        logger.debug(f"Receita por dia carregada para rifa {nome_rifa}", period=f"{start_iso} to {end_iso}")
+        return data
+    except Exception as e:
+        logger.error(f"Falha ao obter receita por dia para rifa {nome_rifa}", exception=e)
+        return []
     finally:
         conn.close()
 
 def get_cumulative_revenue(nome_rifa: str, start_iso: Optional[str], end_iso: Optional[str]) -> List[Dict]:
     """Retorna receita acumulada por dia no período (aproximação pelo valor_unit atual)."""
-    series = get_revenue_by_day(nome_rifa, start_iso, end_iso)
-    total = 0.0
-    out: List[Dict] = []
-    for item in series:
-        total += float(item['receita'])
-        out.append(dict(dia=item['dia'], acumulado=total))
-    return out
+    try:
+        series = get_revenue_by_day(nome_rifa, start_iso, end_iso)
+        total = 0.0
+        out: List[Dict] = []
+        for item in series:
+            total += float(item['receita'])
+            out.append(dict(dia=item['dia'], acumulado=total))
+        logger.debug(f"Receita acumulada calculada para rifa {nome_rifa}")
+        return out
+    except Exception as e:
+        logger.error(f"Falha ao calcular receita acumulada para rifa {nome_rifa}", exception=e)
+        return []
 
 def get_sales_heatmap(nome_rifa: str, days: int = 30) -> List[Dict]:
     """Retorna contagem de vendas por dia da semana (0-6) e hora (0-23) nos últimos N dias."""
@@ -242,7 +302,11 @@ def get_sales_heatmap(nome_rifa: str, days: int = 30) -> List[Dict]:
         )
         rows = cur.fetchall()
         data = [dict(dow=int(r['dow']), hour=int(r['hour']), quantidade=int(r['quantidade'])) for r in rows]
+        logger.debug(f"Heatmap de vendas carregado para rifa {nome_rifa}", days=days)
         return data
+    except Exception as e:
+        logger.error(f"Falha ao obter heatmap de vendas para rifa {nome_rifa}", exception=e)
+        return []
     finally:
         conn.close()
 
@@ -262,7 +326,12 @@ def get_sales_by_hour(nome_rifa: str, days: int = 7) -> List[Dict]:
             (nome_rifa, f'-{int(days)} days'),
         )
         res = {int(row['hora']): int(row['quantidade']) for row in cur.fetchall()}
-        return [dict(hora=h, quantidade=res.get(h, 0)) for h in range(24)]
+        data = [dict(hora=h, quantidade=res.get(h, 0)) for h in range(24)]
+        logger.debug(f"Vendas por hora carregadas para rifa {nome_rifa}", days=days)
+        return data
+    except Exception as e:
+        logger.error(f"Falha ao obter vendas por hora para rifa {nome_rifa}", exception=e)
+        return []
     finally:
         conn.close()
 
@@ -284,7 +353,12 @@ def get_sales_in_period(nome_rifa: str, start_iso: Optional[str], end_iso: Optio
             params.append(end_iso)
         base_sql += " ORDER BY v.timestamp DESC, v.id DESC"
         cur.execute(base_sql, params)
-        return [dict(numero=int(r['numero']), comprador=r['comprador'], contato=r['contato'], timestamp=r['timestamp']) for r in cur.fetchall()]
+        data = [dict(numero=int(r['numero']), comprador=r['comprador'], contato=r['contato'], timestamp=r['timestamp']) for r in cur.fetchall()]
+        logger.debug(f"Vendas no período carregadas para rifa {nome_rifa}", period=f"{start_iso} to {end_iso}")
+        return data
+    except Exception as e:
+        logger.error(f"Falha ao obter vendas no período para rifa {nome_rifa}", exception=e)
+        return []
     finally:
         conn.close()
 
@@ -293,38 +367,47 @@ def get_sales_in_period(nome_rifa: str, start_iso: Optional[str], end_iso: Optio
 def update_user_name(user_id: int, new_name: str) -> Tuple[bool, str]:
     new_name = (new_name or '').strip()
     if not new_name:
+        logger.warning("Tentativa de atualizar nome com valor inválido", user_id=user_id)
         return False, 'Nome inválido.'
     conn = db.get_connection()
     try:
         with conn:
             cur = conn.cursor()
             cur.execute("UPDATE users SET name = ? WHERE id = ?", (new_name, int(user_id)))
-        return True, 'Nome atualizado.'
+            logger.success(f"Nome do usuário {user_id} atualizado para {new_name}")
+            return True, 'Nome atualizado.'
     except Exception as e:
-        logger.exception(f"DB: update_user_name erro: {e}")
-        return False, f"Erro: {e}"
+        logger.error(f"Falha ao atualizar nome do usuário {user_id}", exception=e)
+        return False, f"Erro ao atualizar nome: {str(e)}"
     finally:
         conn.close()
 
 def update_user_password(user_id: int, old_password: str, new_password: str) -> Tuple[bool, str]:
     if not new_password:
+        logger.warning("Tentativa de atualizar senha com valor inválido", user_id=user_id)
         return False, 'Nova senha inválida.'
+    if len(new_password) < 8 or not any(c.isupper() for c in new_password) or not any(c.islower() for c in new_password) or not any(c.isdigit() for c in new_password):
+        logger.warning("Tentativa de atualizar com senha fraca", user_id=user_id)
+        return False, 'Nova senha fraca. Use ao menos 8 caracteres, incluindo maiúscula, minúscula e número.'
     conn = db.get_connection()
     try:
         cur = conn.cursor()
         cur.execute("SELECT password_hash FROM users WHERE id = ?", (int(user_id),))
         row = cur.fetchone()
         if not row:
+            logger.warning(f"Usuário {user_id} não encontrado para atualização de senha")
             return False, 'Usuário não encontrado.'
         if not _check_password(old_password or '', row['password_hash']):
+            logger.warning(f"Senha atual incorreta para usuário {user_id}")
             return False, 'Senha atual incorreta.'
         new_hash = _hash_password(new_password)
         with conn:
             cur.execute("UPDATE users SET password_hash = ? WHERE id = ?", (new_hash, int(user_id)))
+        logger.success(f"Senha do usuário {user_id} atualizada com sucesso")
         return True, 'Senha atualizada.'
     except Exception as e:
-        logger.exception(f"DB: update_user_password erro: {e}")
-        return False, f"Erro: {e}"
+        logger.error(f"Falha ao atualizar senha do usuário {user_id}", exception=e)
+        return False, f"Erro ao atualizar senha: {str(e)}"
     finally:
         conn.close()
 
@@ -333,7 +416,12 @@ def listar_rifas_sem_dono() -> List[str]:
     try:
         cur = conn.cursor()
         cur.execute("SELECT nome FROM rifas WHERE owner_id IS NULL ORDER BY nome ASC")
-        return [row['nome'] for row in cur.fetchall()]
+        data = [row['nome'] for row in cur.fetchall()]
+        logger.debug("Rifas sem dono listadas", count=len(data))
+        return data
+    except Exception as e:
+        logger.error("Falha ao listar rifas sem dono", exception=e)
+        return []
     finally:
         conn.close()
 
@@ -342,17 +430,15 @@ def authenticate(email: str, password: str) -> Tuple[bool, str, Optional[Dict[st
     conn = db.get_connection()
     try:
         cur = conn.cursor()
-        # Rate limit: verificar bloqueio
         cur.execute("SELECT fail_count, locked_until FROM login_attempts WHERE email = ?", (email,))
         la = cur.fetchone()
         now_iso = _utcnow_iso()
         if la and la["locked_until"] and la["locked_until"] > now_iso:
+            logger.warning(f"Conta {email} bloqueada por excesso de tentativas")
             return False, 'Muitas tentativas. Tente novamente mais tarde.', None
-
         cur.execute("SELECT id, name, email, password_hash FROM users WHERE email = ?", (email,))
         row = cur.fetchone()
         if not row:
-            # registrar falha
             with conn:
                 if la:
                     fc = int(la["fail_count"]) + 1
@@ -360,6 +446,7 @@ def authenticate(email: str, password: str) -> Tuple[bool, str, Optional[Dict[st
                     cur.execute("UPDATE login_attempts SET fail_count = ?, locked_until = ? WHERE email = ?", (fc, locked, email))
                 else:
                     cur.execute("INSERT INTO login_attempts (email, fail_count, locked_until) VALUES (?, ?, ?)", (email, 1, None))
+            logger.warning(f"Usuário {email} não encontrado")
             return False, 'Usuário não encontrado.', None
         if not _check_password(password, row['password_hash']):
             with conn:
@@ -369,14 +456,15 @@ def authenticate(email: str, password: str) -> Tuple[bool, str, Optional[Dict[st
                     cur.execute("UPDATE login_attempts SET fail_count = ?, locked_until = ? WHERE email = ?", (fc, locked, email))
                 else:
                     cur.execute("INSERT INTO login_attempts (email, fail_count, locked_until) VALUES (?, ?, ?)", (email, 1, None))
+            logger.warning(f"Senha inválida para usuário {email}")
             return False, 'Senha inválida.', None
-        # sucesso: reset contador
         with conn:
             cur.execute("DELETE FROM login_attempts WHERE email = ?", (email,))
+        logger.success(f"Usuário {email} autenticado com sucesso", user_id=row['id'])
         return True, 'Autenticado.', {'id': row['id'], 'name': row['name'], 'email': row['email']}
     except Exception as e:
-        logger.exception(f"DB: authenticate erro: {e}")
-        return False, f"Erro: {e}", None
+        logger.error(f"Falha ao autenticar usuário {email}", exception=e)
+        return False, f"Erro ao autenticar: {str(e)}", None
     finally:
         conn.close()
 
@@ -386,7 +474,14 @@ def get_user_by_id(user_id: int) -> Optional[Dict[str, Any]]:
         cur = conn.cursor()
         cur.execute("SELECT id, name, email FROM users WHERE id = ?", (int(user_id),))
         r = cur.fetchone()
-        return dict(r) if r else None
+        if r:
+            logger.debug(f"Usuário {user_id} carregado com sucesso")
+            return dict(r)
+        logger.warning(f"Usuário {user_id} não encontrado")
+        return None
+    except Exception as e:
+        logger.error(f"Falha ao carregar usuário {user_id}", exception=e)
+        return None
     finally:
         conn.close()
 
@@ -397,7 +492,12 @@ def listar_rifas() -> List[str]:
     try:
         cur = conn.cursor()
         cur.execute("SELECT nome FROM rifas ORDER BY nome ASC")
-        return [row["nome"] for row in cur.fetchall()]
+        data = [row["nome"] for row in cur.fetchall()]
+        logger.debug("Rifas listadas", count=len(data))
+        return data
+    except Exception as e:
+        logger.error("Falha ao listar rifas", exception=e)
+        return []
     finally:
         conn.close()
 
@@ -406,123 +506,66 @@ def listar_rifas_do_usuario(user_id: int) -> List[str]:
     try:
         cur = conn.cursor()
         cur.execute("SELECT nome FROM rifas WHERE owner_id = ? ORDER BY nome ASC", (int(user_id),))
-        return [row['nome'] for row in cur.fetchall()]
+        data = [row['nome'] for row in cur.fetchall()]
+        logger.debug(f"Rifas do usuário {user_id} listadas", count=len(data))
+        return data
+    except Exception as e:
+        logger.error(f"Falha ao listar rifas do usuário {user_id}", exception=e)
+        return []
     finally:
         conn.close()
-
-# ----------------- Analytics helpers -----------------
-
-def get_sales_by_day(nome_rifa: str) -> List[Dict]:
-    conn = db.get_connection()
-    try:
-        cur = conn.cursor()
-        cur.execute(
-            """
-            SELECT DATE(v.timestamp) as dia, COUNT(v.id) as quantidade
-            FROM vendas v JOIN rifas r ON v.rifa_id = r.id
-            WHERE r.nome = ?
-            GROUP BY DATE(v.timestamp)
-            ORDER BY DATE(v.timestamp) ASC
-            """,
-            (nome_rifa,),
-        )
-        return [dict(dia=row["dia"], quantidade=row["quantidade"]) for row in cur.fetchall()]
-    finally:
-        conn.close()
-
-def get_top_buyers(nome_rifa: str, limit: int = 10) -> List[Dict]:
-    conn = db.get_connection()
-    try:
-        cur = conn.cursor()
-        cur.execute(
-            """
-            SELECT v.comprador as comprador, COUNT(v.id) as quantidade
-            FROM vendas v JOIN rifas r ON v.rifa_id = r.id
-            WHERE r.nome = ?
-            GROUP BY v.comprador
-            ORDER BY quantidade DESC
-            LIMIT ?
-            """,
-            (nome_rifa, int(limit)),
-        )
-        return [dict(comprador=row["comprador"], quantidade=row["quantidade"]) for row in cur.fetchall()]
-    finally:
-        conn.close()
-
-def get_recent_sales(nome_rifa: str, limit: int = 10) -> List[Dict]:
-    conn = db.get_connection()
-    try:
-        cur = conn.cursor()
-        cur.execute(
-            """
-            SELECT v.timestamp as ts, v.comprador, v.numero, IFNULL(v.contato, '') AS contato
-            FROM vendas v JOIN rifas r ON v.rifa_id = r.id
-            WHERE r.nome = ?
-            ORDER BY v.timestamp DESC, v.id DESC
-            LIMIT ?
-            """,
-            (nome_rifa, int(limit)),
-        )
-        return [dict(ts=row['ts'], comprador=row['comprador'], numero=int(row['numero']), contato=row['contato']) for row in cur.fetchall()]
-    finally:
-        conn.close()
-
-def get_all_sales(nome_rifa: str) -> List[Dict]:
-    """Retorna todas as vendas da rifa com contato e timestamp."""
-    conn = db.get_connection()
-    try:
-        cur = conn.cursor()
-        cur.execute(
-            """
-            SELECT v.numero, v.comprador, IFNULL(v.contato, '') AS contato, v.timestamp
-            FROM vendas v JOIN rifas r ON v.rifa_id = r.id
-            WHERE r.nome = ?
-            ORDER BY v.numero ASC
-            """,
-            (nome_rifa,),
-        )
-        return [dict(numero=int(r['numero']), comprador=r['comprador'], contato=r['contato'], timestamp=r['timestamp']) for r in cur.fetchall()]
-    finally:
-        conn.close()
-
 
 def get_config_rifa(nome_rifa: str) -> Optional[Dict[str, Any]]:
     conn = db.get_connection()
     try:
         cur = conn.cursor()
-        cur.execute("SELECT * FROM rifas WHERE nome = ?", (nome_rifa,))
+        cur.execute(
+            """
+            SELECT nome, valor_numero, total_numeros, config_json, sorteio_realizado, sorteio_numero, sorteio_comprador, owner_id
+            FROM rifas WHERE nome = ?
+            """,
+            (nome_rifa,),
+        )
         row = cur.fetchone()
         if not row:
+            logger.warning(f"Rifa {nome_rifa} não encontrada")
             return None
         cfg = dict(row)
         extra = json.loads(cfg.get("config_json", "{}") or "{}")
         cfg.update(extra)
+        logger.debug(f"Configuração da rifa {nome_rifa} carregada")
         return cfg
+    except Exception as e:
+        logger.error(f"Falha ao carregar configuração da rifa {nome_rifa}", exception=e)
+        return None
     finally:
         conn.close()
 
-
 def atualizar_config_rifa(nome_rifa: str, updates: Dict) -> Tuple[bool, str]:
-    conn = db.get_connection()
     try:
+        conn = db.get_connection()
         with conn:
             cur = conn.cursor()
             cur.execute("SELECT config_json FROM rifas WHERE nome = ?", (nome_rifa,))
             row = cur.fetchone()
             if not row:
+                logger.warning(f"Rifa {nome_rifa} não encontrada para atualização de configuração")
                 return False, "Rifa não encontrada."
             current = json.loads(row["config_json"] or "{}")
             current.update(updates or {})
             cur.execute("UPDATE rifas SET config_json = ? WHERE nome = ?", (json.dumps(current, ensure_ascii=False), nome_rifa))
-        return True, "Configuração atualizada."
+            logger.success(f"Configuração da rifa {nome_rifa} atualizada")
+            return True, "Configuração atualizada."
     except Exception as e:
-        logger.exception(f"DB: atualizar_config_rifa falhou: {e}")
-        return False, f"Erro de banco de dados: {e}"
-
+        logger.error(f"Falha ao atualizar configuração da rifa {nome_rifa}", exception=e)
+        return False, f"Erro ao atualizar configuração: {str(e)}"
+    finally:
+        conn.close()
 
 def salvar_nova_rifa(nome: str, valor_numero: float, total_numeros: int) -> Tuple[bool, str]:
     nome = (nome or "").strip()
     if not nome or total_numeros <= 0 or valor_numero < 0:
+        logger.warning("Tentativa de criar rifa com dados inválidos", nome=nome, valor_numero=valor_numero, total_numeros=total_numeros)
         return False, "Dados inválidos para criar a rifa."
     conn = db.get_connection()
     try:
@@ -532,37 +575,39 @@ def salvar_nova_rifa(nome: str, valor_numero: float, total_numeros: int) -> Tupl
                 "INSERT INTO rifas (nome, valor_numero, total_numeros) VALUES (?, ?, ?)",
                 (nome, float(valor_numero), int(total_numeros)),
             )
-        logger.info(f"DB: Rifa criada '{nome}'")
-        # mirror JSON index
-        if JSON_MIRROR:
-            idx = _json_index_load()
-            idx[nome] = {
-                "valor_numero": float(valor_numero),
-                "total_numeros": int(total_numeros),
-                "sorteio": {"realizado": False, "numero": None, "comprador": None},
-            }
-            _json_index_save(idx)
-        return True, "Rifa criada com sucesso."
+            logger.success(f"Rifa {nome} criada com sucesso")
+            if JSON_MIRROR:
+                idx = _json_index_load()
+                idx[nome] = {
+                    "valor_numero": float(valor_numero),
+                    "total_numeros": int(total_numeros),
+                    "sorteio": {"realizado": False, "numero": None, "comprador": None},
+                }
+                _json_index_save(idx)
+            return True, "Rifa criada com sucesso."
     except Exception as e:
         if "UNIQUE" in str(e).upper():
+            logger.warning(f"Tentativa de criar rifa com nome duplicado: {nome}")
             return False, "Já existe uma rifa com este nome."
-        logger.exception(f"DB: salvar_nova_rifa erro: {e}")
-        return False, "Erro ao salvar no banco de dados."
+        logger.error(f"Falha ao criar rifa {nome}", exception=e)
+        return False, f"Erro ao criar rifa: {str(e)}"
+    finally:
+        conn.close()
 
 def salvar_nova_rifa_com_owner(nome: str, valor_numero: float, total_numeros: int, owner_id: int) -> Tuple[bool, str]:
     ok, msg = salvar_nova_rifa(nome, valor_numero, total_numeros)
     if not ok:
         return ok, msg
-    # atribuir owner
     conn = db.get_connection()
     try:
         with conn:
             cur = conn.cursor()
             cur.execute("UPDATE rifas SET owner_id = ? WHERE nome = ?", (int(owner_id), nome))
-        return True, "Rifa criada e atribuída ao usuário."
+            logger.success(f"Rifa {nome} atribuída ao usuário {owner_id}")
+            return True, "Rifa criada e atribuída ao usuário."
     except Exception as e:
-        logger.exception(f"DB: salvar_nova_rifa_com_owner erro: {e}")
-        return True, "Rifa criada, mas não foi possível atribuir o dono (owner)."
+        logger.error(f"Falha ao atribuir dono à rifa {nome}", exception=e)
+        return True, "Rifa criada, mas não foi possível atribuir o dono."
     finally:
         conn.close()
 
@@ -574,14 +619,17 @@ def claim_rifa(nome_rifa: str, user_id: int) -> Tuple[bool, str]:
             cur.execute("SELECT owner_id FROM rifas WHERE nome = ?", (nome_rifa,))
             row = cur.fetchone()
             if not row:
+                logger.warning(f"Rifa {nome_rifa} não encontrada para reivindicação")
                 return False, 'Rifa não encontrada.'
             if row['owner_id'] is not None:
+                logger.warning(f"Rifa {nome_rifa} já possui dono")
                 return False, 'Rifa já possui dono.'
             cur.execute("UPDATE rifas SET owner_id = ? WHERE nome = ?", (int(user_id), nome_rifa))
-        return True, 'Rifa atribuída ao seu usuário.'
+            logger.success(f"Rifa {nome_rifa} reivindicada pelo usuário {user_id}")
+            return True, 'Rifa atribuída ao seu usuário.'
     except Exception as e:
-        logger.exception(f"DB: claim_rifa erro: {e}")
-        return False, f"Erro: {e}"
+        logger.error(f"Falha ao reivindicar rifa {nome_rifa} para usuário {user_id}", exception=e)
+        return False, f"Erro ao reivindicar rifa: {str(e)}"
     finally:
         conn.close()
 
@@ -599,18 +647,22 @@ def carregar_dados_rifa(nome_rifa: str) -> Dict[str, str]:
             """,
             (nome_rifa,),
         )
-        return {str(row["numero"]): row["comprador"] for row in cur.fetchall()}
+        data = {str(row["numero"]): row["comprador"] for row in cur.fetchall()}
+        logger.debug(f"Dados da rifa {nome_rifa} carregados", count=len(data))
+        return data
+    except Exception as e:
+        logger.error(f"Falha ao carregar dados da rifa {nome_rifa}", exception=e)
+        return {}
     finally:
         conn.close()
-
 
 def registrar_venda(nome_rifa: str, nome_comprador: str, numeros: List[int], contato: Optional[str] = None) -> Tuple[bool, List[int], str]:
     if not isinstance(numeros, list):
         numeros = [int(numeros)]
     nome_comprador = (nome_comprador or "").strip()
     if not nome_comprador:
+        logger.warning("Tentativa de registrar venda com comprador inválido", rifa=nome_rifa)
         return False, numeros, "Comprador inválido."
-
     conn = db.get_connection()
     try:
         with conn:
@@ -618,11 +670,13 @@ def registrar_venda(nome_rifa: str, nome_comprador: str, numeros: List[int], con
             cur.execute("SELECT id, total_numeros FROM rifas WHERE nome = ?", (nome_rifa,))
             rifa = cur.fetchone()
             if not rifa:
+                logger.warning(f"Rifa {nome_rifa} não encontrada para venda")
                 return False, numeros, "Rifa não encontrada."
             rifa_id = rifa["id"]
             total = int(rifa["total_numeros"])
             nums = [int(n) for n in numeros if 1 <= int(n) <= total]
             if not nums:
+                logger.warning("Tentativa de registrar venda com números inválidos", rifa=nome_rifa, numeros=numeros)
                 return False, numeros, "Números inválidos."
             placeholders = ",".join(["?"] * len(nums))
             cur.execute(
@@ -631,6 +685,7 @@ def registrar_venda(nome_rifa: str, nome_comprador: str, numeros: List[int], con
             )
             conflitos = [row["numero"] for row in cur.fetchall()]
             if conflitos:
+                logger.warning(f"Números já vendidos para rifa {nome_rifa}", conflitos=conflitos)
                 return False, sorted(conflitos), "Alguns números já foram vendidos."
             ts = _utcnow_iso()
             vendas = [(rifa_id, n, nome_comprador, ts, (contato or "")) for n in nums]
@@ -638,23 +693,22 @@ def registrar_venda(nome_rifa: str, nome_comprador: str, numeros: List[int], con
                 "INSERT INTO vendas (rifa_id, numero, comprador, timestamp, contato) VALUES (?, ?, ?, ?, ?)",
                 vendas,
             )
-            # Remove reservas desses números
             cur.execute(
                 f"DELETE FROM reservas WHERE rifa_id = ? AND numero IN ({placeholders})",
                 [rifa_id] + nums,
             )
-        logger.info(f"DB: venda registrada rifa='{nome_rifa}' comprador='{nome_comprador}' nums={sorted(nums)}")
-        # mirror JSON vendas
-        if JSON_MIRROR:
-            dados = _json_dados_load(nome_rifa)
-            for n in nums:
-                dados[str(int(n))] = nome_comprador
-            _json_dados_save(nome_rifa, dados)
-        return True, sorted(nums), "Venda registrada com sucesso."
+            logger.success(f"Venda registrada para rifa {nome_rifa}", comprador=nome_comprador, numeros=sorted(nums))
+            if JSON_MIRROR:
+                dados = _json_dados_load(nome_rifa)
+                for n in nums:
+                    dados[str(int(n))] = nome_comprador
+                _json_dados_save(nome_rifa, dados)
+            return True, sorted(nums), "Venda registrada com sucesso."
     except Exception as e:
-        logger.exception(f"DB: registrar_venda erro: {e}")
-        return False, numeros, f"Erro de banco de dados: {e}"
-
+        logger.error(f"Falha ao registrar venda para rifa {nome_rifa}", exception=e)
+        return False, numeros, f"Erro ao registrar venda: {str(e)}"
+    finally:
+        conn.close()
 
 def cancelar_venda(nome_rifa: str, numeros: List[int]) -> Tuple[bool, List[int], str]:
     if not isinstance(numeros, list):
@@ -666,6 +720,7 @@ def cancelar_venda(nome_rifa: str, numeros: List[int]) -> Tuple[bool, List[int],
             cur.execute("SELECT id FROM rifas WHERE nome = ?", (nome_rifa,))
             row = cur.fetchone()
             if not row:
+                logger.warning(f"Rifa {nome_rifa} não encontrada para cancelamento de venda")
                 return False, numeros, "Rifa não encontrada."
             rifa_id = row["id"]
             nums = [int(n) for n in numeros]
@@ -676,25 +731,27 @@ def cancelar_venda(nome_rifa: str, numeros: List[int]) -> Tuple[bool, List[int],
             )
             affected = cur.rowcount
             if affected <= 0:
+                logger.warning(f"Nenhum número vendido encontrado para cancelamento na rifa {nome_rifa}", numeros=nums)
                 return False, [], "Nenhum dos números informados estava vendido."
-        logger.warning(f"DB: vendas canceladas rifa='{nome_rifa}' nums={sorted(nums)}")
-        # mirror JSON remover
-        if JSON_MIRROR:
-            dados = _json_dados_load(nome_rifa)
-            for n in nums:
-                dados.pop(str(int(n)), None)
-            _json_dados_save(nome_rifa, dados)
-        return True, nums, f"Vendas canceladas ({affected} números)."
+            logger.success(f"Vendas canceladas para rifa {nome_rifa}", numeros=sorted(nums), affected=affected)
+            if JSON_MIRROR:
+                dados = _json_dados_load(nome_rifa)
+                for n in nums:
+                    dados.pop(str(int(n)), None)
+                _json_dados_save(nome_rifa, dados)
+            return True, nums, f"Vendas canceladas ({affected} números)."
     except Exception as e:
-        logger.exception(f"DB: cancelar_venda erro: {e}")
-        return False, [], f"Erro de banco de dados: {e}"
-
+        logger.error(f"Falha ao cancelar vendas para rifa {nome_rifa}", exception=e)
+        return False, [], f"Erro ao cancelar vendas: {str(e)}"
+    finally:
+        conn.close()
 
 def transferir_venda(nome_rifa: str, numeros: List[int], novo_comprador: str) -> Tuple[bool, List[int], str]:
     if not isinstance(numeros, list):
         numeros = [int(numeros)]
     novo_comprador = (novo_comprador or "").strip()
     if not novo_comprador:
+        logger.warning("Tentativa de transferir venda com comprador inválido", rifa=nome_rifa)
         return False, numeros, "Nome do novo comprador inválido."
     conn = db.get_connection()
     try:
@@ -703,6 +760,7 @@ def transferir_venda(nome_rifa: str, numeros: List[int], novo_comprador: str) ->
             cur.execute("SELECT id FROM rifas WHERE nome = ?", (nome_rifa,))
             row = cur.fetchone()
             if not row:
+                logger.warning(f"Rifa {nome_rifa} não encontrada para transferência de venda")
                 return False, numeros, "Rifa não encontrada."
             rifa_id = row["id"]
             nums = [int(n) for n in numeros]
@@ -713,19 +771,21 @@ def transferir_venda(nome_rifa: str, numeros: List[int], novo_comprador: str) ->
             )
             affected = cur.rowcount
             if affected <= 0:
+                logger.warning(f"Nenhum número encontrado para transferência na rifa {nome_rifa}", numeros=nums)
                 return False, [], "Nenhum dos números informados foi encontrado para transferir."
-        logger.info(f"DB: venda transferida rifa='{nome_rifa}' nums={sorted(nums)} novo='{novo_comprador}'")
-        # mirror JSON atualizar
-        if JSON_MIRROR:
-            dados = _json_dados_load(nome_rifa)
-            for n in nums:
-                if str(int(n)) in dados:
-                    dados[str(int(n))] = novo_comprador
-            _json_dados_save(nome_rifa, dados)
-        return True, nums, f"Transferência realizada ({affected} números)."
+            logger.success(f"Venda transferida para rifa {nome_rifa}", novo_comprador=novo_comprador, numeros=sorted(nums), affected=affected)
+            if JSON_MIRROR:
+                dados = _json_dados_load(nome_rifa)
+                for n in nums:
+                    if str(int(n)) in dados:
+                        dados[str(int(n))] = novo_comprador
+                _json_dados_save(nome_rifa, dados)
+            return True, nums, f"Transferência realizada ({affected} números)."
     except Exception as e:
-        logger.exception(f"DB: transferir_venda erro: {e}")
-        return False, [], f"Erro de banco de dados: {e}"
+        logger.error(f"Falha ao transferir vendas para rifa {nome_rifa}", exception=e)
+        return False, [], f"Erro ao transferir vendas: {str(e)}"
+    finally:
+        conn.close()
 
 def deletar_rifa(nome_rifa: str) -> Tuple[bool, str]:
     """Deleta a rifa e seus dados relacionados. Operação irreversível."""
@@ -736,27 +796,29 @@ def deletar_rifa(nome_rifa: str) -> Tuple[bool, str]:
             cur.execute("SELECT id FROM rifas WHERE nome = ?", (nome_rifa,))
             row = cur.fetchone()
             if not row:
+                logger.warning(f"Rifa {nome_rifa} não encontrada para deleção")
                 return False, "Rifa não encontrada."
             rifa_id = row["id"]
-            # Deleta a rifa (vendas e reservas serão removidas via ON DELETE CASCADE)
             cur.execute("DELETE FROM rifas WHERE id = ?", (rifa_id,))
-        # Mirror JSON: remover index e arquivo da rifa
-        if JSON_MIRROR:
-            idx = _json_index_load()
-            if nome_rifa in idx:
-                idx.pop(nome_rifa, None)
-                _json_index_save(idx)
-            try:
-                p = _json_rifa_path(nome_rifa)
-                if p.exists():
-                    p.unlink()
-            except Exception:
-                pass
-        logger.warning(f"DB: Rifa deletada '{nome_rifa}' (id={rifa_id})")
-        return True, "Rifa deletada com sucesso."
+            logger.success(f"Rifa {nome_rifa} deletada com sucesso", rifa_id=rifa_id)
+            if JSON_MIRROR:
+                idx = _json_index_load()
+                if nome_rifa in idx:
+                    idx.pop(nome_rifa, None)
+                    _json_index_save(idx)
+                try:
+                    p = _json_rifa_path(nome_rifa)
+                    if p.exists():
+                        p.unlink()
+                        logger.debug(f"Arquivo JSON da rifa {nome_rifa} removido")
+                except Exception as e:
+                    logger.warning(f"Falha ao remover arquivo JSON da rifa {nome_rifa}", exception=e)
+            return True, "Rifa deletada com sucesso."
     except Exception as e:
-        logger.exception(f"DB: deletar_rifa erro: {e}")
-        return False, f"Erro ao deletar rifa: {e}"
+        logger.error(f"Falha ao deletar rifa {nome_rifa}", exception=e)
+        return False, f"Erro ao deletar rifa: {str(e)}"
+    finally:
+        conn.close()
 
 # ----------------- Reservas -----------------
 
@@ -772,10 +834,14 @@ def carregar_reservas_detalhe(nome_rifa: str) -> Dict[int, str]:
             """,
             (nome_rifa,),
         )
-        return {int(row["numero"]): row["timestamp"] for row in cur.fetchall()}
+        data = {int(row["numero"]): row["timestamp"] for row in cur.fetchall()}
+        logger.debug(f"Reservas detalhadas carregadas para rifa {nome_rifa}", count=len(data))
+        return data
+    except Exception as e:
+        logger.error(f"Falha ao carregar reservas detalhadas para rifa {nome_rifa}", exception=e)
+        return {}
     finally:
         conn.close()
-
 
 def salvar_reservas_detalhe(nome_rifa: str, reservas: Dict[int, str]) -> None:
     conn = db.get_connection()
@@ -785,9 +851,9 @@ def salvar_reservas_detalhe(nome_rifa: str, reservas: Dict[int, str]) -> None:
             cur.execute("SELECT id FROM rifas WHERE nome = ?", (nome_rifa,))
             row = cur.fetchone()
             if not row:
+                logger.warning(f"Rifa {nome_rifa} não encontrada para salvar reservas")
                 return
             rifa_id = row["id"]
-            # clear and insert
             cur.execute("DELETE FROM reservas WHERE rifa_id = ?", (rifa_id,))
             batch = [(rifa_id, int(num), str(ts)) for num, ts in (reservas or {}).items()]
             if batch:
@@ -795,13 +861,17 @@ def salvar_reservas_detalhe(nome_rifa: str, reservas: Dict[int, str]) -> None:
                     "INSERT INTO reservas (rifa_id, numero, timestamp) VALUES (?, ?, ?)",
                     batch,
                 )
+                logger.success(f"Reservas salvas para rifa {nome_rifa}", count=len(batch))
     except Exception as e:
-        logger.exception(f"DB: salvar_reservas_detalhe erro: {e}")
-
+        logger.error(f"Falha ao salvar reservas detalhadas para rifa {nome_rifa}", exception=e)
+    finally:
+        conn.close()
 
 def purge_expired_reservas(nome_rifa: str, ttl_minutes: int) -> Tuple[Dict[int, str], List[int]]:
     if ttl_minutes <= 0:
-        return carregar_reservas_detalhe(nome_rifa), []
+        data = carregar_reservas_detalhe(nome_rifa)
+        logger.debug(f"TTL de reservas desativado para rifa {nome_rifa}, retornando reservas atuais")
+        return data, []
     conn = db.get_connection()
     try:
         with conn:
@@ -809,6 +879,7 @@ def purge_expired_reservas(nome_rifa: str, ttl_minutes: int) -> Tuple[Dict[int, 
             cur.execute("SELECT id FROM rifas WHERE nome = ?", (nome_rifa,))
             row = cur.fetchone()
             if not row:
+                logger.warning(f"Rifa {nome_rifa} não encontrada para purga de reservas")
                 return {}, []
             rifa_id = row["id"]
             limit_ts = (datetime.now(timezone.utc) - timedelta(minutes=ttl_minutes)).isoformat()
@@ -822,13 +893,14 @@ def purge_expired_reservas(nome_rifa: str, ttl_minutes: int) -> Tuple[Dict[int, 
                     "DELETE FROM reservas WHERE rifa_id = ? AND timestamp < ?",
                     (rifa_id, limit_ts),
                 )
-        ativos = carregar_reservas_detalhe(nome_rifa)
-        if removidos:
-            logger.info(f"Reservas expiradas removidas '{nome_rifa}': {sorted(removidos)}")
-        return ativos, removidos
+                logger.success(f"Reservas expiradas removidas para rifa {nome_rifa}", removidos=sorted(removidos))
+            ativos = carregar_reservas_detalhe(nome_rifa)
+            return ativos, removidos
     except Exception as e:
-        logger.exception(f"DB: purge_expired_reservas erro: {e}")
+        logger.error(f"Falha ao purgar reservas expiradas para rifa {nome_rifa}", exception=e)
         return {}, []
+    finally:
+        conn.close()
 
 # ----------------- Sorteio e Relatórios -----------------
 
@@ -840,13 +912,16 @@ def escolher_vencedor(nome_rifa: str) -> Tuple[bool, Optional[int], Optional[str
             cur.execute("SELECT id, sorteio_realizado FROM rifas WHERE nome = ?", (nome_rifa,))
             row = cur.fetchone()
             if not row:
+                logger.warning(f"Rifa {nome_rifa} não encontrada para sorteio")
                 return False, None, None, "Rifa não encontrada."
             if int(row["sorteio_realizado"]) == 1:
+                logger.warning(f"Sorteio já realizado para rifa {nome_rifa}")
                 return False, None, None, "Sorteio já foi realizado."
             rifa_id = row["id"]
             cur.execute("SELECT numero, comprador FROM vendas WHERE rifa_id = ?", (rifa_id,))
             vendidos = cur.fetchall()
             if not vendidos:
+                logger.warning(f"Nenhum número vendido para sorteio na rifa {nome_rifa}")
                 return False, None, None, "Nenhum número vendido para sortear."
             vencedor = random.choice(vendidos)
             numero_sorteado = int(vencedor["numero"])
@@ -855,12 +930,13 @@ def escolher_vencedor(nome_rifa: str) -> Tuple[bool, Optional[int], Optional[str
                 "UPDATE rifas SET sorteio_realizado = 1, sorteio_numero = ?, sorteio_comprador = ? WHERE id = ?",
                 (numero_sorteado, comprador, rifa_id),
             )
-        logger.success(f"Sorteio realizado: rifa='{nome_rifa}' nº {numero_sorteado} comprador='{comprador}'")
-        return True, numero_sorteado, comprador, "Sorteio realizado com sucesso."
+            logger.success(f"Sorteio realizado para rifa {nome_rifa}", numero=numero_sorteado, comprador=comprador)
+            return True, numero_sorteado, comprador, "Sorteio realizado com sucesso."
     except Exception as e:
-        logger.exception(f"DB: escolher_vencedor erro: {e}")
-        return False, None, None, f"Erro de banco de dados: {e}"
-
+        logger.error(f"Falha ao realizar sorteio para rifa {nome_rifa}", exception=e)
+        return False, None, None, f"Erro ao realizar sorteio: {str(e)}"
+    finally:
+        conn.close()
 
 def listar_compradores(nome_rifa: str) -> List[str]:
     conn = db.get_connection()
@@ -874,10 +950,14 @@ def listar_compradores(nome_rifa: str) -> List[str]:
             """,
             (nome_rifa,),
         )
-        return [row["comprador"] for row in cur.fetchall()]
+        data = [row["comprador"] for row in cur.fetchall()]
+        logger.debug(f"Compradores listados para rifa {nome_rifa}", count=len(data))
+        return data
+    except Exception as e:
+        logger.error(f"Falha ao listar compradores para rifa {nome_rifa}", exception=e)
+        return []
     finally:
         conn.close()
-
 
 def carregar_vendas_periodo(nome_rifa: str, periodo: str) -> List[Dict]:
     now = datetime.now(timezone.utc)
@@ -890,7 +970,6 @@ def carregar_vendas_periodo(nome_rifa: str, periodo: str) -> List[Dict]:
     else:
         delta = timedelta(days=3650)
     start = (now - delta).isoformat()
-
     conn = db.get_connection()
     try:
         cur = conn.cursor()
@@ -905,11 +984,16 @@ def carregar_vendas_periodo(nome_rifa: str, periodo: str) -> List[Dict]:
         )
         eventos: Dict[Tuple[str, str], Dict] = {}
         for row in cur.fetchall():
-            key = (row["ts"], row["comprador"]) 
+            key = (row["ts"], row["comprador"])
             if key not in eventos:
                 eventos[key] = {"ts": row["ts"], "comprador": row["comprador"], "numeros": [], "qtd": 0}
             eventos[key]["numeros"].append(int(row["numero"]))
             eventos[key]["qtd"] += 1
-        return list(eventos.values())
+        data = list(eventos.values())
+        logger.debug(f"Vendas do período {periodo} carregadas para rifa {nome_rifa}", count=len(data))
+        return data
+    except Exception as e:
+        logger.error(f"Falha ao carregar vendas do período {periodo} para rifa {nome_rifa}", exception=e)
+        return []
     finally:
         conn.close()

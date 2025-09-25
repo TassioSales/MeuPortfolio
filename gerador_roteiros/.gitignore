@@ -19,14 +19,26 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
 # Virtual Environment
 venv/
 env/
 ENV/
-.venv/
-.venv*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# Logs
+logs/
+*.log
 
 # IDE
 .idea/
@@ -34,140 +46,31 @@ ENV/
 *.swp
 *.swo
 *~
+
+# OS generated files
 .DS_Store
-
-# Logs
-logs/
-*.log
-
-# Environment variables
-.env
-.secrets.toml
-
-# Docker
-.dockerignore
-.docker/
-
-# Local development
-.local/
-.cache/
-
-# Project specific
-.idea/
-.vscode/
-*.code-workspace
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Jupyter Notebook
 .ipynb_checkpoints
+
+# Local development
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
 
 # Testing
 .coverage
 htmlcov/
 .pytest_cache/
 
-# Build
-dist/
-build/
-
-# Streamlit
-.streamlit/
-
-# Data files
-*.csv
-*.json
-*.xlsx
-*.db
-*.sqlite3
-
-# OS specific
-.DS_Store
-Thumbs.db
-
 # Project specific
-secrets.toml
-.env
-*.pem
-*.key
-*.crt
-*.p12
-*.pfx
-*.p7b
-*.p7c
-*.p7s
-*.p12
-*.pfx
-*.pem
-*.key
-*.crt
-*.csr
-*.cer
-*.der
-*.p7b
-*.p7c
-*.p7s
-*.p12
-*.pfx
-*.pem
-*.key
-*.crt
-*.csr
-*.cer
-*.der
-*.p7b
-*.p7c
-*.p7s
-*.p12
-*.pfx
-*.pem
-*.key
-*.crt
-*.csr
-*.cer
-*.der
-*.p7b
-*.p7c
-*.p7s
-*.p12
-*.pfx
-*.pem
-*.key
-*.crt
-*.csr
-*.cer
-*.der
-*.p7b
-*.p7c
-*.p7s
-*.p12
-*.pfx
-*.pem
-*.key
-*.crt
-*.csr
-*.cer
-*.der
-*.p7b
-*.p7c
-*.p7s
-*.p12
-*.pfx
-*.pem
-*.key
-*.crt
-*.csr
-*.cer
-*.der
-*.p7b
-*.p7c
-*.p7s
-*.p12
-*.pfx
-*.pem
-*.key
-*.crt
-*.csr
-*.cer
-*.der
-*.p7b
-*.p7c
-*.p7s
+*.bak
+*~
+*.swp
+*.swo

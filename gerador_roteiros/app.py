@@ -1,10 +1,13 @@
+import os
+os.environ["STREAMLIT_SERVER_ADDRESS"] = "0.0.0.0"
+os.environ["STREAMLIT_SERVER_PORT"] = "8502"
+
 import streamlit as st
 from datetime import date
 from typing import Optional, Dict, Any
 import json
 from loguru import logger
 import re
-import os
 
 # Configuração da página para remover menu e rodapé
 st.set_page_config(

@@ -32,6 +32,16 @@
 
 ---
 
+<div align="center">
+
+<a href="https://plataforma-rifas-pro.streamlit.app" target="_blank">
+  <img src="https://img.shields.io/badge/🔴_AO_VIVO-🎟️_Plataforma_de_Rifas_PRO_·_Streamlit-ff4b4b?style=for-the-badge" alt="🎟️ Plataforma de Rifas PRO · Streamlit">
+</a>
+
+</div>
+
+---
+
 ## 🚀 Início Rápido
 
 <table>
@@ -69,7 +79,9 @@ docker compose up --build -d
 </tr>
 </table>
 
-> 💡 Para publicar no Docker Hub, veja a seção "Publicar no Docker Hub" mais abaixo.
+> 💡 Quer apenas testar? Acesse a demo online: [🎟️ Plataforma de Rifas PRO · Streamlit](https://plataforma-rifas-pro.streamlit.app)
+
+> 📦 Para publicar no Docker Hub, veja a seção "Publicar no Docker Hub" mais abaixo.
 
 ---
 

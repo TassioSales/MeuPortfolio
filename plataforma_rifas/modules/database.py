@@ -3,7 +3,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-from logger import get_logger  # Import atualizado do logger
+from logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -15,6 +15,7 @@ try:
     logger.success(f"Diretório de dados criado ou verificado com sucesso: {DATA_DIR}")
 except Exception as e:
     logger.critical(f"Falha ao criar/verificar diretório de dados: {DATA_DIR}", exception=e)
+    raise RuntimeError(f"Erro ao criar diretório de dados: {e}") from e
 
 DB_PATH = DATA_DIR / "rifas.db"
 
@@ -24,7 +25,7 @@ def get_connection() -> sqlite3.Connection:
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA foreign_keys = ON;")
         _create_tables(conn)
-        logger.success("Conexão com banco de dados estabelecida com sucesso.")
+        logger.success("Conexão com banco de dados estabelecida com sucesso")
         return conn
     except sqlite3.Error as e:
         logger.critical("Erro ao conectar ao banco de dados", exception=e)
@@ -45,6 +46,7 @@ def _create_tables(conn: sqlite3.Connection) -> None:
             );
             """
         )
+        logger.debug("Tabela 'users' criada ou verificada")
         # Login attempts for rate limiting
         cur.execute(
             """
@@ -55,6 +57,7 @@ def _create_tables(conn: sqlite3.Connection) -> None:
             );
             """
         )
+        logger.debug("Tabela 'login_attempts' criada ou verificada")
         # Rifas
         cur.execute(
             """
@@ -72,6 +75,7 @@ def _create_tables(conn: sqlite3.Connection) -> None:
             );
             """
         )
+        logger.debug("Tabela 'rifas' criada ou verificada")
         # Vendas
         cur.execute(
             """
@@ -86,22 +90,23 @@ def _create_tables(conn: sqlite3.Connection) -> None:
             );
             """
         )
+        logger.debug("Tabela 'vendas' criada ou verificada")
         # Garantir coluna opcional 'contato' em vendas
         try:
             cols = [r[1] for r in cur.execute("PRAGMA table_info(vendas)").fetchall()]
             if "contato" not in cols:
                 cur.execute("ALTER TABLE vendas ADD COLUMN contato TEXT")
-                logger.success("Coluna 'contato' adicionada à tabela vendas com sucesso.")
+                logger.success("Coluna 'contato' adicionada à tabela vendas")
         except sqlite3.Error as e:
-            logger.warning("Falha ao adicionar coluna 'contato' (pode já existir)", exception=e)
+            logger.warning("Falha ao adicionar coluna 'contato' à tabela vendas (pode já existir)", exception=e)
         # Garantir coluna owner_id em rifas
         try:
             cols = [r[1] for r in cur.execute("PRAGMA table_info(rifas)").fetchall()]
             if "owner_id" not in cols:
                 cur.execute("ALTER TABLE rifas ADD COLUMN owner_id INTEGER")
-                logger.success("Coluna 'owner_id' adicionada à tabela rifas com sucesso.")
+                logger.success("Coluna 'owner_id' adicionada à tabela rifas")
         except sqlite3.Error as e:
-            logger.warning("Falha ao adicionar coluna 'owner_id' (pode já existir)", exception=e)
+            logger.warning("Falha ao adicionar coluna 'owner_id' à tabela rifas (pode já existir)", exception=e)
         # Reservas
         cur.execute(
             """
@@ -115,12 +120,14 @@ def _create_tables(conn: sqlite3.Connection) -> None:
             );
             """
         )
+        logger.debug("Tabela 'reservas' criada ou verificada")
         # Índices úteis
         cur.execute("CREATE INDEX IF NOT EXISTS idx_vendas_rifa ON vendas(rifa_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_reservas_rifa ON reservas(rifa_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_rifas_owner ON rifas(owner_id)")
+        logger.debug("Índices criados ou verificados")
         conn.commit()
-        logger.success("Tabelas e índices criados ou verificados com sucesso.")
+        logger.success("Tabelas e índices do banco de dados criados/verificados com sucesso")
     except sqlite3.Error as e:
         logger.critical("Erro ao criar/verificar tabelas no banco de dados", exception=e)
         raise RuntimeError(f"Erro na criação de tabelas: {e}") from e

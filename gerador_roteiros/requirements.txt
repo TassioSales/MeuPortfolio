@@ -1,36 +1,12 @@
-# Core
-streamlit>=1.37.0
-python-dateutil>=2.9.0
-loguru>=0.7.0
-requests>=2.31.0
-
-# AI/ML
-google-generativeai>=0.3.0
-mistralai>=0.1.0
-openai>=1.0.0
-
-# Data Processing
-pandas>=2.0.0
-numpy>=1.24.0
-python-dotenv>=1.0.0
-
-# Web & API
-fastapi>=0.95.0
-uvicorn>=0.21.0
-httpx>=0.24.0
-
-# Utils
-typing-extensions>=4.5.0
-pydantic>=2.0.0
-python-multipart>=0.0.6
-
-# Development (optional, uncomment if needed)
-# pytest>=7.3.1
-# black>=23.3.0
-# isort>=5.12.0
-# flake8>=6.0.0
-# mypy>=1.0.0
-
-# Documentation (optional)
-# mkdocs>=1.4.0
-# mkdocs-material>=9.0.0
+streamlit==1.50.0
+loguru==0.7.3
+requests==2.31.0
+python-dotenv==1.0.0
+google-generativeai==0.8.5
+mistralai==1.9.10
+pandas==2.1.0
+numpy==1.26.0
+fastapi==0.104.1
+uvicorn==0.24.0
+httpx==0.25.0
+python-multipart==0.0.6

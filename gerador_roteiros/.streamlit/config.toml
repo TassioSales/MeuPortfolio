@@ -3,10 +3,12 @@
 
 [server]
 # Configurações do servidor
-port = 8501
-headless = false
+port = 8502
+address = "0.0.0.0"
+headless = true
 enableCORS = false
-enableXsrfProtection = true
+enableXsrfProtection = false
+enableWebsocketCompression = true
 
 [browser]
 # Configurações do navegador
@@ -14,8 +16,7 @@ gatherUsageStats = false
 
 [theme]
 # Configurações do tema (forçado para escuro)
-base = "dark"
-primaryColor = "#8a5cf5"
+primaryColor = "#667eea"
 backgroundColor = "#0b0f14"
 secondaryBackgroundColor = "#111827"
 textColor = "#e5e7eb"

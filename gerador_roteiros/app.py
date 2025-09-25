@@ -1,6 +1,6 @@
 import os
 os.environ["STREAMLIT_SERVER_ADDRESS"] = "0.0.0.0"
-os.environ["STREAMLIT_SERVER_PORT"] = "8502"
+os.environ["STREAMLIT_SERVER_PORT"] = "8501"
 
 import streamlit as st
 from datetime import date

@@ -425,14 +425,32 @@ with tab5:
 	
 	st.markdown("</div>", unsafe_allow_html=True)
 
-# Navigation buttons
+# Navigation buttons container
 st.markdown("""
-<div style="text-align: center; margin-top: 2rem; padding: 1.25rem; background: var(--section-bg); border-radius: 10px; border: 1px solid var(--border);">
-	<h3 style="color: var(--text); margin-bottom: 1rem;">O que você gostaria de fazer agora?</h3>
-	<a href="app.py" class="nav-button">✨ Gerar novo roteiro</a>
-	<a href="app.py" class="nav-button">🏠 Voltar ao início</a>
+<div style="margin-top: 2rem; padding: 1.25rem; background: var(--section-bg); 
+            border-radius: 10px; border: 1px solid var(--border);">
+    <h3 style="color: var(--text); text-align: center; margin-bottom: 1rem;">
+        O que você gostaria de fazer agora?
+    </h3>
 </div>
 """, unsafe_allow_html=True)
+
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("✨ Gerar novo roteiro", 
+                use_container_width=True,
+                type="primary"):
+        # Limpa a sessão e volta para a página principal
+        st.session_state.clear()
+        st.switch_page("app.py")
+        
+with col2:
+    if st.button("🏠 Voltar ao início", 
+                use_container_width=True,
+                type="primary"):
+        # Limpa a sessão e volta para a página principal
+        st.session_state.clear()
+        st.switch_page("app.py")
 
 # Close main container
 st.markdown("</div>", unsafe_allow_html=True)

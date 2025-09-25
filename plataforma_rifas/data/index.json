@@ -1,0 +1,33 @@
+{
+  "Rifa solidaria ": {
+    "valor_numero": 10.0,
+    "total_numeros": 200,
+    "sorteio": {
+      "realizado": false,
+      "numero": null,
+      "comprador": null
+    },
+    "grid_columns": 12,
+    "logo_path": "assets\\logo_generic.png",
+    "qr_text": "teste",
+    "obs_padrao_pdf": ""
+  },
+  "teste2": {
+    "valor_numero": 10.0,
+    "total_numeros": 100,
+    "sorteio": {
+      "realizado": false,
+      "numero": null,
+      "comprador": null
+    }
+  },
+  "tste": {
+    "valor_numero": 10.0,
+    "total_numeros": 100,
+    "sorteio": {
+      "realizado": false,
+      "numero": null,
+      "comprador": null
+    }
+  }
+}

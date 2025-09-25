@@ -1,20 +1,73 @@
 version: '3.8'
 
 services:
-  gerador-roteiros:
-    build: .
+  gerador_roteiros:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Uncomment the following lines to use build arguments if needed
+      # args:
+      #   - BUILD_ENV=production
+    container_name: gerador_roteiros
     ports:
-      - "8501:8501"
+      - "8508:8508"
     environment:
-      - STREAMLIT_SERVER_PORT=8501
+      # Streamlit configuration
+      - STREAMLIT_SERVER_HEADERS=true
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+      - STREAMLIT_SERVER_PORT=8508
       - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - TZ=America/Sao_Paulo
+      
+      # Add your application-specific environment variables here
+      # - MISTRAL_API_KEY=${MISTRAL_API_KEY:-}
+      # - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      
+    # Volumes for persistence and development
     volumes:
       - ./logs:/app/logs
-      - ./.streamlit:/app/.streamlit
-    restart: unless-stopped
+      # Uncomment for development to enable live code reloading
+      # - .:/app
+      
+      # Mount secrets if needed
+      # - ./secrets:/run/secrets:ro
+      
+      # Uncomment to persist data between container restarts
+      # - gerador_data:/app/data
+    
+    # Health check configuration
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      test: ["CMD", "python", "-c", "import urllib.request,sys; u=urllib.request.urlopen('http://127.0.0.1:8501/healthz', timeout=3); sys.exit(0 if getattr(u,'status',200)==200 else 1)"]
       interval: 30s
-      timeout: 10s
+      timeout: 5s
       retries: 3
-      start_period: 40s
+      start_period: 30s
+    
+    # Resource limits (uncomment and adjust as needed)
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '1'
+    #       memory: 2G
+    #     reservations:
+    #       memory: 1G
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Run as non-root user (defined in Dockerfile)
+    user: "appuser"
+    
+    # Network configuration (uncomment if needed)
+    # networks:
+    #   - app-network
+
+# Uncomment and configure volumes if needed
+# volumes:
+#   gerador_data:
+#     driver: local
+
+# Uncomment and configure networks if needed
+# networks:
+#   app-network:
+#     driver: bridge

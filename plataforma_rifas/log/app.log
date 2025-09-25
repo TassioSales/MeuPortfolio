@@ -1,0 +1,1778 @@
+2025-09-24 13:40:15.705 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:40:25.402 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:40:25.568 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:40:25.570 | WARNING  | __main__:password_gate:44 - Tentativa de autenticação falhou
+2025-09-24 13:42:07.367 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:42:11.065 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:42:22.986 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:42:22.989 | WARNING  | __main__:password_gate:44 - Tentativa de autenticação falhou
+2025-09-24 13:43:25.902 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:43:31.500 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:43:34.785 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:43:34.790 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 13:43:34.844 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:43:34.848 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 13:43:59.470 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:43:59.472 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 13:43:59.476 | DEBUG    | modules.data_manager:salvar_index_rifas:50 - index.json salvo com sucesso
+2025-09-24 13:43:59.476 | INFO     | modules.data_manager:salvar_nova_rifa:101 - Nova rifa criada: 'Rifa solidaria ' | valor=10.0 total=200
+2025-09-24 13:43:59.477 | DEBUG    | modules.data_manager:salvar_dados_rifa:79 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 0
+2025-09-24 13:43:59.478 | SUCCESS  | modules.ui_components:renderizar_sidebar:31 - Rifa criada via sidebar: nome='Rifa solidaria ' valor=10.0 total=200
+2025-09-24 13:43:59.524 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:43:59.540 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 13:44:11.400 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:44:11.402 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:44:54.081 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:44:54.084 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:44:58.643 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:44:58.645 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:45:11.391 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:45:11.394 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:45:11.596 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:45:11.599 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:45:11.613 | DEBUG    | modules.data_manager:salvar_dados_rifa:79 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 2
+2025-09-24 13:45:11.613 | INFO     | modules.data_manager:registrar_venda:137 - Venda registrada na rifa 'Rifa solidaria ': comprador='Cleber' numeros=[10, 24]
+2025-09-24 13:45:11.660 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:45:11.663 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:45:34.043 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:45:34.051 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:45:34.228 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:45:34.232 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:45:34.309 | INFO     | __main__:main:87 - Consulta por número: 10 vendido para Cleber
+2025-09-24 13:48:13.569 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:48:13.573 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:48:57.674 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:49:02.847 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:49:05.734 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:49:05.736 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 13:49:05.762 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:49:05.764 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 13:49:09.179 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:49:09.181 | DEBUG    | modules.ui_components:renderizar_sidebar:16 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:53:17.356 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:53:22.978 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:53:26.820 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:53:26.822 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 13:53:26.850 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:53:26.852 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 13:53:29.574 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:53:29.577 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:53:38.977 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:53:38.979 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:53:39.001 | DEBUG    | modules.ui_components:_toggle_reserva:30 - Adicionado à seleção: 17
+2025-09-24 13:53:39.042 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:53:39.044 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:53:41.540 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:53:41.543 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:53:41.571 | DEBUG    | modules.ui_components:_toggle_reserva:27 - Removido da seleção: 17
+2025-09-24 13:53:41.610 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:53:41.615 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:56:18.871 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:56:23.570 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:56:25.369 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:56:25.371 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 13:56:25.430 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:56:25.433 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 13:56:27.974 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:56:27.976 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:56:34.737 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:56:42.383 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:56:44.153 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:56:44.155 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 13:56:44.190 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:56:44.192 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 13:56:46.559 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:56:46.563 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:56:46.573 | DEBUG    | modules.ui_components:_toggle_reserva:30 - Adicionado à seleção: 66
+2025-09-24 13:56:46.574 | DEBUG    | modules.ui_components:renderizar_grid_vendas:93 - Clique na grade processado: n=66
+2025-09-24 13:57:00.841 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:05.934 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:06.532 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:06.535 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 13:57:06.583 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:06.586 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 13:57:09.012 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:09.015 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:57:13.596 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:17.568 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:22.031 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:22.119 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:22.121 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 13:57:22.163 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:22.166 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 13:57:24.646 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:57:24.648 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 13:59:54.556 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 13:59:54.558 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:00:03.184 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:00:03.186 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:00:03.225 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:00:03.227 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:00:14.527 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:00:14.529 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:00:14.607 | INFO     | __main__:main:90 - Consulta por número: 1 disponível
+2025-09-24 14:02:00.491 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:02:06.873 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:02:08.311 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:02:08.313 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 14:02:08.344 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:02:08.346 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 14:02:11.324 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:02:11.330 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:02:18.032 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:02:21.176 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:02:32.476 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:05:16.787 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:05:21.641 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:05:23.671 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:05:23.673 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 14:05:23.720 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:05:23.723 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 14:05:25.755 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:05:25.757 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:05:37.015 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:05:37.017 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:05:37.053 | DEBUG    | modules.data_manager:salvar_reservas_rifa:237 - Reservas salvas para 'Rifa solidaria ': [35]
+2025-09-24 14:05:39.025 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:05:39.027 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:05:39.066 | DEBUG    | modules.data_manager:salvar_reservas_rifa:237 - Reservas salvas para 'Rifa solidaria ': []
+2025-09-24 14:05:42.934 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:05:42.937 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:05:42.974 | DEBUG    | modules.data_manager:salvar_reservas_rifa:237 - Reservas salvas para 'Rifa solidaria ': [35]
+2025-09-24 14:05:44.825 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:05:44.827 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:05:44.864 | DEBUG    | modules.data_manager:salvar_reservas_rifa:237 - Reservas salvas para 'Rifa solidaria ': []
+2025-09-24 14:06:59.931 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:06:59.933 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:07:00.211 | DEBUG    | modules.data_manager:salvar_reservas_rifa:237 - Reservas salvas para 'Rifa solidaria ': [196]
+2025-09-24 14:12:29.742 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:12:36.938 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:12:37.050 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:12:37.052 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 14:12:37.103 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:12:37.105 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 14:12:39.333 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:12:39.336 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:12:46.350 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:12:46.352 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:12:46.367 | DEBUG    | modules.data_manager:_backup_file:49 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-141246.json
+2025-09-24 14:12:46.368 | DEBUG    | modules.data_manager:salvar_reservas_rifa:254 - Reservas salvas para 'Rifa solidaria ': [3]
+2025-09-24 14:28:39.755 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:28:44.330 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:28:50.838 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:28:52.589 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:28:52.591 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 14:28:52.617 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:28:52.629 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 14:28:54.823 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:28:54.825 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:37:58.309 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:38:10.141 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:38:12.346 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:38:12.349 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 14:38:12.396 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:38:12.403 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 14:38:15.610 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:38:15.613 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:38:25.201 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:38:25.207 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:38:25.228 | DEBUG    | modules.data_manager:_backup_file:49 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-143825.json
+2025-09-24 14:38:25.231 | DEBUG    | modules.data_manager:salvar_reservas_rifa:254 - Reservas salvas para 'Rifa solidaria ': []
+2025-09-24 14:38:25.289 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:38:25.296 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:46:31.144 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:46:40.692 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:46:43.211 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:46:43.214 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 14:46:43.268 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:46:43.272 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 14:46:45.476 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:46:45.478 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:47:00.215 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:47:00.216 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:47:02.196 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:47:02.199 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:47:08.455 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:47:08.457 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:47:08.468 | DEBUG    | modules.data_manager:_backup_file:50 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-144708.json
+2025-09-24 14:47:08.469 | DEBUG    | modules.data_manager:salvar_reservas_detalhe:299 - Reservas detalhadas salvas para 'Rifa solidaria ': [3]
+2025-09-24 14:47:08.513 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:47:08.517 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:47:10.294 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:47:10.296 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:47:10.305 | DEBUG    | modules.data_manager:_backup_file:50 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-144710.json
+2025-09-24 14:47:10.306 | DEBUG    | modules.data_manager:salvar_reservas_detalhe:299 - Reservas detalhadas salvas para 'Rifa solidaria ': []
+2025-09-24 14:47:10.351 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:47:10.356 | DEBUG    | modules.ui_components:renderizar_sidebar:40 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:58:58.423 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:59:12.013 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:59:13.430 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:59:13.446 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 14:59:13.554 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:59:13.558 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 14:59:15.685 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:59:15.689 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:59:37.782 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:59:37.786 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:59:40.478 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:59:40.482 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 14:59:42.527 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 14:59:42.533 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:00:14.908 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:00:14.912 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:01:14.648 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:00.397 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:02.443 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:02.447 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 15:02:02.501 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:02.504 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 15:02:04.801 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:04.804 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:02:08.943 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:08.946 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:02:08.964 | DEBUG    | modules.data_manager:_backup_file:50 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\index-20250924-150208.json
+2025-09-24 15:02:08.965 | DEBUG    | modules.data_manager:salvar_index_rifas:73 - index.json salvo com sucesso
+2025-09-24 15:02:08.966 | INFO     | modules.data_manager:atualizar_config_rifa:94 - Config atualizada: rifa='Rifa solidaria ' updates={'grid_columns': 8}
+2025-09-24 15:02:08.967 | SUCCESS  | modules.ui_components:_notify:16 - Densidade da grade atualizada.
+2025-09-24 15:02:09.029 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:09.049 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:02:16.871 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:16.875 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:02:28.184 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:28.187 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:02:28.216 | DEBUG    | modules.data_manager:_backup_file:50 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\index-20250924-150228.json
+2025-09-24 15:02:28.218 | DEBUG    | modules.data_manager:salvar_index_rifas:73 - index.json salvo com sucesso
+2025-09-24 15:02:28.218 | INFO     | modules.data_manager:atualizar_config_rifa:94 - Config atualizada: rifa='Rifa solidaria ' updates={'grid_columns': 6}
+2025-09-24 15:02:28.220 | SUCCESS  | modules.ui_components:_notify:16 - Densidade da grade atualizada.
+2025-09-24 15:02:28.313 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:28.333 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:02:33.143 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:33.146 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:02:33.166 | DEBUG    | modules.data_manager:_backup_file:50 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\index-20250924-150233.json
+2025-09-24 15:02:33.167 | DEBUG    | modules.data_manager:salvar_index_rifas:73 - index.json salvo com sucesso
+2025-09-24 15:02:33.168 | INFO     | modules.data_manager:atualizar_config_rifa:94 - Config atualizada: rifa='Rifa solidaria ' updates={'grid_columns': 12}
+2025-09-24 15:02:33.169 | SUCCESS  | modules.ui_components:_notify:16 - Densidade da grade atualizada.
+2025-09-24 15:02:33.220 | INFO     | __main__:main:50 - Aplicação iniciada
+2025-09-24 15:02:33.233 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:02:42.921 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=bc6dd005
+2025-09-24 15:02:42.924 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:03:09.544 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=bc6dd005
+2025-09-24 15:03:09.550 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:03:11.526 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=bc6dd005
+2025-09-24 15:03:11.529 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:03:11.713 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=bc6dd005
+2025-09-24 15:03:11.718 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:03:11.802 | ERROR    | __main__:main:163 - Falha ao gerar PDF | session_id=bc6dd005: No module named 'fpdf'
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x0000025DCD11A480>
+    └ <Thread(ScriptRunner.scriptThread, started 384)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x0000025DCD11A200>
+    └ <Thread(ScriptRunner.scriptThread, started 384)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 384)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 384)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='844733d5-a045-45c9-9201-91544ffb4800', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 384)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x0000025DCD9A8D60>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x0000025DCDA90180>
+    └ ScriptRunner(_session_id='844733d5-a045-45c9-9201-91544ffb4800', _main_script_path='app.py', _session_state={$$ID-9595740f9fe...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='844733d5-a045-45c9-9201-91544ffb4800', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000025DE8876160>
+        └ <function exec_func_with_error_handling at 0x0000025DCDA30180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000025DE8876160>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x0000025DE882F3C0, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 274, in <module>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 142, in main
+    with st.expander("🎲 Simulação de sorteio (não salva)", expanded=False):
+         │  └ <bound method LayoutsMixin.expander of DeltaGenerator()>
+         └ <module 'streamlit' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\venv\\Lib\\site-packages\\streamlit\\__init__.py'>
+
+ModuleNotFoundError: No module named 'fpdf'
+2025-09-24 15:05:40.958 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=8d8734ff
+2025-09-24 15:05:44.843 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=0a48e5db
+2025-09-24 15:05:57.385 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=8d8734ff
+2025-09-24 15:05:59.555 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=8d8734ff
+2025-09-24 15:05:59.557 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 15:05:59.589 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=8d8734ff
+2025-09-24 15:05:59.591 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 15:06:01.763 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=8d8734ff
+2025-09-24 15:06:01.766 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:06:18.393 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=8d8734ff
+2025-09-24 15:06:18.395 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:06:28.965 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=8d8734ff
+2025-09-24 15:06:28.968 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:06:30.908 | ERROR    | __main__:main:163 - Falha ao gerar PDF | session_id=8d8734ff: 'bytearray' object has no attribute 'encode'
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000002364863A480>
+    └ <Thread(ScriptRunner.scriptThread, started 25168)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000002364863A200>
+    └ <Thread(ScriptRunner.scriptThread, started 25168)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 25168)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 25168)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='6dd91f5a-bcf3-448b-91f5-d2724552aab4', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 25168)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x0000023648D17830>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x0000023648F70180>
+    └ ScriptRunner(_session_id='6dd91f5a-bcf3-448b-91f5-d2724552aab4', _main_script_path='app.py', _session_state={$$ID-27cf355f3b0...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='6dd91f5a-bcf3-448b-91f5-d2724552aab4', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000023662DAE200>
+        └ <function exec_func_with_error_handling at 0x0000023648F14180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000023662DAE200>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x000002364B6C6290, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 274, in <module>
+    main()
+    └ <function main at 0x0000023662DAE840>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 158, in main
+    out = pdf.output(dest='S').encode('latin1')
+          │   └ <function FPDF.output at 0x000002366485B060>
+          └ <fpdf.fpdf.FPDF object at 0x0000023664762E40>
+
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+2025-09-24 15:06:33.973 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=8d8734ff
+2025-09-24 15:06:33.975 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:06:34.196 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=8d8734ff
+2025-09-24 15:06:34.198 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:06:34.284 | ERROR    | __main__:main:163 - Falha ao gerar PDF | session_id=8d8734ff: 'bytearray' object has no attribute 'encode'
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000002364863A480>
+    └ <Thread(ScriptRunner.scriptThread, started 26292)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000002364863A200>
+    └ <Thread(ScriptRunner.scriptThread, started 26292)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 26292)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 26292)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='6dd91f5a-bcf3-448b-91f5-d2724552aab4', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 26292)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x0000023648D17830>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x0000023648F70180>
+    └ ScriptRunner(_session_id='6dd91f5a-bcf3-448b-91f5-d2724552aab4', _main_script_path='app.py', _session_state={$$ID-27cf355f3b0...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='6dd91f5a-bcf3-448b-91f5-d2724552aab4', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000023664862840>
+        └ <function exec_func_with_error_handling at 0x0000023648F14180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000023664862840>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x000002364B6C6290, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 274, in <module>
+    main()
+    └ <function main at 0x0000023664862700>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 158, in main
+    out = pdf.output(dest='S').encode('latin1')
+          │   └ <function FPDF.output at 0x000002366485B060>
+          └ <fpdf.fpdf.FPDF object at 0x00000236647BDBD0>
+
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+2025-09-24 15:11:06.466 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=812e587d
+2025-09-24 15:11:10.570 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=812e587d
+2025-09-24 15:11:19.665 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=812e587d
+2025-09-24 15:11:21.838 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=812e587d
+2025-09-24 15:11:21.841 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 15:11:21.888 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=812e587d
+2025-09-24 15:11:21.891 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 15:11:24.475 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=812e587d
+2025-09-24 15:11:24.478 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:11:47.640 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=812e587d
+2025-09-24 15:11:47.645 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:11:52.663 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=812e587d
+2025-09-24 15:11:52.666 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:11:53.468 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=812e587d
+2025-09-24 15:11:53.470 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:11:53.993 | ERROR    | __main__:main:163 - Falha ao gerar PDF | session_id=812e587d: 'bytearray' object has no attribute 'encode'
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000002357363A480>
+    └ <Thread(ScriptRunner.scriptThread, started 27544)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000002357363A200>
+    └ <Thread(ScriptRunner.scriptThread, started 27544)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 27544)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 27544)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='6fd60a3b-6609-4220-b926-feeeea62710a', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 27544)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x0000023573EA9080>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x0000023573F90180>
+    └ ScriptRunner(_session_id='6fd60a3b-6609-4220-b926-feeeea62710a', _main_script_path='app.py', _session_state={$$ID-42052510045...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='6fd60a3b-6609-4220-b926-feeeea62710a', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000002357FCCF060>
+        └ <function exec_func_with_error_handling at 0x0000023573F34180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000002357FCCF060>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x000002357FC4BA00, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 274, in <module>
+    main()
+    └ <function main at 0x000002357FE03CE0>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 158, in main
+    out = pdf.output(dest='S').encode('latin1')
+          │   └ <function FPDF.output at 0x0000023581868C20>
+          └ <fpdf.fpdf.FPDF object at 0x00000235817A23C0>
+
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+2025-09-24 15:17:09.626 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:17:16.470 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:17:23.445 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:17:30.828 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:17:30.830 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 15:17:30.859 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:17:30.862 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 15:17:45.618 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:17:45.620 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:18:02.738 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:18:02.740 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:18:05.481 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:18:05.483 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:18:05.830 | INFO     | __main__:main:189 - PDF emitido | rifa=Rifa solidaria  comprador='Cleber' numeros=[10, 24] session_id=e010f471
+2025-09-24 15:18:14.606 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:18:14.608 | DEBUG    | modules.ui_components:renderizar_sidebar:60 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:23:43.727 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:23:43.730 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:23:43.898 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\index-20250924-152343.json
+2025-09-24 15:23:43.899 | DEBUG    | modules.data_manager:salvar_index_rifas:75 - index.json salvo com sucesso
+2025-09-24 15:23:43.900 | INFO     | modules.data_manager:atualizar_config_rifa:96 - Config atualizada: rifa='Rifa solidaria ' updates={'logo_path': 'assets\\logo_generic.png'}
+2025-09-24 15:23:45.036 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:23:45.038 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:23:54.446 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:23:54.449 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:23:55.775 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:23:55.777 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:23:59.130 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:23:59.132 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:24:01.085 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:24:01.087 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:24:04.026 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:24:04.028 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:24:09.069 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=e010f471
+2025-09-24 15:24:09.071 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:24:15.556 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=93925ee4
+2025-09-24 15:28:22.546 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=31f043b4
+2025-09-24 15:28:30.335 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=31f043b4
+2025-09-24 15:28:32.018 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=31f043b4
+2025-09-24 15:28:32.023 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 15:28:32.064 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=31f043b4
+2025-09-24 15:28:32.068 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 15:28:35.846 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=31f043b4
+2025-09-24 15:28:35.849 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:31:06.561 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:31:14.601 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:31:16.459 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:31:16.462 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 15:31:16.511 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:31:16.514 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 15:31:18.845 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:31:18.847 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:31:42.031 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:31:42.033 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:31:55.578 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:31:55.581 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:02.555 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:02.558 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:02.937 | INFO     | __main__:main:235 - PDF emitido | rifa=Rifa solidaria  comprador='Cleber' numeros=[10, 24] session_id=530a00dc
+2025-09-24 15:32:06.654 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:06.657 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:19.123 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:19.125 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:21.297 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:21.300 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:23.657 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:23.659 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:30.873 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:30.876 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:32.291 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:32.294 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:35.860 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:35.862 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:36.647 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:36.650 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:37.920 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:37.922 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:42.990 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:42.992 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:32:54.157 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=530a00dc
+2025-09-24 15:32:54.159 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:44:45.961 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:44:53.584 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:44:55.376 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:44:55.377 | INFO     | __main__:password_gate:40 - Autenticação bem-sucedida
+2025-09-24 15:44:55.410 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:44:55.412 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 15:44:57.910 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:44:57.912 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:46:39.527 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:46:39.531 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:46:40.256 | INFO     | __main__:main:235 - PDF emitido | rifa=Rifa solidaria  comprador='' numeros=[] session_id=71f6383a
+2025-09-24 15:46:43.290 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:46:43.303 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:46:48.047 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:46:48.051 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:47:13.274 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:47:13.278 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:47:16.071 | INFO     | __main__:main:55 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:47:16.076 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:47:22.647 | INFO     | __main__:main:70 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:47:22.651 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:47:24.631 | INFO     | __main__:main:70 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:47:24.634 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:47:35.447 | INFO     | __main__:main:70 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:47:35.449 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:47:35.667 | INFO     | __main__:main:70 - Aplicação iniciada | session_id=71f6383a
+2025-09-24 15:47:35.673 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:49:06.399 | INFO     | __main__:main:70 - Aplicação iniciada | session_id=bf8da22e
+2025-09-24 15:49:22.309 | INFO     | __main__:main:70 - Aplicação iniciada | session_id=bf8da22e
+2025-09-24 15:49:22.313 | INFO     | __main__:password_gate:53 - Autenticação bem-sucedida
+2025-09-24 15:50:59.939 | INFO     | __main__:main:82 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:51:10.980 | INFO     | __main__:main:82 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:51:10.988 | INFO     | __main__:password_gate:65 - Autenticação bem-sucedida
+2025-09-24 15:51:11.046 | INFO     | __main__:main:82 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:51:11.048 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 15:52:31.778 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:52:31.781 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:52:38.561 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:52:38.564 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:52:50.354 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:52:50.356 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:53:26.323 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:53:26.325 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:53:37.603 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:53:37.606 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:53:45.042 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:53:45.045 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:53:45.256 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:53:45.261 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:53:45.365 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\index-20250924-155345.json
+2025-09-24 15:53:45.366 | DEBUG    | modules.data_manager:salvar_index_rifas:75 - index.json salvo com sucesso
+2025-09-24 15:53:45.366 | INFO     | modules.data_manager:atualizar_config_rifa:96 - Config atualizada: rifa='Rifa solidaria ' updates={'qr_text': 'teste', 'obs_padrao_pdf': ''}
+2025-09-24 15:53:45.413 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:53:45.423 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:53:49.672 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:53:49.676 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:53:50.046 | INFO     | __main__:main:273 - PDF emitido | rifa=Rifa solidaria  comprador='Cleber' numeros=[10, 24] session_id=9ac2944f
+2025-09-24 15:53:53.299 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=9ac2944f
+2025-09-24 15:53:53.301 | DEBUG    | modules.ui_components:renderizar_sidebar:62 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 15:56:23.404 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=8af57397
+2025-09-24 16:01:35.236 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=cb3b59bf
+2025-09-24 16:01:56.039 | INFO     | __main__:main:93 - Aplicação iniciada | session_id=920094a8
+2025-09-24 16:05:47.000 | INFO     | __main__:main:84 - Aplicação iniciada | session_id=dfc4c35d
+2025-09-24 16:58:12.036 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=e4cecb54
+2025-09-24 17:05:12.519 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=e4cecb54
+2025-09-24 17:05:12.524 | INFO     | __main__:password_gate:58 - Autenticação bem-sucedida
+2025-09-24 17:05:12.556 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=e4cecb54
+2025-09-24 17:05:12.558 | DEBUG    | modules.ui_components:renderizar_sidebar:73 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 17:05:15.548 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=e4cecb54
+2025-09-24 17:05:15.552 | DEBUG    | modules.ui_components:renderizar_sidebar:73 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:05:22.464 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=e4cecb54
+2025-09-24 17:05:22.467 | DEBUG    | modules.ui_components:renderizar_sidebar:73 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:05:23.460 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=e4cecb54
+2025-09-24 17:05:23.465 | DEBUG    | modules.ui_components:renderizar_sidebar:73 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:06:37.419 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=72b702a0
+2025-09-24 17:10:05.966 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:10:17.120 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:10:17.123 | INFO     | __main__:password_gate:58 - Autenticação bem-sucedida
+2025-09-24 17:10:17.150 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:10:17.151 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 17:10:19.926 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:10:19.928 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:10:24.698 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:10:24.700 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:10:26.162 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:10:26.164 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:11:00.274 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:11:00.276 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:11:11.919 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:11:11.922 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:11:11.938 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171111.json
+2025-09-24 17:11:11.940 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 3
+2025-09-24 17:11:11.941 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Alisson' numeros=[12]
+2025-09-24 17:11:11.943 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:11:11.942192+00:00', 'comprador': 'Alisson', 'numeros': [12], 'qtd': 1}
+2025-09-24 17:11:12.005 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:11:12.009 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:11:37.076 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:11:37.078 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:11:37.095 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171137.json
+2025-09-24 17:11:37.097 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 4
+2025-09-24 17:11:37.098 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Marcela' numeros=[28]
+2025-09-24 17:11:37.100 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:11:37.099172+00:00', 'comprador': 'Marcela', 'numeros': [28], 'qtd': 1}
+2025-09-24 17:11:37.167 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:11:37.171 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:12:12.311 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:12:12.313 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:12:12.336 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171212.json
+2025-09-24 17:12:12.337 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 5
+2025-09-24 17:12:12.337 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Gleison' numeros=[101]
+2025-09-24 17:12:12.339 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:12:12.338477+00:00', 'comprador': 'Gleison', 'numeros': [101], 'qtd': 1}
+2025-09-24 17:12:12.402 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:12:12.406 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:12:47.487 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:12:47.489 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:12:47.507 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171247.json
+2025-09-24 17:12:47.508 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 6
+2025-09-24 17:12:47.508 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Maria Eduarda' numeros=[124]
+2025-09-24 17:12:47.510 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:12:47.509387+00:00', 'comprador': 'Maria Eduarda', 'numeros': [124], 'qtd': 1}
+2025-09-24 17:12:47.573 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:12:47.576 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:13:07.946 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:13:07.948 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:13:07.967 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171307.json
+2025-09-24 17:13:07.969 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 7
+2025-09-24 17:13:07.969 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Leandra' numeros=[186]
+2025-09-24 17:13:07.971 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:13:07.970618+00:00', 'comprador': 'Leandra', 'numeros': [186], 'qtd': 1}
+2025-09-24 17:13:08.037 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:13:08.039 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:13:32.449 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:13:32.451 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:13:32.467 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171332.json
+2025-09-24 17:13:32.468 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 8
+2025-09-24 17:13:32.469 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Jose Calors' numeros=[27]
+2025-09-24 17:13:32.471 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:13:32.469820+00:00', 'comprador': 'Jose Calors', 'numeros': [27], 'qtd': 1}
+2025-09-24 17:13:32.534 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:13:32.537 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:13:56.349 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:13:56.351 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:13:56.374 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171356.json
+2025-09-24 17:13:56.375 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 10
+2025-09-24 17:13:56.375 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Wilton' numeros=[77, 197]
+2025-09-24 17:13:56.376 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:13:56.376237+00:00', 'comprador': 'Wilton', 'numeros': [77, 197], 'qtd': 2}
+2025-09-24 17:13:56.435 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:13:56.439 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:14:19.013 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:14:19.015 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:14:19.030 | ERROR    | modules.ui_components:_notify:48 - Já vendidos: [197]
+2025-09-24 17:14:19.030 | INFO     | modules.ui_components:_notify:42 - Nenhum número disponível entre os informados.
+2025-09-24 17:14:27.173 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:14:27.175 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:14:27.192 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171427.json
+2025-09-24 17:14:27.193 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 11
+2025-09-24 17:14:27.193 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Wilton' numeros=[97]
+2025-09-24 17:14:27.195 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:14:27.194204+00:00', 'comprador': 'Wilton', 'numeros': [97], 'qtd': 1}
+2025-09-24 17:14:27.253 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:14:27.256 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:15:16.670 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:15:16.672 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:15:16.686 | WARNING  | modules.ui_components:_notify:45 - Informe ao menos um número válido.
+2025-09-24 17:15:27.720 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:15:27.722 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:15:27.743 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171527.json
+2025-09-24 17:15:27.744 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 21
+2025-09-24 17:15:27.745 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Campos' numeros=[1, 2, 3, 4, 5, 6, 7, 8, 9, 41]
+2025-09-24 17:15:27.746 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:15:27.745317+00:00', 'comprador': 'Campos', 'numeros': [1, 2, 3, 4, 5, 6, 7, 8, 9, 41], 'qtd': 10}
+2025-09-24 17:15:27.813 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:15:27.818 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:16:00.058 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:16:00.061 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:16:00.079 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171600.json
+2025-09-24 17:16:00.081 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 22
+2025-09-24 17:16:00.082 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='CeiÇa' numeros=[56]
+2025-09-24 17:16:00.083 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:16:00.082630+00:00', 'comprador': 'CeiÇa', 'numeros': [56], 'qtd': 1}
+2025-09-24 17:16:00.145 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:16:00.148 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:16:25.419 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:16:25.422 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:16:25.444 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171625.json
+2025-09-24 17:16:25.445 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 27
+2025-09-24 17:16:25.445 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Josias' numeros=[14, 15, 18, 19, 20]
+2025-09-24 17:16:25.446 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:16:25.445861+00:00', 'comprador': 'Josias', 'numeros': [14, 15, 18, 19, 20], 'qtd': 5}
+2025-09-24 17:16:25.499 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:16:25.502 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:16:47.473 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:16:47.474 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:16:47.492 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171647.json
+2025-09-24 17:16:47.494 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 37
+2025-09-24 17:16:47.495 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Vanda' numeros=[16, 61, 71, 80, 100, 108, 127, 154, 199, 200]
+2025-09-24 17:16:47.496 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:16:47.495938+00:00', 'comprador': 'Vanda', 'numeros': [16, 61, 71, 80, 100, 108, 127, 154, 199, 200], 'qtd': 10}
+2025-09-24 17:16:47.551 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:16:47.554 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:17:12.067 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:17:12.068 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:17:12.084 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171712.json
+2025-09-24 17:17:12.086 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 38
+2025-09-24 17:17:12.087 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Jozimar Pereira' numeros=[98]
+2025-09-24 17:17:12.088 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:17:12.087811+00:00', 'comprador': 'Jozimar Pereira', 'numeros': [98], 'qtd': 1}
+2025-09-24 17:17:12.143 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:17:12.148 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:17:50.161 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:17:50.163 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:17:50.180 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171750.json
+2025-09-24 17:17:50.182 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 39
+2025-09-24 17:17:50.182 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Maria Eduarda Fernandes' numeros=[177]
+2025-09-24 17:17:50.183 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:17:50.182883+00:00', 'comprador': 'Maria Eduarda Fernandes', 'numeros': [177], 'qtd': 1}
+2025-09-24 17:17:50.236 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:17:50.239 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:18:46.979 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:18:46.982 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:18:47.005 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171846.json
+2025-09-24 17:18:47.006 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 42
+2025-09-24 17:18:47.006 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Valdemir' numeros=[13, 26, 39]
+2025-09-24 17:18:47.007 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:18:47.007115+00:00', 'comprador': 'Valdemir', 'numeros': [13, 26, 39], 'qtd': 3}
+2025-09-24 17:18:47.062 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:18:47.065 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:19:03.604 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:19:03.606 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:19:03.622 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171903.json
+2025-09-24 17:19:03.624 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 43
+2025-09-24 17:19:03.625 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Sandra Caldas' numeros=[55]
+2025-09-24 17:19:03.627 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:19:03.625716+00:00', 'comprador': 'Sandra Caldas', 'numeros': [55], 'qtd': 1}
+2025-09-24 17:19:03.678 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:19:03.680 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:19:21.283 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:19:21.286 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:19:21.307 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171921.json
+2025-09-24 17:19:21.308 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 44
+2025-09-24 17:19:21.308 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Wilton' numeros=[69]
+2025-09-24 17:19:21.310 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:19:21.309705+00:00', 'comprador': 'Wilton', 'numeros': [69], 'qtd': 1}
+2025-09-24 17:19:21.369 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:19:21.371 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:19:39.959 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:19:39.962 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:19:39.979 | DEBUG    | modules.data_manager:_backup_file:52 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-171939.json
+2025-09-24 17:19:39.980 | DEBUG    | modules.data_manager:salvar_dados_rifa:122 - Dados da rifa 'Rifa solidaria ' salvos. Total vendidos: 45
+2025-09-24 17:19:39.980 | INFO     | modules.data_manager:registrar_venda:183 - Venda registrada na rifa 'Rifa solidaria ': comprador='Djanes da Silva' numeros=[25]
+2025-09-24 17:19:39.982 | DEBUG    | modules.data_manager:append_sale_log:406 - Evento de venda registrado: rifa='Rifa solidaria ' evt={'ts': '2025-09-24T20:19:39.981164+00:00', 'comprador': 'Djanes da Silva', 'numeros': [25], 'qtd': 1}
+2025-09-24 17:19:40.036 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=7f07fc80
+2025-09-24 17:19:40.038 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:33:16.369 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=023ea830
+2025-09-24 17:36:41.591 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=bf23c93e
+2025-09-24 17:36:50.704 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=bf23c93e
+2025-09-24 17:36:50.709 | INFO     | __main__:password_gate:58 - Autenticação bem-sucedida
+2025-09-24 17:36:50.744 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=bf23c93e
+2025-09-24 17:36:50.749 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 17:36:53.966 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=bf23c93e
+2025-09-24 17:36:53.969 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:53:15.894 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=90f2dc0c
+2025-09-24 17:53:24.539 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=90f2dc0c
+2025-09-24 17:53:24.542 | INFO     | __main__:password_gate:58 - Autenticação bem-sucedida
+2025-09-24 17:53:24.566 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=90f2dc0c
+2025-09-24 17:53:24.569 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 17:53:32.244 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=90f2dc0c
+2025-09-24 17:53:32.246 | DEBUG    | modules.ui_components:renderizar_sidebar:69 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 17:55:06.755 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=c6a94f32
+2025-09-24 18:02:56.821 | INFO     | __main__:main:75 - Aplicação iniciada | session_id=0c2567ef
+2025-09-24 18:16:19.102 | INFO     | __main__:main:71 - Aplicação iniciada | session_id=92d90d16
+2025-09-24 18:16:29.817 | INFO     | __main__:main:71 - Aplicação iniciada | session_id=92d90d16
+2025-09-24 18:16:29.821 | WARNING  | __main__:password_gate:61 - Tentativa de autenticação falhou
+2025-09-24 18:16:39.824 | INFO     | __main__:main:71 - Aplicação iniciada | session_id=92d90d16
+2025-09-24 18:16:39.828 | INFO     | __main__:password_gate:56 - Autenticação bem-sucedida
+2025-09-24 18:16:39.857 | INFO     | __main__:main:71 - Aplicação iniciada | session_id=92d90d16
+2025-09-24 18:16:39.858 | DEBUG    | modules.ui_components:renderizar_sidebar:70 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 18:16:42.239 | INFO     | __main__:main:71 - Aplicação iniciada | session_id=92d90d16
+2025-09-24 18:16:42.243 | DEBUG    | modules.ui_components:renderizar_sidebar:70 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:22:25.732 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=b689dae2
+2025-09-24 18:22:25.733 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=0c8df6fc
+2025-09-24 18:23:02.576 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=0839cfc4
+2025-09-24 18:23:11.968 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=0839cfc4
+2025-09-24 18:23:11.972 | WARNING  | __main__:password_gate:102 - Tentativa de autenticação falhou
+2025-09-24 18:23:21.723 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=0839cfc4
+2025-09-24 18:23:21.727 | INFO     | __main__:password_gate:90 - Autenticação bem-sucedida
+2025-09-24 18:23:21.768 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=0839cfc4
+2025-09-24 18:23:21.770 | DEBUG    | modules.ui_components:renderizar_sidebar:70 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 18:23:25.419 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=0839cfc4
+2025-09-24 18:23:25.421 | DEBUG    | modules.ui_components:renderizar_sidebar:70 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:25:11.816 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=0839cfc4
+2025-09-24 18:25:11.819 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:26:09.259 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=8d8a0b7a
+2025-09-24 18:26:17.738 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=8d8a0b7a
+2025-09-24 18:26:17.741 | INFO     | __main__:password_gate:90 - Autenticação bem-sucedida
+2025-09-24 18:26:17.776 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=8d8a0b7a
+2025-09-24 18:26:17.779 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 18:26:20.164 | INFO     | __main__:main:113 - Aplicação iniciada | session_id=8d8a0b7a
+2025-09-24 18:26:20.166 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:26:57.504 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=069133d9
+2025-09-24 18:26:57.858 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=8d8a0b7a
+2025-09-24 18:26:57.858 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=ab1badd0
+2025-09-24 18:26:57.863 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:27:30.720 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=8d8a0b7a
+2025-09-24 18:27:30.723 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:27:32.418 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=8d8a0b7a
+2025-09-24 18:27:32.421 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:27:32.799 | ERROR    | __main__:main:276 - Erro ao gerar PDF para Rifa solidaria : 'bytearray' object has no attribute 'encode'
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x00000284D889A480>
+    └ <Thread(ScriptRunner.scriptThread, started 18820)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x00000284D889A200>
+    └ <Thread(ScriptRunner.scriptThread, started 18820)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 18820)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 18820)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='a8a1fd0e-1044-4bc0-88ed-6dff6f6aaa92', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 18820)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x00000284DA0F50D0>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x00000284DA1C0180>
+    └ ScriptRunner(_session_id='a8a1fd0e-1044-4bc0-88ed-6dff6f6aaa92', _main_script_path='app.py', _session_state={$$ID-d266f46262f...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='a8a1fd0e-1044-4bc0-88ed-6dff6f6aaa92', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x00000284F407CCC0>
+        └ <function exec_func_with_error_handling at 0x00000284DA164180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x00000284F407CCC0>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x00000284F4B0E730, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 435, in <module>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 264, in main
+    st.dataframe(df_evt.sort_values("ts", ascending=False), use_container_width=True)
+    │  └ <bound method ArrowMixin.dataframe of DeltaGenerator()>
+    └ <module 'streamlit' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\venv\\Lib\\site-packages\\streamlit\\__init__.py'>
+
+AttributeError: 'bytearray' object has no attribute 'encode'. Did you mean: 'decode'?
+2025-09-24 18:28:11.677 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=ab1badd0
+2025-09-24 18:28:11.678 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=8d8a0b7a
+2025-09-24 18:28:11.683 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:28:27.507 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:28:37.246 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:28:37.249 | WARNING  | __main__:password_gate:103 - Tentativa de autenticação falhou
+2025-09-24 18:28:46.803 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:28:46.807 | INFO     | __main__:password_gate:91 - Autenticação bem-sucedida
+2025-09-24 18:28:46.863 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:28:46.866 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 18:28:50.710 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:28:50.712 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:29:03.890 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:29:03.892 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:29:12.782 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:29:12.784 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:29:24.082 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:29:24.084 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:29:32.853 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:29:32.855 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:29:32.867 | ERROR    | modules.ui_components:_notify:61 - Já vendidos: [25]
+2025-09-24 18:29:32.867 | INFO     | modules.ui_components:_notify:55 - Nenhum número disponível entre os informados.
+2025-09-24 18:29:40.449 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:29:40.451 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:29:40.465 | DEBUG    | modules.data_manager:_backup_file:53 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-182940.json
+2025-09-24 18:29:40.474 | DEBUG    | modules.data_manager:salvar_reservas_detalhe:346 - Reservas detalhadas salvas para 'Rifa solidaria ': [45]
+2025-09-24 18:29:40.548 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:29:40.552 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:29:47.152 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:29:47.154 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:29:47.166 | ERROR    | __main__:main:135 - Erro ao renderizar dashboard para 'Rifa solidaria ': module 'streamlit' has no attribute 'modal'
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000001F3371EA480>
+    └ <Thread(ScriptRunner.scriptThread, started 21676)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000001F3371EA200>
+    └ <Thread(ScriptRunner.scriptThread, started 21676)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 21676)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 21676)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='5804011f-e898-4da5-8205-323fbc41c1d1', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 21676)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x000001F337907970>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x000001F337B60180>
+    └ ScriptRunner(_session_id='5804011f-e898-4da5-8205-323fbc41c1d1', _main_script_path='app.py', _session_state={debug_mode: Fals...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='5804011f-e898-4da5-8205-323fbc41c1d1', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001F33A4E9E40>
+        └ <function exec_func_with_error_handling at 0x000001F337B04180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001F33A4E9E40>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x000001F33A444B90, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 436, in <module>
+    main()
+    └ <function main at 0x000001F353AE4FE0>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 133, in main
+    ui.renderizar_grid_vendas(nome_rifa, dados, cfg)
+    │  │                      │          │      └ {'valor_numero': 10.0, 'total_numeros': 200, 'sorteio': {'realizado': False, 'numero': None, 'comprador': None}, 'grid_column...
+    │  │                      │          └ {'10': 'Cleber', '24': 'Cleber', '12': 'Alisson', '28': 'Marcela', '101': 'Gleison', '124': 'Maria Eduarda', '186': 'Leandra'...
+    │  │                      └ 'Rifa solidaria '
+    │  └ <function renderizar_grid_vendas at 0x000001F3529A9F80>
+    └ <module 'modules.ui_components' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\modules\\ui_components.py'>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\modules\ui_components.py", line 252, in renderizar_grid_vendas
+    with st.modal("Cancelar todas as reservas"):
+         └ <module 'streamlit' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\venv\\Lib\\site-packages\\streamlit\\__init__.py'>
+
+AttributeError: module 'streamlit' has no attribute 'modal'
+2025-09-24 18:29:59.285 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=260a864c
+2025-09-24 18:29:59.286 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:29:59.298 | ERROR    | __main__:main:135 - Erro ao renderizar dashboard para 'Rifa solidaria ': module 'streamlit' has no attribute 'modal'
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000001F3371EA480>
+    └ <Thread(ScriptRunner.scriptThread, started 23616)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000001F3371EA200>
+    └ <Thread(ScriptRunner.scriptThread, started 23616)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 23616)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 23616)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='5804011f-e898-4da5-8205-323fbc41c1d1', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 23616)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x000001F337907970>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x000001F337B60180>
+    └ ScriptRunner(_session_id='5804011f-e898-4da5-8205-323fbc41c1d1', _main_script_path='app.py', _session_state={debug_mode: Fals...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='5804011f-e898-4da5-8205-323fbc41c1d1', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001F353B4C900>
+        └ <function exec_func_with_error_handling at 0x000001F337B04180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001F353B4C900>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x000001F33A444B90, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 436, in <module>
+    main()
+    └ <function main at 0x000001F353B4CD60>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 133, in main
+    ui.renderizar_grid_vendas(nome_rifa, dados, cfg)
+    │  │                      │          │      └ {'valor_numero': 10.0, 'total_numeros': 200, 'sorteio': {'realizado': False, 'numero': None, 'comprador': None}, 'grid_column...
+    │  │                      │          └ {'10': 'Cleber', '24': 'Cleber', '12': 'Alisson', '28': 'Marcela', '101': 'Gleison', '124': 'Maria Eduarda', '186': 'Leandra'...
+    │  │                      └ 'Rifa solidaria '
+    │  └ <function renderizar_grid_vendas at 0x000001F3529A9F80>
+    └ <module 'modules.ui_components' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\modules\\ui_components.py'>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\modules\ui_components.py", line 252, in renderizar_grid_vendas
+    with st.modal("Cancelar todas as reservas"):
+         └ <module 'streamlit' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\venv\\Lib\\site-packages\\streamlit\\__init__.py'>
+
+AttributeError: module 'streamlit' has no attribute 'modal'
+2025-09-24 18:30:27.590 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=6169601e
+2025-09-24 18:30:40.108 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=6169601e
+2025-09-24 18:30:40.114 | INFO     | __main__:password_gate:91 - Autenticação bem-sucedida
+2025-09-24 18:30:40.208 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=6169601e
+2025-09-24 18:30:40.212 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 18:30:43.287 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=6169601e
+2025-09-24 18:30:43.292 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 18:30:44.358 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=6169601e
+2025-09-24 18:30:44.360 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:30:53.028 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=6169601e
+2025-09-24 18:30:53.030 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:30:53.042 | WARNING  | modules.ui_components:_notify:58 - Informe ao menos um número válido.
+2025-09-24 18:30:57.187 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=6169601e
+2025-09-24 18:30:57.189 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:31:00.695 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=6169601e
+2025-09-24 18:31:00.696 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:31:00.710 | DEBUG    | modules.data_manager:_backup_file:53 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\Rifa solidaria -20250924-183100.json
+2025-09-24 18:31:00.713 | DEBUG    | modules.data_manager:salvar_reservas_detalhe:346 - Reservas detalhadas salvas para 'Rifa solidaria ': []
+2025-09-24 18:31:00.714 | SUCCESS  | modules.ui_components:_notify:52 - Todas as reservas foram canceladas.
+2025-09-24 18:31:00.715 | INFO     | modules.ui_components:renderizar_grid_vendas:261 - Canceladas TODAS as reservas: rifa='Rifa solidaria '
+2025-09-24 18:31:00.782 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=6169601e
+2025-09-24 18:31:00.786 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:44:33.103 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=4f8757bf
+2025-09-24 18:44:39.873 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=4f8757bf
+2025-09-24 18:44:39.876 | INFO     | __main__:password_gate:91 - Autenticação bem-sucedida
+2025-09-24 18:44:39.906 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=4f8757bf
+2025-09-24 18:44:39.911 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 18:44:45.060 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=4f8757bf
+2025-09-24 18:44:45.062 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:44:59.815 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=4f8757bf
+2025-09-24 18:44:59.817 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:44:59.821 | DEBUG    | modules.data_manager:_backup_file:53 - Backup criado: D:\GithubGit\MeuPortfolio\plataforma_rifas\data\_backups\index-20250924-184459.json
+2025-09-24 18:44:59.828 | DEBUG    | modules.data_manager:salvar_index_rifas:98 - index.json salvo com sucesso
+2025-09-24 18:44:59.828 | INFO     | modules.data_manager:salvar_nova_rifa:167 - Nova rifa criada: 'teste' | valor=10.0 total=100
+2025-09-24 18:44:59.831 | DEBUG    | modules.data_manager:salvar_dados_rifa:145 - Dados da rifa 'teste' salvos. Total vendidos: 0
+2025-09-24 18:44:59.833 | DEBUG    | modules.data_manager:salvar_reservas_rifa:310 - Reservas salvas para 'teste': []
+2025-09-24 18:44:59.834 | SUCCESS  | modules.ui_components:renderizar_sidebar:97 - Rifa criada via sidebar: nome='teste' valor=10.0 total=100
+2025-09-24 18:44:59.895 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=4f8757bf
+2025-09-24 18:44:59.912 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 18:45:05.600 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=4f8757bf
+2025-09-24 18:45:05.602 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: teste
+2025-09-24 18:46:13.089 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=4f8757bf
+2025-09-24 18:46:13.092 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: teste
+2025-09-24 18:46:13.770 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=4f8757bf
+2025-09-24 18:46:13.772 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: teste
+2025-09-24 18:46:28.548 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=4f8757bf
+2025-09-24 18:46:28.551 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 18:46:51.989 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=0d06616b
+2025-09-24 18:57:47.299 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=2d0bd7e3
+2025-09-24 18:57:57.398 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=2d0bd7e3
+2025-09-24 18:57:57.402 | INFO     | __main__:password_gate:91 - Autenticação bem-sucedida
+2025-09-24 18:57:57.458 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=2d0bd7e3
+2025-09-24 18:57:57.460 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 18:58:00.857 | INFO     | __main__:main:114 - Aplicação iniciada | session_id=2d0bd7e3
+2025-09-24 18:58:00.860 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 19:02:59.937 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=58e54c5d
+2025-09-24 19:02:59.937 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=2d0bd7e3
+2025-09-24 19:02:59.937 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=155c48ab
+2025-09-24 19:02:59.943 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: Rifa solidaria 
+2025-09-24 19:02:59.948 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 19:02:59.951 | DEBUG    | modules.ui_components:renderizar_sidebar:82 - Sidebar carregada. Rifa selecionada: None
+2025-09-24 19:03:00.255 | ERROR    | __main__:main:90 - Erro ao renderizar analytics: module 'modules.ui_components' has no attribute 'renderizar_analytics_tab'
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000001606F9DA480>
+    └ <Thread(ScriptRunner.scriptThread, started daemon 29748)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000001606F9DA200>
+    └ <Thread(ScriptRunner.scriptThread, started daemon 29748)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started daemon 29748)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started daemon 29748)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='8eda1a7f-163f-492d-8a13-ca47c08baa20', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started daemon 29748)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x0000016070269080>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=, page_script_hash='3f41e546893dc6...
+    │    └ <function ScriptRunner._run_script at 0x0000016070350180>
+    └ ScriptRunner(_session_id='8eda1a7f-163f-492d-8a13-ca47c08baa20', _main_script_path='app.py', _session_state={$$ID-cef81ff0d5a...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='8eda1a7f-163f-492d-8a13-ca47c08baa20', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000016070CD9440>
+        └ <function exec_func_with_error_handling at 0x00000160702F4180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x0000016070CD9440>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x0000016083345830, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 166, in <module>
+    if __name__ == "__main__":
+       └ '__main__'
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 88, in main
+    # Tab 3: Analytics
+
+AttributeError: module 'modules.ui_components' has no attribute 'renderizar_analytics_tab'
+2025-09-24 19:18:48.065 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=9d1ae130
+2025-09-24 19:18:48.080 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:18:53.284 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=9d1ae130
+2025-09-24 19:18:53.292 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:18:56.480 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=9d1ae130
+2025-09-24 19:18:56.490 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:19:08.395 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=9d1ae130
+2025-09-24 19:19:08.406 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:19:49.497 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=9d1ae130
+2025-09-24 19:19:49.507 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:19:51.264 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=9d1ae130
+2025-09-24 19:19:51.274 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:19:59.438 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=9d1ae130
+2025-09-24 19:19:59.449 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:20:28.831 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=7f810e68
+2025-09-24 19:20:28.843 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:21:01.264 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=7f810e68
+2025-09-24 19:21:01.275 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:23:01.419 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=7f810e68
+2025-09-24 19:23:01.429 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:23:18.105 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=7f810e68
+2025-09-24 19:23:18.116 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:23:18.141 | INFO     | modules.db_data_manager:registrar_venda:280 - DB: venda registrada rifa='teste' comprador='tassio' nums=[25, 30, 35]
+2025-09-24 19:23:18.222 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=7f810e68
+2025-09-24 19:23:18.239 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:23:36.086 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=7f810e68
+2025-09-24 19:23:36.100 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:23:36.798 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=7f810e68
+2025-09-24 19:23:36.804 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:23:39.187 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=7f810e68
+2025-09-24 19:23:39.200 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:29:08.850 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=7f810e68
+2025-09-24 19:29:08.878 | INFO     | modules.db_data_manager:migrate_from_json:104 - Migração JSON→SQLite concluída.
+2025-09-24 19:32:56.296 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=10eebcfd
+2025-09-24 19:32:56.314 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:33:00.469 | INFO     | __main__:main:22 - Aplicação iniciada | session_id=10eebcfd
+2025-09-24 19:33:00.482 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:33:58.094 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=10eebcfd
+2025-09-24 19:33:58.095 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=69c50099
+2025-09-24 19:33:58.114 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:33:58.129 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:33:58.306 | ERROR    | __main__:main:98 - Erro ao renderizar dashboard para 'Rifa solidaria ': module 'modules.db_data_manager' has no attribute 'get_recent_sales'
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000001F6A69DA480>
+    └ <Thread(ScriptRunner.scriptThread, started daemon 14916)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000001F6A69DA200>
+    └ <Thread(ScriptRunner.scriptThread, started daemon 14916)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started daemon 14916)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started daemon 14916)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='6c8c83be-aa59-45d1-a749-d4b0402a5bda', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started daemon 14916)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x000001F6A7269080>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=, page_script_hash='3f41e546893dc6...
+    │    └ <function ScriptRunner._run_script at 0x000001F6A7350180>
+    └ ScriptRunner(_session_id='6c8c83be-aa59-45d1-a749-d4b0402a5bda', _main_script_path='app.py', _session_state={$$ID-89d5578237d...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='6c8c83be-aa59-45d1-a749-d4b0402a5bda', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001F6C423FBA0>
+        └ <function exec_func_with_error_handling at 0x000001F6A72F4180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001F6C423FBA0>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x000001F6A7BE65B0, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 267, in <module>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 89, in main
+    st.dataframe(rep, width='stretch')
+    │  └ <bound method ArrowMixin.dataframe of DeltaGenerator()>
+    └ <module 'streamlit' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\venv\\Lib\\site-packages\\streamlit\\__init__.py'>
+
+AttributeError: module 'modules.db_data_manager' has no attribute 'get_recent_sales'
+2025-09-24 19:40:59.651 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:40:59.666 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:41:10.389 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:41:10.401 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:41:14.050 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:41:14.070 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:41:17.474 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:41:17.491 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:41:17.627 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:41:17.637 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:41:23.272 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:41:23.284 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:42:32.895 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:42:32.908 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:42:50.884 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:42:50.895 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:42:53.678 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:42:53.688 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:42:54.274 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:42:54.288 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:42:54.574 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:42:54.586 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:08.704 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:08.716 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:14.718 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:14.733 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:14.758 | INFO     | modules.db_data_manager:salvar_nova_rifa:325 - DB: Rifa criada 'teste2'
+2025-09-24 19:43:14.924 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:14.950 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:21.304 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:21.318 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:26.395 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:26.406 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:34.225 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:34.239 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:34.363 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:34.373 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:37.848 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:37.860 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:39.412 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:39.424 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:48.449 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:48.459 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:50.188 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:50.202 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:50.310 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:50.322 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:43:56.790 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:43:56.801 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:44:38.432 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:44:38.446 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:44:38.573 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:44:38.586 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:44:46.451 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:44:46.464 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:44:53.604 | INFO     | __main__:main:23 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:44:53.619 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:44:56.003 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=69c50099
+2025-09-24 19:44:56.003 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:44:56.015 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:44:56.032 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:45:00.778 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:45:00.790 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:45:01.106 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:45:01.122 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:45:07.286 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:45:07.309 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:45:11.694 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:45:11.711 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:45:11.940 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:45:11.953 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:45:12.283 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:45:12.294 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:45:28.096 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:45:28.107 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:45:28.120 | INFO     | modules.db_data_manager:salvar_nova_rifa:325 - DB: Rifa criada 'tste'
+2025-09-24 19:45:28.239 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:45:28.266 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:45:31.980 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:45:31.991 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:07.495 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:07.506 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:07.604 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:07.617 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:10.033 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:10.045 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:13.578 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:13.592 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:13.751 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:13.765 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:14.095 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:14.107 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:16.805 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:16.819 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:23.875 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:23.886 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:25.490 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:25.504 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:26.895 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:26.913 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:30.780 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:30.793 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:32.309 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:32.321 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:33.363 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:33.388 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:34.727 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:34.735 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:35.629 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:35.644 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:40.481 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:40.497 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:40.542 | ERROR    | __main__:main:100 - Erro ao renderizar dashboard para 'Rifa solidaria ': The `value` 2 is greater than the `max_value` 1.
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000001F6A69DA480>
+    └ <Thread(ScriptRunner.scriptThread, started 24592)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000001F6A69DA200>
+    └ <Thread(ScriptRunner.scriptThread, started 24592)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 24592)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 24592)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='be352736-e31c-4078-a61d-9cf15be2742a', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 24592)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x000001F6A7269080>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x000001F6A7350180>
+    └ ScriptRunner(_session_id='be352736-e31c-4078-a61d-9cf15be2742a', _main_script_path='app.py', _session_state={$$ID-1a9bfaa5f46...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='be352736-e31c-4078-a61d-9cf15be2742a', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001F6C20AF880>
+        └ <function exec_func_with_error_handling at 0x000001F6A72F4180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001F6C20AF880>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x000001F6C215A100, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 325, in <module>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 86, in main
+    # Últimas ações (histórico recente de vendas)
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\modules\ui_components.py", line 275, in renderizar_grid_vendas
+    cfg = dm.get_config_rifa(nome_rifa) or {}
+          │  │               └ 'Rifa solidaria '
+          │  └ <function get_config_rifa at 0x000001F6C4C6CB80>
+          └ <module 'modules.db_data_manager' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\modules\\db_data_manager.py'>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\metrics_util.py", line 443, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+             │                  │       └ {'min_value': 1, 'max_value': 1, 'value': 2, 'step': 1, 'key': 'num_page_Rifa solidaria '}
+             │                  └ (DeltaGenerator(), 'Página')
+             └ <function NumberInputMixin.number_input at 0x000001F6A7552480>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\elements\widgets\number_input.py", line 401, in number_input
+    return self._number_input(
+           │    └ <function NumberInputMixin._number_input at 0x000001F6A75523E0>
+           └ DeltaGenerator()
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\elements\widgets\number_input.py", line 547, in _number_input
+    raise StreamlitValueAboveMaxError(value=value, max_value=max_value)
+          │                                 │                └ 1
+          │                                 └ 2
+          └ <class 'streamlit.errors.StreamlitValueAboveMaxError'>
+
+streamlit.errors.StreamlitValueAboveMaxError: The `value` 2 is greater than the `max_value` 1.
+2025-09-24 19:47:43.809 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:43.825 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:48.047 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:48.061 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:55.817 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=69c50099
+2025-09-24 19:47:55.818 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:47:55.836 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:47:55.854 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:49:16.109 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=69c50099
+2025-09-24 19:49:16.109 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:49:16.119 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:49:16.237 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:51:09.339 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=69c50099
+2025-09-24 19:51:09.339 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:51:09.351 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:51:09.480 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:52:11.872 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=69c50099
+2025-09-24 19:52:11.872 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=94051424
+2025-09-24 19:52:11.882 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:52:11.897 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:53:41.897 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=963a1ebe
+2025-09-24 19:53:41.911 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:53:48.266 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=963a1ebe
+2025-09-24 19:53:48.278 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:53:52.266 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=963a1ebe
+2025-09-24 19:53:52.280 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:53:52.390 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=963a1ebe
+2025-09-24 19:53:52.396 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:53:52.683 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=963a1ebe
+2025-09-24 19:53:52.690 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:53:55.808 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=963a1ebe
+2025-09-24 19:53:55.819 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:55:30.810 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:55:30.824 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:55:40.879 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:55:40.891 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:55:43.317 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:55:43.329 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:55:44.815 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:55:44.826 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:55:45.102 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:55:45.114 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:55:53.733 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:55:53.746 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:56:03.961 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:56:03.973 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:56:06.489 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:56:06.501 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:56:50.057 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:56:50.070 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:56:52.936 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:56:52.949 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:57:06.325 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:57:06.340 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:57:07.862 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:57:07.888 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:57:24.761 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:57:24.762 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=c138408e
+2025-09-24 19:57:24.762 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d20bfead
+2025-09-24 19:57:24.762 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=a63bccd5
+2025-09-24 19:57:24.781 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:57:24.799 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:57:24.981 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:57:25.168 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:57:41.369 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:57:41.379 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:57:42.822 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=3e323247
+2025-09-24 19:57:42.833 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:10.140 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d20bfead
+2025-09-24 19:58:10.235 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=c138408e
+2025-09-24 19:58:10.348 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:10.361 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:35.388 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:58:35.399 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:38.389 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:58:38.400 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:41.303 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:58:41.314 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:42.956 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:58:42.968 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:43.257 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:58:43.268 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:45.707 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:58:45.719 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:52.897 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:58:52.908 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:53.522 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:58:53.533 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:58:54.915 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:58:54.930 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:59:04.978 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:59:04.989 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:59:06.640 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:59:06.650 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:59:07.809 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:59:07.822 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:59:20.748 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:59:20.759 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:59:22.138 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:59:22.150 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 19:59:23.396 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 19:59:23.408 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:01:04.447 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 20:01:04.460 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:01:09.224 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 20:01:09.237 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:01:12.377 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 20:01:12.394 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:01:14.556 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 20:01:14.572 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:01:47.745 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 20:01:47.745 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=bbfee387
+2025-09-24 20:01:47.745 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=0500fb2b
+2025-09-24 20:01:47.763 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:01:47.782 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:01:47.810 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:03:52.286 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=bbfee387
+2025-09-24 20:03:52.287 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=0500fb2b
+2025-09-24 20:03:52.300 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:03:52.562 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:03:54.069 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=d66d69bf
+2025-09-24 20:03:54.088 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:05:19.071 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=bbfee387
+2025-09-24 20:05:19.072 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=0500fb2b
+2025-09-24 20:05:19.088 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:05:19.109 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:05:35.564 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=444447ae
+2025-09-24 20:05:35.578 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:05:38.781 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=444447ae
+2025-09-24 20:05:38.793 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:05:41.889 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=444447ae
+2025-09-24 20:05:41.901 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:05:43.995 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=444447ae
+2025-09-24 20:05:44.006 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:05:44.286 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=444447ae
+2025-09-24 20:05:44.292 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:05:46.361 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=444447ae
+2025-09-24 20:05:46.372 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:06:22.373 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:06:22.383 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:06:52.034 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:06:52.047 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:06:54.949 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:06:54.961 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:06:55.109 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:06:55.118 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:06:55.401 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:06:55.412 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:06:57.777 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:06:57.788 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:07:11.888 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:07:11.897 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:07:24.863 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:07:24.874 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:07:25.478 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:07:25.489 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:07:27.603 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:07:27.617 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:07:53.071 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:07:53.082 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:07:55.468 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=e7d0054d
+2025-09-24 20:07:55.481 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:08:39.672 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=9a1eb60d
+2025-09-24 20:08:39.684 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:08:42.568 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=9a1eb60d
+2025-09-24 20:08:42.580 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:08:44.459 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=9a1eb60d
+2025-09-24 20:08:44.473 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:08:45.942 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=9a1eb60d
+2025-09-24 20:08:45.953 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:08:46.231 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=9a1eb60d
+2025-09-24 20:08:46.242 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:08:48.273 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=9a1eb60d
+2025-09-24 20:08:48.285 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:07.666 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=80919f5f
+2025-09-24 20:10:07.677 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:10.085 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=80919f5f
+2025-09-24 20:10:10.097 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:12.034 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=80919f5f
+2025-09-24 20:10:12.045 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:13.978 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=80919f5f
+2025-09-24 20:10:13.990 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:14.265 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=80919f5f
+2025-09-24 20:10:14.277 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:16.214 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=80919f5f
+2025-09-24 20:10:16.232 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:51.115 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:10:51.127 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:54.731 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:10:54.742 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:56.561 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:10:56.573 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:57.892 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:10:57.903 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:10:58.176 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:10:58.183 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:11:01.172 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:11:01.184 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:11:41.039 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:11:41.050 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:11:56.305 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:11:56.319 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:12:02.581 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:12:02.601 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:12:05.563 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:12:05.577 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:12:08.010 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:12:08.020 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:12:13.369 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:12:13.377 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:12:21.600 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:12:21.612 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:12:23.673 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:12:23.690 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:12:54.130 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:12:54.143 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:13:07.075 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:13:07.087 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:13:47.136 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:13:47.149 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:13:55.612 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:13:55.624 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:14:39.391 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=8d3c9b71
+2025-09-24 20:14:39.399 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:17.174 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:17.186 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:19.848 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:19.860 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:22.665 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:22.681 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:22.783 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:22.790 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:23.057 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:23.068 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:30.030 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:30.041 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:36.224 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:36.233 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:40.185 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:40.199 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:41.650 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:41.663 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:41.898 | WARNING  | modules.db_data_manager:deletar_rifa:705 - DB: Rifa deletada 'teste' (id=2)
+2025-09-24 20:15:41.964 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:41.979 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:15:46.267 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:15:46.274 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:19:08.578 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:19:08.586 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:21:40.161 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dd98591d
+2025-09-24 20:21:40.170 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:22:52.509 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:22:52.520 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:22:55.411 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:22:55.425 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:22:57.360 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:22:57.374 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:22:58.802 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:22:58.811 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:22:59.162 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:22:59.174 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:23:01.368 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:23:01.381 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:18.466 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:18.480 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:18.708 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:18.826 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:18.911 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:18.992 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:19.170 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:19.178 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:19.354 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:19.361 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:19.404 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:19.511 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:19.636 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:19.652 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:20.168 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:20.178 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:32.561 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:32.578 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:33.242 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:33.272 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:34.305 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:34.320 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:25:37.135 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=dac410e5
+2025-09-24 20:25:37.147 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:26:31.199 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:26:31.211 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:26:34.402 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:26:34.425 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:26:37.845 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:26:37.857 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:26:38.553 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:26:38.565 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:26:38.853 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:26:38.864 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:26:41.053 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:26:41.067 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:26:53.053 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:26:53.064 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:26:56.413 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:26:56.425 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:26:59.196 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:26:59.211 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:27:02.085 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:27:02.105 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:27:14.906 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:27:14.932 | INFO     | modules.db_data_manager:migrate_from_json:105 - Migração JSON→SQLite concluída.
+2025-09-24 20:28:21.533 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:28:21.542 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 20:29:36.243 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:29:36.251 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 20:30:43.142 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:30:43.154 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 20:30:43.284 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:30:43.292 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 20:31:20.457 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=7ba5bb20
+2025-09-24 20:31:20.464 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 23:55:47.452 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=bd370303
+2025-09-24 23:55:47.494 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 23:55:51.941 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=bd370303
+2025-09-24 23:55:51.998 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 23:55:54.236 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=bd370303
+2025-09-24 23:55:54.284 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 23:55:56.119 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=bd370303
+2025-09-24 23:55:56.158 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 23:55:56.465 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=bd370303
+2025-09-24 23:55:56.510 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 23:56:00.649 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=bd370303
+2025-09-24 23:56:00.704 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-24 23:56:29.917 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=6acf7440
+2025-09-24 23:56:29.957 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-25 00:15:53.074 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=9315966e
+2025-09-25 00:15:53.118 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-25 00:30:19.505 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=c658c770
+2025-09-25 00:30:19.578 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-25 00:57:53.673 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=9a1def31
+2025-09-25 00:57:53.728 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.
+2025-09-25 00:58:10.738 | INFO     | __main__:main:25 - Aplicação iniciada | session_id=c956500b
+2025-09-25 00:58:10.791 | INFO     | modules.db_data_manager:migrate_from_json:109 - Migração JSON→SQLite concluída.

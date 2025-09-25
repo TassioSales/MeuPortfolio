@@ -2,7 +2,7 @@
 
 # 🗺️ Gerador de Roteiros de Viagem com IA
 
-💡 **Quer apenas testar?** Acesse a demo online: [Gerador de Roteiros · Streamlit](https://gerador-roteiros-viagem.streamlit.app)
+💡 **Quer apenas testar?** Acesse a demo online: [Gerador de Roteiros · Streamlit](https://jiqucdwsimgpjhzzhmn3f2.streamlit.app/)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/World%20map/3D/world_map_3d.png" width="120" alt="World Map">

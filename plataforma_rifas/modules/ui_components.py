@@ -153,6 +153,348 @@ def _parse_ranges(texto: str) -> List[int]:
     return sorted(list(resultado))
 
 
+def _build_pdf_bytes(vendas_list, cfg_local, consolidate_buyer: str = None, nome_rifa: str = None, tz_offset: int = 0):
+    """Gera bytes de um PDF com os comprovantes de venda."""
+    import os
+    import qrcode
+    from fpdf import FPDF
+    from babel.numbers import format_currency
+    import pandas as pd
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    
+    try:
+        if not vendas_list:
+            raise ValueError("Lista de vendas vazia")
+            
+        logo_path = (cfg_local or {}).get("logo_path")
+        qr_text = (cfg_local or {}).get("qr_text")
+        obs = (cfg_local or {}).get("obs_padrao_pdf", "")
+        valor_unit = float((cfg_local or {}).get("valor_numero", 0.0))
+        
+        pdf = FPDF(orientation='P', unit='mm', format='A4')
+        pdf.set_auto_page_break(auto=True, margin=12)
+        
+        try:
+            if consolidate_buyer:
+                # Modo consolidado (todos os números de um comprador em uma página)
+                try:
+                    nums = sorted([int(v['numero']) for v in vendas_list if v.get('comprador') == consolidate_buyer])
+                    contato_buyer = next((v.get('contato') for v in vendas_list 
+                                        if v.get('comprador') == consolidate_buyer and v.get('contato')), "")
+                    total_qtd = len(nums)
+                    total_valor = total_qtd * valor_unit
+                    gerado_em = (pd.Timestamp.utcnow() + pd.Timedelta(hours=int(tz_offset))).strftime('%Y-%m-%d %H:%M:%S')
+                    
+                    pdf.add_page()
+                    pdf.set_font("Arial", "B", 16)
+                    
+                    # Adiciona logo se existir
+                    if logo_path and os.path.exists(logo_path):
+                        try:
+                            pdf.image(logo_path, x=12, y=10, w=28)
+                        except Exception as e:
+                            logger.warning(f"Erro ao adicionar logo: {e}")
+                    
+                    pdf.cell(0, 12, f"Comprovante de Compra - {nome_rifa}", ln=1, align='C')
+                    pdf.set_font("Arial", size=12)
+                    pdf.ln(4)
+                    pdf.cell(0, 8, f"Comprador: {consolidate_buyer}", ln=1)
+                    
+                    if contato_buyer:
+                        pdf.cell(0, 8, f"Contato: {contato_buyer}", ln=1)
+                        
+                    pdf.cell(0, 8, f"Quantidade de números: {total_qtd}", ln=1)
+                    pdf.cell(0, 8, f"Valor por número: {format_currency(valor_unit, 'BRL', locale='pt_BR')}", ln=1)
+                    pdf.cell(0, 8, f"Valor total: {format_currency(total_valor, 'BRL', locale='pt_BR')}", ln=1)
+                    
+                    # Lista de números em colunas
+                    pdf.ln(2)
+                    pdf.set_font("Arial", size=11)
+                    nums_str = ", ".join(map(str, nums))
+                    pdf.multi_cell(0, 7, f"Números: {nums_str}")
+                    
+                    pdf.ln(2)
+                    pdf.cell(0, 8, f"Gerado em (local): {gerado_em}", ln=1)
+                    
+                    # Adiciona observação se existir
+                    if obs:
+                        pdf.ln(4)
+                        pdf.multi_cell(0, 7, obs)
+                        
+                    # Adiciona QR code se configurado
+                    if qr_text:
+                        try:
+                            qr = qrcode.QRCode(version=1, box_size=4, border=2)
+                            qr_data = qr_text.format(
+                                rifa=nome_rifa,
+                                comprador=consolidate_buyer,
+                                contato=contato_buyer,
+                                quantidade=total_qtd,
+                                valor=total_valor
+                            )
+                            qr.add_data(qr_data)
+                            qr.make(fit=True)
+                            qr_img = qr.make_image(fill_color="black", back_color="white")
+                            qr_img_path = "temp_qr.png"
+                            qr_img.save(qr_img_path)
+                            pdf.image(qr_img_path, x=160, y=10, w=35)
+                            if os.path.exists(qr_img_path):
+                                os.remove(qr_img_path)
+                        except Exception as e:
+                            logger.warning(f"Falha ao gerar QR code: {e}")
+                
+                except Exception as e:
+                    logger.error(f"Erro ao gerar PDF consolidado: {e}")
+                    raise
+                    
+            else:
+                # Modo individual (um comprovante por número)
+                for venda in vendas_list:
+                    try:
+                        pdf.add_page()
+                        pdf.set_font("Arial", "B", 16)
+                        
+                        # Adiciona logo se existir
+                        if logo_path and os.path.exists(logo_path):
+                            try:
+                                pdf.image(logo_path, x=12, y=10, w=28)
+                            except Exception as e:
+                                logger.warning(f"Erro ao adicionar logo: {e}")
+                        
+                        # Cabeçalho do comprovante
+                        pdf.cell(0, 12, f"Comprovante - {nome_rifa}", ln=1, align='C')
+                        pdf.set_font("Arial", size=12)
+                        pdf.ln(4)
+                        
+                        # Dados da venda
+                        pdf.cell(0, 8, f"Número: {venda.get('numero', 'N/A')}", ln=1)
+                        pdf.cell(0, 8, f"Comprador: {venda.get('comprador', 'N/A')}", ln=1)
+                        
+                        contato = venda.get('contato')
+                        if contato:
+                            pdf.cell(0, 8, f"Contato: {contato}", ln=1)
+                            
+                        pdf.cell(0, 8, f"Valor: {format_currency(valor_unit, 'BRL', locale='pt_BR')}", ln=1)
+                        
+                        # Formata a data/hora
+                        timestamp = venda.get('timestamp')
+                        if timestamp:
+                            try:
+                                dt = pd.to_datetime(timestamp)
+                                if hasattr(dt, 'tz_localize'):  # Se for um objeto Timestamp do pandas
+                                    dt = dt.tz_localize('UTC').tz_convert(None) + pd.Timedelta(hours=int(tz_offset))
+                                    pdf.cell(0, 8, f"Data da compra: {dt.strftime('%Y-%m-%d %H:%M:%S')}", ln=1)
+                                else:
+                                    pdf.cell(0, 8, f"Data da compra: {timestamp}", ln=1)
+                            except Exception as e:
+                                logger.warning(f"Erro ao formatar data {timestamp}: {e}")
+                                pdf.cell(0, 8, f"Data da compra: {timestamp}", ln=1)
+                        
+                        # Adiciona QR code se configurado
+                        if qr_text:
+                            try:
+                                qr = qrcode.QRCode(version=1, box_size=4, border=2)
+                                qr_data = qr_text.format(
+                                    rifa=nome_rifa,
+                                    numero=venda.get('numero', ''),
+                                    comprador=venda.get('comprador', ''),
+                                    contato=venda.get('contato', ''),
+                                    valor=valor_unit
+                                )
+                                qr.add_data(qr_data)
+                                qr.make(fit=True)
+                                qr_img = qr.make_image(fill_color="black", back_color="white")
+                                qr_img_path = f"temp_qr_{venda.get('numero', '')}.png"
+                                qr_img.save(qr_img_path)
+                                pdf.image(qr_img_path, x=160, y=10, w=35)
+                                if os.path.exists(qr_img_path):
+                                    os.remove(qr_img_path)
+                            except Exception as e:
+                                logger.warning(f"Falha ao gerar QR code: {e}")
+                        
+                        # Adiciona observação se existir
+                        if obs:
+                            pdf.ln(4)
+                            pdf.multi_cell(0, 7, obs)
+                            
+                    except Exception as e:
+                        logger.error(f"Erro ao gerar página para venda {venda.get('numero', 'desconhecido')}: {e}")
+                        continue
+            
+            # Retorna os bytes do PDF
+            return pdf.output(dest='S').encode('latin1')
+            
+        except Exception as e:
+            logger.error(f"Erro ao gerar PDF: {str(e)}", exc_info=True)
+            raise
+            
+    except Exception as e:
+        logger.error(f"Erro inesperado ao gerar PDF: {str(e)}", exc_info=True)
+        raise RuntimeError(f"Erro ao gerar PDF: {str(e)}")
+
+
+def _gerar_relatorio_comprador_pdf(compras_agrupadas: Dict, nome_rifa: str, valor_unit: float, logo_path: str = None) -> bytes:
+    """Gera um PDF com o relatório de compradores."""
+    from fpdf import FPDF
+    from babel.numbers import format_currency
+    
+    pdf = FPDF(orientation='L', unit='mm', format='A4')
+    pdf.set_auto_page_break(auto=True, margin=15)
+    
+    # Adiciona logo se existir
+    if logo_path and os.path.exists(logo_path):
+        try:
+            pdf.image(logo_path, x=12, y=10, w=28)
+        except Exception:
+            pass
+    
+    # Cabeçalho
+    pdf.add_page()
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 15, f"Relatório de Compradores - {nome_rifa}", 0, 1, 'C')
+    
+    # Data de geração
+    pdf.set_font("Arial", '', 10)
+    pdf.cell(0, 8, f"Gerado em: {pd.Timestamp.now().strftime('%d/%m/%Y %H:%M:%S')}", 0, 1, 'R')
+    
+    # Cabeçalho da tabela
+    pdf.set_font("Arial", 'B', 10)
+    pdf.set_fill_color(200, 220, 255)
+    pdf.cell(120, 10, "Comprador", 1, 0, 'C', 1)
+    pdf.cell(30, 10, "Quantidade", 1, 0, 'C', 1)
+    pdf.cell(40, 10, "Valor Total", 1, 1, 'C', 1)
+    
+    # Dados
+    pdf.set_font("Arial", '', 10)
+    fill = False
+    total_geral = 0
+    total_numeros = 0
+    
+    for comprador, info in compras_agrupadas.items():
+        total = info['quantidade'] * valor_unit
+        total_geral += total
+        total_numeros += info['quantidade']
+        
+        pdf.set_fill_color(224, 235, 255) if fill else pdf.set_fill_color(255, 255, 255)
+        pdf.cell(120, 8, comprador, 1, 0, 'L', fill)
+        pdf.cell(30, 8, str(info['quantidade']), 1, 0, 'C', fill)
+        pdf.cell(40, 8, format_currency(total, 'BRL', locale='pt_BR'), 1, 1, 'R', fill)
+        fill = not fill
+    
+    # Totalizador
+    pdf.set_font("Arial", 'B', 10)
+    pdf.set_fill_color(180, 200, 255)
+    pdf.cell(120, 10, "TOTAL GERAL", 1, 0, 'R', 1)
+    pdf.cell(30, 10, str(total_numeros), 1, 0, 'C', 1)
+    pdf.cell(40, 10, format_currency(total_geral, 'BRL', locale='pt_BR'), 1, 1, 'R', 1)
+    
+    # Gera o PDF em memória
+    pdf_output = pdf.output(dest='S')
+    if isinstance(pdf_output, bytearray):
+        return bytes(pdf_output)
+    elif isinstance(pdf_output, str):
+        return pdf_output.encode('latin-1')
+    return pdf_output
+
+def renderizar_relatorio_compradores(nome_rifa: str, vendas: List[Dict], valor_unit: float, cfg: Dict) -> None:
+    """Renderiza o relatório de compradores com paginação e opção de exportar para PDF."""
+    import pandas as pd
+    
+    # Agrupa as vendas por comprador
+    compras_agrupadas = {}
+    for venda in vendas:
+        comprador = venda.get('comprador', 'Sem nome')
+        if comprador not in compras_agrupadas:
+            compras_agrupadas[comprador] = {'quantidade': 0, 'numeros': set()}
+        
+        compras_agrupadas[comprador]['quantidade'] += 1
+        if 'numero' in venda:
+            compras_agrupadas[comprador]['numeros'].add(str(venda['numero']))
+    
+    # Converte para DataFrame para facilitar a exibição e ordenação
+    df = pd.DataFrame([
+        {
+            'Comprador': comprador,
+            'Quantidade': info['quantidade'],
+            'Valor Total': info['quantidade'] * valor_unit,
+            'Números': ', '.join(sorted(info['numeros'])) if info['quantidade'] <= 20 else f"{info['quantidade']} números"
+        }
+        for comprador, info in compras_agrupadas.items()
+    ])
+    
+    # Ordena por quantidade (maior primeiro)
+    df = df.sort_values('Quantidade', ascending=False)
+    
+    # Adiciona totais
+    total_geral = df['Valor Total'].sum()
+    total_numeros = df['Quantidade'].sum()
+    
+    # Paginação
+    items_por_pagina = 25
+    total_paginas = (len(df) + items_por_pagina - 1) // items_por_pagina
+    
+    # Controles de paginação
+    col1, col2, _ = st.columns([1, 1, 2])
+    with col1:
+        pagina_atual = st.number_input("Página do relatório", min_value=1, max_value=max(1, total_paginas), value=1, step=1)
+    with col2:
+        items_por_pagina = st.selectbox("Itens por página", options=[10, 25, 50, 100], index=1)
+    
+    # Atualiza total de páginas baseado no novo items_por_pagina
+    total_paginas = (len(df) + items_por_pagina - 1) // items_por_pagina
+    
+    # Página atual
+    inicio = (pagina_atual - 1) * items_por_pagina
+    fim = inicio + items_por_pagina
+    df_pagina = df.iloc[inicio:fim].copy()
+    
+    # Formata os valores monetários
+    df_display = df_pagina.copy()
+    df_display['Valor Total'] = df_display['Valor Total'].apply(lambda x: f"R$ {x:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.'))
+    
+    # Exibe a tabela
+    st.dataframe(
+        df_display[['Comprador', 'Quantidade', 'Valor Total', 'Números']],
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            'Comprador': st.column_config.TextColumn('Comprador'),
+            'Quantidade': st.column_config.NumberColumn('Quantidade'),
+            'Valor Total': st.column_config.TextColumn('Valor Total'),
+            'Números': st.column_config.TextColumn('Números Comprados')
+        }
+    )
+    
+    # Exibe totais
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Total de Compradores", len(df))
+    with col2:
+        st.metric("Total de Números", total_numeros)
+    
+    # Botão para exportar para PDF
+    if st.button("Exportar Relatório para PDF", type="primary"):
+        try:
+            pdf_bytes = _gerar_relatorio_comprador_pdf(
+                {row['Comprador']: {'quantidade': row['Quantidade']} for _, row in df.iterrows()},
+                nome_rifa,
+                valor_unit,
+                cfg.get('logo_path')
+            )
+            
+            st.download_button(
+                label="Baixar Relatório em PDF",
+                data=pdf_bytes,
+                file_name=f"relatorio_compradores_{nome_rifa}.pdf",
+                mime="application/pdf"
+            )
+        except Exception as e:
+            logger.error(f"Erro ao gerar relatório PDF: {str(e)}")
+            st.error(f"Erro ao gerar relatório: {str(e)}")
+
+
 def renderizar_analytics_tab(nome_rifa: str) -> None:
     st.header(f"📈 Análise de Performance: {nome_rifa}")
     cfg = dm.get_config_rifa(nome_rifa) or {}
@@ -217,32 +559,49 @@ def renderizar_analytics_tab(nome_rifa: str) -> None:
 
     st.markdown("---")
     st.subheader("Receita por dia")
+    
+    # Adiciona logs para depuração
+    logger.debug(f"Buscando receita por dia. Rifas: {nome_rifa}, Início: {start_iso}, Fim: {end_iso}")
+    
     try:
         rev_series = dm.get_revenue_by_day(nome_rifa, start_iso, end_iso)
-    except Exception:
+        logger.debug(f"Dados recebidos: {rev_series}")
+    except Exception as e:
+        logger.error(f"Erro ao buscar receita por dia: {e}", exc_info=True)
         rev_series = []
+        
     if rev_series:
         dfr = pd.DataFrame(rev_series)
         if not dfr.empty:
+            logger.debug(f"DataFrame receita diária: {dfr}")
             dfr["dia"] = pd.to_datetime(dfr["dia"]) 
             dfr = dfr.set_index("dia").sort_index()
             st.area_chart(dfr[["receita"]], width='stretch')
+            
+            # Exibe os dados brutos para depuração
+            with st.expander("Ver dados brutos (depuração)"):
+                st.dataframe(dfr)
     else:
-        st.info("Sem dados para receita por dia no período.")
+        st.warning("⚠️ Sem dados de receita diária. Verifique se existem vendas no período selecionado.")
+        logger.warning(f"Nenhum dado de receita encontrado para o período. Rifas: {nome_rifa}, Início: {start_iso}, Fim: {end_iso}")
 
     st.subheader("Receita acumulada")
     try:
         cum_series = dm.get_cumulative_revenue(nome_rifa, start_iso, end_iso)
-    except Exception:
+        logger.debug(f"Dados acumulados recebidos: {cum_series}")
+    except Exception as e:
+        logger.error(f"Erro ao buscar receita acumulada: {e}", exc_info=True)
         cum_series = []
+        
     if cum_series:
         dfc = pd.DataFrame(cum_series)
         if not dfc.empty:
+            logger.debug(f"DataFrame receita acumulada: {dfc}")
             dfc["dia"] = pd.to_datetime(dfc["dia"]) 
             dfc = dfc.set_index("dia").sort_index()
             st.line_chart(dfc[["acumulado"]], width='stretch')
     else:
-        st.info("Sem dados para receita acumulada no período.")
+        st.warning("⚠️ Sem dados de receita acumulada. Verifique se existem vendas no período selecionado.")
 
     st.subheader("Vendas por dia da semana (últimos 30 dias)")
     try:

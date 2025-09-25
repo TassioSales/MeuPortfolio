@@ -87,11 +87,11 @@ python setup.py
 <td width="33%" align="center">
 
 ### 🔑 **2. Configurar**
-```bash
-# Edite .streamlit/secrets.toml
-MISTRAL_API_KEY = "sua_chave"
-GEMINI_API_KEY = "sua_chave"
-```
+1. Execute o aplicativo
+2. No painel lateral, clique em "🔑 Configurar Chave Mistral"
+3. Insira sua chave da API Mistral
+4. Repita para a chave da API Gemini, se necessário
+
 <sub>APIs Mistral + Gemini</sub>
 
 </td>

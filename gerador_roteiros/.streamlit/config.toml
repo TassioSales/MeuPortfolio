@@ -3,7 +3,7 @@
 
 [server]
 # Configurações do servidor
-port = 8502
+port = 8501
 address = "0.0.0.0"
 headless = true
 enableCORS = false

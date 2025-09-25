@@ -294,33 +294,51 @@ def _parse_json_response(text: str) -> Optional[Dict[Any, Any]]:
 
 def get_api_key(provider: str) -> Optional[str]:
     """
-    Obtém a chave de API de forma segura.
+    Solicita ao usuário a chave de API do provedor especificado.
     
     Args:
         provider: Nome do provedor (Mistral ou Gemini)
         
     Returns:
-        str: A chave de API ou None se não encontrada
+        str: A chave de API fornecida pelo usuário ou None se cancelado
     """
     try:
         key_name = f"{provider.upper()}_API_KEY"
         
-        # Tenta obter da sessão primeiro
-        if key_name in st.session_state and st.session_state[key_name]:
-            key = st.session_state[key_name]
-            if key and len(key) > 10:  # Verificação básica de chave válida
-                return key
-                
-        # Se não encontrou na sessão, tenta nos secrets
-        if hasattr(st, 'secrets') and key_name in st.secrets:
-            key = st.secrets[key_name]
-            if key and len(key) > 10:  # Verificação básica de chave válida
-                return key
-                
-        return None
+        # Se já tiver na sessão, retorna
+        if key_name in st.session_state and st.session_state.get(key_name):
+            return st.session_state[key_name]
+            
+        # Se não tiver, pede ao usuário
+        with st.sidebar.expander(f"🔑 Configurar Chave {provider}", expanded=True):
+            st.info(f"Por favor, insira sua chave de API do {provider} para continuar.")
+            api_key = st.text_input(
+                f"Chave API {provider}",
+                type="password",
+                help=f"Sua chave de API do {provider}",
+                key=f"{key_name}_input"
+            )
+            
+            if st.button(f"Salvar Chave {provider}"):
+                if api_key and len(api_key) > 10:  # Verificação básica
+                    st.session_state[key_name] = api_key
+                    st.success(f"Chave {provider} configurada com sucesso!")
+                    st.rerun()
+                else:
+                    st.error("Por favor, insira uma chave de API válida.")
+            
+            st.markdown(f"""
+            <div style="margin-top: 1rem; padding: 0.5rem; background: var(--section-bg); border-radius: 0.5rem;">
+                <small>Não tem uma chave? Obtenha em:</small><br>
+                <a href="https://console.mistral.ai/" target="_blank" style="color: var(--primary);">Mistral AI</a> | 
+                <a href="https://ai.google.dev/" target="_blank" style="color: var(--primary);">Google Gemini</a>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        return st.session_state.get(key_name) if api_key else None
         
     except Exception as e:
-        logger.warning(f"Erro ao obter chave {provider}: {str(e)[:50]}...")  # Limita o log do erro
+        logger.error(f"Erro ao obter chave {provider}")
         return None
 
 def _call_mistral(user_prompt: str) -> Optional[str]:

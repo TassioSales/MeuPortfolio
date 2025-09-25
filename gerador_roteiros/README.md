@@ -332,9 +332,17 @@ python setup.py
 - ✅ Criação de ambiente virtual
 - ✅ Instalação de dependências
 - ✅ Configuração de arquivos de exemplo
-- ✅ Criação do `.streamlit/secrets.toml`
 
 ### 🔑 **Configuração das Chaves de API**
+
+Para maior segurança, o aplicativo solicitará que você insira suas chaves de API diretamente na interface. Siga estes passos:
+
+1. Inicie o aplicativo com `streamlit run app.py`
+2. No painel lateral, clique em "🔑 Configurar Chave Mistral"
+3. Insira sua chave da API Mistral e clique em "Salvar Chave"
+4. Repita o processo para a chave da API Gemini, se necessário
+
+#### Como obter suas chaves de API:
 
 <table>
 <tr>
@@ -344,7 +352,6 @@ python setup.py
 1. Acesse [console.mistral.ai](https://console.mistral.ai)
 2. Crie uma conta gratuita
 3. Gere uma API key
-4. Adicione no arquivo `secrets.toml`
 
 </td>
 <td width="50%">
@@ -353,27 +360,7 @@ python setup.py
 1. Acesse [makersuite.google.com](https://makersuite.google.com)
 2. Crie um projeto Google Cloud
 3. Gere uma API key
-4. Adicione no arquivo `secrets.toml`
-
-</td>
-</tr>
-</table>
-
-### 📝 **Exemplo de `secrets.toml`**
-
-```toml
-# 🔐 Chaves de API - NUNCA commite este arquivo com chaves reais
-
-# Mistral AI (obrigatória)
-MISTRAL_API_KEY = "sua_chave_mistral_aqui"
-
-# Google Gemini (opcional, usado como fallback)
-GEMINI_API_KEY = "sua_chave_gemini_aqui"
-
-# Configurações opcionais
-# DEBUG = false
-# LOG_LEVEL = "INFO"
-```
+4. Insira a chave no painel do aplicativo
 
 ### 🔧 **Instalação Manual (Alternativa)**
 
@@ -397,12 +384,10 @@ source venv/bin/activate
 # 4. Instale as dependências
 pip install -r requirements.txt
 
-# 5. Configure as chaves de API
-cp .streamlit/secrets.toml.example .streamlit/secrets.toml
-# Edite o arquivo com suas chaves
-
-# 6. Execute a aplicação
+# 5. Execute o aplicativo
 streamlit run app.py
+
+# 6. Configure as chaves de API no painel lateral do aplicativo
 ```
 
 </details>

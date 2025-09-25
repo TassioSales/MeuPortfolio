@@ -1,12 +1,12 @@
-streamlit==1.50.0
-loguru==0.7.3
-requests==2.31.0
-python-dotenv==1.0.0
-google-generativeai==0.8.5
-mistralai==1.9.10
-pandas==2.1.0
-numpy==1.26.0
-fastapi==0.104.1
-uvicorn==0.24.0
-httpx==0.25.0
-python-multipart==0.0.6
+streamlit>=1.50.0
+loguru>=0.7.3
+requests>=2.31.0
+python-dotenv>=1.0.0
+google-generativeai>=0.8.5
+mistralai>=1.9.10
+pandas>=2.2.0
+numpy>=1.26.0
+fastapi>=0.104.1
+uvicorn>=0.24.0
+httpx>=0.28.1  # Atualizado para versão compatível com mistralai
+python-multipart>=0.0.6

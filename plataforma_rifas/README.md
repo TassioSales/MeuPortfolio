@@ -250,16 +250,6 @@ docker tag plataforma_rifas-plataforma_rifas:latest tassiosales/plataforma_rifas
 docker push tassiosales/plataforma_rifas:latest
 ```
 
-### Produção puxando do Hub
-No `docker-compose.yml`, deixe apenas:
-```yaml
-image: tassiosales/plataforma_rifas:latest
-```
-e rode:
-```bash
-docker compose up -d
-```
-
 ---
 
 ## 🐛 Solução de Problemas

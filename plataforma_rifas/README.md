@@ -79,7 +79,7 @@ docker compose up --build -d
 </tr>
 </table>
 
-> 💡 Quer apenas testar? Acesse a demo online: [🎟️ Plataforma de Rifas PRO · Streamlit](https://plataforma-rifas-pro.streamlit.app)
+> 💡 Quer apenas testar? Acesse a demo online: [🎟️ Plataforma de Rifas PRO · Streamlit](https://xeg3axd6f4yuucwtaeypya.streamlit.app)
 
 > 📦 Para publicar no Docker Hub, veja a seção "Publicar no Docker Hub" mais abaixo.
 

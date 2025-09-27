@@ -1,10 +1,11 @@
 from __future__ import annotations
 import json
 import random
+import sqlite3
 from typing import Dict, List, Tuple, Optional, Any
 from datetime import datetime, timezone, timedelta
 from logger import logger
-import database as db # Note que o import agora é do novo arquivo de banco de dados
+from . import database as db  # Importação relativa correta
 
 # --- Gerenciamento de Rifas ---
 
@@ -337,15 +338,80 @@ def get_sales_by_day(nome_rifa: str) -> List[Dict]:
         conn.close()
 
 def get_top_buyers(nome_rifa: str, limit: int = 10) -> List[Dict]:
+    """
+    Retorna os principais compradores de uma rifa, ordenados pelo número de compras.
+    
+    Args:
+        nome_rifa (str): Nome da rifa
+        limit (int): Número máximo de compradores a retornar
+        
+    Returns:
+        List[Dict]: Lista de dicionários com 'comprador' e 'quantidade'
+    """
+    logger.info(f"Buscando top {limit} compradores para a rifa: {nome_rifa}")
+    
+    # Primeiro, verifica se a rifa existe
     conn = db.get_connection()
     try:
         cursor = conn.cursor()
+        
+        # Obtém o ID da rifa
+        cursor.execute("SELECT id FROM rifas WHERE nome = ?", (nome_rifa,))
+        rifa = cursor.fetchone()
+        
+        if not rifa:
+            logger.error(f"Rifa não encontrada: {nome_rifa}")
+            return []
+            
+        rifa_id = rifa['id']
+        
+        # Consulta otimizada para obter os principais compradores
         cursor.execute("""
-            SELECT comprador, COUNT(id) as quantidade
-            FROM vendas v JOIN rifas r ON v.rifa_id = r.id
-            WHERE r.nome = ?
-            GROUP BY comprador ORDER BY quantidade DESC LIMIT ?;
-        """, (nome_rifa, limit))
-        return [dict(row) for row in cursor.fetchall()]
+            SELECT 
+                comprador,
+                COUNT(*) as quantidade,
+                SUM(CASE WHEN data_compra IS NOT NULL THEN 1 ELSE 0 END) as compras_pagas
+            FROM vendas 
+            WHERE rifa_id = ?
+            GROUP BY comprador 
+            ORDER BY quantidade DESC 
+            LIMIT ?;
+        """, (rifa_id, limit))
+        
+        # Processa os resultados
+        result = []
+        for row in cursor.fetchall():
+            comprador = row['comprador']
+            quantidade = row['quantidade']
+            compras_pagas = row.get('compras_pagas', 0)
+            
+            # Formata o resultado
+            result.append({
+                'comprador': comprador,
+                'quantidade': quantidade,
+                'compras_pagas': compras_pagas
+            })
+            
+            logger.debug(f"Comprador: {comprador}, Números: {quantidade}, Pagos: {compras_pagas}")
+        
+        logger.info(f"Encontrados {len(result)} compradores para a rifa {nome_rifa}")
+        return result
+        
+    except Exception as e:
+        logger.exception(f"Erro ao buscar top compradores para a rifa {nome_rifa}")
+        # Em caso de erro, tenta um fallback mais simples
+        try:
+            cursor.execute("""
+                SELECT comprador, COUNT(*) as quantidade
+                FROM vendas 
+                WHERE rifa_id = ?
+                GROUP BY comprador 
+                ORDER BY quantidade DESC 
+                LIMIT ?;
+            """, (rifa_id, limit))
+            
+            return [dict(row) for row in cursor.fetchall()]
+        except:
+            return []
     finally:
         conn.close()

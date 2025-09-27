@@ -97,8 +97,12 @@ def _create_tables(conn: sqlite3.Connection) -> None:
             if "contato" not in cols:
                 cur.execute("ALTER TABLE vendas ADD COLUMN contato TEXT")
                 logger.success("Coluna 'contato' adicionada à tabela vendas")
+            # Adicionar coluna para data de compra personalizada
+            if "data_compra" not in cols:
+                cur.execute("ALTER TABLE vendas ADD COLUMN data_compra TEXT")
+                logger.success("Coluna 'data_compra' adicionada à tabela vendas")
         except sqlite3.Error as e:
-            logger.warning("Falha ao adicionar coluna 'contato' à tabela vendas (pode já existir)", exception=e)
+            logger.warning("Falha ao adicionar coluna à tabela vendas (pode já existir)", exception=e)
         # Garantir coluna owner_id em rifas
         try:
             cols = [r[1] for r in cur.execute("PRAGMA table_info(rifas)").fetchall()]

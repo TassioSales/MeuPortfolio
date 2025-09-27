@@ -1,0 +1,183 @@
+2025-09-27 11:00:13.128 | INFO     | logger:success:103 | system | none - SUCCESS: Diretório de dados criado ou verificado com sucesso: D:\GithubGit\MeuPortfolio\plataforma_rifas\data
+2025-09-27 11:00:13.428 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:00:13.430 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:00:13.431 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:13.432 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:13.433 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:13.433 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:13.434 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:13.434 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:13.434 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:13.434 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:13.435 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:00:13.435 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:00:13.435 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:00:13.436 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:00:13.436 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:00:13.815 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:13.816 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:13.817 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:13.817 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:13.818 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:13.819 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:13.819 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:13.819 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:13.823 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-27 11:00:15.840 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:00:15.841 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:00:15.843 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:15.843 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:15.844 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:15.845 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:15.845 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:15.846 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:15.846 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:15.846 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:15.847 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:00:15.848 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:00:15.848 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:00:15.848 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:00:15.849 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:00:15.854 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:15.855 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:15.857 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:15.860 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:15.863 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:15.864 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:15.864 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:15.864 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:15.869 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-27 11:00:17.600 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:00:17.601 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:00:17.603 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:17.604 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:17.604 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:17.605 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:17.606 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:17.607 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:17.608 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:17.609 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:17.610 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:00:17.610 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:00:17.611 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:00:17.611 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:00:17.613 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:00:17.623 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:17.624 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:17.625 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:17.625 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:17.626 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:17.627 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:17.627 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:17.627 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:17.638 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-27 11:00:18.904 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:00:18.905 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:00:18.906 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:18.906 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:18.907 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:18.907 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:18.908 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:18.909 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:18.909 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:18.909 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:18.910 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:00:18.911 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:00:18.912 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:00:18.912 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:00:18.913 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:00:18.915 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:18.916 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:18.916 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:18.917 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:18.917 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:18.920 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:18.921 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:18.921 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:19.148 | INFO     | logger:success:103 | system | 1 - SUCCESS: Usuário tassiolucian@gmail.com autenticado com sucesso
+2025-09-27 11:00:19.149 | INFO     | logger:success:103 | system | 1 - SUCCESS: Usuário tassiolucian@gmail.com logado com sucesso
+2025-09-27 11:00:19.214 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:00:19.216 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:00:19.217 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:19.218 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:19.218 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:19.219 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:19.220 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:19.220 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:19.221 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:19.221 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:19.221 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:00:19.222 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:00:19.222 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:00:19.223 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:00:19.223 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:00:19.227 | ERROR    | logger:error:116 | system | none - Erro crítico na aplicação | Exception: module 'modules.data_manager' has no attribute 'listar_rifas_do_usuario' | Traceback: Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 542, in <module>
+    main()
+    ~~~~^^
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 86, in main
+    nome_rifa = ui.renderizar_sidebar(user=user)
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\modules\ui_components.py", line 76, in renderizar_sidebar
+    rifas = dm.listar_rifas_do_usuario(user['id']) if user and 'id' in user else dm.listar_rifas()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'modules.data_manager' has no attribute 'listar_rifas_do_usuario'
+
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000001C2EE27A480>
+    └ <Thread(ScriptRunner.scriptThread, started 8020)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000001C2EE27A200>
+    └ <Thread(ScriptRunner.scriptThread, started 8020)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 8020)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 8020)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='ab3ef7f0-f254-493f-a66c-3b5fcbe0d038', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 8020)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x000001C2EEB018F0>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-3439cb8ab7cf...
+    │    └ <function ScriptRunner._run_script at 0x000001C2EEBF0180>
+    └ ScriptRunner(_session_id='ab3ef7f0-f254-493f-a66c-3b5fcbe0d038', _main_script_path='app.py', _session_state={$$STREAMLIT_INTE...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='ab3ef7f0-f254-493f-a66c-3b5fcbe0d038', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001C2F2549B20>
+        └ <function exec_func_with_error_handling at 0x000001C2EEB98180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001C2F2549B20>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x000001C2EF8A8380, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 542, in <module>
+    main()
+    └ <function main at 0x000001C2F23D4EA0>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 86, in main
+    nome_rifa = ui.renderizar_sidebar(user=user)
+                │  │                       └ {'id': 1, 'name': 'Tassio', 'email': 'tassiolucian@gmail.com'}
+                │  └ <function renderizar_sidebar at 0x000001C28CECD8A0>
+                └ <module 'modules.ui_components' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\modules\\ui_components.py'>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\modules\ui_components.py", line 76, in renderizar_sidebar
+    rifas = dm.listar_rifas_do_usuario(user['id']) if user and 'id' in user else dm.listar_rifas()
+            │                          │              │                │         │  └ <function listar_rifas at 0x000001C28CECDC60>
+            │                          │              │                │         └ <module 'modules.data_manager' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\modules\\data_manager.py'>
+            │                          │              │                └ {'id': 1, 'name': 'Tassio', 'email': 'tassiolucian@gmail.com'}
+            │                          │              └ {'id': 1, 'name': 'Tassio', 'email': 'tassiolucian@gmail.com'}
+            │                          └ {'id': 1, 'name': 'Tassio', 'email': 'tassiolucian@gmail.com'}
+            └ <module 'modules.data_manager' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\modules\\data_manager.py'>
+
+AttributeError: module 'modules.data_manager' has no attribute 'listar_rifas_do_usuario'

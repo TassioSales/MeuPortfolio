@@ -1,15 +1,18 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 import streamlit as st
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+import plotly.express as px
+import pandas as pd
+import altair as alt
 from pathlib import Path
 
 import pandas as pd
 import altair as alt
 from fpdf import FPDF
 import qrcode
-from . import db_data_manager as dm
+from . import db_data_manager as dm  # Usando o módulo db_data_manager que contém as funções necessárias
 from logger import logger
 from babel.numbers import format_currency
 
@@ -323,8 +326,13 @@ def _build_pdf_bytes(vendas_list, cfg_local, consolidate_buyer: str = None, nome
                         logger.error(f"Erro ao gerar página para venda {venda.get('numero', 'desconhecido')}: {e}")
                         continue
             
-            # Retorna os bytes do PDF
-            return pdf.output(dest='S').encode('latin1')
+            # Retorna os bytes do PDF, tratando diferentes tipos de retorno do FPDF
+            pdf_output = pdf.output(dest='S')
+            if isinstance(pdf_output, str):
+                return pdf_output.encode('latin1')
+            elif isinstance(pdf_output, bytearray):
+                return bytes(pdf_output)
+            return pdf_output
             
         except Exception as e:
             logger.error(f"Erro ao gerar PDF: {str(e)}", exc_info=True)
@@ -401,17 +409,38 @@ def _gerar_relatorio_comprador_pdf(compras_agrupadas: Dict, nome_rifa: str, valo
 def renderizar_relatorio_compradores(nome_rifa: str, vendas: List[Dict], valor_unit: float, cfg: Dict) -> None:
     """Renderiza o relatório de compradores com paginação e opção de exportar para PDF."""
     import pandas as pd
+    from datetime import datetime
     
     # Agrupa as vendas por comprador
     compras_agrupadas = {}
     for venda in vendas:
         comprador = venda.get('comprador', 'Sem nome')
         if comprador not in compras_agrupadas:
-            compras_agrupadas[comprador] = {'quantidade': 0, 'numeros': set()}
+            compras_agrupadas[comprador] = {
+                'quantidade': 0, 
+                'numeros': set(),
+                'ultima_compra': None
+            }
         
         compras_agrupadas[comprador]['quantidade'] += 1
         if 'numero' in venda:
             compras_agrupadas[comprador]['numeros'].add(str(venda['numero']))
+            
+        # Atualiza a data da última compra
+        data_compra = venda.get('data_compra') or venda.get('timestamp')
+        if data_compra:
+            try:
+                # Tenta converter para datetime para garantir o formato correto
+                if isinstance(data_compra, str):
+                    data_compra = datetime.fromisoformat(data_compra.replace('Z', '+00:00'))
+                
+                # Atualiza a data da última compra se for mais recente
+                if (compras_agrupadas[comprador]['ultima_compra'] is None or 
+                    (isinstance(data_compra, datetime) and 
+                     data_compra > compras_agrupadas[comprador]['ultima_compra'])):
+                    compras_agrupadas[comprador]['ultima_compra'] = data_compra
+            except (ValueError, TypeError) as e:
+                logger.warning(f"Erro ao processar data de compra: {data_compra}", exception=e)
     
     # Converte para DataFrame para facilitar a exibição e ordenação
     df = pd.DataFrame([
@@ -419,13 +448,14 @@ def renderizar_relatorio_compradores(nome_rifa: str, vendas: List[Dict], valor_u
             'Comprador': comprador,
             'Quantidade': info['quantidade'],
             'Valor Total': info['quantidade'] * valor_unit,
-            'Números': ', '.join(sorted(info['numeros'])) if info['quantidade'] <= 20 else f"{info['quantidade']} números"
+            'Números': ', '.join(sorted(info['numeros'])) if info['quantidade'] <= 20 else f"{info['quantidade']} números",
+            'Última Compra': info['ultima_compra'].strftime('%d/%m/%Y %H:%M') if info['ultima_compra'] else 'N/A'
         }
         for comprador, info in compras_agrupadas.items()
     ])
     
-    # Ordena por quantidade (maior primeiro)
-    df = df.sort_values('Quantidade', ascending=False)
+    # Ordena por data de compra (mais recente primeiro) e depois por nome do comprador
+    df = df.sort_values(['Última Compra', 'Comprador'], ascending=[False, True])
     
     # Adiciona totais
     total_geral = df['Valor Total'].sum()
@@ -633,22 +663,103 @@ def renderizar_analytics_tab(nome_rifa: str) -> None:
         st.info("Sem dados suficientes para distribuição por hora.")
 
     st.markdown("---")
-    st.subheader("Top compradores (qtd de números)")
+    st.subheader("🏆 Top Compradores")
+    
+    # Adiciona um seletor para o número de compradores a exibir
+    num_compradores = st.slider("Número de compradores a exibir:", 5, 20, 10, 5, key="num_compradores_slider")
+    
     try:
-        top = dm.get_top_buyers(nome_rifa)
-    except Exception:
-        top = []
-    if top:
-        dfb = pd.DataFrame(top)
-        if not dfb.empty:
-            dfb = dfb.set_index("comprador").sort_values("quantidade", ascending=False)
-            st.bar_chart(dfb, width='stretch')
-        # Ticket médio por comprador (aprox.)
-        dfb2 = dfb.copy()
-        dfb2["valor_aprox"] = dfb2["quantidade"] * valor_unit
-        st.dataframe(dfb2.sort_values("quantidade", ascending=False).rename(columns={"quantidade": "qtd"}), width='stretch')
-    else:
-        st.info("Sem dados suficientes para ranking de compradores.")
+        # Obtém os dados dos principais compradores
+        top = dm.get_top_buyers(nome_rifa, limit=num_compradores)
+        
+        if top:
+            # Cria um DataFrame com os dados
+            df = pd.DataFrame(top)
+            
+            # Calcula o valor total gasto por comprador
+            df['valor_total'] = df['quantidade'] * valor_unit
+            
+            # Ordena por quantidade (decrescente)
+            df = df.sort_values('quantidade', ascending=False)
+            
+            # Cria abas para diferentes visualizações
+            tab1, tab2 = st.tabs(["📊 Gráfico de Barras", "📋 Tabela Detalhada"])
+            
+            with tab1:
+                st.markdown(f"**Top {len(df)} Compradores por Quantidade de Números**")
+                
+                # Cria um gráfico de barras horizontal
+                fig = px.bar(
+                    df,
+                    x='quantidade',
+                    y='comprador',
+                    orientation='h',
+                    title=f'Top {len(df)} Compradores',
+                    labels={'quantidade': 'Números Comprados', 'comprador': 'Comprador'},
+                    color='quantidade',
+                    color_continuous_scale='Blues'
+                )
+                
+                # Melhora o layout do gráfico
+                fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    height=400,
+                    xaxis_title='Quantidade de Números',
+                    yaxis_title='',
+                    showlegend=False
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+            
+            with tab2:
+                st.markdown("**Detalhes dos Compradores**")
+                
+                # Formata os valores monetários
+                df_display = df.copy()
+                df_display['valor_total_fmt'] = df_display['valor_total'].apply(
+                    lambda x: f'R$ {x:,.2f}'.replace(',', 'v').replace('.', ',').replace('v', '.')
+                )
+                
+                # Calcula o percentual em relação ao total
+                total_vendido = df['quantidade'].sum()
+                df_display['percentual'] = (df_display['quantidade'] / total_vendido * 100).round(1)
+                
+                # Exibe a tabela formatada
+                st.dataframe(
+                    df_display[['comprador', 'quantidade', 'compras_pagas', 'percentual', 'valor_total_fmt']]
+                    .rename(columns={
+                        'comprador': 'Comprador',
+                        'quantidade': 'Números',
+                        'compras_pagas': 'Pagos',
+                        'percentual': '% Total',
+                        'valor_total_fmt': 'Valor Total'
+                    }),
+                    use_container_width=True,
+                    hide_index=True,
+                    column_config={
+                        'Números': st.column_config.NumberColumn(format="%d"),
+                        'Pagos': st.column_config.NumberColumn(format="%d"),
+                        '% Total': st.column_config.ProgressColumn(
+                            format='%.1f%%',
+                            min_value=0,
+                            max_value=100
+                        ),
+                        'Valor Total': st.column_config.TextColumn()
+                    }
+                )
+                
+                # Exibe métricas resumidas
+                st.metric("Total de Compradores", len(df))
+                st.metric("Total de Números Vendidos", total_vendido)
+                st.metric("Valor Total Arrecadado", 
+                         f'R$ {sum(df["valor_total"]):,.2f}'.replace(',', 'v').replace('.', ',').replace('v', '.'))
+        else:
+            st.info("Nenhum dado de compradores encontrado para esta rifa.")
+            
+    except Exception as e:
+        logger.exception("Erro ao carregar ranking de compradores")
+        st.error(f"Ocorreu um erro ao carregar o ranking de compradores: {str(e)}")
+        st.info("Tente atualizar a página ou verificar os logs para mais detalhes.")
 
     st.markdown("---")
     st.subheader("Heatmap: Dia da semana x Hora (últimos 30 dias)")
@@ -790,22 +901,36 @@ def renderizar_grid_vendas(nome_rifa: str, dados: Dict[str, str], cfg: Dict):
 
     with st.form(key=f"form_venda_{nome_rifa}"):
         tipo = st.radio("Ação", ["Venda", "Reserva", "Cancelar reserva"], horizontal=True)
-        numeros_txt = st.text_input("Números (ex: 1-10, 25, 30)")
+        numeros_txt = st.text_input("Números (ex: 1-10, 25)")
         comprador = st.text_input("Nome do comprador", disabled=(tipo != "Venda"))
         contato = st.text_input("Contato (telefone/WhatsApp) (opcional)", disabled=(tipo != "Venda"))
+        
+        # Adicionar campo de data de compra apenas para vendas
+        data_compra = None
+        if tipo == "Venda":
+            data_compra = st.date_input("Data da compra (opcional)", value=None, format="DD/MM/YYYY")
+            if data_compra:
+                # Converter para string no formato ISO 8601
+                data_compra = data_compra.isoformat()
+            
         submitted = st.form_submit_button("Confirmar Ação", use_container_width=True)
 
     if submitted:
         nums = _parse_ranges(numeros_txt)
         if not nums:
-            st.warning("Informe ao menos um número válido.")
             return
 
         if tipo == "Venda":
             if not comprador.strip():
                 st.warning("Informe o nome do comprador.")
                 return
-            ok, detalhes, msg = dm.registrar_venda(nome_rifa, comprador.strip(), nums, contato=contato.strip() or None)
+            ok, detalhes, msg = dm.registrar_venda(
+                nome_rifa, 
+                comprador.strip(), 
+                nums, 
+                contato=contato.strip() or None,
+                data_compra=data_compra
+            )
             if ok:
                 st.success(f"{msg}: {detalhes}")
                 st.rerun()

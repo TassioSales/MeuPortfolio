@@ -1,16 +1,19 @@
 from __future__ import annotations
-
-from typing import Dict, List, Tuple, Optional, Any
-from datetime import datetime, timezone, timedelta
 import json
 import random
-from pathlib import Path
+import sqlite3
+from typing import Dict, List, Tuple, Optional, Any
+from datetime import datetime, timezone, timedelta
+from pathlib import Path  # Adicionando importação do Path
+from logger import logger
+from .database import get_connection  # Importando a função get_connection diretamente
+
+# Manter a importação do módulo database para outras funções que podem precisar
+from . import database as db
 import bcrypt
 import os
 import io
 import zipfile
-
-from . import database as db
 from logger import get_logger
 
 logger = get_logger(__name__)
@@ -656,13 +659,26 @@ def carregar_dados_rifa(nome_rifa: str) -> Dict[str, str]:
     finally:
         conn.close()
 
-def registrar_venda(nome_rifa: str, nome_comprador: str, numeros: List[int], contato: Optional[str] = None) -> Tuple[bool, List[int], str]:
+def registrar_venda(nome_rifa: str, nome_comprador: str, numeros: List[int], contato: Optional[str] = None, data_compra: Optional[str] = None) -> Tuple[bool, List[int], str]:
     if not isinstance(numeros, list):
         numeros = [int(numeros)]
     nome_comprador = (nome_comprador or "").strip()
     if not nome_comprador:
         logger.warning("Tentativa de registrar venda com comprador inválido", rifa=nome_rifa)
         return False, numeros, "Comprador inválido."
+    
+    # Validar e formatar a data de compra, se fornecida
+    if data_compra:
+        try:
+            # Tenta converter para datetime para validar o formato
+            from datetime import datetime
+            data_obj = datetime.fromisoformat(data_compra.replace('Z', '+00:00'))
+            # Garante que está no formato ISO 8601 com timezone
+            data_compra = data_obj.isoformat()
+        except (ValueError, AttributeError) as e:
+            logger.warning(f"Formato de data inválido: {data_compra}", exception=e)
+            return False, numeros, "Formato de data inválido. Use o formato AAAA-MM-DD ou AAAA-MM-DDTHH:MM:SS±HH:MM"
+    
     conn = db.get_connection()
     try:
         with conn:
@@ -687,10 +703,14 @@ def registrar_venda(nome_rifa: str, nome_comprador: str, numeros: List[int], con
             if conflitos:
                 logger.warning(f"Números já vendidos para rifa {nome_rifa}", conflitos=conflitos)
                 return False, sorted(conflitos), "Alguns números já foram vendidos."
-            ts = _utcnow_iso()
-            vendas = [(rifa_id, n, nome_comprador, ts, (contato or "")) for n in nums]
+            
+            # Usa a data fornecida ou a data/hora atual
+            ts = data_compra if data_compra else _utcnow_iso()
+            
+            # Inserir vendas com data de compra
+            vendas = [(rifa_id, n, nome_comprador, ts, (contato or ""), ts) for n in nums]
             cur.executemany(
-                "INSERT INTO vendas (rifa_id, numero, comprador, timestamp, contato) VALUES (?, ?, ?, ?, ?)",
+                "INSERT INTO vendas (rifa_id, numero, comprador, timestamp, contato, data_compra) VALUES (?, ?, ?, ?, ?, ?)",
                 vendas,
             )
             cur.execute(
@@ -933,29 +953,104 @@ def escolher_vencedor(nome_rifa: str) -> Tuple[bool, Optional[int], Optional[str
             logger.success(f"Sorteio realizado para rifa {nome_rifa}", numero=numero_sorteado, comprador=comprador)
             return True, numero_sorteado, comprador, "Sorteio realizado com sucesso."
     except Exception as e:
-        logger.error(f"Falha ao realizar sorteio para rifa {nome_rifa}", exception=e)
+        logger.exception(f"Erro ao realizar sorteio para rifa {nome_rifa}")
         return False, None, None, f"Erro ao realizar sorteio: {str(e)}"
-    finally:
-        conn.close()
 
-def listar_compradores(nome_rifa: str) -> List[str]:
-    conn = db.get_connection()
+def get_top_buyers(nome_rifa: str, limit: int = 10) -> List[Dict]:
+    """
+    Retorna os principais compradores de uma rifa, ordenados pelo número de compras.
+    
+    Args:
+        nome_rifa (str): Nome da rifa
+        limit (int): Número máximo de compradores a retornar
+        
+    Returns:
+        List[Dict]: Lista de dicionários com 'comprador' e 'quantidade'
+    """
+    logger.info(f"Buscando top {limit} compradores para a rifa: {nome_rifa}")
+    
+    conn = get_connection()
     try:
-        cur = conn.cursor()
-        cur.execute(
-            """
-            SELECT DISTINCT comprador FROM vendas v
-            JOIN rifas r ON v.rifa_id = r.id
-            WHERE r.nome = ? ORDER BY comprador ASC
-            """,
-            (nome_rifa,),
-        )
-        data = [row["comprador"] for row in cur.fetchall()]
-        logger.debug(f"Compradores listados para rifa {nome_rifa}", count=len(data))
-        return data
+        cursor = conn.cursor()
+        
+        # Obtém o ID da rifa e o valor unitário
+        cursor.execute("SELECT id, valor_numero FROM rifas WHERE nome = ?", (nome_rifa,))
+        rifa = cursor.fetchone()
+        
+        if not rifa:
+            logger.error(f"Rifa não encontrada: {nome_rifa}")
+            return []
+            
+        rifa_id = rifa['id']
+        valor_unit = float(rifa['valor_numero'])
+        
+        # Consulta otimizada para obter os principais compradores
+        cursor.execute("""
+            SELECT 
+                comprador,
+                COUNT(*) as quantidade,
+                SUM(CASE WHEN data_compra IS NOT NULL THEN 1 ELSE 0 END) as compras_pagas
+            FROM vendas 
+            WHERE rifa_id = ?
+            GROUP BY comprador 
+            ORDER BY quantidade DESC 
+            LIMIT ?;
+        """, (rifa_id, limit))
+        
+        # Processa os resultados
+        result = []
+        for row in cursor.fetchall():
+            comprador = row['comprador']
+            quantidade = row['quantidade']
+            compras_pagas = row.get('compras_pagas', 0)
+            
+            # Formata o resultado
+            result.append({
+                'comprador': comprador,
+                'quantidade': quantidade,
+                'compras_pagas': compras_pagas,
+                'valor_total': quantidade * valor_unit
+            })
+            
+            logger.debug(f"Comprador: {comprador}, Números: {quantidade}, Pagos: {compras_pagas}")
+        
+        logger.info(f"Encontrados {len(result)} compradores para a rifa {nome_rifa}")
+        return result
+        
     except Exception as e:
-        logger.error(f"Falha ao listar compradores para rifa {nome_rifa}", exception=e)
-        return []
+        logger.error(f"Erro ao buscar top compradores para a rifa {nome_rifa}", exception=e)
+        # Em caso de erro, tenta um fallback mais simples
+        try:
+            # Obtém o valor unitário para o cálculo do valor_total
+            cursor.execute("SELECT valor_numero FROM rifas WHERE id = ?", (rifa_id,))
+            rifa = cursor.fetchone()
+            valor_unit = float(rifa['valor_numero']) if rifa else 0
+            
+            cursor.execute("""
+                SELECT comprador, COUNT(*) as quantidade
+                FROM vendas 
+                WHERE rifa_id = ?
+                GROUP BY comprador 
+                ORDER BY quantidade DESC 
+                LIMIT ?;
+            """, (rifa_id, limit))
+            
+            # Garante que todos os campos necessários estejam presentes
+            result = []
+            for row in cursor.fetchall():
+                comprador = row['comprador']
+                quantidade = row['quantidade']
+                result.append({
+                    'comprador': comprador,
+                    'quantidade': quantidade,
+                    'compras_pagas': 0,  # Valor padrão para o fallback
+                    'valor_total': quantidade * valor_unit
+                })
+            
+            return result
+        except Exception as e2:
+            logger.error("Erro no fallback de busca de compradores", exception=e2)
+            return []
     finally:
         conn.close()
 

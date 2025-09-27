@@ -1,0 +1,689 @@
+2025-09-27 11:00:42.543 | INFO     | logger:success:103 | system | none - SUCCESS: Diretório de dados criado ou verificado com sucesso: D:\GithubGit\MeuPortfolio\plataforma_rifas\data
+2025-09-27 11:00:42.565 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:00:42.566 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:00:42.568 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:42.569 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:42.570 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:42.571 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:42.572 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:42.573 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:42.573 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:42.574 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:42.575 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:00:42.576 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:00:42.576 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:00:42.577 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:00:42.578 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:00:42.581 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:42.582 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:42.583 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:42.583 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:42.584 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:42.585 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:42.586 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:42.586 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:42.587 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-27 11:00:42.593 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:42.594 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:42.595 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:42.596 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:42.598 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:42.599 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:42.599 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:42.599 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:42.601 | DEBUG    | logger:debug:95 | system | none - Rifas sem dono listadas
+2025-09-27 11:00:42.602 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-27 11:00:54.441 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:00:54.443 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:00:54.444 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.445 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.446 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.447 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.448 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.448 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.449 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.449 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.450 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:00:54.450 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:00:54.451 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:00:54.451 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:00:54.452 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:00:54.455 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.456 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.456 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.457 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.459 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.460 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.461 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.462 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.463 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-27 11:00:54.470 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.471 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.474 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.475 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.476 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.477 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.477 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.478 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.478 | DEBUG    | logger:debug:95 | system | none - Rifas sem dono listadas
+2025-09-27 11:00:54.483 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.484 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.485 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.485 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.486 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.487 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.489 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.490 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.492 | DEBUG    | logger:debug:95 | system | none - Configuração da rifa Rifa solidaria  carregada
+2025-09-27 11:00:54.494 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.494 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.495 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.495 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.496 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.497 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.498 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.498 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.500 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-27 11:00:54.500 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-27 11:00:54.637 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.638 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.640 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.640 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.641 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.641 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.642 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.642 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.643 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.644 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.644 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.645 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.646 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.647 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.647 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.647 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.648 | DEBUG    | logger:debug:95 | system | none - Reservas detalhadas carregadas para rifa Rifa solidaria 
+2025-09-27 11:00:54.676 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.677 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.678 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.678 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.679 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.680 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.680 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.680 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.682 | DEBUG    | logger:debug:95 | system | none - Vendas no período carregadas para rifa Rifa solidaria 
+2025-09-27 11:00:54.690 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-27 11:00:54.696 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.698 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.699 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.700 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.702 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.703 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.703 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.704 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.707 | DEBUG    | logger:debug:95 | system | none - Vendas no período carregadas para rifa Rifa solidaria 
+2025-09-27 11:00:54.714 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-27 11:00:54.722 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.723 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.725 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.725 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.727 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.728 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.729 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.730 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.732 | DEBUG    | logger:debug:95 | system | none - Vendas no período carregadas para rifa Rifa solidaria 
+2025-09-27 11:00:54.748 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.750 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.751 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.752 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.756 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.758 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.759 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.759 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.760 | DEBUG    | logger:debug:95 | system | none - Configuração da rifa Rifa solidaria  carregada
+2025-09-27 11:00:54.762 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.763 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.766 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.767 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.768 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.768 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.769 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.769 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.771 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-27 11:00:54.782 | DEBUG    | modules.ui_components:renderizar_analytics_tab:594 | system | none - Buscando receita por dia. Rifas: Rifa solidaria , Início: 2025-08-28T14:00:54.775649+00:00, Fim: None
+2025-09-27 11:00:54.784 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.785 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.786 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.787 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.788 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.789 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.790 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.791 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.793 | DEBUG    | logger:debug:95 | system | none - Receita por dia carregada para rifa Rifa solidaria 
+2025-09-27 11:00:54.793 | DEBUG    | modules.ui_components:renderizar_analytics_tab:598 | system | none - Dados recebidos: [{'dia': '2025-09-24', 'receita': 450.0, 'qtd': 45}, {'dia': '2025-09-25', 'receita': 170.0, 'qtd': 17}, {'dia': '2025-09-26', 'receita': 30.0, 'qtd': 3}]
+2025-09-27 11:00:54.804 | DEBUG    | modules.ui_components:renderizar_analytics_tab:606 | system | none - DataFrame receita diária:           dia  receita  qtd
+0  2025-09-24    450.0   45
+1  2025-09-25    170.0   17
+2  2025-09-26     30.0    3
+2025-09-27 11:00:54.874 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.875 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.875 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.876 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.877 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.877 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.877 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.878 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.879 | DEBUG    | logger:debug:95 | system | none - Receita por dia carregada para rifa Rifa solidaria 
+2025-09-27 11:00:54.880 | DEBUG    | logger:debug:95 | system | none - Receita acumulada calculada para rifa Rifa solidaria 
+2025-09-27 11:00:54.880 | DEBUG    | modules.ui_components:renderizar_analytics_tab:621 | system | none - Dados acumulados recebidos: [{'dia': '2025-09-24', 'acumulado': 450.0}, {'dia': '2025-09-25', 'acumulado': 620.0}, {'dia': '2025-09-26', 'acumulado': 650.0}]
+2025-09-27 11:00:54.885 | DEBUG    | modules.ui_components:renderizar_analytics_tab:629 | system | none - DataFrame receita acumulada:           dia  acumulado
+0  2025-09-24      450.0
+1  2025-09-25      620.0
+2  2025-09-26      650.0
+2025-09-27 11:00:54.957 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.958 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.958 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.959 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.959 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.960 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.960 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.960 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.961 | DEBUG    | logger:debug:95 | system | none - Vendas por dia da semana carregadas para rifa Rifa solidaria 
+2025-09-27 11:00:54.981 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:54.982 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:54.982 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:54.983 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:54.984 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:54.985 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:54.986 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:54.986 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:54.987 | DEBUG    | logger:debug:95 | system | none - Vendas por hora carregadas para rifa Rifa solidaria 
+2025-09-27 11:00:55.003 | ERROR    | modules.ui_components:renderizar_analytics_tab:760 | system | none - Erro ao carregar ranking de compradores
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000001C2EE27A480>
+    └ <Thread(ScriptRunner.scriptThread, started 26428)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000001C2EE27A200>
+    └ <Thread(ScriptRunner.scriptThread, started 26428)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 26428)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 26428)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='ab3ef7f0-f254-493f-a66c-3b5fcbe0d038', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 26428)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x000001C2EEB018F0>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-c79d52d54953...
+    │    └ <function ScriptRunner._run_script at 0x000001C2EEBF0180>
+    └ ScriptRunner(_session_id='ab3ef7f0-f254-493f-a66c-3b5fcbe0d038', _main_script_path='app.py', _session_state={$$ID-6a01b8bd04c...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='ab3ef7f0-f254-493f-a66c-3b5fcbe0d038', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001C2F23D42C0>
+        └ <function exec_func_with_error_handling at 0x000001C2EEB98180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001C2F23D42C0>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x000001C28B983630, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 542, in <module>
+    main()
+    └ <function main at 0x000001C28C774860>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 266, in main
+    ui.renderizar_analytics_tab(nome_rifa)
+    │  │                        └ 'Rifa solidaria '
+    │  └ <function renderizar_analytics_tab at 0x000001C28E0D59E0>
+    └ <module 'modules.ui_components' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\modules\\ui_components.py'>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\modules\ui_components.py", line 673, in renderizar_analytics_tab
+    top = dm.get_top_buyers(nome_rifa, limit=num_compradores)
+          │                 │                └ 10
+          │                 └ 'Rifa solidaria '
+          └ <module 'modules.db_data_manager' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\modules\\db_data_manager.py'>
+
+AttributeError: module 'modules.db_data_manager' has no attribute 'get_top_buyers'
+2025-09-27 11:00:55.011 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:55.011 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:55.012 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:55.013 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:55.014 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:55.014 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:55.015 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:55.015 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:55.016 | DEBUG    | logger:debug:95 | system | none - Heatmap de vendas carregado para rifa Rifa solidaria 
+2025-09-27 11:00:55.046 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:55.047 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:55.047 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:55.048 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:55.048 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:55.049 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:55.049 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:55.050 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:55.050 | DEBUG    | logger:debug:95 | system | none - Vendas no período carregadas para rifa Rifa solidaria 
+2025-09-27 11:00:55.052 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-27 11:00:55.063 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:55.064 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:55.064 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:55.065 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:55.066 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:55.068 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:55.069 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:55.070 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:55.071 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-27 11:00:55.073 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-27 11:00:55.076 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:00:55.077 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:00:55.078 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:00:55.080 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:00:55.081 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:00:55.083 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:00:55.083 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:00:55.084 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:00:55.085 | DEBUG    | logger:debug:95 | system | none - Rifas sem dono listadas
+2025-09-27 11:00:55.086 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação
+2025-09-27 11:02:00.334 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:02:00.336 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:02:00.337 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:00.338 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:00.339 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:00.340 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:00.341 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:00.341 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:00.342 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:00.342 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:00.343 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:02:00.344 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:02:00.345 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:02:00.346 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:02:00.347 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:02:00.353 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:00.356 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:00.357 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:00.358 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:00.359 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:00.360 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:00.361 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:00.361 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:00.363 | DEBUG    | logger:debug:95 | system | none - Rifas listadas
+2025-09-27 11:02:00.369 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-27 11:02:03.098 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:02:03.099 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:02:03.101 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:03.101 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:03.102 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:03.102 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:03.104 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:03.104 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:03.105 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:03.105 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:03.106 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:02:03.107 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:02:03.108 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:02:03.108 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:02:03.109 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:02:03.116 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:03.118 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:03.119 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:03.121 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:03.125 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:03.128 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:03.128 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:03.129 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:03.131 | DEBUG    | logger:debug:95 | system | none - Rifas listadas
+2025-09-27 11:02:03.136 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-27 11:02:05.602 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:02:05.603 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:02:05.604 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:05.605 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:05.605 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:05.606 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:05.608 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:05.609 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:05.610 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:05.610 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:05.611 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:02:05.612 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:02:05.612 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:02:05.613 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:02:05.614 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:02:05.620 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:05.621 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:05.622 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:05.623 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:05.625 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:05.627 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:05.627 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:05.627 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:05.628 | DEBUG    | logger:debug:95 | system | none - Rifas listadas
+2025-09-27 11:02:05.635 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-27 11:02:07.104 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:02:07.105 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:02:07.106 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:07.107 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:07.108 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:07.108 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:07.109 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:07.110 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:07.110 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:07.111 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:07.111 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:02:07.112 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:02:07.113 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:02:07.113 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:02:07.114 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:02:07.120 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:07.121 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:07.122 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:07.122 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:07.123 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:07.124 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:07.124 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:07.124 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:07.372 | INFO     | logger:success:103 | system | 1 - SUCCESS: Usuário tassiolucian@gmail.com autenticado com sucesso
+2025-09-27 11:02:07.373 | INFO     | logger:success:103 | system | 1 - SUCCESS: Usuário tassiolucian@gmail.com logado com sucesso
+2025-09-27 11:02:07.448 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:02:07.449 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:02:07.451 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:07.452 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:07.452 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:07.453 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:07.453 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:07.454 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:07.454 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:07.454 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:07.455 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:02:07.456 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:02:07.456 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:02:07.456 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:02:07.457 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:02:07.460 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:07.461 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:07.462 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:07.462 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:07.463 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:07.464 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:07.465 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:07.465 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:07.466 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-27 11:02:07.472 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:07.472 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:07.472 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:07.473 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:07.474 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:07.474 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:07.474 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:07.475 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:07.478 | DEBUG    | logger:debug:95 | system | none - Rifas sem dono listadas
+2025-09-27 11:02:07.482 | INFO     | logger:info:99 | system | none - Nenhuma rifa selecionada, aplicação pausada
+2025-09-27 11:02:10.289 | INFO     | logger:info:99 | system | none - Aplicação iniciada
+2025-09-27 11:02:10.290 | DEBUG    | logger:debug:95 | system | none - index.json carregado com 3 rifas
+2025-09-27 11:02:10.292 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.292 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.293 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.293 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.294 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.295 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.295 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.296 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.297 | DEBUG    | logger:debug:95 | system | none - Rifa Rifa solidaria  já existe no DB, pulando migração
+2025-09-27 11:02:10.297 | DEBUG    | logger:debug:95 | system | none - Rifa teste2 já existe no DB, pulando migração
+2025-09-27 11:02:10.298 | DEBUG    | logger:debug:95 | system | none - Rifa tste já existe no DB, pulando migração
+2025-09-27 11:02:10.298 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite concluída
+2025-09-27 11:02:10.299 | INFO     | logger:success:103 | system | none - SUCCESS: Migração JSON→SQLite executada com sucesso
+2025-09-27 11:02:10.305 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.305 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.306 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.306 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.308 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.308 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.309 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.309 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.309 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-27 11:02:10.319 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.320 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.321 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.323 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.324 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.325 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.326 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.326 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.326 | DEBUG    | logger:debug:95 | system | none - Rifas sem dono listadas
+2025-09-27 11:02:10.330 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.331 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.332 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.332 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.334 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.335 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.335 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.335 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.336 | DEBUG    | logger:debug:95 | system | none - Configuração da rifa Rifa solidaria  carregada
+2025-09-27 11:02:10.338 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.339 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.340 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.340 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.341 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.342 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.342 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.343 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.344 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-27 11:02:10.347 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-27 11:02:10.357 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.358 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.359 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.360 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.363 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.365 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.366 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.367 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.370 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.371 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.372 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.372 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.373 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.374 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.374 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.375 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.375 | DEBUG    | logger:debug:95 | system | none - Reservas detalhadas carregadas para rifa Rifa solidaria 
+2025-09-27 11:02:10.412 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.413 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.414 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.415 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.416 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.418 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.419 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.419 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.422 | DEBUG    | logger:debug:95 | system | none - Vendas no período carregadas para rifa Rifa solidaria 
+2025-09-27 11:02:10.430 | DEBUG    | logger:debug:95 | system | none - Histórico de vendas exibido para rifa Rifa solidaria 
+2025-09-27 11:02:10.440 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.441 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.442 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.443 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.443 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.446 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.446 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.447 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.450 | DEBUG    | logger:debug:95 | system | none - Vendas no período carregadas para rifa Rifa solidaria 
+2025-09-27 11:02:10.455 | INFO     | logger:success:103 | system | none - SUCCESS: CSV de vendas gerado para rifa Rifa solidaria 
+2025-09-27 11:02:10.466 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.467 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.468 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.468 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.470 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.471 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.471 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.472 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.474 | DEBUG    | logger:debug:95 | system | none - Vendas no período carregadas para rifa Rifa solidaria 
+2025-09-27 11:02:10.510 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.520 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.526 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.526 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.542 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.543 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.544 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.547 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.548 | DEBUG    | logger:debug:95 | system | none - Configuração da rifa Rifa solidaria  carregada
+2025-09-27 11:02:10.550 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.551 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.560 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.565 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.566 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.568 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.569 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.570 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.572 | DEBUG    | logger:debug:95 | system | none - Dados da rifa Rifa solidaria  carregados
+2025-09-27 11:02:10.581 | DEBUG    | modules.ui_components:renderizar_analytics_tab:594 | system | none - Buscando receita por dia. Rifas: Rifa solidaria , Início: 2025-08-28T14:02:10.576719+00:00, Fim: None
+2025-09-27 11:02:10.583 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.584 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.584 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.585 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.587 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.589 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.590 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.590 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.591 | DEBUG    | logger:debug:95 | system | none - Receita por dia carregada para rifa Rifa solidaria 
+2025-09-27 11:02:10.592 | DEBUG    | modules.ui_components:renderizar_analytics_tab:598 | system | none - Dados recebidos: [{'dia': '2025-09-24', 'receita': 450.0, 'qtd': 45}, {'dia': '2025-09-25', 'receita': 170.0, 'qtd': 17}, {'dia': '2025-09-26', 'receita': 30.0, 'qtd': 3}]
+2025-09-27 11:02:10.608 | DEBUG    | modules.ui_components:renderizar_analytics_tab:606 | system | none - DataFrame receita diária:           dia  receita  qtd
+0  2025-09-24    450.0   45
+1  2025-09-25    170.0   17
+2  2025-09-26     30.0    3
+2025-09-27 11:02:10.634 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.635 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.636 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.637 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.639 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.640 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.640 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.641 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.642 | DEBUG    | logger:debug:95 | system | none - Receita por dia carregada para rifa Rifa solidaria 
+2025-09-27 11:02:10.643 | DEBUG    | logger:debug:95 | system | none - Receita acumulada calculada para rifa Rifa solidaria 
+2025-09-27 11:02:10.643 | DEBUG    | modules.ui_components:renderizar_analytics_tab:621 | system | none - Dados acumulados recebidos: [{'dia': '2025-09-24', 'acumulado': 450.0}, {'dia': '2025-09-25', 'acumulado': 620.0}, {'dia': '2025-09-26', 'acumulado': 650.0}]
+2025-09-27 11:02:10.650 | DEBUG    | modules.ui_components:renderizar_analytics_tab:629 | system | none - DataFrame receita acumulada:           dia  acumulado
+0  2025-09-24      450.0
+1  2025-09-25      620.0
+2  2025-09-26      650.0
+2025-09-27 11:02:10.724 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.725 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.726 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.726 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.728 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.730 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.730 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.731 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.732 | DEBUG    | logger:debug:95 | system | none - Vendas por dia da semana carregadas para rifa Rifa solidaria 
+2025-09-27 11:02:10.751 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.753 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.754 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.756 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.757 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.758 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.758 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.758 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.759 | DEBUG    | logger:debug:95 | system | none - Vendas por hora carregadas para rifa Rifa solidaria 
+2025-09-27 11:02:10.775 | ERROR    | modules.ui_components:renderizar_analytics_tab:760 | system | none - Erro ao carregar ranking de compradores
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1014, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000001C2EE27A480>
+    └ <Thread(ScriptRunner.scriptThread, started 21092)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x000001C2EE27A200>
+    └ <Thread(ScriptRunner.scriptThread, started 21092)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2032.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 21092)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 21092)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='031d2026-4078-44c6-b1a8-7314ee8480cc', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 21092)>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 378, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x000001C2EEB018F0>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-84d96220c70d...
+    │    └ <function ScriptRunner._run_script at 0x000001C2EEBF0180>
+    └ ScriptRunner(_session_id='031d2026-4078-44c6-b1a8-7314ee8480cc', _main_script_path='app.py', _session_state={$$ID-6a01b8bd04c...
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 685, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='031d2026-4078-44c6-b1a8-7314ee8480cc', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001C28E467B00>
+        └ <function exec_func_with_error_handling at 0x000001C2EEB98180>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\exec_code.py", line 128, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x000001C28E467B00>
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\venv\Lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from 'app.py'>
+         └ <code object <module> at 0x000001C28B9881C0, file "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 1>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 542, in <module>
+    main()
+    └ <function main at 0x000001C28E466480>
+
+  File "D:\GithubGit\MeuPortfolio\plataforma_rifas\app.py", line 266, in main
+    ui.renderizar_analytics_tab(nome_rifa)
+    │  │                        └ 'Rifa solidaria '
+    │  └ <function renderizar_analytics_tab at 0x000001C28E0D59E0>
+    └ <module 'modules.ui_components' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\modules\\ui_components.py'>
+
+> File "D:\GithubGit\MeuPortfolio\plataforma_rifas\modules\ui_components.py", line 673, in renderizar_analytics_tab
+    top = dm.get_top_buyers(nome_rifa, limit=num_compradores)
+          │                 │                └ 10
+          │                 └ 'Rifa solidaria '
+          └ <module 'modules.db_data_manager' from 'D:\\GithubGit\\MeuPortfolio\\plataforma_rifas\\modules\\db_data_manager.py'>
+
+AttributeError: module 'modules.db_data_manager' has no attribute 'get_top_buyers'
+2025-09-27 11:02:10.782 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.783 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.784 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.784 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.785 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.785 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.785 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.786 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.787 | DEBUG    | logger:debug:95 | system | none - Heatmap de vendas carregado para rifa Rifa solidaria 
+2025-09-27 11:02:10.812 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.814 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.814 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.815 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.816 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.817 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.818 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.818 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.819 | DEBUG    | logger:debug:95 | system | none - Vendas no período carregadas para rifa Rifa solidaria 
+2025-09-27 11:02:10.822 | DEBUG    | logger:debug:95 | system | none - Aba de analytics renderizada para rifa Rifa solidaria 
+2025-09-27 11:02:10.840 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.841 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.842 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.842 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.843 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.843 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.843 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.844 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.845 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-27 11:02:10.847 | DEBUG    | logger:debug:95 | system | none - Rifas do usuário 1 listadas
+2025-09-27 11:02:10.849 | DEBUG    | logger:debug:95 | system | none - Tabela 'users' criada ou verificada
+2025-09-27 11:02:10.849 | DEBUG    | logger:debug:95 | system | none - Tabela 'login_attempts' criada ou verificada
+2025-09-27 11:02:10.850 | DEBUG    | logger:debug:95 | system | none - Tabela 'rifas' criada ou verificada
+2025-09-27 11:02:10.850 | DEBUG    | logger:debug:95 | system | none - Tabela 'vendas' criada ou verificada
+2025-09-27 11:02:10.851 | DEBUG    | logger:debug:95 | system | none - Tabela 'reservas' criada ou verificada
+2025-09-27 11:02:10.851 | DEBUG    | logger:debug:95 | system | none - Índices criados ou verificados
+2025-09-27 11:02:10.851 | INFO     | logger:success:103 | system | none - SUCCESS: Tabelas e índices do banco de dados criados/verificados com sucesso
+2025-09-27 11:02:10.852 | INFO     | logger:success:103 | system | none - SUCCESS: Conexão com banco de dados estabelecida com sucesso
+2025-09-27 11:02:10.853 | DEBUG    | logger:debug:95 | system | none - Rifas sem dono listadas
+2025-09-27 11:02:10.855 | DEBUG    | logger:debug:95 | system | none - Nenhuma rifa sem dono disponível para reivindicação

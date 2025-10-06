@@ -1,0 +1,118 @@
+2025-10-05 21:34:10 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
+2025-10-05 21:34:10 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:34:25 | ERROR    | __main__:display_search_section:94 | Erro na pesquisa: Cannot hash argument 'self' (of type `core.ai_services.GeminiService`) in 'search_products_with_gemini'.
+
+To address this, you can tell Streamlit not to hash this argument by adding a
+leading underscore to the argument's name in the function signature:
+
+```
+@st.cache_data
+def search_products_with_gemini(_self, ...):
+    ...
+```
+            
+2025-10-05 21:35:28 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
+2025-10-05 21:35:28 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:35:37 | ERROR    | __main__:display_search_section:94 | Erro na pesquisa: Cannot hash argument 'self' (of type `core.ai_services.GeminiService`) in 'search_products_with_gemini'.
+
+To address this, you can tell Streamlit not to hash this argument by adding a
+leading underscore to the argument's name in the function signature:
+
+```
+@st.cache_data
+def search_products_with_gemini(_self, ...):
+    ...
+```
+            
+2025-10-05 21:38:21 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
+2025-10-05 21:38:21 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:42:39 | ERROR    | core.utils:validate_price:58 | Erro na validação de preço 'abc': could not convert string to float: ''
+2025-10-05 21:51:20 | ERROR    | core.ai_services:generate_tags_for_product:236 | Erro ao gerar tags para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:21 | ERROR    | core.ai_services:generate_product_summary:274 | Erro ao gerar resumo para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:21 | ERROR    | core.ai_services:summarize_reviews:341 | Erro ao analisar reviews para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:21 | ERROR    | core.ai_services:compare_products:513 | Erro ao comparar produtos: name 'self' is not defined
+2025-10-05 21:51:21 | ERROR    | core.ai_services:suggest_alert_threshold:600 | Erro ao sugerir threshold para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:21 | ERROR    | core.ai_services:search_products_with_gemini:189 | Erro na busca de produtos 'test': API Error
+2025-10-05 21:51:21 | ERROR    | core.utils:validate_price:58 | Erro na validação de preço 'abc': could not convert string to float: ''
+2025-10-05 21:51:42 | ERROR    | core.ai_services:generate_tags_for_product:236 | Erro ao gerar tags para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:42 | ERROR    | core.ai_services:generate_product_summary:274 | Erro ao gerar resumo para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:42 | ERROR    | core.ai_services:summarize_reviews:341 | Erro ao analisar reviews para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:42 | ERROR    | core.ai_services:compare_products:513 | Erro ao comparar produtos: name 'self' is not defined
+2025-10-05 21:51:42 | ERROR    | core.ai_services:suggest_alert_threshold:600 | Erro ao sugerir threshold para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:42 | ERROR    | core.ai_services:search_products_with_gemini:189 | Erro na busca de produtos 'test': API Error
+2025-10-05 21:51:42 | ERROR    | core.utils:validate_price:58 | Erro na validação de preço 'abc': could not convert string to float: ''
+2025-10-05 21:52:43 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
+2025-10-05 21:52:43 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:53:03 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
+2025-10-05 21:53:03 | ERROR    | core.ai_services:search_products_with_gemini:189 | Erro na busca de produtos 'iPhone 15 Pro': Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:53:03 | ERROR    | __main__:display_search_section:94 | Erro na pesquisa: Falha na busca de produtos: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 22:04:08 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
+2025-10-05 22:04:08 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:17 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
+2025-10-05 22:04:17 | ERROR    | core.ai_services:search_products_with_gemini:167 | Erro na busca de produtos 'iPhone 15 Pro': Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:17 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:06:03 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
+2025-10-05 22:06:03 | ERROR    | core.ai_services:_make_api_call:102 | Valide sua GEMINI_API_KEY. Em ambiente local, o env var GEMINI_API_KEY tem prioridade sobre st.secrets.
+2025-10-05 22:06:03 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:07:06 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
+2025-10-05 22:07:06 | ERROR    | core.ai_services:_make_api_call:102 | Valide sua GEMINI_API_KEY. Em ambiente local, o env var GEMINI_API_KEY tem prioridade sobre st.secrets.
+2025-10-05 22:07:06 | ERROR    | core.ai_services:search_products_with_gemini:178 | Erro na busca de produtos 'iPhone 15 Pro': Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:07:06 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:09:22 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
+2025-10-05 22:09:22 | ERROR    | core.ai_services:_make_api_call:110 | Valide sua GEMINI_API_KEY. Em ambiente local, o env var GEMINI_API_KEY tem prioridade sobre st.secrets.
+2025-10-05 22:09:22 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:17:28 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:17:30 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:18:11 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:19:00 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:19:28 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:20:49 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:21:15 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.

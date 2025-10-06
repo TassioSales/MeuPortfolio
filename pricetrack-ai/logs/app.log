@@ -1,0 +1,752 @@
+2025-10-05 21:28:37 - pricetrack_ai - INFO - Sistema de logging inicializado com sucesso
+2025-10-05 21:28:37 - pricetrack_ai.__main__ - INFO - Session state inicializado
+2025-10-05 21:28:37 - pricetrack_ai.core.database - INFO - Estat�sticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 21:28:37 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:28:37 - pricetrack_ai.core.database - INFO - Encontrados 0 alertas ativos
+2025-10-05 21:28:37 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:28:38 - pricetrack_ai.core.ai_services - WARNING - Tentativa 1 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:28:40 - pricetrack_ai.core.ai_services - WARNING - Tentativa 2 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:28:42 - pricetrack_ai.core.ai_services - WARNING - Tentativa 3 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:28:42 - pricetrack_ai.core.ai_services - ERROR - Falha na API call 'gemini_api_call'
+2025-10-05 21:28:42 - pricetrack_ai.__main__ - ERROR - Erro ao gerar insight: Falha ap�s 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:28:42 - pricetrack_ai.__main__ - INFO - P�gina inicial carregada com sucesso
+2025-10-05 21:28:47 - pricetrack_ai.core.database - INFO - Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:28:47 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:28:47 - pricetrack_ai.__main__ - INFO - P�gina de pesquisa carregada com sucesso
+2025-10-05 21:29:04 - pricetrack_ai.__main__ - INFO - A��o do usu�rio: Pesquisa iniciada: Iphone 
+2025-10-05 21:29:04 - pricetrack_ai.__main__ - ERROR - Erro na pesquisa: Cannot hash argument 'self' (of type `core.ai_services.GeminiService`) in 'search_products_with_gemini'.
+
+To address this, you can tell Streamlit not to hash this argument by adding a
+leading underscore to the argument's name in the function signature:
+
+```
+@st.cache_data
+def search_products_with_gemini(_self, ...):
+    ...
+```
+            
+2025-10-05 21:29:04 - pricetrack_ai.core.database - INFO - Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:29:04 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:29:04 - pricetrack_ai.__main__ - INFO - P�gina de pesquisa carregada com sucesso
+2025-10-05 21:29:11 - pricetrack_ai.__main__ - INFO - A��o do usu�rio: Pesquisa iniciada: Iphone 15
+2025-10-05 21:29:11 - pricetrack_ai.__main__ - ERROR - Erro na pesquisa: Cannot hash argument 'self' (of type `core.ai_services.GeminiService`) in 'search_products_with_gemini'.
+
+To address this, you can tell Streamlit not to hash this argument by adding a
+leading underscore to the argument's name in the function signature:
+
+```
+@st.cache_data
+def search_products_with_gemini(_self, ...):
+    ...
+```
+            
+2025-10-05 21:29:11 - pricetrack_ai.core.database - INFO - Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:29:11 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:29:11 - pricetrack_ai.__main__ - INFO - P�gina de pesquisa carregada com sucesso
+2025-10-05 21:29:16 - pricetrack_ai.core.database - INFO - Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:29:16 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:29:16 - pricetrack_ai.__main__ - INFO - P�gina de pesquisa carregada com sucesso
+2025-10-05 21:29:25 - pricetrack_ai.__main__ - INFO - A��o do usu�rio: Pesquisa iniciada: Iphone 15
+2025-10-05 21:29:25 - pricetrack_ai.__main__ - ERROR - Erro na pesquisa: Cannot hash argument 'self' (of type `core.ai_services.GeminiService`) in 'search_products_with_gemini'.
+
+To address this, you can tell Streamlit not to hash this argument by adding a
+leading underscore to the argument's name in the function signature:
+
+```
+@st.cache_data
+def search_products_with_gemini(_self, ...):
+    ...
+```
+            
+2025-10-05 21:29:25 - pricetrack_ai.core.database - INFO - Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:29:25 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:29:25 - pricetrack_ai.__main__ - INFO - P�gina de pesquisa carregada com sucesso
+2025-10-05 21:29:45 - pricetrack_ai.core.database - INFO - Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:29:45 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:29:45 - pricetrack_ai.__main__ - INFO - P�gina de pesquisa carregada com sucesso
+2025-10-05 21:30:03 - pricetrack_ai.__main__ - INFO - A��o do usu�rio: Pesquisa iniciada: iPhone 15 Pro
+2025-10-05 21:30:03 - pricetrack_ai.__main__ - ERROR - Erro na pesquisa: Cannot hash argument 'self' (of type `core.ai_services.GeminiService`) in 'search_products_with_gemini'.
+
+To address this, you can tell Streamlit not to hash this argument by adding a
+leading underscore to the argument's name in the function signature:
+
+```
+@st.cache_data
+def search_products_with_gemini(_self, ...):
+    ...
+```
+            
+2025-10-05 21:30:03 - pricetrack_ai.core.database - INFO - Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:30:03 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:30:03 - pricetrack_ai.__main__ - INFO - P�gina de pesquisa carregada com sucesso
+2025-10-05 21:30:54 - pricetrack_ai - INFO - Sistema de logging inicializado com sucesso
+2025-10-05 21:30:54 - pricetrack_ai.__main__ - INFO - Session state inicializado
+2025-10-05 21:30:54 - pricetrack_ai.core.database - INFO - Estat�sticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 21:30:54 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:30:54 - pricetrack_ai.core.database - INFO - Encontrados 0 alertas ativos
+2025-10-05 21:30:54 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:30:54 - pricetrack_ai.core.ai_services - WARNING - Tentativa 1 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:30:55 - pricetrack_ai.core.database - INFO - Listados 0 produtos (offset: 0, limit: 100)
+2025-10-05 21:30:55 - pricetrack_ai.core.database - INFO - Transa��o commitada com sucesso
+2025-10-05 21:30:55 - pricetrack_ai.core.ai_services - WARNING - Tentativa 2 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:30:58 - pricetrack_ai.core.ai_services - WARNING - Tentativa 3 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:30:58 - pricetrack_ai.core.ai_services - ERROR - Falha na API call 'gemini_api_call'
+2025-10-05 21:30:58 - pricetrack_ai.__main__ - ERROR - Erro ao gerar insight: Falha ap�s 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:34:05 | INFO     | core.logger:setup_logging:110 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:34:05 | INFO     | __main__:initialize_session_state:71 | Session state inicializado
+2025-10-05 21:34:05 | INFO     | core.database:get_stats:408 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 21:34:05 | INFO     | core.database:__exit__:438 | Transação commitada com sucesso
+2025-10-05 21:34:05 | INFO     | core.database:get_active_alerts:315 | Encontrados 0 alertas ativos
+2025-10-05 21:34:05 | INFO     | core.database:__exit__:438 | Transação commitada com sucesso
+2025-10-05 21:34:06 | WARNING  | core.ai_services:_make_api_call:100 | Tentativa 1 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:34:07 | WARNING  | core.ai_services:_make_api_call:100 | Tentativa 2 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:34:10 | WARNING  | core.ai_services:_make_api_call:100 | Tentativa 3 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:34:10 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
+2025-10-05 21:34:10 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:34:10 | INFO     | __main__:main:341 | Página inicial carregada com sucesso
+2025-10-05 21:34:14 | INFO     | core.database:get_all_products:78 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:34:14 | INFO     | core.database:__exit__:438 | Transação commitada com sucesso
+2025-10-05 21:34:14 | INFO     | __main__:main:354 | Página de pesquisa carregada com sucesso
+2025-10-05 21:34:25 | INFO     | core.logger:log_user_action:173 | Ação do usuário: Pesquisa iniciada: iPhone 15 Pro
+2025-10-05 21:34:25 | ERROR    | __main__:display_search_section:94 | Erro na pesquisa: Cannot hash argument 'self' (of type `core.ai_services.GeminiService`) in 'search_products_with_gemini'.
+
+To address this, you can tell Streamlit not to hash this argument by adding a
+leading underscore to the argument's name in the function signature:
+
+```
+@st.cache_data
+def search_products_with_gemini(_self, ...):
+    ...
+```
+            
+2025-10-05 21:34:25 | INFO     | core.database:get_all_products:78 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:34:25 | INFO     | core.database:__exit__:438 | Transação commitada com sucesso
+2025-10-05 21:34:25 | INFO     | __main__:main:354 | Página de pesquisa carregada com sucesso
+2025-10-05 21:35:24 | INFO     | core.logger:setup_logging:110 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:35:24 | INFO     | __main__:initialize_session_state:71 | Session state inicializado
+2025-10-05 21:35:24 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 21:35:24 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:35:24 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 21:35:24 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:35:25 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:35:25 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:35:25 | INFO     | __main__:main:354 | Página de pesquisa carregada com sucesso
+2025-10-05 21:35:25 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 1 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:35:26 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 2 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:35:28 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 3 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:35:28 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
+2025-10-05 21:35:28 | INFO     | core.logger:log_performance:216 | Performance - gemini_api_call | Duration: 4.309s | success=False
+2025-10-05 21:35:28 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:35:37 | INFO     | core.logger:log_user_action:173 | Ação do usuário: Pesquisa iniciada: iPhone 15 Pro
+2025-10-05 21:35:37 | ERROR    | __main__:display_search_section:94 | Erro na pesquisa: Cannot hash argument 'self' (of type `core.ai_services.GeminiService`) in 'search_products_with_gemini'.
+
+To address this, you can tell Streamlit not to hash this argument by adding a
+leading underscore to the argument's name in the function signature:
+
+```
+@st.cache_data
+def search_products_with_gemini(_self, ...):
+    ...
+```
+            
+2025-10-05 21:35:37 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:35:37 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:35:37 | INFO     | __main__:main:354 | Página de pesquisa carregada com sucesso
+2025-10-05 21:38:17 | INFO     | core.logger:setup_logging:110 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:38:17 | INFO     | __main__:initialize_session_state:71 | Session state inicializado
+2025-10-05 21:38:17 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 21:38:17 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:38:17 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 21:38:17 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:38:18 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 1 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:38:19 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 2 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:38:21 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 3 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:38:21 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
+2025-10-05 21:38:21 | INFO     | core.logger:log_performance:216 | Performance - gemini_api_call | Duration: 4.312s | success=False
+2025-10-05 21:38:21 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:38:21 | INFO     | __main__:main:341 | Página inicial carregada com sucesso
+2025-10-05 21:41:32 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 100)
+2025-10-05 21:41:32 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:41:35 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 21:41:35 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 21:41:35 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 21:41:35 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:41:35 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 100)
+2025-10-05 21:41:35 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:41:36 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:41:36 | INFO     | __main__:main:457 | Página de alertas carregada com sucesso
+2025-10-05 21:41:37 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 100)
+2025-10-05 21:41:37 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:41:39 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:41:39 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:41:39 | INFO     | __main__:main:354 | Página de pesquisa carregada com sucesso
+2025-10-05 21:42:38 | INFO     | core.logger:setup_logging:110 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:42:38 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:42:38 | INFO     | test_ai_services:test_search_products_success:51 | Iniciando teste de busca de produtos com sucesso
+2025-10-05 21:42:38 | INFO     | core.logger:log_user_action:173 | Ação do usuário: test_execution - Teste de busca de produtos
+2025-10-05 21:42:38 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:42:38 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:42:38 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:42:38 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:42:38 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:42:38 | INFO     | core.ai_services:analyze_offer_quality:413 | Análise de oferta gerada - Nota: 8.5
+2025-10-05 21:42:38 | INFO     | core.logger:log_performance:216 | Performance - analyze_offer | Duration: 0.001s | nota=8.5
+2025-10-05 21:42:38 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:42:38 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:42:39 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:42:39 | INFO     | core.utils:validate_price:53 | Preço validado: R$ 299.90
+2025-10-05 21:42:39 | INFO     | core.logger:log_user_action:173 | Ação do usuário: price_validation - Preço validado: R$ 299.90
+2025-10-05 21:42:39 | INFO     | core.utils:validate_price:53 | Preço validado: R$ 299.90
+2025-10-05 21:42:39 | INFO     | core.logger:log_user_action:173 | Ação do usuário: price_validation - Preço validado: R$ 299.90
+2025-10-05 21:42:39 | INFO     | core.utils:validate_price:53 | Preço validado: R$ 299.90
+2025-10-05 21:42:39 | INFO     | core.logger:log_user_action:173 | Ação do usuário: price_validation - Preço validado: R$ 299.90
+2025-10-05 21:42:39 | ERROR    | core.utils:validate_price:58 | Erro na validação de preço 'abc': could not convert string to float: ''
+2025-10-05 21:42:39 | INFO     | core.utils:validate_product_name:91 | Nome de produto validado: iPhone 15 Pro Max
+2025-10-05 21:42:39 | INFO     | core.utils:validate_product_name:91 | Nome de produto validado: iPhone 15
+2025-10-05 21:42:39 | INFO     | core.database:create_product:40 | Produto criado com sucesso: ID 1, Nome: iPhone 15
+2025-10-05 21:42:39 | INFO     | core.logger:log_database_operation:196 | DB INSERT em products (ID: 1) executado com sucesso
+2025-10-05 21:42:39 | INFO     | core.database:get_product:55 | Produto encontrado: ID 1
+2025-10-05 21:42:39 | WARNING  | core.database:get_product:57 | Produto não encontrado: ID 999
+2025-10-05 21:51:20 | INFO     | core.logger:setup_logging:110 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:51:20 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:20 | INFO     | test_ai_services:test_search_products_success:51 | Iniciando teste de busca de produtos com sucesso
+2025-10-05 21:51:20 | INFO     | core.logger:log_user_action:173 | Ação do usuário: test_execution - Teste de busca de produtos
+2025-10-05 21:51:20 | INFO     | core.ai_services:search_products_with_gemini:170 | Busca por 'iPhone 15' retornou 1 produtos
+2025-10-05 21:51:20 | INFO     | core.logger:log_performance:216 | Performance - search_products | Duration: 0.000s | products_found=1
+2025-10-05 21:51:20 | INFO     | test_ai_services:test_search_products_success:61 | Teste de busca de produtos concluído com sucesso
+2025-10-05 21:51:20 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:20 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:20 | ERROR    | core.ai_services:generate_tags_for_product:236 | Erro ao gerar tags para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:20 | INFO     | core.logger:log_performance:216 | Performance - generate_tags | Duration: 0.000s | success=False
+2025-10-05 21:51:21 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:21 | ERROR    | core.ai_services:generate_product_summary:274 | Erro ao gerar resumo para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:21 | INFO     | core.logger:log_performance:216 | Performance - generate_summary | Duration: 0.000s | success=False
+2025-10-05 21:51:21 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:21 | ERROR    | core.ai_services:summarize_reviews:341 | Erro ao analisar reviews para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:21 | INFO     | core.logger:log_performance:216 | Performance - summarize_reviews | Duration: 0.000s | success=False
+2025-10-05 21:51:21 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:21 | INFO     | core.ai_services:analyze_offer_quality:413 | Análise de oferta gerada - Nota: 8.5
+2025-10-05 21:51:21 | INFO     | core.logger:log_performance:216 | Performance - analyze_offer | Duration: 0.001s | nota=8.5
+2025-10-05 21:51:21 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:21 | ERROR    | core.ai_services:compare_products:513 | Erro ao comparar produtos: name 'self' is not defined
+2025-10-05 21:51:21 | INFO     | core.logger:log_performance:216 | Performance - compare_products | Duration: 0.000s | success=False
+2025-10-05 21:51:21 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:21 | ERROR    | core.ai_services:suggest_alert_threshold:600 | Erro ao sugerir threshold para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:21 | INFO     | core.logger:log_performance:216 | Performance - suggest_threshold | Duration: 0.000s | success=False
+2025-10-05 21:51:21 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:21 | ERROR    | core.ai_services:search_products_with_gemini:189 | Erro na busca de produtos 'test': API Error
+2025-10-05 21:51:21 | INFO     | core.logger:log_performance:216 | Performance - search_products | Duration: 0.000s | success=False
+2025-10-05 21:51:21 | INFO     | core.utils:validate_price:53 | Preço validado: R$ 299.90
+2025-10-05 21:51:21 | INFO     | core.logger:log_user_action:173 | Ação do usuário: price_validation - Preço validado: R$ 299.90
+2025-10-05 21:51:21 | INFO     | core.utils:validate_price:53 | Preço validado: R$ 299.90
+2025-10-05 21:51:21 | INFO     | core.logger:log_user_action:173 | Ação do usuário: price_validation - Preço validado: R$ 299.90
+2025-10-05 21:51:21 | INFO     | core.utils:validate_price:53 | Preço validado: R$ 299.90
+2025-10-05 21:51:21 | INFO     | core.logger:log_user_action:173 | Ação do usuário: price_validation - Preço validado: R$ 299.90
+2025-10-05 21:51:21 | ERROR    | core.utils:validate_price:58 | Erro na validação de preço 'abc': could not convert string to float: ''
+2025-10-05 21:51:21 | INFO     | core.utils:validate_product_name:91 | Nome de produto validado: iPhone 15 Pro Max
+2025-10-05 21:51:21 | INFO     | core.utils:validate_product_name:91 | Nome de produto validado: iPhone 15
+2025-10-05 21:51:21 | INFO     | core.database:create_product:40 | Produto criado com sucesso: ID 1, Nome: iPhone 15
+2025-10-05 21:51:21 | INFO     | core.logger:log_database_operation:196 | DB INSERT em products (ID: 1) executado com sucesso
+2025-10-05 21:51:21 | INFO     | core.database:get_product:55 | Produto encontrado: ID 1
+2025-10-05 21:51:21 | WARNING  | core.database:get_product:57 | Produto não encontrado: ID 999
+2025-10-05 21:51:42 | INFO     | core.logger:setup_logging:110 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:51:42 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:42 | INFO     | test_ai_services:test_search_products_success:51 | Iniciando teste de busca de produtos com sucesso
+2025-10-05 21:51:42 | INFO     | core.logger:log_user_action:173 | Ação do usuário: test_execution - Teste de busca de produtos
+2025-10-05 21:51:42 | INFO     | core.ai_services:search_products_with_gemini:170 | Busca por 'iPhone 15' retornou 1 produtos
+2025-10-05 21:51:42 | INFO     | core.logger:log_performance:216 | Performance - search_products | Duration: 0.000s | products_found=1
+2025-10-05 21:51:42 | INFO     | test_ai_services:test_search_products_success:61 | Teste de busca de produtos concluído com sucesso
+2025-10-05 21:51:42 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:42 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:42 | ERROR    | core.ai_services:generate_tags_for_product:236 | Erro ao gerar tags para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:42 | INFO     | core.logger:log_performance:216 | Performance - generate_tags | Duration: 0.000s | success=False
+2025-10-05 21:51:42 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:42 | ERROR    | core.ai_services:generate_product_summary:274 | Erro ao gerar resumo para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:42 | INFO     | core.logger:log_performance:216 | Performance - generate_summary | Duration: 0.000s | success=False
+2025-10-05 21:51:42 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:42 | ERROR    | core.ai_services:summarize_reviews:341 | Erro ao analisar reviews para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:42 | INFO     | core.logger:log_performance:216 | Performance - summarize_reviews | Duration: 0.000s | success=False
+2025-10-05 21:51:42 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:42 | INFO     | core.ai_services:analyze_offer_quality:413 | Análise de oferta gerada - Nota: 8.5
+2025-10-05 21:51:42 | INFO     | core.logger:log_performance:216 | Performance - analyze_offer | Duration: 0.000s | nota=8.5
+2025-10-05 21:51:42 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:42 | ERROR    | core.ai_services:compare_products:513 | Erro ao comparar produtos: name 'self' is not defined
+2025-10-05 21:51:42 | INFO     | core.logger:log_performance:216 | Performance - compare_products | Duration: 0.000s | success=False
+2025-10-05 21:51:42 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:42 | ERROR    | core.ai_services:suggest_alert_threshold:600 | Erro ao sugerir threshold para 'iPhone 15': name 'self' is not defined
+2025-10-05 21:51:42 | INFO     | core.logger:log_performance:216 | Performance - suggest_threshold | Duration: 0.000s | success=False
+2025-10-05 21:51:42 | INFO     | core.ai_services:_initialize_model:66 | Modelo Gemini 1.5 Pro inicializado com sucesso
+2025-10-05 21:51:42 | ERROR    | core.ai_services:search_products_with_gemini:189 | Erro na busca de produtos 'test': API Error
+2025-10-05 21:51:42 | INFO     | core.logger:log_performance:216 | Performance - search_products | Duration: 0.000s | success=False
+2025-10-05 21:51:42 | INFO     | core.utils:validate_price:53 | Preço validado: R$ 299.90
+2025-10-05 21:51:42 | INFO     | core.logger:log_user_action:173 | Ação do usuário: price_validation - Preço validado: R$ 299.90
+2025-10-05 21:51:42 | INFO     | core.utils:validate_price:53 | Preço validado: R$ 299.90
+2025-10-05 21:51:42 | INFO     | core.logger:log_user_action:173 | Ação do usuário: price_validation - Preço validado: R$ 299.90
+2025-10-05 21:51:42 | INFO     | core.utils:validate_price:53 | Preço validado: R$ 299.90
+2025-10-05 21:51:42 | INFO     | core.logger:log_user_action:173 | Ação do usuário: price_validation - Preço validado: R$ 299.90
+2025-10-05 21:51:42 | ERROR    | core.utils:validate_price:58 | Erro na validação de preço 'abc': could not convert string to float: ''
+2025-10-05 21:51:42 | INFO     | core.utils:validate_product_name:91 | Nome de produto validado: iPhone 15 Pro Max
+2025-10-05 21:51:42 | INFO     | core.utils:validate_product_name:91 | Nome de produto validado: iPhone 15
+2025-10-05 21:51:42 | INFO     | core.database:create_product:40 | Produto criado com sucesso: ID 1, Nome: iPhone 15
+2025-10-05 21:51:42 | INFO     | core.logger:log_database_operation:196 | DB INSERT em products (ID: 1) executado com sucesso
+2025-10-05 21:51:42 | INFO     | core.database:get_product:55 | Produto encontrado: ID 1
+2025-10-05 21:51:42 | WARNING  | core.database:get_product:57 | Produto não encontrado: ID 999
+2025-10-05 21:52:38 | INFO     | core.logger:setup_logging:110 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:52:38 | INFO     | __main__:initialize_session_state:71 | Session state inicializado
+2025-10-05 21:52:38 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 21:52:38 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:52:38 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 21:52:38 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:52:39 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 1 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:52:40 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:52:40 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:52:40 | INFO     | __main__:main:354 | Página de pesquisa carregada com sucesso
+2025-10-05 21:52:41 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 2 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:52:43 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 3 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:52:43 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
+2025-10-05 21:52:43 | INFO     | core.logger:log_performance:216 | Performance - gemini_api_call | Duration: 4.335s | success=False
+2025-10-05 21:52:43 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:52:59 | INFO     | core.logger:log_user_action:173 | Ação do usuário: Pesquisa iniciada: iPhone 15 Pro
+2025-10-05 21:52:59 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 1 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:53:01 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 2 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:53:03 | WARNING  | core.ai_services:_make_api_call:105 | Tentativa 3 falhou: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:53:03 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
+2025-10-05 21:53:03 | INFO     | core.logger:log_performance:216 | Performance - gemini_api_call | Duration: 3.525s | success=False
+2025-10-05 21:53:03 | ERROR    | core.ai_services:search_products_with_gemini:189 | Erro na busca de produtos 'iPhone 15 Pro': Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:53:03 | INFO     | core.logger:log_performance:216 | Performance - search_products | Duration: 3.526s | success=False
+2025-10-05 21:53:03 | ERROR    | __main__:display_search_section:94 | Erro na pesquisa: Falha na busca de produtos: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-05 21:53:03 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 21:53:03 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 21:53:03 | INFO     | __main__:main:354 | Página de pesquisa carregada com sucesso
+2025-10-05 21:53:53 | INFO     | core.logger:setup_logging:111 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:54:28 | INFO     | core.logger:setup_logging:111 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:55:09 | INFO     | core.logger:setup_logging:111 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:56:05 | INFO     | core.logger:setup_logging:111 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 21:59:05 | INFO     | core.logger:setup_logging:111 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:04:04 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:04:04 | INFO     | __main__:initialize_session_state:71 | Session state inicializado
+2025-10-05 22:04:04 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:04:04 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:04:04 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:04:04 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:04:04 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:04:05 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:04:05 | WARNING  | core.ai_services:_make_api_call:83 | Tentativa 1 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:06 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:04:06 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:04:06 | WARNING  | core.ai_services:_make_api_call:83 | Tentativa 2 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:08 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:04:08 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:04:08 | WARNING  | core.ai_services:_make_api_call:83 | Tentativa 3 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:08 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
+2025-10-05 22:04:08 | INFO     | core.logger:log_performance:245 | Performance - gemini_api_call | Duration: 4.298s | success=False
+2025-10-05 22:04:08 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:08 | INFO     | __main__:main:341 | Página inicial carregada com sucesso
+2025-10-05 22:04:09 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 22:04:09 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:04:09 | INFO     | __main__:main:407 | Página de pesquisa carregada com sucesso
+2025-10-05 22:04:13 | INFO     | core.logger:log_user_action:202 | Ação do usuário: Pesquisa iniciada: iPhone 15 Pro
+2025-10-05 22:04:13 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:04:14 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:04:14 | WARNING  | core.ai_services:_make_api_call:83 | Tentativa 1 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:15 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:04:15 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:04:15 | WARNING  | core.ai_services:_make_api_call:83 | Tentativa 2 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:17 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:04:17 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:04:17 | WARNING  | core.ai_services:_make_api_call:83 | Tentativa 3 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:17 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
+2025-10-05 22:04:17 | INFO     | core.logger:log_performance:245 | Performance - gemini_api_call | Duration: 3.680s | success=False
+2025-10-05 22:04:17 | ERROR    | core.ai_services:search_products_with_gemini:167 | Erro na busca de produtos 'iPhone 15 Pro': Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:17 | INFO     | core.logger:log_performance:245 | Performance - search_products | Duration: 3.681s | success=False
+2025-10-05 22:04:17 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:04:17 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 22:04:17 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:04:17 | INFO     | __main__:main:407 | Página de pesquisa carregada com sucesso
+2025-10-05 22:05:59 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:05:59 | INFO     | __main__:initialize_session_state:71 | Session state inicializado
+2025-10-05 22:05:59 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:05:59 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:05:59 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:05:59 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:05:59 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:06:00 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:06:00 | WARNING  | core.ai_services:_make_api_call:90 | Tentativa 1 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:06:01 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:06:01 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:06:01 | WARNING  | core.ai_services:_make_api_call:90 | Tentativa 2 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:06:03 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:06:03 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:06:03 | WARNING  | core.ai_services:_make_api_call:90 | Tentativa 3 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:06:03 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
+2025-10-05 22:06:03 | INFO     | core.logger:log_performance:245 | Performance - gemini_api_call | Duration: 4.288s | success=False
+2025-10-05 22:06:03 | ERROR    | core.ai_services:_make_api_call:102 | Valide sua GEMINI_API_KEY. Em ambiente local, o env var GEMINI_API_KEY tem prioridade sobre st.secrets.
+2025-10-05 22:06:03 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:06:03 | INFO     | __main__:main:341 | Página inicial carregada com sucesso
+2025-10-05 22:06:56 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 22:06:56 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:06:56 | INFO     | __main__:main:407 | Página de pesquisa carregada com sucesso
+2025-10-05 22:07:02 | INFO     | core.logger:log_user_action:202 | Ação do usuário: Pesquisa iniciada: iPhone 15 Pro
+2025-10-05 22:07:02 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:07:03 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:07:03 | WARNING  | core.ai_services:_make_api_call:90 | Tentativa 1 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:07:04 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:07:04 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:07:04 | WARNING  | core.ai_services:_make_api_call:90 | Tentativa 2 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:07:06 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:07:06 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:07:06 | WARNING  | core.ai_services:_make_api_call:90 | Tentativa 3 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:07:06 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
+2025-10-05 22:07:06 | INFO     | core.logger:log_performance:245 | Performance - gemini_api_call | Duration: 4.295s | success=False
+2025-10-05 22:07:06 | ERROR    | core.ai_services:_make_api_call:102 | Valide sua GEMINI_API_KEY. Em ambiente local, o env var GEMINI_API_KEY tem prioridade sobre st.secrets.
+2025-10-05 22:07:06 | ERROR    | core.ai_services:search_products_with_gemini:178 | Erro na busca de produtos 'iPhone 15 Pro': Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:07:06 | INFO     | core.logger:log_performance:245 | Performance - search_products | Duration: 4.296s | success=False
+2025-10-05 22:07:06 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:07:06 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 22:07:06 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:07:06 | INFO     | __main__:main:407 | Página de pesquisa carregada com sucesso
+2025-10-05 22:09:18 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:09:18 | INFO     | __main__:initialize_session_state:71 | Session state inicializado
+2025-10-05 22:09:18 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:09:18 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:09:18 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:09:18 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:09:18 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:09:19 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:09:19 | WARNING  | core.ai_services:_make_api_call:98 | Tentativa 1 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:09:20 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:09:20 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:09:20 | WARNING  | core.ai_services:_make_api_call:98 | Tentativa 2 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:09:22 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:09:22 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 400 Bad Request"
+2025-10-05 22:09:22 | WARNING  | core.ai_services:_make_api_call:98 | Tentativa 3 falhou: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:09:22 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
+2025-10-05 22:09:22 | INFO     | core.logger:log_performance:245 | Performance - gemini_api_call | Duration: 3.756s | success=False
+2025-10-05 22:09:22 | ERROR    | core.ai_services:_make_api_call:110 | Valide sua GEMINI_API_KEY. Em ambiente local, o env var GEMINI_API_KEY tem prioridade sobre st.secrets.
+2025-10-05 22:09:22 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
+2025-10-05 22:09:22 | INFO     | __main__:main:341 | Página inicial carregada com sucesso
+2025-10-05 22:17:28 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:17:28 | INFO     | __main__:initialize_session_state:118 | Session state inicializado
+2025-10-05 22:17:28 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:17:28 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:17:28 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:17:28 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:17:28 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:17:28 | INFO     | __main__:main:388 | Página inicial carregada com sucesso
+2025-10-05 22:17:30 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:17:30 | INFO     | __main__:initialize_session_state:118 | Session state inicializado
+2025-10-05 22:17:30 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:17:30 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:17:30 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:17:30 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:17:30 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:17:30 | INFO     | __main__:main:388 | Página inicial carregada com sucesso
+2025-10-05 22:18:11 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:18:11 | INFO     | __main__:initialize_session_state:118 | Session state inicializado
+2025-10-05 22:18:11 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:18:11 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:18:11 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:18:11 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:18:11 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:18:11 | INFO     | __main__:main:388 | Página inicial carregada com sucesso
+2025-10-05 22:18:28 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 22:18:28 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:18:28 | INFO     | __main__:main:407 | Página de pesquisa carregada com sucesso
+2025-10-05 22:18:30 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 100)
+2025-10-05 22:18:30 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:18:31 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 100)
+2025-10-05 22:18:31 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:18:32 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:18:32 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:18:32 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:18:32 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:18:32 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 100)
+2025-10-05 22:18:32 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:18:32 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:18:32 | INFO     | __main__:main:457 | Página de alertas carregada com sucesso
+2025-10-05 22:19:00 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:19:00 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:19:00 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:19:00 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:19:00 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:19:00 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:19:00 | INFO     | __main__:main:388 | Página inicial carregada com sucesso
+2025-10-05 22:19:28 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:19:28 | INFO     | core.logger:log_user_action:202 | Ação do usuário: Celebração ativada
+2025-10-05 22:19:28 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:19:28 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:19:28 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:19:28 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:19:28 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:19:28 | INFO     | __main__:main:388 | Página inicial carregada com sucesso
+2025-10-05 22:20:49 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:20:49 | INFO     | __main__:initialize_session_state:118 | Session state inicializado
+2025-10-05 22:20:49 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:20:49 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:20:49 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:20:49 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:20:49 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:20:49 | INFO     | __main__:main:390 | Página inicial carregada com sucesso
+2025-10-05 22:21:15 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:21:15 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:21:15 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:21:15 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:21:15 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:21:15 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-05 22:21:15 | INFO     | __main__:main:390 | Página inicial carregada com sucesso
+2025-10-05 22:21:15 | INFO     | core.logger:setup_logging:116 | Sistema de logging Loguru inicializado com sucesso
+2025-10-05 22:21:16 | INFO     | core.ai_services:_initialize_model:46 | Cliente Gemini (google-genai) inicializado | key=****COSM | source=manual | model=gemini-2.5-flash
+2025-10-05 22:21:16 | INFO     | core.database:get_stats:410 | Estatísticas calculadas: {'total_products': 0, 'active_alerts': 0, 'products_with_history': 0, 'products_with_tags': 0, 'coverage_percentage': 0}
+2025-10-05 22:21:16 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:21:16 | INFO     | core.database:get_active_alerts:317 | Encontrados 0 alertas ativos
+2025-10-05 22:21:16 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:21:16 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:21:18 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2025-10-05 22:21:18 | INFO     | core.logger:log_api_call:168 | API call 'gemini_api_call' executada com sucesso. Tokens usados: 189
+2025-10-05 22:21:18 | INFO     | core.logger:log_performance:245 | Performance - gemini_api_call | Duration: 2.428s | tokens=189
+2025-10-05 22:21:18 | INFO     | __main__:main:390 | Página inicial carregada com sucesso
+2025-10-05 22:21:27 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 22:21:27 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:21:27 | INFO     | __main__:main:407 | Página de pesquisa carregada com sucesso
+2025-10-05 22:21:38 | INFO     | core.logger:log_user_action:202 | Ação do usuário: Pesquisa iniciada: iPhone 15 Pro
+2025-10-05 22:21:38 | INFO     | google.genai.models:generate_content:6490 | AFC is enabled with max remote calls: 10.
+2025-10-05 22:21:42 | INFO     | httpx._client:_send_single_request:1025 | HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2025-10-05 22:21:42 | INFO     | core.logger:log_api_call:168 | API call 'gemini_api_call' executada com sucesso. Tokens usados: 951
+2025-10-05 22:21:42 | INFO     | core.logger:log_performance:245 | Performance - gemini_api_call | Duration: 4.208s | tokens=951
+2025-10-05 22:21:42 | INFO     | core.ai_services:search_products_with_gemini:160 | Busca por 'iPhone 15 Pro' retornou 5 produtos
+2025-10-05 22:21:42 | INFO     | core.logger:log_performance:245 | Performance - search_products | Duration: 4.209s | products_found=5
+2025-10-05 22:21:42 | INFO     | core.database:get_all_products:80 | Listados 0 produtos (offset: 0, limit: 10)
+2025-10-05 22:21:42 | INFO     | core.database:__exit__:440 | Transação commitada com sucesso
+2025-10-05 22:21:42 | INFO     | __main__:main:407 | Página de pesquisa carregada com sucesso

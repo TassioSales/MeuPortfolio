@@ -5,7 +5,7 @@ CRUD completo com SQLAlchemy e logging robusto
 
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, desc, asc
-from core.models import Product, Alert, ProductCreate, ProductUpdate, AlertCreate
+from core.models import Product, Alert, ProductCreate, ProductUpdate, AlertCreate, AppSetting
 from core.logger import get_logger, log_database_operation
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
@@ -419,6 +419,45 @@ class DatabaseManager:
                 "products_with_tags": 0,
                 "coverage_percentage": 0
             }
+
+    # ========== APP SETTINGS (key-value) ==========
+    def get_setting(self, key: str) -> Optional[str]:
+        """Obtém valor de configuração por chave."""
+        try:
+            setting = self.db.query(AppSetting).filter(AppSetting.key == key).first()
+            return setting.value if setting else None
+        except Exception as e:
+            logger.error(f"Erro ao obter setting '{key}': {str(e)}")
+            raise
+
+    def set_setting(self, key: str, value: Optional[str]) -> None:
+        """Define ou atualiza uma configuração (salva None como vazio)."""
+        try:
+            setting = self.db.query(AppSetting).filter(AppSetting.key == key).first()
+            if setting:
+                setting.value = value
+            else:
+                setting = AppSetting(key=key, value=value)
+                self.db.add(setting)
+            self.db.commit()
+            logger.info(f"Setting salvo: {key}")
+        except Exception as e:
+            self.db.rollback()
+            logger.error(f"Erro ao salvar setting '{key}': {str(e)}")
+            raise
+
+    def delete_setting(self, key: str) -> None:
+        """Remove uma configuração pela chave."""
+        try:
+            setting = self.db.query(AppSetting).filter(AppSetting.key == key).first()
+            if setting:
+                self.db.delete(setting)
+                self.db.commit()
+                logger.info(f"Setting removido: {key}")
+        except Exception as e:
+            self.db.rollback()
+            logger.error(f"Erro ao remover setting '{key}': {str(e)}")
+            raise
 
 
 # Context manager para transações

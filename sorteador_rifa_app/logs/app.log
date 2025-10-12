@@ -1,0 +1,64 @@
+2025-10-12 17:18:50.603 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:19:07.496 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:19:20.479 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:19:20.669 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:19:55.294 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:20:05.636 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:20:19.683 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:20:19.778 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:27:23.302 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:28:21.858 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:29:28.269 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:29:39.016 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:29:48.872 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:30:07.833 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:30:20.559 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:30:31.325 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:30:51.396 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:31:06.182 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:31:13.117 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:31:44.166 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:31:55.355 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:31:55.366 | INFO     | __main__:<module>:1032 - Iniciando processo de sorteio
+2025-10-12 17:31:55.367 | ERROR    | __main__:<module>:1037 - Prêmio não informado
+2025-10-12 17:31:59.750 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:31:59.909 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:31:59.939 | INFO     | __main__:<module>:1032 - Iniciando processo de sorteio
+2025-10-12 17:31:59.940 | INFO     | __main__:<module>:1041 - Prêmio definido: TESTE
+2025-10-12 17:31:59.941 | INFO     | __main__:<module>:1057 - Construindo lista de tickets para sorteio
+2025-10-12 17:32:13.084 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:32:13.096 | WARNING  | __main__:<module>:565 - Falha ao ler com codificação utf-8, tentando próxima...
+2025-10-12 17:32:13.112 | INFO     | __main__:<module>:562 - Arquivo lido com sucesso usando codificação: latin-1
+2025-10-12 17:32:30.398 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:32:30.403 | WARNING  | __main__:<module>:565 - Falha ao ler com codificação utf-8, tentando próxima...
+2025-10-12 17:32:30.408 | INFO     | __main__:<module>:562 - Arquivo lido com sucesso usando codificação: latin-1
+2025-10-12 17:32:38.228 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:32:56.658 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:33:01.067 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:33:06.583 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:33:23.366 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:33:23.531 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:34:10.190 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:34:25.067 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:34:34.234 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:34:34.404 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:35:17.278 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:35:24.719 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:35:28.818 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:35:52.414 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:35:52.581 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:36:11.619 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:36:42.258 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 17:36:59.136 | INFO     | __main__:<module>:32 - Aplicação iniciada
+2025-10-12 19:05:54.175 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:05:54.175 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:05:54.176 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:05:54.176 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:05:59.857 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:06:50.542 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:06:54.782 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:07:15.551 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:07:20.266 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:07:25.108 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:12:38.901 | INFO     | __main__:<module>:34 - Aplicação iniciada
+2025-10-12 19:12:43.294 | INFO     | __main__:<module>:34 - Aplicação iniciada

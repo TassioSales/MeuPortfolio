@@ -36,7 +36,7 @@ def initialize_chat_state():
 
 
 def display_product_selector():
-    """Exibe seletor de produtos"""
+    """Exibe seletor de produtos e retorna apenas o ID do produto selecionado."""
     st.header("📊 Dashboard de Análise")
     
     try:
@@ -57,10 +57,10 @@ def display_product_selector():
             )
             
             selected_product = products[selected_index]
-            st.session_state.current_product = selected_product
+            st.session_state.current_product_id = selected_product.id
             
             log_user_action(logger, f"Produto selecionado: {selected_product.product_name}")
-            return selected_product
+            return selected_product.id
             
     except Exception as e:
         logger.error(f"Erro ao carregar produtos: {str(e)}")
@@ -68,12 +68,19 @@ def display_product_selector():
         return None
 
 
-def display_product_overview(product):
-    """Exibe overview do produto"""
-    st.subheader(f"📦 {product.product_name}")
-    
-    # Status do produto
-    status = get_product_status(product)
+def display_product_overview(product_id: int):
+    """Exibe overview do produto (busca o produto dentro do contexto de DB)."""
+    db = SessionLocal()
+    with DatabaseTransaction(db) as db_manager:
+        product = db_manager.get_product(product_id)
+        if not product:
+            st.error("Produto não encontrado.")
+            return
+        
+        st.subheader(f"📦 {product.product_name}")
+        
+        # Status do produto
+        status = get_product_status(product)
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -105,13 +112,20 @@ def display_product_overview(product):
             st.metric("Rating", "N/A")
 
 
-def display_price_chart(product):
-    """Exibe gráfico de preços"""
-    if not product.price_history:
-        st.info("📈 Histórico de preços não disponível")
-        return
-    
-    st.subheader("📈 Histórico de Preços")
+def display_price_chart(product_id: int):
+    """Exibe gráfico de preços (busca o produto dentro do contexto de DB)."""
+    db = SessionLocal()
+    with DatabaseTransaction(db) as db_manager:
+        product = db_manager.get_product(product_id)
+        if not product:
+            st.error("Produto não encontrado.")
+            return
+        
+        if not product.price_history:
+            st.info("📈 Histórico de preços não disponível")
+            return
+        
+        st.subheader("📈 Histórico de Preços")
     
     # Preparar dados
     chart_data = create_price_chart_data(product.price_history)
@@ -175,8 +189,8 @@ def display_price_chart(product):
             )
 
 
-def display_ai_analysis_tabs(product):
-    """Exibe abas com análises da IA"""
+def display_ai_analysis_tabs(product_id: int):
+    """Exibe abas com análises da IA (busca o produto em cada uso)."""
     tab1, tab2, tab3 = st.tabs(["🤖 Resumo Inteligente", "⭐ Análise de Reviews", "🎯 Avaliação de Oferta"])
     
     with tab1:
@@ -184,7 +198,14 @@ def display_ai_analysis_tabs(product):
         
         with st.spinner("Artemis está analisando..."):
             try:
-                summary = generate_summary(product.product_name)
+                # Buscar produto mais recente
+                db = SessionLocal()
+                with DatabaseTransaction(db) as db_manager:
+                    product = db_manager.get_product(product_id)
+                    if not product:
+                        st.error("Produto não encontrado.")
+                        return
+                    summary = generate_summary(product.product_name)
                 st.markdown(summary)
                 
                 log_user_action(logger, f"Resumo gerado para: {product.product_name}")
@@ -198,7 +219,13 @@ def display_ai_analysis_tabs(product):
         
         with st.spinner("Analisando sentimento..."):
             try:
-                review_data = analyze_reviews(product.product_name)
+                db = SessionLocal()
+                with DatabaseTransaction(db) as db_manager:
+                    product = db_manager.get_product(product_id)
+                    if not product:
+                        st.error("Produto não encontrado.")
+                        return
+                    review_data = analyze_reviews(product.product_name)
                 
                 # Score de sentimento
                 sentiment_score = review_data.get('score_sentimento', 0)
@@ -242,9 +269,15 @@ def display_ai_analysis_tabs(product):
     with tab3:
         st.subheader("🎯 Avaliação de Oferta")
         
-        if not product.price_history:
-            st.info("Histórico de preços necessário para análise de oferta")
-            return
+        db = SessionLocal()
+        with DatabaseTransaction(db) as db_manager:
+            product = db_manager.get_product(product_id)
+            if not product:
+                st.error("Produto não encontrado.")
+                return
+            if not product.price_history:
+                st.info("Histórico de preços necessário para análise de oferta")
+                return
         
         with st.spinner("Avaliando qualidade da oferta..."):
             try:
@@ -292,15 +325,23 @@ def display_ai_analysis_tabs(product):
                 st.error("Erro na análise de oferta. Tente novamente.")
 
 
-def display_chatbot_section(product):
-    """Exibe seção do chatbot"""
+def display_chatbot_section(product_id: int):
+    """Exibe seção do chatbot (busca produto dentro do contexto)."""
     st.subheader("💬 Pergunte à Artemis")
     st.markdown("Faça perguntas sobre o produto e receba respostas inteligentes")
     
+    # Buscar produto atual
+    db = SessionLocal()
+    with DatabaseTransaction(db) as db_manager:
+        product = db_manager.get_product(product_id)
+        if not product:
+            st.error("Produto não encontrado.")
+            return
+    
     # Inicializar chat se necessário
-    if st.session_state.current_product != product:
+    if st.session_state.get('current_product_id') != product_id:
         st.session_state.chat_messages = []
-        st.session_state.current_product = product
+        st.session_state.current_product_id = product_id
     
     # Exibir histórico de mensagens
     for message in st.session_state.chat_messages:
@@ -338,13 +379,17 @@ def display_chatbot_section(product):
         st.rerun()
 
 
-def display_predictive_insights(product):
-    """Exibe insights preditivos"""
+def display_predictive_insights(product_id: int):
+    """Exibe insights preditivos (busca produto e tendência no DB)."""
     st.subheader("🔮 Insights Preditivos")
     
     try:
         db = SessionLocal()
         with DatabaseTransaction(db) as db_manager:
+            product = db_manager.get_product(product_id)
+            if not product:
+                st.error("Produto não encontrado.")
+                return
             trend_data = db_manager.get_price_trend(product.id, days=7)
             
             if trend_data['days_analyzed'] >= 2:
@@ -416,33 +461,33 @@ def main():
         initialize_chat_state()
         
         # Seletor de produtos
-        product = display_product_selector()
+        product_id = display_product_selector()
         
-        if not product:
+        if not product_id:
             return
         
         # Overview do produto
-        display_product_overview(product)
+        display_product_overview(product_id)
         
         st.divider()
         
         # Gráfico de preços
-        display_price_chart(product)
+        display_price_chart(product_id)
         
         st.divider()
         
         # Análises da IA
-        display_ai_analysis_tabs(product)
+        display_ai_analysis_tabs(product_id)
         
         st.divider()
         
         # Chatbot
-        display_chatbot_section(product)
+        display_chatbot_section(product_id)
         
         st.divider()
         
         # Insights preditivos
-        display_predictive_insights(product)
+        display_predictive_insights(product_id)
         
         # Footer
         st.markdown("---")

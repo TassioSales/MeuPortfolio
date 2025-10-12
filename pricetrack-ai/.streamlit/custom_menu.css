@@ -1,0 +1,80 @@
+/* ==========================================================================
+   ESTILOS PERSONALIZADOS PARA O MENU DE NAVEGAÇÃO
+   ========================================================================== */
+
+/* Esconde o menu padrão do Streamlit */
+#MainMenu {visibility: hidden;}
+header[data-testid="stHeader"] {display: none;}
+footer[data-testid="stFooter"] {display: none;}
+
+/* Ajusta o padding do conteúdo principal */
+.stApp {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Ajusta o container principal */
+.block-container {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+/* Estilos para a barra lateral personalizada */
+[data-testid="stSidebar"] {
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--gray-700);
+}
+
+/* Estilos para os botões de navegação */
+[data-testid="stSidebar"] .stButton button {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    margin: 0.25rem 0;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+[data-testid="stSidebar"] .stButton button:hover {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--primary-light);
+    transform: translateX(4px);
+}
+
+[data-testid="stSidebar"] .stButton button:active {
+    background: rgba(139, 92, 246, 0.2);
+}
+
+/* Estilos para os títulos na barra lateral */
+[data-testid="stSidebar"] h3 {
+    color: var(--primary-light);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Estilos para o logo na barra lateral */
+[data-testid="stSidebar"] img {
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Ajustes para dispositivos móveis */
+@media (max-width: 768px) {
+    [data-testid="stSidebar"] {
+        width: 250px !important;
+    }
+    
+    [data-testid="stSidebar"] .stButton button {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}

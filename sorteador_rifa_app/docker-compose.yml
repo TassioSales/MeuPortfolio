@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  plataforma_rifas:
+    build: .
+    image: tassiosales/plataforma_rifas:latest
+    container_name: plataforma_rifas
+    ports:
+      - "8501:8501"
+    environment:
+      - JSON_MIRROR=false
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+      - TZ=Etc/UTC
+    volumes:
+      - ./data:/app/data
+      - ./modules/assets:/app/modules/assets
+      - ./log:/app/log
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; u=urllib.request.urlopen('http://127.0.0.1:8501/healthz', timeout=3); sys.exit(0 if getattr(u,'status',200)==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - rifa-network
+
+networks:
+  rifa-network:
+    driver: bridge

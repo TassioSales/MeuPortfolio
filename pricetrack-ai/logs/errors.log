@@ -1,118 +1,87 @@
-2025-10-05 21:34:10 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
-2025-10-05 21:34:10 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
-domain: "googleapis.com"
-metadata {
-  key: "service"
-  value: "generativelanguage.googleapis.com"
-}
-, locale: "en-US"
-message: "API key not valid. Please pass a valid API key."
-]
-2025-10-05 21:34:25 | ERROR    | __main__:display_search_section:94 | Erro na pesquisa: Cannot hash argument 'self' (of type `core.ai_services.GeminiService`) in 'search_products_with_gemini'.
-
-To address this, you can tell Streamlit not to hash this argument by adding a
-leading underscore to the argument's name in the function signature:
-
-```
-@st.cache_data
-def search_products_with_gemini(_self, ...):
-    ...
-```
-            
-2025-10-05 21:35:28 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
-2025-10-05 21:35:28 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
-domain: "googleapis.com"
-metadata {
-  key: "service"
-  value: "generativelanguage.googleapis.com"
-}
-, locale: "en-US"
-message: "API key not valid. Please pass a valid API key."
-]
-2025-10-05 21:35:37 | ERROR    | __main__:display_search_section:94 | Erro na pesquisa: Cannot hash argument 'self' (of type `core.ai_services.GeminiService`) in 'search_products_with_gemini'.
-
-To address this, you can tell Streamlit not to hash this argument by adding a
-leading underscore to the argument's name in the function signature:
-
-```
-@st.cache_data
-def search_products_with_gemini(_self, ...):
-    ...
-```
-            
-2025-10-05 21:38:21 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
-2025-10-05 21:38:21 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
-domain: "googleapis.com"
-metadata {
-  key: "service"
-  value: "generativelanguage.googleapis.com"
-}
-, locale: "en-US"
-message: "API key not valid. Please pass a valid API key."
-]
-2025-10-05 21:42:39 | ERROR    | core.utils:validate_price:58 | Erro na validação de preço 'abc': could not convert string to float: ''
-2025-10-05 21:51:20 | ERROR    | core.ai_services:generate_tags_for_product:236 | Erro ao gerar tags para 'iPhone 15': name 'self' is not defined
-2025-10-05 21:51:21 | ERROR    | core.ai_services:generate_product_summary:274 | Erro ao gerar resumo para 'iPhone 15': name 'self' is not defined
-2025-10-05 21:51:21 | ERROR    | core.ai_services:summarize_reviews:341 | Erro ao analisar reviews para 'iPhone 15': name 'self' is not defined
-2025-10-05 21:51:21 | ERROR    | core.ai_services:compare_products:513 | Erro ao comparar produtos: name 'self' is not defined
-2025-10-05 21:51:21 | ERROR    | core.ai_services:suggest_alert_threshold:600 | Erro ao sugerir threshold para 'iPhone 15': name 'self' is not defined
-2025-10-05 21:51:21 | ERROR    | core.ai_services:search_products_with_gemini:189 | Erro na busca de produtos 'test': API Error
-2025-10-05 21:51:21 | ERROR    | core.utils:validate_price:58 | Erro na validação de preço 'abc': could not convert string to float: ''
-2025-10-05 21:51:42 | ERROR    | core.ai_services:generate_tags_for_product:236 | Erro ao gerar tags para 'iPhone 15': name 'self' is not defined
-2025-10-05 21:51:42 | ERROR    | core.ai_services:generate_product_summary:274 | Erro ao gerar resumo para 'iPhone 15': name 'self' is not defined
-2025-10-05 21:51:42 | ERROR    | core.ai_services:summarize_reviews:341 | Erro ao analisar reviews para 'iPhone 15': name 'self' is not defined
-2025-10-05 21:51:42 | ERROR    | core.ai_services:compare_products:513 | Erro ao comparar produtos: name 'self' is not defined
-2025-10-05 21:51:42 | ERROR    | core.ai_services:suggest_alert_threshold:600 | Erro ao sugerir threshold para 'iPhone 15': name 'self' is not defined
-2025-10-05 21:51:42 | ERROR    | core.ai_services:search_products_with_gemini:189 | Erro na busca de produtos 'test': API Error
-2025-10-05 21:51:42 | ERROR    | core.utils:validate_price:58 | Erro na validação de preço 'abc': could not convert string to float: ''
-2025-10-05 21:52:43 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
-2025-10-05 21:52:43 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
-domain: "googleapis.com"
-metadata {
-  key: "service"
-  value: "generativelanguage.googleapis.com"
-}
-, locale: "en-US"
-message: "API key not valid. Please pass a valid API key."
-]
-2025-10-05 21:53:03 | ERROR    | core.logger:log_api_call:149 | Falha na API call 'gemini_api_call'
-2025-10-05 21:53:03 | ERROR    | core.ai_services:search_products_with_gemini:189 | Erro na busca de produtos 'iPhone 15 Pro': Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
-domain: "googleapis.com"
-metadata {
-  key: "service"
-  value: "generativelanguage.googleapis.com"
-}
-, locale: "en-US"
-message: "API key not valid. Please pass a valid API key."
-]
-2025-10-05 21:53:03 | ERROR    | __main__:display_search_section:94 | Erro na pesquisa: Falha na busca de produtos: Falha após 3 tentativas: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
-domain: "googleapis.com"
-metadata {
-  key: "service"
-  value: "generativelanguage.googleapis.com"
-}
-, locale: "en-US"
-message: "API key not valid. Please pass a valid API key."
-]
-2025-10-05 22:04:08 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
-2025-10-05 22:04:08 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
-2025-10-05 22:04:17 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
-2025-10-05 22:04:17 | ERROR    | core.ai_services:search_products_with_gemini:167 | Erro na busca de produtos 'iPhone 15 Pro': Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
-2025-10-05 22:04:17 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
-2025-10-05 22:06:03 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
-2025-10-05 22:06:03 | ERROR    | core.ai_services:_make_api_call:102 | Valide sua GEMINI_API_KEY. Em ambiente local, o env var GEMINI_API_KEY tem prioridade sobre st.secrets.
-2025-10-05 22:06:03 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
-2025-10-05 22:07:06 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
-2025-10-05 22:07:06 | ERROR    | core.ai_services:_make_api_call:102 | Valide sua GEMINI_API_KEY. Em ambiente local, o env var GEMINI_API_KEY tem prioridade sobre st.secrets.
-2025-10-05 22:07:06 | ERROR    | core.ai_services:search_products_with_gemini:178 | Erro na busca de produtos 'iPhone 15 Pro': Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
-2025-10-05 22:07:06 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
-2025-10-05 22:09:22 | ERROR    | core.logger:log_api_call:178 | Falha na API call 'gemini_api_call'
-2025-10-05 22:09:22 | ERROR    | core.ai_services:_make_api_call:110 | Valide sua GEMINI_API_KEY. Em ambiente local, o env var GEMINI_API_KEY tem prioridade sobre st.secrets.
-2025-10-05 22:09:22 | ERROR    | __main__:display_ai_insights:296 | Erro ao gerar insight: Falha após 3 tentativas: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}
-2025-10-05 22:17:28 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
-2025-10-05 22:17:30 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
-2025-10-05 22:18:11 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
-2025-10-05 22:19:00 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
-2025-10-05 22:19:28 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
-2025-10-05 22:20:49 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
-2025-10-05 22:21:15 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:43:34 | ERROR    | core.utils:validate_price:58 | Erro na validação de preço 'abc': could not convert string to float: ''
+2025-10-07 20:43:55 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:44:39 | ERROR    | core.ai_services:search_products_with_gemini:179 | Erro na busca de produtos 'Geladeira Samsunga': Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:44:39 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:44:47 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:45:40 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:46:20 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:47:14 | ERROR    | __main__:add_product_to_monitoring:141 | Falha concurrente (tags/threshold) para 'Geladeira Samsung French Door RF22R7351SG/AZ Inverse 582 Litros Inox': NoSessionContext: 
+2025-10-07 20:47:31 | ERROR    | core.database:__exit__:437 | Transação revertida devido a erro: RerunData(page_script_hash='f435fd0c596e44f26a244de5d5ff40f5', context_info=timezone: "America/Sao_Paulo"
+timezone_offset: 180
+locale: "en-US"
+url: "http://localhost:8502/Pesquisar_e_Adicionar_Produto"
+is_embedded: false
+color_scheme: "light"
+)
+2025-10-07 20:47:31 | ERROR    | __main__:main:458 | Erro no dashboard: Instance <Product at 0x26bb943d810> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 20:48:28 | ERROR    | __main__:main:458 | Erro no dashboard: Instance <Product at 0x26bb95d0050> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 20:50:24 | ERROR    | __main__:add_product_to_monitoring:141 | Falha concurrente (tags/threshold) para 'Refrigerador Electrolux Frost Free 310 Litros Branco (DF35A)': NoSessionContext: 
+2025-10-07 20:50:38 | ERROR    | __main__:main:417 | Erro no comparador: Instance <Product at 0x26b9ef61b20> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 20:51:27 | ERROR    | __main__:main:417 | Erro no comparador: Instance <Product at 0x26bba8f2a30> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 20:51:37 | ERROR    | __main__:main:417 | Erro no comparador: Instance <Product at 0x26bba8f0d70> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 20:51:45 | ERROR    | __main__:main:417 | Erro no comparador: Instance <Product at 0x26bba8f3390> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 20:51:53 | ERROR    | __main__:main:417 | Erro no comparador: Instance <Product at 0x26bba8f0d70> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 20:52:14 | ERROR    | __main__:main:458 | Erro no dashboard: Instance <Product at 0x26bba8f2a30> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 20:52:17 | ERROR    | __main__:main:458 | Erro no dashboard: Instance <Product at 0x26bba8faa30> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 20:52:43 | ERROR    | core.ai_services:generate_product_summary:264 | Erro ao gerar resumo para 'Geladeira Samsung French Door RF22R7351SG/AZ Inverse 582 Litros Inox': Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:52:43 | ERROR    | core.ai_services:summarize_reviews:331 | Erro ao analisar reviews para 'Geladeira Samsung French Door RF22R7351SG/AZ Inverse 582 Litros Inox': Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:52:43 | ERROR    | core.ai_services:analyze_offer_quality:434 | Erro ao analisar oferta: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:53:08 | ERROR    | core.ai_services:analyze_offer_quality:434 | Erro ao analisar oferta: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:53:08 | ERROR    | core.ai_services:analyze_offer_quality:434 | Erro ao analisar oferta: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:53:40 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:54:04 | ERROR    | core.ai_services:search_products_with_gemini:179 | Erro na busca de produtos 'iphone 14': Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:54:04 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:54:10 | ERROR    | core.ai_services:search_products_with_gemini:179 | Erro na busca de produtos 'iphone 14 pro': Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:54:10 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:54:21 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:54:58 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:55:31 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:55:45 | ERROR    | core.ai_services:search_products_with_gemini:179 | Erro na busca de produtos 'iphone 14 pro': Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:55:45 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:56:21 | ERROR    | __main__:display_ai_insights:343 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:56:42 | ERROR    | core.ai_services:search_products_with_gemini:179 | Erro na busca de produtos 'iPhone 15 Pro Max 256GB': Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:56:42 | ERROR    | __main__:display_search_section:98 | Erro na pesquisa: Falha na busca de produtos: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:56:45 | ERROR    | __main__:display_ai_insights:361 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:56:56 | ERROR    | __main__:display_ai_insights:361 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 20:57:21 | ERROR    | __main__:add_product_to_monitoring:141 | Falha concurrente (tags/threshold) para 'Apple iPhone 15 Pro Max (256 GB) - Titânio Natural': NoSessionContext: 
+2025-10-07 20:57:26 | ERROR    | __main__:add_product_to_monitoring:141 | Falha concurrente (tags/threshold) para 'iPhone 15 Pro Max Apple, 256GB, Titânio Azul, Tela de 6,7”': NoSessionContext: 
+2025-10-07 20:57:36 | ERROR    | core.database:__exit__:476 | Transação revertida devido a erro: 
+2025-10-07 21:42:44 | ERROR    | __main__:main:503 | Erro no dashboard: partially initialized module 'pandas' from 'D:\GithubGit\MeuPortfolio\pricetrack-ai\venv\Lib\site-packages\pandas\__init__.py' has no attribute 'Series' (most likely due to a circular import)
+2025-10-07 22:02:57 | ERROR    | __main__:main:426 | Erro na página inicial: name 'initialize_session_state' is not defined
+2025-10-07 22:03:04 | ERROR    | __main__:main:424 | Erro na página inicial: name 'initialize_session_state' is not defined
+2025-10-07 22:03:11 | ERROR    | __main__:main:424 | Erro na página inicial: name 'initialize_session_state' is not defined
+2025-10-07 22:13:23 | ERROR    | core.database:__exit__:476 | Transação revertida devido a erro: 
+2025-10-07 22:15:15 | ERROR    | core.database:__exit__:476 | Transação revertida devido a erro: RerunData(page_script_hash='678f09cb4ef4caf4cef761e32f197b45', cached_message_hashes={'0daf97b8f3ee8821169024973c543e3d'}, context_info=timezone: "America/Sao_Paulo"
+timezone_offset: 180
+locale: "pt-PT"
+url: "http://localhost:8510/Alertas_e_Notifica%C3%A7%C3%B5es"
+is_embedded: false
+color_scheme: "dark"
+)
+2025-10-07 22:15:18 | ERROR    | core.database:__exit__:476 | Transação revertida devido a erro: RerunData(page_script_hash='678f09cb4ef4caf4cef761e32f197b45', context_info=timezone: "America/Sao_Paulo"
+timezone_offset: 180
+locale: "pt-PT"
+url: "http://localhost:8510/Alertas_e_Notifica%C3%A7%C3%B5es"
+is_embedded: false
+color_scheme: "dark"
+)
+2025-10-07 22:15:21 | ERROR    | core.database:__exit__:476 | Transação revertida devido a erro: RerunData(page_script_hash='678f09cb4ef4caf4cef761e32f197b45', context_info=timezone: "America/Sao_Paulo"
+timezone_offset: 180
+locale: "pt-PT"
+url: "http://localhost:8510/Alertas_e_Notifica%C3%A7%C3%B5es"
+is_embedded: false
+color_scheme: "dark"
+)
+2025-10-07 22:15:22 | ERROR    | core.database:__exit__:476 | Transação revertida devido a erro: Instance <Alert at 0x141d70d0f50> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 22:15:22 | ERROR    | __main__:main:460 | Erro na página de alertas: Instance <Alert at 0x141d70d0f50> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 22:25:10 | ERROR    | core.database:__exit__:476 | Transação revertida devido a erro: Instance <Alert at 0x141ba6efb10> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 22:25:10 | ERROR    | __main__:main:460 | Erro na página de alertas: Instance <Alert at 0x141ba6efb10> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2025-10-07 22:41:29 | ERROR    | __main__:main:361 | Erro na página inicial: ('EOF in multi-line string', (80, 9))
+2025-10-07 22:41:29 | ERROR    | __main__:main:361 | Erro na página inicial: ('EOF in multi-line string', (80, 9))
+2025-10-07 22:41:29 | ERROR    | __main__:main:361 | Erro na página inicial: ('EOF in multi-line string', (80, 9))
+2025-10-07 22:41:57 | ERROR    | __main__:_cached_insight:306 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 22:41:57 | ERROR    | __main__:_cached_insight:306 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 22:52:38 | ERROR    | __main__:_cached_insight:306 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 22:53:07 | ERROR    | __main__:_cached_insight:306 | Erro ao gerar insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 22:54:52 | ERROR    | __main__:_cached:91 | Insight: Cliente Gemini não configurado. Defina a chave da API primeiro.
+2025-10-07 22:54:52 | ERROR    | __main__:_cached:91 | Insight: Cliente Gemini não configurado. Defina a chave da API primeiro.

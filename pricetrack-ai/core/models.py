@@ -48,6 +48,17 @@ class Alert(Base):
         return f"<Alert(id={self.id}, product_id={self.product_id}, threshold={self.threshold_price})>"
 
 
+class AppSetting(Base):
+    """Configurações simples de aplicativo (chave-valor)."""
+    __tablename__ = 'app_settings'
+
+    key = Column(String(255), primary_key=True, index=True)
+    value = Column(String(2048), nullable=True)
+
+    def __repr__(self):
+        return f"<AppSetting(key={self.key})>"
+
+
 # Modelos Pydantic para validação
 class ProductCreate(BaseModel):
     """Modelo para criação de produto"""

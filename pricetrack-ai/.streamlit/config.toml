@@ -1,19 +1,43 @@
-# Configurações do Streamlit
+# .streamlit/config.toml
+
+# =============================================================================
+# CONFIGURAÇÕES GERAIS DO STREAMLIT PARA O PRICETRACK AI
+# =============================================================================
+
+# Configurações do Tema
+# Define a aparência visual da aplicação.
 [theme]
-primaryColor = "#667eea"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f0f2f6"
-textColor = "#262730"
-font = "sans serif"
+base = "dark"
+primaryColor = "#8b5cf6"          # Roxo vibrante para elementos interativos
+backgroundColor = "#0f172a"        # Fundo principal (azul escuro)
+secondaryBackgroundColor = "#1e293b" # Fundo de elementos como a sidebar (azul acinzentado)
+textColor = "#f8fafc"              # Cor do texto principal (branco suave)
+font = "Inter, sans-serif"
 
+# Configurações do Servidor
 [server]
-headless = true
+headless = true                   # Executa o servidor em modo headless (sem abrir navegador automaticamente)
 port = 8501
-enableCORS = false
-enableXsrfProtection = true
+enableCORS = false                # Manter desabilitado por segurança, a menos que seja necessário
+enableXsrfProtection = true       # Proteção contra Cross-Site Request Forgery
+runOnSave = true                  # Recarrega a aplicação ao salvar um arquivo
+maxUploadSize = 200               # Limite de 200MB para uploads
 
+# Configurações do Navegador
 [browser]
-gatherUsageStats = false
+gatherUsageStats = false          # Desativa o envio de estatísticas de uso para o Streamlit
+serverAddress = "localhost"
 
+# Configurações da Interface do Usuário (UI)
+[ui]
+hideTopBar = true                 # Remove a barra superior do Streamlit
+hideSidebarNav = true             # Remove a navegação padrão da sidebar (usamos uma customizada)
+
+# Depreciação
+[deprecation]
+showPyplotGlobalUse = false
+
+# Logging
+# Define o nível de logs exibidos no console. "info" é bom para desenvolvimento.
 [logger]
 level = "info"

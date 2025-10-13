@@ -207,6 +207,6 @@ Se este projeto foi útil, deixe sua ⭐ e compartilhe!
 **© 2025 - Sorteador de Rifa PRO**
 
 [![GitHub](https://img.shields.io/badge/GitHub-TassioSales-181717?style=for-the-badge&logo=github)](https://github.com/TassioSales)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Tássio_Sales-0077B5?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/tassio-sales)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Tássio_Sales-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/tassio-sales-0a2b3c4d/)
 
 </div>

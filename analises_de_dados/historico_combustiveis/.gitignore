@@ -1,2 +1,5 @@
 # Ignorar a pasta dados_anp_ca e todo seu conteúdo
 dados_anp_ca/
+
+# Ignorar a pasta dados_tratados e todo seu conteúdo
+dados_tratados/

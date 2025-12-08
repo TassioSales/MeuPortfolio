@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card mt-5">
+            <div class="card-header">
+                <h3 class="text-center">Criar Conta</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showPassword">
+                        <label class="form-check-label" for="showPassword">
+                            Mostrar senhas
+                        </label>
+                    </div>
+                    <div class="d-grid gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <p>Já tem uma conta? <a href="{% url 'login' %}">Entrar</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('showPassword').addEventListener('change', function () {
+        var pass1 = document.getElementById('id_password1');
+        var pass2 = document.getElementById('id_password2');
+        var type = this.checked ? 'text' : 'password';
+        if (pass1) pass1.type = type;
+        if (pass2) pass2.type = type;
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-8">
+        <h2>Minhas Contas</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'account_add' %}" class="btn btn-success">Nova Conta</a>
+    </div>
+</div>
+
+<div class="row">
+    {% for account in accounts %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ account.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ account.get_type_account_display }}</h6>
+                <p class="card-text display-6">R$ {{ account.current_balance }}</p>
+                <a href="{% url 'account_edit' account.pk %}" class="card-link">Editar</a>
+                <a href="{% url 'account_delete' account.pk %}" class="card-link text-danger">Excluir</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>Nenhuma conta cadastrada.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

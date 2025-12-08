@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h2 class="fw-bold text-dark">
+            <i class="bi bi-piggy-bank me-2 text-primary"></i>Orçamentos
+        </h2>
+        <p class="text-muted">Defina limites e acompanhe seus gastos por categoria.</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'budget_add' %}" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i>Novo Orçamento
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for budget in budgets %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 hover-lift transition-all">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="card-title fw-bold text-dark mb-1">{{ budget.category.name }}</h5>
+                        <span
+                            class="badge bg-light text-secondary border border-secondary-subtle rounded-pill fw-normal">
+                            <i class="bi bi-calendar-event me-1"></i>{{ budget.get_period_display }}
+                        </span>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
+                            <li><a class="dropdown-item" href="{% url 'budget_edit' budget.pk %}"><i
+                                        class="bi bi-pencil me-2"></i>Editar</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'budget_delete' budget.pk %}"><i
+                                        class="bi bi-trash me-2"></i>Excluir</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between text-muted small mb-1">
+                        <span>Progresso</span>
+                        <span class="fw-bold {{ budget.status_color }}">{{ budget.percentage|floatformat:1 }}%</span>
+                    </div>
+                    <div class="progress" style="height: 10px; border-radius: 10px; background-color: #e9ecef;">
+                        <div class="progress-bar bg-{{ budget.status_color }}" role="progressbar"
+                            style="width: {{ budget.percentage|stringformat:'.1f' }}%; border-radius: 10px;"
+                            aria-valuenow="{{ budget.percentage|stringformat:'.1f' }}" aria-valuemin="0"
+                            aria-valuemax="100">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                    <div>
+                        <small class="text-muted d-block text-uppercase"
+                            style="font-size: 0.7rem; letter-spacing: 0.5px;">Gasto</small>
+                        <span class="fw-bold text-dark">R$ {{ budget.spent|floatformat:2 }}</span>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted d-block text-uppercase"
+                            style="font-size: 0.7rem; letter-spacing: 0.5px;">Limite</small>
+                        <span class="fw-bold text-primary">R$ {{ budget.limit|floatformat:2 }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center py-5">
+                <div class="text-muted">
+                    <i class="bi bi-piggy-bank fs-1 d-block mb-3 opacity-50"></i>
+                    <h5 class="fw-bold">Nenhum orçamento definido</h5>
+                    <p class="mb-3">Crie orçamentos para controlar seus gastos e economizar mais.</p>
+                    <a href="{% url 'budget_add' %}" class="btn btn-outline-primary">
+                        Criar primeiro orçamento
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+    }
+
+    .bg-success {
+        background-color: #198754 !important;
+    }
+
+    .bg-warning {
+        background-color: #ffc107 !important;
+    }
+
+    .bg-danger {
+        background-color: #dc3545 !important;
+    }
+</style>
+{% endblock %}

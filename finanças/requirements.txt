@@ -1,0 +1,9 @@
+django
+psycopg2-binary
+django-crispy-forms
+crispy-bootstrap5
+loguru
+xhtml2pdf
+yfinance
+whitenoise
+waitress

@@ -1,0 +1,318 @@
+2025-12-08 13:50:22.880 | INFO     | logging:callHandlers:1737 - Serving on http://127.0.0.1:8080
+2025-12-08 13:50:27.365 | WARNING  | logging:callHandlers:1737 - Not Found: /favicon.ico
+2025-12-08 14:00:00.425 | ERROR    | logging:callHandlers:1737 - Internal Server Error: /register/
+Traceback (most recent call last):
+
+  File "threading.py", line 1015, in _bootstrap
+
+  File "threading.py", line 1044, in _bootstrap_inner
+
+  File "threading.py", line 995, in run
+
+  File "waitress\task.py", line 83, in handler_thread
+
+  File "waitress\channel.py", line 430, in service
+
+  File "waitress\task.py", line 167, in service
+
+  File "waitress\task.py", line 435, in execute
+
+  File "waitress\proxy_headers.py", line 64, in translate_proxy_headers
+
+  File "django\core\handlers\wsgi.py", line 124, in __call__
+    response = self.get_response(request)
+               │    │            └ <WSGIRequest: GET '/register/'>
+               │    └ <function BaseHandler.get_response at 0x000002BE0475CD60>
+               └ <django.core.handlers.wsgi.WSGIHandler object at 0x000002BE0471DD30>
+
+  File "django\core\handlers\base.py", line 141, in get_response
+    response = self._middleware_chain(request)
+               │    │                 └ <WSGIRequest: GET '/register/'>
+               │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04EC05E0>
+               └ <django.core.handlers.wsgi.WSGIHandler object at 0x000002BE0471DD30>
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <SecurityMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04EC0720>
+               │           └ <SecurityMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <whitenoise.middleware.WhiteNoiseMiddleware object at 0x000002BE04BC9D30>
+
+  File "whitenoise\middleware.py", line 123, in __call__
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <SessionMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04838220>
+               │           └ <SessionMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <CommonMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04E1AE80>
+               │           └ <CommonMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <CsrfViewMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04E1AFC0>
+               │           └ <CsrfViewMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <AuthenticationMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04E1A700>
+               │           └ <AuthenticationMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <MessageMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04BDD9E0>
+               │           └ <MessageMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <XFrameOptionsMiddleware get_response=BaseHandler._get_response>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function BaseHandler._get_response at 0x000002BE04BC3B00>
+               │           └ <XFrameOptionsMiddleware get_response=BaseHandler._get_response>
+               └ None
+
+> File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <bound method BaseHandler._get_response of <django.core.handlers.wsgi.WSGIHandler object at 0x000002BE0471DD30>>
+
+  File "django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               │                │         │                └ {}
+               │                │         └ ()
+               │                └ <WSGIRequest: GET '/register/'>
+               └ <function register at 0x000002BE1A6272E0>
+
+  File "core\views.py", line 229, in register
+
+  File "django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              │      │                │              │        │              └ None
+              │      │                │              │        └ <WSGIRequest: GET '/register/'>
+              │      │                │              └ {'form': <UserCreationForm bound=False, valid=Unknown, fields=(username;password1;password2)>}
+              │      │                └ 'registration/register.html'
+              │      └ <function render_to_string at 0x000002BE042CD800>
+              └ <module 'django.template.loader' from 'C:\\Users\\Bio Mundo\\Desktop\\finanças\\dist\\finance_project\\_internal\\django\\tem...
+
+  File "django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               │            │                    └ None
+               │            └ 'registration/register.html'
+               └ <function get_template at 0x000002BE03E142C0>
+
+  File "django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+          │                    │                    └ [TemplateDoesNotExist('registration/register.html')]
+          │                    └ 'registration/register.html'
+          └ <class 'django.template.exceptions.TemplateDoesNotExist'>
+
+django.template.exceptions.TemplateDoesNotExist: registration/register.html
+2025-12-08 14:00:04.579 | ERROR    | logging:callHandlers:1737 - Internal Server Error: /register/
+Traceback (most recent call last):
+
+  File "threading.py", line 1015, in _bootstrap
+
+  File "threading.py", line 1044, in _bootstrap_inner
+
+  File "threading.py", line 995, in run
+
+  File "waitress\task.py", line 83, in handler_thread
+
+  File "waitress\channel.py", line 430, in service
+
+  File "waitress\task.py", line 167, in service
+
+  File "waitress\task.py", line 435, in execute
+
+  File "waitress\proxy_headers.py", line 64, in translate_proxy_headers
+
+  File "django\core\handlers\wsgi.py", line 124, in __call__
+    response = self.get_response(request)
+               │    │            └ <WSGIRequest: GET '/register/'>
+               │    └ <function BaseHandler.get_response at 0x000002BE0475CD60>
+               └ <django.core.handlers.wsgi.WSGIHandler object at 0x000002BE0471DD30>
+
+  File "django\core\handlers\base.py", line 141, in get_response
+    response = self._middleware_chain(request)
+               │    │                 └ <WSGIRequest: GET '/register/'>
+               │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04EC05E0>
+               └ <django.core.handlers.wsgi.WSGIHandler object at 0x000002BE0471DD30>
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <SecurityMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04EC0720>
+               │           └ <SecurityMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <whitenoise.middleware.WhiteNoiseMiddleware object at 0x000002BE04BC9D30>
+
+  File "whitenoise\middleware.py", line 123, in __call__
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <SessionMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04838220>
+               │           └ <SessionMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <CommonMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04E1AE80>
+               │           └ <CommonMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <CsrfViewMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04E1AFC0>
+               │           └ <CsrfViewMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <AuthenticationMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04E1A700>
+               │           └ <AuthenticationMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <MessageMiddleware get_response=convert_exception_to_response.<locals>.inner>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function convert_exception_to_response.<locals>.inner at 0x000002BE04BDD9E0>
+               │           └ <MessageMiddleware get_response=convert_exception_to_response.<locals>.inner>
+               └ None
+
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <XFrameOptionsMiddleware get_response=BaseHandler._get_response>
+
+  File "django\utils\deprecation.py", line 309, in __call__
+    response = response or self.get_response(request)
+               │           │    │            └ <WSGIRequest: GET '/register/'>
+               │           │    └ <function BaseHandler._get_response at 0x000002BE04BC3B00>
+               │           └ <XFrameOptionsMiddleware get_response=BaseHandler._get_response>
+               └ None
+
+> File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               │            └ <WSGIRequest: GET '/register/'>
+               └ <bound method BaseHandler._get_response of <django.core.handlers.wsgi.WSGIHandler object at 0x000002BE0471DD30>>
+
+  File "django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               │                │         │                └ {}
+               │                │         └ ()
+               │                └ <WSGIRequest: GET '/register/'>
+               └ <function register at 0x000002BE1A6272E0>
+
+  File "core\views.py", line 229, in register
+
+  File "django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              │      │                │              │        │              └ None
+              │      │                │              │        └ <WSGIRequest: GET '/register/'>
+              │      │                │              └ {'form': <UserCreationForm bound=False, valid=Unknown, fields=(username;password1;password2)>}
+              │      │                └ 'registration/register.html'
+              │      └ <function render_to_string at 0x000002BE042CD800>
+              └ <module 'django.template.loader' from 'C:\\Users\\Bio Mundo\\Desktop\\finanças\\dist\\finance_project\\_internal\\django\\tem...
+
+  File "django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               │            │                    └ None
+               │            └ 'registration/register.html'
+               └ <function get_template at 0x000002BE03E142C0>
+
+  File "django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+          │                    │                    └ [TemplateDoesNotExist('registration/register.html')]
+          │                    └ 'registration/register.html'
+          └ <class 'django.template.exceptions.TemplateDoesNotExist'>
+
+django.template.exceptions.TemplateDoesNotExist: registration/register.html

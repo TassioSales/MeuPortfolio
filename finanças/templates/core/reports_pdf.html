@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+
+        body {
+            font-family: Helvetica, sans-serif;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .summary {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .text-success {
+            color: green;
+        }
+
+        .text-danger {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Relatório Financeiro</h1>
+        <p>Período: {{ start_date|default:"Início" }} a {{ end_date|default:"Hoje" }}</p>
+        <p>Gerado em: {% now "d/m/Y H:i" %}</p>
+    </div>
+
+    <div class="summary">
+        <h3>Resumo do Período</h3>
+        <p><strong>Total Receitas:</strong> <span class="text-success">R$ {{ total_income|floatformat:2 }}</span></p>
+        <p><strong>Total Despesas:</strong> <span class="text-danger">R$ {{ total_expense|floatformat:2 }}</span></p>
+        <p><strong>Saldo Líquido:</strong> R$ {{ net_balance|floatformat:2 }}</p>
+    </div>
+
+    <h3>Detalhamento das Transações</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Categoria</th>
+                <th>Valor</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in transactions %}
+            <tr>
+                <td>{{ t.date|date:"d/m/Y" }}</td>
+                <td>{{ t.get_type_display }}</td>
+                <td>{{ t.category.name|default:"-" }}</td>
+                <td>R$ {{ t.amount|floatformat:2 }}</td>
+                <td>{{ t.description }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center;">Nenhuma transação encontrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

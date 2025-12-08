@@ -1,0 +1,931 @@
+INFO 2025-12-05 09:19:53,322 autoreload 7596 30856 Watching for file changes with StatReloader
+INFO 2025-12-05 09:19:53,350 autoreload 14084 23612 Watching for file changes with StatReloader
+INFO 2025-12-05 09:19:53,403 autoreload 35560 25936 Watching for file changes with StatReloader
+INFO 2025-12-05 09:19:53,686 autoreload 16216 37320 Watching for file changes with StatReloader
+INFO 2025-12-05 09:21:00,064 autoreload 14084 23612 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:21:00,065 autoreload 35560 25936 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:21:00,066 autoreload 7596 30856 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:21:00,316 autoreload 16216 37320 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:21:02,535 autoreload 34616 37120 Watching for file changes with StatReloader
+INFO 2025-12-05 09:21:02,570 autoreload 37400 16936 Watching for file changes with StatReloader
+INFO 2025-12-05 09:21:03,037 autoreload 36352 20792 Watching for file changes with StatReloader
+INFO 2025-12-05 09:21:03,476 autoreload 34876 12652 Watching for file changes with StatReloader
+INFO 2025-12-05 09:22:07,663 autoreload 34616 37120 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:22:07,783 autoreload 37400 16936 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:22:08,028 autoreload 34876 12652 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:22:08,072 autoreload 36352 20792 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:22:10,019 autoreload 8108 15380 Watching for file changes with StatReloader
+INFO 2025-12-05 09:22:10,022 autoreload 25392 23672 Watching for file changes with StatReloader
+INFO 2025-12-05 09:22:10,281 autoreload 25048 36484 Watching for file changes with StatReloader
+INFO 2025-12-05 09:22:10,504 autoreload 37420 34636 Watching for file changes with StatReloader
+INFO 2025-12-05 09:22:32,711 log 37420 15724 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:22:34,615 log 37420 15724 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:22:35,902 log 37420 15724 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:22:36,803 log 37420 15724 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:23:06,545 autoreload 22324 37200 Watching for file changes with StatReloader
+INFO 2025-12-05 09:23:26,639 log 8108 13144 "GET / HTTP/1.1" 200 14270
+INFO 2025-12-05 09:23:30,017 log 8108 13144 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:23:47,611 views 8108 13144 Generating reports for user tassiosales
+ERROR 2025-12-05 09:23:47,733 log 8108 13144 Internal Server Error: /reports/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 500, in reports
+    return render(request, 'core/reports.html', context)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\defaulttags.py", line 894, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 556, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 554, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 772, in __init__
+    self.args_check(filter_name, filter_func, args)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 835, in args_check
+    raise TemplateSyntaxError(
+        "%s requires %d arguments, %d provided" % (name, alen - dlen, plen)
+    )
+django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Desktop\finanças\templates\core\reports.html, stringformat requires 2 arguments, 1 provided
+ERROR 2025-12-05 09:23:47,812 log 8108 13144 "GET /reports/ HTTP/1.1" 500 237989
+INFO 2025-12-05 09:24:47,845 autoreload 11384 32884 Watching for file changes with StatReloader
+INFO 2025-12-05 09:24:56,244 views 8108 13144 Generating reports for user tassiosales
+ERROR 2025-12-05 09:24:56,378 log 8108 13144 Internal Server Error: /reports/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 500, in reports
+    return render(request, 'core/reports.html', context)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\defaulttags.py", line 894, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 556, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 554, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 772, in __init__
+    self.args_check(filter_name, filter_func, args)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 835, in args_check
+    raise TemplateSyntaxError(
+        "%s requires %d arguments, %d provided" % (name, alen - dlen, plen)
+    )
+django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Desktop\finanças\templates\core\reports.html, stringformat requires 2 arguments, 1 provided
+ERROR 2025-12-05 09:24:56,427 log 8108 13144 "GET /reports/ HTTP/1.1" 500 238126
+INFO 2025-12-05 09:24:57,945 views 8108 13144 Generating reports for user tassiosales
+ERROR 2025-12-05 09:24:58,073 log 8108 13144 Internal Server Error: /reports/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 500, in reports
+    return render(request, 'core/reports.html', context)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\defaulttags.py", line 894, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 556, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 554, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 772, in __init__
+    self.args_check(filter_name, filter_func, args)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 835, in args_check
+    raise TemplateSyntaxError(
+        "%s requires %d arguments, %d provided" % (name, alen - dlen, plen)
+    )
+django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Desktop\finanças\templates\core\reports.html, stringformat requires 2 arguments, 1 provided
+ERROR 2025-12-05 09:24:58,124 log 8108 13144 "GET /reports/ HTTP/1.1" 500 238126
+INFO 2025-12-05 09:25:09,470 log 8108 13144 "GET / HTTP/1.1" 200 14270
+INFO 2025-12-05 09:25:11,741 log 8108 13144 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:25:12,667 views 8108 13144 Generating reports for user tassiosales
+ERROR 2025-12-05 09:25:12,765 log 8108 13144 Internal Server Error: /reports/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 500, in reports
+    return render(request, 'core/reports.html', context)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\defaulttags.py", line 894, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 556, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 554, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 772, in __init__
+    self.args_check(filter_name, filter_func, args)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 835, in args_check
+    raise TemplateSyntaxError(
+        "%s requires %d arguments, %d provided" % (name, alen - dlen, plen)
+    )
+django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Desktop\finanças\templates\core\reports.html, stringformat requires 2 arguments, 1 provided
+ERROR 2025-12-05 09:25:12,798 log 8108 13144 "GET /reports/ HTTP/1.1" 500 237989
+INFO 2025-12-05 09:33:06,396 views 8108 37200 Generating reports for user tassiosales
+INFO 2025-12-05 09:33:06,424 log 8108 37200 "GET /reports/ HTTP/1.1" 200 18776
+INFO 2025-12-05 09:35:10,506 views 8108 37200 Generating reports for user tassiosales
+INFO 2025-12-05 09:35:10,522 log 8108 37200 "GET /reports/?start_date=2025-12-01&end_date=2025-12-05&category= HTTP/1.1" 200 18309
+INFO 2025-12-05 09:38:08,997 views 8108 37200 Generating reports for user tassiosales
+INFO 2025-12-05 09:38:09,024 log 8108 37200 "GET /reports/?start_date=2025-12-01&end_date=2025-12-05&category= HTTP/1.1" 200 18309
+INFO 2025-12-05 09:38:10,849 views 8108 37200 Generating reports for user tassiosales
+INFO 2025-12-05 09:38:10,861 log 8108 37200 "GET /reports/?start_date=2025-12-01&end_date=2025-12-05&category= HTTP/1.1" 200 18309
+INFO 2025-12-05 09:38:11,618 views 8108 37200 Generating reports for user tassiosales
+INFO 2025-12-05 09:38:11,630 log 8108 37200 "GET /reports/?start_date=2025-12-01&end_date=2025-12-05&category= HTTP/1.1" 200 18309
+INFO 2025-12-05 09:38:31,351 log 8108 37200 "GET / HTTP/1.1" 200 14270
+INFO 2025-12-05 09:38:40,227 log 8108 37200 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 09:38:41,796 log 8108 37200 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 09:38:56,556 log 8108 37200 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 09:38:57,211 log 8108 37200 "GET /budgets/ HTTP/1.1" 200 7420
+INFO 2025-12-05 09:38:58,901 log 8108 37200 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:39:01,041 log 8108 37200 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 09:39:02,003 log 8108 37200 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 09:39:03,014 log 8108 37200 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 09:41:11,523 log 8108 37200 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:41:14,093 views 8108 4888 Generating reports for user tassiosales
+INFO 2025-12-05 09:41:14,170 log 8108 4888 "GET /reports/ HTTP/1.1" 200 18948
+INFO 2025-12-05 09:43:58,747 autoreload 11384 32884 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:43:58,985 autoreload 25048 36484 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:43:59,289 autoreload 8108 15380 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:43:59,292 autoreload 25392 23672 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:44:01,556 autoreload 26508 7192 Watching for file changes with StatReloader
+INFO 2025-12-05 09:44:01,977 autoreload 12368 29924 Watching for file changes with StatReloader
+INFO 2025-12-05 09:44:01,982 autoreload 35968 27796 Watching for file changes with StatReloader
+INFO 2025-12-05 09:44:02,197 autoreload 33616 28068 Watching for file changes with StatReloader
+INFO 2025-12-05 09:44:21,315 autoreload 26508 7192 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:44:21,625 autoreload 35968 27796 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:44:21,697 autoreload 12368 29924 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:44:21,715 autoreload 33616 28068 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 09:44:23,672 autoreload 28768 36004 Watching for file changes with StatReloader
+INFO 2025-12-05 09:44:24,039 autoreload 29220 31940 Watching for file changes with StatReloader
+INFO 2025-12-05 09:44:24,085 autoreload 32844 19108 Watching for file changes with StatReloader
+INFO 2025-12-05 09:44:24,086 autoreload 17448 33740 Watching for file changes with StatReloader
+INFO 2025-12-05 09:46:13,501 views 28768 25496 Generating reports for user tassiosales
+INFO 2025-12-05 09:46:13,559 log 28768 25496 "GET /reports/ HTTP/1.1" 200 26907
+INFO 2025-12-05 09:48:41,864 log 28768 25496 "GET / HTTP/1.1" 200 14270
+INFO 2025-12-05 09:48:45,016 log 28768 25496 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 09:48:49,350 log 28768 25496 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 09:48:54,943 log 28768 25496 "GET /budgets/ HTTP/1.1" 200 7420
+INFO 2025-12-05 09:48:58,043 log 28768 25496 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:49:07,057 views 28768 25496 Generating reports for user tassiosales
+INFO 2025-12-05 09:49:07,087 log 28768 25496 "GET /reports/ HTTP/1.1" 200 26907
+INFO 2025-12-05 09:50:08,844 views 28768 25496 Generating reports for user tassiosales
+INFO 2025-12-05 09:50:08,882 log 28768 25496 "GET /reports/ HTTP/1.1" 200 26907
+INFO 2025-12-05 09:50:20,047 log 28768 25496 "GET /budgets/ HTTP/1.1" 200 7420
+INFO 2025-12-05 09:50:23,347 log 28768 25496 "GET /budgets/1/edit/ HTTP/1.1" 200 5974
+INFO 2025-12-05 09:50:37,373 log 28768 25496 "POST /budgets/1/edit/ HTTP/1.1" 302 0
+INFO 2025-12-05 09:50:37,384 log 28768 25496 "GET /budgets/ HTTP/1.1" 200 7420
+INFO 2025-12-05 09:50:46,525 log 28768 25496 "GET /budgets/1/edit/ HTTP/1.1" 200 5974
+INFO 2025-12-05 09:50:53,612 log 28768 25496 "POST /budgets/1/edit/ HTTP/1.1" 302 0
+INFO 2025-12-05 09:50:53,625 log 28768 25496 "GET /budgets/ HTTP/1.1" 200 7420
+INFO 2025-12-05 09:50:57,474 log 28768 25496 "GET /budgets/1/edit/ HTTP/1.1" 200 5974
+INFO 2025-12-05 09:51:01,249 log 28768 25496 "POST /budgets/1/edit/ HTTP/1.1" 302 0
+INFO 2025-12-05 09:51:01,261 log 28768 25496 "GET /budgets/ HTTP/1.1" 200 7420
+INFO 2025-12-05 09:51:04,439 log 28768 25496 "GET / HTTP/1.1" 200 14270
+INFO 2025-12-05 09:56:03,182 log 28768 25496 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:56:04,362 views 28768 25496 Generating reports for user tassiosales
+INFO 2025-12-05 09:56:04,388 log 28768 25496 "GET /reports/ HTTP/1.1" 200 27350
+INFO 2025-12-05 09:56:56,748 log 28768 25496 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 09:56:57,528 log 28768 25496 "GET /budgets/ HTTP/1.1" 200 7420
+INFO 2025-12-05 09:56:59,477 log 28768 25496 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 09:57:04,515 log 28768 25496 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 09:57:06,564 log 28768 25496 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 09:57:08,282 log 28768 25496 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 09:57:08,913 log 28768 25496 "GET /budgets/ HTTP/1.1" 200 7420
+INFO 2025-12-05 09:57:10,171 log 28768 25496 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 09:57:13,075 log 28768 25496 "GET /transactions/add/ HTTP/1.1" 200 6918
+INFO 2025-12-05 09:57:53,697 log 28768 25496 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 09:57:53,711 log 28768 25496 "GET /transactions/ HTTP/1.1" 200 18946
+INFO 2025-12-05 09:57:55,337 log 28768 25496 "GET / HTTP/1.1" 200 14261
+INFO 2025-12-05 09:58:09,213 log 28768 25496 "GET /transactions/ HTTP/1.1" 200 18946
+INFO 2025-12-05 09:58:12,919 log 28768 25496 "GET /transactions/15/delete/ HTTP/1.1" 200 4151
+INFO 2025-12-05 09:58:14,349 log 28768 25496 "POST /transactions/15/delete/ HTTP/1.1" 302 0
+INFO 2025-12-05 09:58:14,366 log 28768 25496 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 09:58:15,204 log 28768 25496 "GET / HTTP/1.1" 200 14270
+INFO 2025-12-05 09:58:32,026 views 28768 25496 Generating reports for user tassiosales
+INFO 2025-12-05 09:58:32,056 log 28768 25496 "GET /reports/ HTTP/1.1" 200 27377
+INFO 2025-12-05 10:03:24,506 autoreload 17448 33740 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 10:03:24,534 autoreload 29220 31940 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 10:03:24,894 autoreload 32844 19108 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 10:03:25,323 autoreload 28768 36004 C:\Users\Bio Mundo\Desktop\finanças\core\views.py changed, reloading.
+INFO 2025-12-05 10:03:29,780 autoreload 35568 25404 Watching for file changes with StatReloader
+INFO 2025-12-05 10:03:29,841 autoreload 30196 35808 Watching for file changes with StatReloader
+INFO 2025-12-05 10:03:30,011 autoreload 36752 12576 Watching for file changes with StatReloader
+INFO 2025-12-05 10:03:30,415 autoreload 9284 26872 Watching for file changes with StatReloader
+INFO 2025-12-05 10:03:43,404 log 9284 26560 "GET / HTTP/1.1" 200 14270
+INFO 2025-12-05 10:03:44,950 log 9284 26560 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 10:03:46,017 log 9284 26560 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 10:03:47,934 log 9284 26560 "GET /transactions/add/ HTTP/1.1" 200 6918
+INFO 2025-12-05 10:04:18,064 log 9284 26560 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 10:04:18,098 log 9284 26560 "GET /transactions/ HTTP/1.1" 200 18944
+INFO 2025-12-05 10:04:20,757 log 9284 26560 "GET / HTTP/1.1" 200 14270
+INFO 2025-12-05 10:04:33,891 views 9284 26560 Generating reports for user tassiosales
+INFO 2025-12-05 10:04:33,989 log 9284 26560 "GET /reports/ HTTP/1.1" 200 28199
+INFO 2025-12-05 10:05:02,020 log 9284 26560 "GET / HTTP/1.1" 200 14891
+INFO 2025-12-05 10:05:04,038 log 9284 26560 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 10:05:46,577 log 9284 26560 "GET / HTTP/1.1" 200 14891
+INFO 2025-12-05 10:05:49,179 log 9284 26560 "GET /?month=1&year=2026 HTTP/1.1" 200 10142
+INFO 2025-12-05 10:05:52,577 log 9284 26560 "GET /?month=12&year=2025 HTTP/1.1" 200 14891
+INFO 2025-12-05 10:05:54,859 log 9284 26560 "GET /?month=11&year=2025 HTTP/1.1" 200 11313
+INFO 2025-12-05 10:06:20,069 log 9284 26560 "GET /?month=12&year=2025 HTTP/1.1" 200 14891
+INFO 2025-12-05 10:06:24,854 log 9284 26560 "GET /?month=1&year=2026 HTTP/1.1" 200 10142
+INFO 2025-12-05 10:06:28,607 log 9284 26560 "GET /?month=12&year=2025 HTTP/1.1" 200 14891
+INFO 2025-12-05 10:06:29,608 log 9284 26560 "GET /?month=11&year=2025 HTTP/1.1" 200 11313
+INFO 2025-12-05 10:06:31,006 log 9284 26560 "GET /?month=12&year=2025 HTTP/1.1" 200 14891
+INFO 2025-12-05 10:06:31,626 log 9284 26560 "GET /?month=11&year=2025 HTTP/1.1" 200 11313
+INFO 2025-12-05 10:06:32,135 log 9284 26560 "GET /?month=10&year=2025 HTTP/1.1" 200 9121
+INFO 2025-12-05 10:48:37,229 log 9284 14160 "GET / HTTP/1.1" 200 14891
+INFO 2025-12-05 10:48:45,531 log 9284 14160 "GET /?month=1&year=2026 HTTP/1.1" 200 10142
+INFO 2025-12-05 10:48:46,028 log 9284 14160 "GET /?month=2&year=2026 HTTP/1.1" 200 9189
+INFO 2025-12-05 10:48:46,855 log 9284 14160 "GET /?month=1&year=2026 HTTP/1.1" 200 10142
+INFO 2025-12-05 10:48:51,031 log 9284 14160 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 10:48:54,867 log 9284 14160 "GET /transactions/ HTTP/1.1" 200 18944
+INFO 2025-12-05 10:48:59,484 log 9284 14160 "GET /budgets/ HTTP/1.1" 200 7420
+INFO 2025-12-05 10:49:09,508 log 9284 14160 "GET /investments/ HTTP/1.1" 200 25888
+INFO 2025-12-05 10:49:21,987 log 9284 14160 "GET /investments/search/?ticker=PETR4 HTTP/1.1" 200 225
+INFO 2025-12-05 10:49:28,056 log 9284 14160 "GET /investments/add/ HTTP/1.1" 200 5443
+INFO 2025-12-05 10:49:38,047 views 9284 14160 Generating reports for user tassiosales
+INFO 2025-12-05 10:49:38,092 log 9284 14160 "GET /reports/ HTTP/1.1" 200 28199
+INFO 2025-12-05 10:49:47,283 views 9284 14160 Generating reports for user tassiosales
+INFO 2025-12-05 10:49:47,321 log 9284 14160 "GET /reports/?start_date=2025-12-01&end_date=2025-12-05&category= HTTP/1.1" 200 25403
+INFO 2025-12-05 10:52:31,612 log 9284 14160 "GET /investments/ HTTP/1.1" 200 25890
+INFO 2025-12-05 10:52:32,517 log 9284 14160 "GET /budgets/ HTTP/1.1" 200 7420
+INFO 2025-12-05 10:52:35,733 log 9284 14160 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 10:52:38,201 log 9284 14160 "GET / HTTP/1.1" 200 14891
+INFO 2025-12-05 13:30:54,879 log 9284 7440 "GET / HTTP/1.1" 200 14891
+INFO 2025-12-05 13:30:57,525 log 9284 7440 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 13:31:00,830 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 18944
+INFO 2025-12-05 13:31:02,405 log 9284 7440 "GET /transactions/16/delete/ HTTP/1.1" 200 4152
+INFO 2025-12-05 13:31:03,671 log 9284 7440 "POST /transactions/16/delete/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:03,698 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 17185
+INFO 2025-12-05 13:31:04,676 log 9284 7440 "GET /transactions/11/delete/ HTTP/1.1" 200 4152
+INFO 2025-12-05 13:31:05,664 log 9284 7440 "POST /transactions/11/delete/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:05,681 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 15395
+INFO 2025-12-05 13:31:06,696 log 9284 7440 "GET /transactions/1/delete/ HTTP/1.1" 200 4152
+INFO 2025-12-05 13:31:07,676 log 9284 7440 "POST /transactions/1/delete/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:07,695 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 13636
+INFO 2025-12-05 13:31:08,946 log 9284 7440 "GET /transactions/2/delete/ HTTP/1.1" 200 4152
+INFO 2025-12-05 13:31:09,938 log 9284 7440 "POST /transactions/2/delete/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:09,960 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 11871
+INFO 2025-12-05 13:31:11,002 log 9284 7440 "GET /transactions/3/delete/ HTTP/1.1" 200 4153
+INFO 2025-12-05 13:31:11,834 log 9284 7440 "POST /transactions/3/delete/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:11,850 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 10115
+INFO 2025-12-05 13:31:12,956 log 9284 7440 "GET /transactions/12/delete/ HTTP/1.1" 200 4152
+INFO 2025-12-05 13:31:14,231 log 9284 7440 "POST /transactions/12/delete/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:14,242 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 8324
+INFO 2025-12-05 13:31:15,539 log 9284 7440 "GET /transactions/14/delete/ HTTP/1.1" 200 4152
+INFO 2025-12-05 13:31:16,407 log 9284 7440 "POST /transactions/14/delete/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:16,421 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 6533
+INFO 2025-12-05 13:31:17,345 log 9284 7440 "GET /transactions/13/delete/ HTTP/1.1" 200 4153
+INFO 2025-12-05 13:31:18,218 log 9284 7440 "POST /transactions/13/delete/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:18,228 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 5409
+INFO 2025-12-05 13:31:20,212 log 9284 7440 "GET /budgets/ HTTP/1.1" 200 7415
+INFO 2025-12-05 13:31:23,730 log 9284 7440 "GET /budgets/1/delete/ HTTP/1.1" 200 4155
+INFO 2025-12-05 13:31:25,358 log 9284 7440 "POST /budgets/1/delete/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:25,366 log 9284 7440 "GET /budgets/ HTTP/1.1" 200 4982
+INFO 2025-12-05 13:31:27,320 log 9284 7440 "GET /investments/ HTTP/1.1" 200 22675
+INFO 2025-12-05 13:31:29,732 views 9284 7440 Generating reports for user tassiosales
+INFO 2025-12-05 13:31:29,746 log 9284 7440 "GET /reports/ HTTP/1.1" 200 19248
+INFO 2025-12-05 13:31:32,624 log 9284 7440 "POST /logout/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:32,663 log 9284 7440 "GET /login/ HTTP/1.1" 200 3386
+INFO 2025-12-05 13:31:45,833 log 9284 7440 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:31:45,844 log 9284 7440 "GET / HTTP/1.1" 200 9122
+INFO 2025-12-05 13:31:49,217 log 9284 7440 "GET /?month=1&year=2026 HTTP/1.1" 200 9121
+INFO 2025-12-05 13:31:49,975 log 9284 7440 "GET /?month=2&year=2026 HTTP/1.1" 200 9122
+INFO 2025-12-05 13:31:50,453 log 9284 7440 "GET /?month=3&year=2026 HTTP/1.1" 200 9119
+INFO 2025-12-05 13:31:51,032 log 9284 7440 "GET /?month=4&year=2026 HTTP/1.1" 200 9118
+INFO 2025-12-05 13:31:51,221 log 9284 7440 "GET /?month=5&year=2026 HTTP/1.1" 200 9117
+INFO 2025-12-05 13:31:51,402 log 9284 7440 "GET /?month=6&year=2026 HTTP/1.1" 200 9118
+INFO 2025-12-05 13:31:51,577 log 9284 7440 "GET /?month=7&year=2026 HTTP/1.1" 200 9118
+INFO 2025-12-05 13:31:51,765 log 9284 7440 "GET /?month=8&year=2026 HTTP/1.1" 200 9119
+INFO 2025-12-05 13:31:52,489 log 9284 7440 "GET /?month=7&year=2026 HTTP/1.1" 200 9118
+INFO 2025-12-05 13:31:52,662 log 9284 7440 "GET /?month=6&year=2026 HTTP/1.1" 200 9118
+INFO 2025-12-05 13:31:52,827 log 9284 7440 "GET /?month=5&year=2026 HTTP/1.1" 200 9117
+INFO 2025-12-05 13:31:53,032 log 9284 7440 "GET /?month=4&year=2026 HTTP/1.1" 200 9118
+INFO 2025-12-05 13:31:53,196 log 9284 7440 "GET /?month=3&year=2026 HTTP/1.1" 200 9119
+INFO 2025-12-05 13:31:53,369 log 9284 7440 "GET /?month=2&year=2026 HTTP/1.1" 200 9122
+INFO 2025-12-05 13:31:53,545 log 9284 7440 "GET /?month=1&year=2026 HTTP/1.1" 200 9121
+INFO 2025-12-05 13:31:53,722 log 9284 7440 "GET /?month=12&year=2025 HTTP/1.1" 200 9122
+INFO 2025-12-05 13:31:53,922 log 9284 7440 "GET /?month=11&year=2025 HTTP/1.1" 200 9123
+INFO 2025-12-05 13:31:54,096 log 9284 7440 "GET /?month=10&year=2025 HTTP/1.1" 200 9121
+INFO 2025-12-05 13:31:54,317 log 9284 7440 "GET /?month=9&year=2025 HTTP/1.1" 200 9122
+INFO 2025-12-05 13:31:54,913 log 9284 7440 "GET /?month=8&year=2025 HTTP/1.1" 200 9119
+INFO 2025-12-05 13:31:55,105 log 9284 7440 "GET /?month=7&year=2025 HTTP/1.1" 200 9118
+INFO 2025-12-05 13:36:39,852 log 9284 7440 "GET / HTTP/1.1" 200 9122
+INFO 2025-12-05 13:36:41,031 log 9284 7440 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 13:36:43,842 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 5409
+INFO 2025-12-05 13:36:45,037 log 9284 7440 "GET /budgets/ HTTP/1.1" 200 4982
+INFO 2025-12-05 13:36:46,328 log 9284 7440 "GET /investments/ HTTP/1.1" 200 22675
+INFO 2025-12-05 13:36:47,874 views 9284 7440 Generating reports for user tassiosales
+INFO 2025-12-05 13:36:47,897 log 9284 7440 "GET /reports/ HTTP/1.1" 200 19248
+INFO 2025-12-05 13:37:10,240 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 5409
+INFO 2025-12-05 13:37:14,873 log 9284 7440 "GET /transactions/add/ HTTP/1.1" 200 6918
+INFO 2025-12-05 13:37:46,991 log 9284 7440 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:37:47,003 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 6549
+INFO 2025-12-05 13:37:49,786 log 9284 7440 "GET / HTTP/1.1" 200 10117
+INFO 2025-12-05 13:38:24,127 log 9284 7440 "GET /transactions/ HTTP/1.1" 200 6549
+INFO 2025-12-05 13:38:25,534 log 9284 7440 "GET /transactions/add/ HTTP/1.1" 200 6918
+INFO 2025-12-05 13:38:34,194 log 9284 7440 "GET /categories/ HTTP/1.1" 200 23262
+INFO 2025-12-05 13:38:38,598 log 9284 7440 "GET /categories/add/ HTTP/1.1" 200 5497
+INFO 2025-12-05 13:38:49,660 log 9284 7440 "GET /categories/add/ HTTP/1.1" 200 5497
+INFO 2025-12-05 13:39:19,820 log 9284 7440 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:39:19,853 log 9284 7440 "GET /categories/ HTTP/1.1" 200 24778
+INFO 2025-12-05 13:39:28,310 autoreload 9284 26872 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:39:28,776 autoreload 30196 35808 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:39:28,946 autoreload 35568 25404 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:39:29,016 autoreload 36752 12576 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:39:41,090 autoreload 39332 30824 Watching for file changes with StatReloader
+INFO 2025-12-05 13:39:41,109 autoreload 38584 29212 Watching for file changes with StatReloader
+INFO 2025-12-05 13:39:41,705 autoreload 23356 30488 Watching for file changes with StatReloader
+INFO 2025-12-05 13:39:42,167 autoreload 8408 20812 Watching for file changes with StatReloader
+INFO 2025-12-05 13:40:26,296 log 39332 35408 "GET /categories/add/ HTTP/1.1" 200 5544
+INFO 2025-12-05 13:41:01,631 log 39332 35408 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:41:01,670 log 39332 35408 "GET /categories/ HTTP/1.1" 200 26544
+INFO 2025-12-05 13:41:06,293 log 39332 35408 "GET /categories/add/ HTTP/1.1" 200 5607
+INFO 2025-12-05 13:41:24,486 log 39332 35408 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:41:24,513 log 39332 35408 "GET /categories/ HTTP/1.1" 200 28314
+INFO 2025-12-05 13:42:30,622 log 39332 35408 "GET /transactions/ HTTP/1.1" 200 6549
+INFO 2025-12-05 13:42:32,107 autoreload 38584 29212 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:42:32,110 autoreload 39332 30824 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:42:32,284 autoreload 23356 30488 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:42:32,701 autoreload 8408 20812 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:42:36,994 autoreload 29888 33628 Watching for file changes with StatReloader
+INFO 2025-12-05 13:42:37,117 autoreload 3344 704 Watching for file changes with StatReloader
+INFO 2025-12-05 13:42:37,201 autoreload 38540 8492 Watching for file changes with StatReloader
+INFO 2025-12-05 13:42:37,460 autoreload 33828 32000 Watching for file changes with StatReloader
+INFO 2025-12-05 13:42:59,899 basehttp 3344 25420 - Broken pipe from ('127.0.0.1', 50804)
+INFO 2025-12-05 13:43:01,082 log 3344 38536 "GET /transactions/add/ HTTP/1.1" 200 7095
+INFO 2025-12-05 13:43:42,529 log 3344 38536 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:43:42,551 log 3344 38536 "GET /transactions/ HTTP/1.1" 200 8339
+INFO 2025-12-05 13:43:45,071 log 3344 38536 "GET /transactions/add/ HTTP/1.1" 200 7095
+INFO 2025-12-05 13:44:30,255 log 3344 38536 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:44:30,276 log 3344 38536 "GET /transactions/ HTTP/1.1" 200 10119
+INFO 2025-12-05 13:44:32,619 log 3344 38536 "GET /transactions/add/ HTTP/1.1" 200 7095
+INFO 2025-12-05 13:45:11,141 log 3344 39772 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:45:11,165 log 3344 39772 "GET /transactions/ HTTP/1.1" 200 11903
+INFO 2025-12-05 13:45:13,809 log 3344 39772 "GET /transactions/add/ HTTP/1.1" 200 7095
+INFO 2025-12-05 13:45:59,676 log 3344 39772 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:45:59,702 log 3344 39772 "GET /transactions/ HTTP/1.1" 200 13685
+INFO 2025-12-05 13:46:07,028 log 3344 39772 "GET /transactions/add/ HTTP/1.1" 200 7095
+INFO 2025-12-05 13:46:57,412 log 3344 39772 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:46:57,443 log 3344 39772 "GET /transactions/ HTTP/1.1" 200 15471
+INFO 2025-12-05 13:47:02,705 log 3344 39772 "GET /transactions/19/edit/ HTTP/1.1" 200 7123
+INFO 2025-12-05 13:47:09,412 log 3344 39772 "POST /transactions/19/edit/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:47:09,461 log 3344 39772 "GET /transactions/ HTTP/1.1" 200 15472
+INFO 2025-12-05 13:47:14,067 log 3344 39772 "GET /transactions/20/edit/ HTTP/1.1" 200 7123
+INFO 2025-12-05 13:47:22,612 log 3344 39772 "POST /transactions/20/edit/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:47:22,642 log 3344 39772 "GET /transactions/ HTTP/1.1" 200 15473
+INFO 2025-12-05 13:47:25,970 views 3344 39772 Generating reports for user tassiosales
+INFO 2025-12-05 13:47:26,032 log 3344 39772 "GET /reports/ HTTP/1.1" 200 27054
+INFO 2025-12-05 13:50:42,215 autoreload 29888 33628 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:50:42,316 autoreload 3344 704 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:50:42,445 autoreload 38540 8492 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:50:42,661 autoreload 33828 32000 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-05 13:50:44,740 autoreload 25168 33784 Watching for file changes with StatReloader
+INFO 2025-12-05 13:50:44,820 autoreload 39148 39744 Watching for file changes with StatReloader
+INFO 2025-12-05 13:50:44,934 autoreload 6580 38308 Watching for file changes with StatReloader
+INFO 2025-12-05 13:50:45,189 autoreload 13988 22476 Watching for file changes with StatReloader
+INFO 2025-12-05 13:50:52,191 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 15473
+INFO 2025-12-05 13:50:53,902 log 39148 23588 "GET /transactions/add/ HTTP/1.1" 200 7095
+INFO 2025-12-05 13:51:45,950 log 39148 23588 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:51:45,980 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 17242
+INFO 2025-12-05 13:51:51,774 log 39148 23588 "GET /transactions/add/ HTTP/1.1" 200 7095
+INFO 2025-12-05 13:52:03,363 log 39148 23588 "GET /categories/ HTTP/1.1" 200 28314
+INFO 2025-12-05 13:52:04,738 log 39148 23588 "GET /categories/add/ HTTP/1.1" 200 5674
+INFO 2025-12-05 13:52:16,691 log 39148 23588 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:52:16,718 log 39148 23588 "GET /categories/ HTTP/1.1" 200 29824
+INFO 2025-12-05 13:52:18,536 log 39148 23588 "GET /categories/add/ HTTP/1.1" 200 5715
+INFO 2025-12-05 13:52:28,795 log 39148 23588 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:52:28,817 log 39148 23588 "GET /categories/ HTTP/1.1" 200 31578
+INFO 2025-12-05 13:52:33,847 log 39148 23588 "GET /investments/ HTTP/1.1" 200 22675
+INFO 2025-12-05 13:52:39,527 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 17242
+INFO 2025-12-05 13:52:41,853 log 39148 23588 "GET /transactions/add/ HTTP/1.1" 200 7187
+INFO 2025-12-05 13:52:54,956 log 39148 23588 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:52:54,978 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 18997
+INFO 2025-12-05 13:52:56,584 log 39148 23588 "GET / HTTP/1.1" 200 14920
+INFO 2025-12-05 13:54:23,576 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 18997
+INFO 2025-12-05 13:54:24,973 log 39148 23588 "GET /transactions/add/ HTTP/1.1" 200 7187
+INFO 2025-12-05 13:54:27,715 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 18997
+INFO 2025-12-05 13:54:30,922 log 39148 23588 "GET /transactions/add/ HTTP/1.1" 200 7187
+INFO 2025-12-05 13:54:33,749 log 39148 23588 "GET /categories/ HTTP/1.1" 200 31578
+INFO 2025-12-05 13:54:34,922 log 39148 23588 "GET /categories/add/ HTTP/1.1" 200 5766
+INFO 2025-12-05 13:54:48,244 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 18997
+INFO 2025-12-05 13:54:49,152 log 39148 23588 "GET /transactions/add/ HTTP/1.1" 200 7187
+INFO 2025-12-05 13:55:00,165 log 39148 23588 "GET /categories/ HTTP/1.1" 200 31578
+INFO 2025-12-05 13:55:10,549 log 39148 23588 "GET /categories/add/ HTTP/1.1" 200 5766
+INFO 2025-12-05 13:55:19,415 log 39148 23588 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:55:19,430 log 39148 23588 "GET /categories/ HTTP/1.1" 200 33086
+INFO 2025-12-05 13:55:22,263 log 39148 23588 "GET /categories/ HTTP/1.1" 200 33086
+INFO 2025-12-05 13:56:01,381 log 39148 23588 "GET /categories/add/ HTTP/1.1" 200 5805
+INFO 2025-12-05 13:56:12,457 log 39148 23588 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:56:12,521 log 39148 23588 "GET /categories/ HTTP/1.1" 200 34843
+INFO 2025-12-05 13:57:28,436 log 39148 23588 "GET / HTTP/1.1" 200 14920
+INFO 2025-12-05 13:57:32,495 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 18997
+INFO 2025-12-05 13:57:38,376 log 39148 23588 "GET /transactions/add/ HTTP/1.1" 200 7280
+INFO 2025-12-05 13:58:24,967 log 39148 23588 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:58:24,998 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 20781
+INFO 2025-12-05 13:58:44,792 log 39148 23588 "GET /transactions/add/ HTTP/1.1" 200 7280
+INFO 2025-12-05 13:59:23,050 log 39148 23588 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-05 13:59:23,078 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 22561
+INFO 2025-12-05 13:59:25,170 log 39148 23588 "GET / HTTP/1.1" 200 14919
+INFO 2025-12-05 14:00:39,363 log 39148 23588 "GET /categories/ HTTP/1.1" 200 34843
+INFO 2025-12-05 14:00:42,145 log 39148 23588 "GET /transactions/ HTTP/1.1" 200 22561
+INFO 2025-12-05 14:00:44,372 log 39148 23588 "GET /budgets/ HTTP/1.1" 200 4982
+INFO 2025-12-05 14:00:47,318 log 39148 23588 "GET /investments/ HTTP/1.1" 200 22675
+INFO 2025-12-05 14:00:49,087 log 39148 23588 "GET /budgets/ HTTP/1.1" 200 4982
+INFO 2025-12-05 14:00:51,614 log 39148 23588 "GET / HTTP/1.1" 200 14919
+INFO 2025-12-05 14:00:55,986 log 39148 23588 "GET /budgets/ HTTP/1.1" 200 4982
+INFO 2025-12-05 14:00:57,177 log 39148 23588 "GET /investments/ HTTP/1.1" 200 22675
+WARNING 2025-12-05 14:01:14,994 log 39148 23588 Not Found: /investments/search/
+WARNING 2025-12-05 14:01:14,995 log 39148 23588 "GET /investments/search/?ticker=CDI HTTP/1.1" 404 45
+WARNING 2025-12-05 14:01:25,578 log 39148 23588 Not Found: /investments/search/
+WARNING 2025-12-05 14:01:25,579 log 39148 23588 "GET /investments/search/?ticker=SELIC HTTP/1.1" 404 47
+INFO 2025-12-05 14:06:31,302 log 39148 23916 "GET / HTTP/1.1" 200 14919
+INFO 2025-12-05 14:06:42,415 log 39148 23916 "GET /transactions/ HTTP/1.1" 200 22561
+INFO 2025-12-05 14:08:27,268 log 39148 23916 "GET /transactions/24/edit/ HTTP/1.1" 200 7280
+INFO 2025-12-05 14:08:47,813 log 39148 23916 "POST /transactions/24/edit/ HTTP/1.1" 302 0
+INFO 2025-12-05 14:08:47,836 log 39148 23916 "GET /transactions/ HTTP/1.1" 200 22581
+INFO 2025-12-05 14:09:02,182 log 39148 23916 "GET / HTTP/1.1" 200 14919
+INFO 2025-12-05 14:09:59,925 log 39148 23916 "GET /categories/ HTTP/1.1" 200 34843
+INFO 2025-12-05 14:10:01,495 log 39148 23916 "GET /transactions/ HTTP/1.1" 200 22581
+INFO 2025-12-05 14:10:03,307 log 39148 23916 "GET /budgets/ HTTP/1.1" 200 4982
+INFO 2025-12-05 14:10:06,340 log 39148 23916 "GET /investments/ HTTP/1.1" 200 22675
+INFO 2025-12-05 14:10:09,600 log 39148 23916 "GET /investments/ HTTP/1.1" 200 22675
+INFO 2025-12-05 14:11:33,270 views 39148 23916 Generating reports for user tassiosales
+INFO 2025-12-05 14:11:33,314 log 39148 23916 "GET /reports/ HTTP/1.1" 200 30690
+INFO 2025-12-05 14:11:54,052 log 39148 23916 "GET /categories/ HTTP/1.1" 200 34843
+INFO 2025-12-05 14:11:54,838 log 39148 23916 "GET /transactions/ HTTP/1.1" 200 22581
+INFO 2025-12-05 14:11:55,824 log 39148 23916 "GET /budgets/ HTTP/1.1" 200 4982
+INFO 2025-12-05 14:11:56,971 views 39148 23916 Generating reports for user tassiosales
+INFO 2025-12-05 14:11:56,999 log 39148 23916 "GET /reports/ HTTP/1.1" 200 30690
+INFO 2025-12-05 14:12:05,453 log 39148 23916 "GET / HTTP/1.1" 200 14919
+INFO 2025-12-05 14:53:35,360 log 39148 26044 "GET /investments/ HTTP/1.1" 200 22675
+INFO 2025-12-05 16:24:55,497 autoreload 25504 39684 Watching for file changes with StatReloader
+INFO 2025-12-05 16:26:22,939 log 39148 9028 "GET /investments/ HTTP/1.1" 200 22675
+INFO 2025-12-05 16:30:59,107 autoreload 34384 17892 Watching for file changes with StatReloader
+INFO 2025-12-05 16:31:55,508 log 39148 30436 "GET /investments/ HTTP/1.1" 200 22675
+INFO 2025-12-05 16:34:25,910 log 39148 30436 "GET / HTTP/1.1" 200 14919
+INFO 2025-12-05 16:54:44,065 views 39148 39256 Generating reports for user tassiosales
+INFO 2025-12-05 16:54:44,425 log 39148 39256 "GET /reports/ HTTP/1.1" 200 30690
+INFO 2025-12-05 16:55:16,810 log 39148 39256 "GET /investments/ HTTP/1.1" 200 22675
+INFO 2025-12-05 16:55:18,306 log 39148 39256 "GET /budgets/ HTTP/1.1" 200 4982
+INFO 2025-12-05 16:55:19,394 log 39148 39256 "GET /transactions/ HTTP/1.1" 200 22581
+INFO 2025-12-05 16:55:21,115 log 39148 39256 "GET /categories/ HTTP/1.1" 200 34843
+INFO 2025-12-05 16:55:23,007 log 39148 39256 "GET /categories/ HTTP/1.1" 200 34843
+INFO 2025-12-05 16:55:23,481 log 39148 39256 "GET / HTTP/1.1" 200 14919
+INFO 2025-12-05 16:55:33,564 log 39148 39256 "POST /logout/ HTTP/1.1" 302 0
+INFO 2025-12-05 16:55:33,626 log 39148 39256 "GET /login/ HTTP/1.1" 200 3386
+ERROR 2025-12-05 16:55:35,458 log 39148 39256 Internal Server Error: /register/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 229, in register
+    return render(request, 'registration/register.html', {'form': form})
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: registration/register.html
+ERROR 2025-12-05 16:55:35,597 log 39148 39256 "GET /register/ HTTP/1.1" 500 85332
+INFO 2025-12-08 13:23:27,075 autoreload 2452 11496 Watching for file changes with StatReloader
+INFO 2025-12-08 13:25:42,311 autoreload 2452 11496 C:\Users\Bio Mundo\Desktop\finanças\finance_project\settings.py changed, reloading.
+INFO 2025-12-08 13:46:19,079 autoreload 7988 26904 Watching for file changes with StatReloader
+INFO 2025-12-08 13:46:58,252 log 7988 27628 "GET / HTTP/1.1" 302 0
+INFO 2025-12-08 13:46:58,381 log 7988 27628 "GET /login/?next=/ HTTP/1.1" 200 3386
+WARNING 2025-12-08 13:46:58,503 log 7988 27628 Not Found: /favicon.ico
+WARNING 2025-12-08 13:46:58,504 log 7988 27628 "GET /favicon.ico HTTP/1.1" 404 179
+INFO 2025-12-08 13:47:06,797 log 7988 27628 "POST /login/?next=/ HTTP/1.1" 302 0
+INFO 2025-12-08 13:47:06,831 log 7988 27628 "GET / HTTP/1.1" 200 14919
+INFO 2025-12-08 13:47:12,246 log 7988 27628 "GET /transactions/ HTTP/1.1" 200 22581
+INFO 2025-12-08 13:47:14,708 log 7988 27628 "GET /transactions/add/ HTTP/1.1" 200 7280
+INFO 2025-12-08 13:47:29,900 log 7988 27628 "GET /transactions/ HTTP/1.1" 200 22581
+INFO 2025-12-08 13:47:31,298 log 7988 27628 "GET /transactions/add/ HTTP/1.1" 200 7280
+INFO 2025-12-08 13:47:48,636 log 7988 27628 "GET /categories/ HTTP/1.1" 200 34843
+INFO 2025-12-08 13:47:50,387 log 7988 27628 "GET /categories/add/ HTTP/1.1" 200 5859
+INFO 2025-12-08 13:48:12,991 log 7988 27628 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-08 13:48:13,009 log 7988 27628 "GET /categories/ HTTP/1.1" 200 36598
+INFO 2025-12-08 13:48:19,046 log 7988 27628 "GET /transactions/ HTTP/1.1" 200 22581
+INFO 2025-12-08 13:48:20,488 log 7988 27628 "GET /transactions/add/ HTTP/1.1" 200 7332
+INFO 2025-12-08 13:49:10,209 log 7988 27628 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-08 13:49:10,231 log 7988 27628 "GET /transactions/ HTTP/1.1" 200 24353
+INFO 2025-12-08 13:49:17,054 log 7988 27628 "GET / HTTP/1.1" 200 14909
+INFO 2025-12-08 14:00:15,494 autoreload 21884 28388 Watching for file changes with StatReloader
+INFO 2025-12-08 14:00:49,456 log 21884 25516 "GET / HTTP/1.1" 302 0
+INFO 2025-12-08 14:00:49,481 log 21884 25516 "GET /login/?next=/ HTTP/1.1" 200 3386
+ERROR 2025-12-08 14:00:51,447 log 21884 25516 Internal Server Error: /register/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 229, in register
+    return render(request, 'registration/register.html', {'form': form})
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: registration/register.html
+ERROR 2025-12-08 14:00:51,535 log 21884 25516 "GET /register/ HTTP/1.1" 500 145
+ERROR 2025-12-08 14:05:05,045 log 21884 25516 Internal Server Error: /register/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 229, in register
+    return render(request, 'registration/register.html', {'form': form})
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: registration/register.html
+ERROR 2025-12-08 14:05:05,070 log 21884 25516 "GET /register/ HTTP/1.1" 500 145
+ERROR 2025-12-08 14:05:13,923 log 21884 25516 Internal Server Error: /register/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 229, in register
+    return render(request, 'registration/register.html', {'form': form})
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: registration/register.html
+ERROR 2025-12-08 14:05:13,934 log 21884 25516 "GET /register/ HTTP/1.1" 500 145
+ERROR 2025-12-08 14:05:33,365 log 21884 25516 Internal Server Error: /register/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 229, in register
+    return render(request, 'registration/register.html', {'form': form})
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: registration/register.html
+ERROR 2025-12-08 14:05:33,380 log 21884 25516 "GET /register/ HTTP/1.1" 500 145
+ERROR 2025-12-08 14:05:35,701 log 21884 25516 Internal Server Error: /register/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 229, in register
+    return render(request, 'registration/register.html', {'form': form})
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: registration/register.html
+ERROR 2025-12-08 14:05:35,716 log 21884 25516 "GET /register/ HTTP/1.1" 500 145
+INFO 2025-12-08 14:22:18,343 log 21884 1608 "GET /register/ HTTP/1.1" 200 4546
+INFO 2025-12-08 14:22:36,095 log 21884 1608 "POST /register/ HTTP/1.1" 200 4884
+INFO 2025-12-08 14:22:52,412 log 21884 1608 "POST /register/ HTTP/1.1" 200 4768
+INFO 2025-12-08 14:23:47,486 basehttp 21884 1608 - Broken pipe from ('127.0.0.1', 58148)
+ERROR 2025-12-08 14:23:48,459 log 21884 12592 Internal Server Error: /register/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\backends\sqlite3\base.py", line 359, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.IntegrityError: UNIQUE constraint failed: auth_user.username
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Desktop\finanças\core\views.py", line 223, in register
+    form.save()
+    ~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\contrib\auth\forms.py", line 248, in save
+    user = self.set_password_and_save(user, commit=commit)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\contrib\auth\forms.py", line 134, in set_password_and_save
+    user.save()
+    ~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\contrib\auth\base_user.py", line 62, in save
+    super().save(**kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\models\base.py", line 874, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\models\base.py", line 966, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\models\base.py", line 1167, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, insert_fields, returning_fields, raw
+    )
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\models\base.py", line 1218, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\models\query.py", line 1918, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1925, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Desktop\finanças\venv\Lib\site-packages\django\db\backends\sqlite3\base.py", line 359, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: UNIQUE constraint failed: auth_user.username
+ERROR 2025-12-08 14:23:48,635 log 21884 12592 "POST /register/ HTTP/1.1" 500 145
+INFO 2025-12-08 14:24:00,906 log 21884 12592 "POST /register/ HTTP/1.1" 200 4772
+INFO 2025-12-08 14:24:06,046 log 21884 12592 "GET /login/ HTTP/1.1" 200 3386
+INFO 2025-12-08 14:24:15,223 log 21884 12592 "POST /login/ HTTP/1.1" 200 3604
+INFO 2025-12-08 14:24:24,205 log 21884 12592 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-12-08 14:24:24,226 log 21884 12592 "GET / HTTP/1.1" 200 9120
+INFO 2025-12-08 14:24:34,119 log 21884 12592 "POST /logout/ HTTP/1.1" 302 0
+INFO 2025-12-08 14:24:34,124 log 21884 12592 "GET /login/ HTTP/1.1" 200 2099
+INFO 2025-12-08 14:24:37,119 log 21884 12592 "GET /login/ HTTP/1.1" 200 2099
+INFO 2025-12-08 14:24:39,060 log 21884 12592 "GET /login/ HTTP/1.1" 200 2099
+INFO 2025-12-08 14:24:40,273 log 21884 12592 "GET /login/ HTTP/1.1" 200 2099
+INFO 2025-12-08 14:24:41,113 log 21884 12592 "GET /login/ HTTP/1.1" 200 2099
+INFO 2025-12-08 14:24:43,739 log 21884 12592 "POST /logout/ HTTP/1.1" 302 0
+INFO 2025-12-08 14:24:43,743 log 21884 12592 "GET /login/ HTTP/1.1" 200 2099
+INFO 2025-12-08 14:24:44,555 log 21884 12592 "GET /register/ HTTP/1.1" 200 2104
+INFO 2025-12-08 14:24:52,814 log 21884 12592 "GET / HTTP/1.1" 302 0
+INFO 2025-12-08 14:24:52,822 log 21884 12592 "GET /login/?next=/ HTTP/1.1" 200 2099
+INFO 2025-12-08 14:24:55,444 log 21884 12592 "GET / HTTP/1.1" 302 0
+INFO 2025-12-08 14:24:55,448 log 21884 12592 "GET /login/?next=/ HTTP/1.1" 200 2099
+INFO 2025-12-08 14:25:11,375 log 21884 12592 "GET / HTTP/1.1" 302 0
+INFO 2025-12-08 14:25:11,442 log 21884 12592 "GET /login/?next=/ HTTP/1.1" 200 4027
+INFO 2025-12-08 14:25:17,530 log 21884 12592 "GET /register/ HTTP/1.1" 200 5232
+INFO 2025-12-08 14:26:44,692 log 21884 12592 "GET /register/ HTTP/1.1" 200 5232
+INFO 2025-12-08 14:26:45,632 log 21884 12592 "GET /register/ HTTP/1.1" 200 5232
+INFO 2025-12-08 14:26:47,627 log 21884 12592 "GET /login/?next=/ HTTP/1.1" 200 4027
+INFO 2025-12-08 14:26:49,982 log 21884 12592 "GET /register/ HTTP/1.1" 200 5232
+INFO 2025-12-08 14:27:00,844 log 21884 12592 "GET /login/?next=/ HTTP/1.1" 200 4027
+INFO 2025-12-08 14:28:50,738 autoreload 18144 26740 Watching for file changes with StatReloader
+INFO 2025-12-08 14:28:55,426 log 18144 6284 "GET / HTTP/1.1" 302 0
+INFO 2025-12-08 14:28:55,453 log 18144 6284 "GET /login/?next=/ HTTP/1.1" 200 4027
+INFO 2025-12-08 14:29:03,560 log 18144 6284 "GET /register/ HTTP/1.1" 200 5232

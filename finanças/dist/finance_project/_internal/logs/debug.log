@@ -1,0 +1,29 @@
+WARNING 2025-12-08 13:50:27,364 log 26432 22836 Not Found: /favicon.ico
+ERROR 2025-12-08 14:00:00,419 log 26432 25684 Internal Server Error: /register/
+Traceback (most recent call last):
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "core\views.py", line 229, in register
+  File "django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: registration/register.html
+ERROR 2025-12-08 14:00:04,576 log 26432 2044 Internal Server Error: /register/
+Traceback (most recent call last):
+  File "django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "core\views.py", line 229, in register
+  File "django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: registration/register.html

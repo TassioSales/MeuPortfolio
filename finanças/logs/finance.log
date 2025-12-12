@@ -41829,3 +41829,313 @@ django.db.utils.IntegrityError: UNIQUE constraint failed: auth_user.username
 2025-12-08 14:28:55.427 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 302 0
 2025-12-08 14:28:55.453 | INFO     | logging:callHandlers:1737 - "GET /login/?next=/ HTTP/1.1" 200 4027
 2025-12-08 14:29:03.560 | INFO     | logging:callHandlers:1737 - "GET /register/ HTTP/1.1" 200 5232
+2025-12-11 22:29:34.735 | INFO     | logging:callHandlers:1737 - Watching for file changes with StatReloader
+2025-12-11 22:29:58.197 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 302 0
+2025-12-11 22:29:58.523 | INFO     | logging:callHandlers:1737 - "GET /login/?next=/ HTTP/1.1" 200 4027
+2025-12-11 22:30:14.901 | INFO     | logging:callHandlers:1737 - "POST /login/?next=/ HTTP/1.1" 302 0
+2025-12-11 22:30:15.091 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 14909
+2025-12-11 22:30:19.177 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:30:19.212 | DEBUG    | logging:callHandlers:1737 - ('CREATE TABLE IF NOT EXISTS "_tz_kv" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" VARCHAR(255)) WITHOUT ROWID', [])
+2025-12-11 22:30:19.213 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BRL=X', 1, 0])
+2025-12-11 22:30:22.053 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:30:22.054 | DEBUG    | logging:callHandlers:1737 - BRL=X: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:30:22.054 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:30:22.054 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:30:22.054 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BRL=X
+2025-12-11 22:30:22.054 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:30:22.054 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:30:22.054 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:30:22.054 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:30:22.055 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:30:22.055 | DEBUG    | logging:callHandlers:1737 -        Entering _load_cookie_curlCffi()
+2025-12-11 22:30:22.076 | DEBUG    | logging:callHandlers:1737 - ('CREATE TABLE IF NOT EXISTS "_cookieschema" ("strategy" VARCHAR(255) NOT NULL PRIMARY KEY, "fetch_date" DATETIME NOT NULL, "cookie_bytes" BLOB NOT NULL) WITHOUT ROWID', [])
+2025-12-11 22:30:22.077 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."strategy", "t1"."fetch_date", "t1"."cookie_bytes" FROM "_cookieschema" AS "t1" WHERE ("t1"."strategy" = ?) LIMIT ? OFFSET ?', ['curlCffi', 1, 0])
+2025-12-11 22:30:22.077 | DEBUG    | logging:callHandlers:1737 -        Exiting _load_cookie_curlCffi()
+2025-12-11 22:30:22.078 | DEBUG    | logging:callHandlers:1737 - reusing persistent cookie
+2025-12-11 22:30:22.078 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:30:22.078 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:30:22.078 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:30:22.078 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:30:22.078 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:30:22.241 | ERROR    | logging:callHandlers:1737 - $BRL=X: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:30:22.242 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:30:22.242 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:30:22.285 | INFO     | logging:callHandlers:1737 - "GET /investments/ HTTP/1.1" 200 14401
+2025-12-11 22:30:26.342 | INFO     | logging:callHandlers:1737 - "GET /investments/add/ HTTP/1.1" 200 5443
+2025-12-11 22:30:29.417 | DEBUG    | logging:callHandlers:1737 - get_raw_json(): https://query2.finance.yahoo.com/v10/finance/quoteSummary/BTHF11.SA
+2025-12-11 22:30:29.418 | DEBUG    | logging:callHandlers:1737 - Entering get()
+2025-12-11 22:30:29.418 | DEBUG    | logging:callHandlers:1737 -  Entering _make_request()
+2025-12-11 22:30:29.418 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v10/finance/quoteSummary/BTHF11.SA
+2025-12-11 22:30:29.418 | DEBUG    | logging:callHandlers:1737 - params={'modules': 'financialData,quoteType,defaultKeyStatistics,assetProfile,summaryDetail', 'corsDomain': 'finance.yahoo.com', 'formatted': 'false', 'symbol': 'BTHF11.SA'}
+2025-12-11 22:30:29.418 | DEBUG    | logging:callHandlers:1737 -   Entering _get_cookie_and_crumb()
+2025-12-11 22:30:29.418 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:30:29.418 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:30:29.419 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_basic()
+2025-12-11 22:30:29.419 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:30:29.419 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_basic()
+2025-12-11 22:30:29.419 | DEBUG    | logging:callHandlers:1737 -     Entering _get_crumb_basic()
+2025-12-11 22:30:29.421 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-11 22:30:29.421 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:30:29.422 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-11 22:30:29.584 | INFO     | logging:callHandlers:1737 - "POST /investments/add/ HTTP/1.1" 302 0
+2025-12-11 22:30:29.596 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:30:29.597 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BRL=X', 1, 0])
+2025-12-11 22:30:29.598 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:30:29.598 | DEBUG    | logging:callHandlers:1737 - BRL=X: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:30:29.598 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:30:29.599 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:30:29.599 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BRL=X
+2025-12-11 22:30:29.599 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:30:29.599 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:30:29.600 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:30:29.600 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:30:29.600 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:30:29.600 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:30:29.600 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:30:29.600 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:30:29.601 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:30:29.601 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:30:29.601 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:30:29.737 | ERROR    | logging:callHandlers:1737 - $BRL=X: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:30:29.738 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:30:29.738 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:30:29.739 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:30:29.740 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BTHF11.SA', 1, 0])
+2025-12-11 22:30:29.741 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:30:29.742 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:30:29.742 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:30:29.742 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:30:29.742 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BTHF11.SA
+2025-12-11 22:30:29.742 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:30:29.742 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:30:29.742 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:30:29.743 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:30:29.743 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:30:29.743 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:30:29.743 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:30:29.743 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:30:29.743 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:30:29.744 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:30:29.744 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:30:29.878 | ERROR    | logging:callHandlers:1737 - $BTHF11.SA: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:30:29.879 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:30:29.879 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:30:29.883 | INFO     | logging:callHandlers:1737 - "GET /investments/ HTTP/1.1" 200 15962
+2025-12-11 22:37:16.222 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:37:16.223 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BRL=X', 1, 0])
+2025-12-11 22:37:16.240 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:37:16.240 | DEBUG    | logging:callHandlers:1737 - BRL=X: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:37:16.240 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:37:16.240 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:37:16.240 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BRL=X
+2025-12-11 22:37:16.240 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:37:16.241 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:37:16.241 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:37:16.241 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:37:16.241 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:37:16.241 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:37:16.241 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:37:16.241 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:37:16.241 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:37:16.241 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:37:16.242 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:37:16.292 | ERROR    | logging:callHandlers:1737 - $BRL=X: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:37:16.293 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:37:16.293 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:37:16.294 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:37:16.294 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BTHF11.SA', 1, 0])
+2025-12-11 22:37:16.295 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:37:16.295 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:37:16.295 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:37:16.295 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:37:16.295 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BTHF11.SA
+2025-12-11 22:37:16.295 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:37:16.295 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:37:16.296 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:37:16.296 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:37:16.296 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:37:16.296 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:37:16.296 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:37:16.296 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:37:16.296 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:37:16.296 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:37:16.296 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:37:16.341 | ERROR    | logging:callHandlers:1737 - $BTHF11.SA: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:37:16.342 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:37:16.342 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:37:16.350 | INFO     | logging:callHandlers:1737 - "GET /investments/ HTTP/1.1" 200 15890
+2025-12-11 22:47:08.039 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 14913
+2025-12-11 22:47:15.392 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 26142
+2025-12-11 22:47:18.197 | INFO     | logging:callHandlers:1737 - "GET /transactions/28/delete/ HTTP/1.1" 200 4150
+2025-12-11 22:47:19.711 | INFO     | logging:callHandlers:1737 - "POST /transactions/28/delete/ HTTP/1.1" 302 0
+2025-12-11 22:47:19.733 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 24353
+2025-12-11 22:47:21.455 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 4982
+2025-12-11 22:47:24.395 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:47:24.396 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BRL=X', 1, 0])
+2025-12-11 22:47:24.403 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:47:24.403 | DEBUG    | logging:callHandlers:1737 - BRL=X: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:47:24.403 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:47:24.403 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:47:24.404 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BRL=X
+2025-12-11 22:47:24.404 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:47:24.404 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:47:24.404 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:47:24.404 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:47:24.404 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:47:24.404 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:47:24.404 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:47:24.404 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:47:24.404 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:47:24.405 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:47:24.405 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:47:24.574 | ERROR    | logging:callHandlers:1737 - $BRL=X: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:47:24.575 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:47:24.575 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:47:24.578 | INFO     | logging:callHandlers:1737 - "GET /investments/ HTTP/1.1" 200 14401
+2025-12-11 22:47:27.637 | INFO     | logging:callHandlers:1737 - "GET /investments/add/ HTTP/1.1" 200 5443
+2025-12-11 22:47:44.931 | DEBUG    | logging:callHandlers:1737 - get_raw_json(): https://query2.finance.yahoo.com/v10/finance/quoteSummary/MXRF11.SA
+2025-12-11 22:47:44.931 | DEBUG    | logging:callHandlers:1737 - Entering get()
+2025-12-11 22:47:44.931 | DEBUG    | logging:callHandlers:1737 -  Entering _make_request()
+2025-12-11 22:47:44.932 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v10/finance/quoteSummary/MXRF11.SA
+2025-12-11 22:47:44.932 | DEBUG    | logging:callHandlers:1737 - params={'modules': 'financialData,quoteType,defaultKeyStatistics,assetProfile,summaryDetail', 'corsDomain': 'finance.yahoo.com', 'formatted': 'false', 'symbol': 'MXRF11.SA'}
+2025-12-11 22:47:44.932 | DEBUG    | logging:callHandlers:1737 -   Entering _get_cookie_and_crumb()
+2025-12-11 22:47:44.932 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:47:44.932 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:47:44.932 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_basic()
+2025-12-11 22:47:44.933 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:47:44.933 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_basic()
+2025-12-11 22:47:44.933 | DEBUG    | logging:callHandlers:1737 -     Entering _get_crumb_basic()
+2025-12-11 22:47:44.933 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-11 22:47:44.933 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:47:44.933 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-11 22:47:45.089 | INFO     | logging:callHandlers:1737 - "POST /investments/add/ HTTP/1.1" 302 0
+2025-12-11 22:47:45.099 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:47:45.099 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BRL=X', 1, 0])
+2025-12-11 22:47:45.099 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:47:45.099 | DEBUG    | logging:callHandlers:1737 - BRL=X: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:47:45.099 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:47:45.099 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:47:45.100 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BRL=X
+2025-12-11 22:47:45.100 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:47:45.100 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:47:45.100 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:47:45.100 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:47:45.100 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:47:45.100 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:47:45.100 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:47:45.101 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:47:45.101 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:47:45.101 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:47:45.101 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:47:45.234 | ERROR    | logging:callHandlers:1737 - $BRL=X: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:47:45.235 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:47:45.235 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:47:45.236 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:47:45.236 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['MXRF11.SA', 1, 0])
+2025-12-11 22:47:45.236 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/MXRF11.SA
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:47:45.237 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:47:45.238 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:47:45.238 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:47:45.238 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:47:45.238 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:47:45.372 | ERROR    | logging:callHandlers:1737 - $MXRF11.SA: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:47:45.373 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:47:45.373 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:47:45.375 | INFO     | logging:callHandlers:1737 - "GET /investments/ HTTP/1.1" 200 15895
+2025-12-11 22:48:05.715 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 26144
+2025-12-11 22:48:07.889 | INFO     | logging:callHandlers:1737 - "GET /transactions/29/delete/ HTTP/1.1" 200 4151
+2025-12-11 22:48:09.468 | INFO     | logging:callHandlers:1737 - "POST /transactions/29/delete/ HTTP/1.1" 302 0
+2025-12-11 22:48:09.487 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 24353
+2025-12-11 22:48:10.768 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 24353
+2025-12-11 22:48:12.473 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:48:12.473 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BRL=X', 1, 0])
+2025-12-11 22:48:12.473 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:48:12.473 | DEBUG    | logging:callHandlers:1737 - BRL=X: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:48:12.474 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:48:12.474 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:48:12.474 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BRL=X
+2025-12-11 22:48:12.474 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:48:12.474 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:48:12.474 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:48:12.474 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:48:12.474 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:48:12.474 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:48:12.475 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:48:12.475 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:48:12.475 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:48:12.475 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:48:12.475 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:48:12.617 | ERROR    | logging:callHandlers:1737 - $BRL=X: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:48:12.618 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:48:12.618 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:48:12.620 | INFO     | logging:callHandlers:1737 - "GET /investments/ HTTP/1.1" 200 14401
+2025-12-11 22:48:14.367 | INFO     | logging:callHandlers:1737 - "GET /investments/add/ HTTP/1.1" 200 5443
+2025-12-11 22:48:20.366 | DEBUG    | logging:callHandlers:1737 - get_raw_json(): https://query2.finance.yahoo.com/v10/finance/quoteSummary/MXRF11.SA
+2025-12-11 22:48:20.366 | DEBUG    | logging:callHandlers:1737 - Entering get()
+2025-12-11 22:48:20.366 | DEBUG    | logging:callHandlers:1737 -  Entering _make_request()
+2025-12-11 22:48:20.366 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v10/finance/quoteSummary/MXRF11.SA
+2025-12-11 22:48:20.367 | DEBUG    | logging:callHandlers:1737 - params={'modules': 'financialData,quoteType,defaultKeyStatistics,assetProfile,summaryDetail', 'corsDomain': 'finance.yahoo.com', 'formatted': 'false', 'symbol': 'MXRF11.SA'}
+2025-12-11 22:48:20.367 | DEBUG    | logging:callHandlers:1737 -   Entering _get_cookie_and_crumb()
+2025-12-11 22:48:20.367 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:48:20.367 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:48:20.367 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_basic()
+2025-12-11 22:48:20.367 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:48:20.367 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_basic()
+2025-12-11 22:48:20.367 | DEBUG    | logging:callHandlers:1737 -     Entering _get_crumb_basic()
+2025-12-11 22:48:20.367 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-11 22:48:20.367 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:48:20.368 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-11 22:48:20.522 | INFO     | logging:callHandlers:1737 - "POST /investments/add/ HTTP/1.1" 302 0
+2025-12-11 22:48:20.532 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:48:20.532 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BRL=X', 1, 0])
+2025-12-11 22:48:20.533 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:48:20.533 | DEBUG    | logging:callHandlers:1737 - BRL=X: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:48:20.533 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:48:20.533 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:48:20.533 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BRL=X
+2025-12-11 22:48:20.533 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:48:20.533 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:48:20.533 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:48:20.533 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:48:20.534 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:48:20.534 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:48:20.534 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:48:20.534 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:48:20.534 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:48:20.534 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:48:20.534 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:48:20.668 | ERROR    | logging:callHandlers:1737 - $BRL=X: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:48:20.668 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:48:20.668 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:48:20.670 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-11 22:48:20.670 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['MXRF11.SA', 1, 0])
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/MXRF11.SA
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-11 22:48:20.671 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:48:20.672 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-11 22:48:20.672 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-11 22:48:20.672 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-11 22:48:20.672 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-11 22:48:20.672 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-11 22:48:20.803 | ERROR    | logging:callHandlers:1737 - $MXRF11.SA: possibly delisted; no price data found  (period=1d)
+2025-12-11 22:48:20.804 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-11 22:48:20.804 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-11 22:48:20.806 | INFO     | logging:callHandlers:1737 - "GET /investments/ HTTP/1.1" 200 15895

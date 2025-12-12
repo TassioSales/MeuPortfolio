@@ -134,15 +134,13 @@
                                 <td class="fw-bold text-dark">R$ {{ item.current_value|floatformat:2 }}</td>
                                 <td class="pe-4 text-end">
                                     {% if item.profit_loss >= 0 %}
-                                    <span class="fw-bold text-success d-block mb-1">+R$ {{
-                                        item.profit_loss|floatformat:2 }}</span>
+                                    <span class="fw-bold text-success d-block mb-1">+R$ {{ item.profit_loss|floatformat:2 }}</span>
                                     <span
                                         class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2">
                                         <i class="bi bi-arrow-up-short"></i>{{ item.profit_loss_pct|floatformat:2 }}%
                                     </span>
                                     {% else %}
-                                    <span class="fw-bold text-danger d-block mb-1">R$ {{ item.profit_loss|floatformat:2
-                                        }}</span>
+                                    <span class="fw-bold text-danger d-block mb-1">R$ {{ item.profit_loss|floatformat:2 }}</span>
                                     <span
                                         class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2">
                                         <i class="bi bi-arrow-down-short"></i>{{ item.profit_loss_pct|floatformat:2 }}%

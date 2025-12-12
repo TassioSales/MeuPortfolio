@@ -19,8 +19,25 @@ import os
 import shutil
 import tempfile
 import certifi
+import requests
 from xhtml2pdf import pisa
 import yfinance as yf
+
+def get_price_manual(symbol):
+    try:
+        url = f"https://query2.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=1d"
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+        response = requests.get(url, headers=headers, timeout=5)
+        data = response.json()
+        result = data['chart']['result'][0]
+        meta = result['meta']
+        price = meta.get('regularMarketPrice') or meta.get('chartPreviousClose')
+        currency = meta.get('currency')
+        return price, currency
+    except Exception as e:
+        print(f"Manual fetch failed for {symbol}: {e}")
+        return None, None
+
 from .models import Transaction, Category, Budget, Investment
 from django.db.models.functions import TruncMonth, TruncDay
 from .forms import CategoryForm, TransactionForm, BudgetForm, InvestmentForm
@@ -58,21 +75,53 @@ def search_ticker(request):
 
     try:
         ticker = yf.Ticker(ticker_symbol)
-        # Try fetching info (fastest check)
-        info = ticker.info
         
-        # Some tickers return empty info but are valid, try history
-        if not info or 'regularMarketPrice' not in info:
+        # Method 1: Try fast_info (often more reliable for current price)
+        price = None
+        currency = 'BRL'
+        try:
+             price = ticker.fast_info.last_price
+             currency = ticker.fast_info.currency
+        except:
+             pass
+
+        # Method 2: History fallback
+        if price is None:
              history = ticker.history(period='1d')
-             if history.empty:
-                 return JsonResponse({'error': f'Ticker {ticker_symbol} not found or delisted'}, status=404)
-             price = history['Close'].iloc[-1]
-             name = ticker_symbol # Fallback name
-             currency = 'BRL' # Default assumption if info missing, but risky.
-        else:
-             price = info.get('currentPrice') or info.get('regularMarketPrice')
-             name = info.get('longName') or info.get('shortName') or ticker_symbol
-             currency = info.get('currency', 'BRL')
+             if not history.empty:
+                 price = history['Close'].iloc[-1]
+             else:
+                 # Method 3: Info fallback
+                 info = ticker.info
+                 price = info.get('currentPrice') or info.get('regularMarketPrice')
+                 currency = info.get('currency', 'BRL')
+
+        # Method 4: Manual Fallback
+        if price is None:
+             price, currency_manual = get_price_manual(ticker_symbol)
+             if price is not None:
+                 if currency_manual:
+                     currency = currency_manual
+
+        if price is None:
+             return JsonResponse({'error': f'Ticker {ticker_symbol} not found or data unavailable'}, status=404)
+
+        # Try to get extra info if available, but don't fail if missing
+        try:
+            info = ticker.info
+            name = info.get('longName') or info.get('shortName') or ticker_symbol
+            previous_close = info.get('previousClose')
+            day_high = info.get('dayHigh')
+            day_low = info.get('dayLow')
+            year_high = info.get('fiftyTwoWeekHigh')
+            year_low = info.get('fiftyTwoWeekLow')
+        except:
+            name = ticker_symbol
+            previous_close = None
+            day_high = None
+            day_low = None
+            year_high = None
+            year_low = None
 
         # Currency Conversion Logic
         usd_brl_rate = 1.0
@@ -83,13 +132,6 @@ def search_ticker(request):
                 currency = 'BRL' # Converted
             except Exception as e:
                 print(f"Error converting currency: {e}")
-        
-        # Extract additional data
-        previous_close = info.get('previousClose')
-        day_high = info.get('dayHigh')
-        day_low = info.get('dayLow')
-        year_high = info.get('fiftyTwoWeekHigh')
-        year_low = info.get('fiftyTwoWeekLow')
         
         # Convert additional fields if USD
         if currency == 'BRL' and usd_brl_rate != 1.0:
@@ -162,16 +204,42 @@ def investment_dashboard(request):
         # Fetch current price
         try:
             ticker = yf.Ticker(symbol)
-            history = ticker.history(period='1d')
-            if not history.empty:
-                current_price = history['Close'].iloc[-1]
-                
+            current_price = None
+
+            # 1. fast_info
+            try:
+                current_price = ticker.fast_info.last_price
+            except:
+                pass
+
+            # 2. history
+            if current_price is None:
+                history = ticker.history(period='1d')
+                if not history.empty:
+                    current_price = history['Close'].iloc[-1]
+            
+            # 3. info fallback (rarely needed if above fail)
+            if current_price is None:
+                 try:
+                    info = ticker.info
+                    current_price = info.get('currentPrice') or info.get('regularMarketPrice')
+                 except:
+                    pass
+            
+            # 4. Manual Fallback
+            if current_price is None:
+                p, _ = get_price_manual(symbol)
+                if p is not None:
+                    current_price = p
+
+            if current_price is not None:
                 # Check currency
                 is_brl = symbol.endswith('.SA')
                 if not is_brl:
                      current_price = current_price * usd_brl_rate
             else:
                 current_price = avg_price # Fallback to avg price
+
         except Exception as e:
             print(f"Error fetching data for {symbol}: {e}")
             current_price = avg_price

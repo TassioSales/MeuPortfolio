@@ -36,7 +36,7 @@ hidden_imports.extend(collect_submodules('xhtml2pdf'))
 # Data files (templates, static, etc.)
 datas = [
     ('templates', 'templates'),
-    ('static', 'static'),
+    ('staticfiles', 'static'),
     ('db.sqlite3', '.'),  # Include the database if it exists
 ]
 

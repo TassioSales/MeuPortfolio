@@ -41,22 +41,22 @@
 <td align="center" width="25%">
   <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Chart%20increasing/3D/chart_increasing_3d.png" width="50"><br>
   <strong>Investimentos</strong><br>
-  <small>Cotações em Tempo Real</small>
+  <small>Cotações e Rentabilidade</small>
 </td>
 <td align="center" width="25%">
   <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Spiral%20calendar/3D/spiral_calendar_3d.png" width="50"><br>
   <strong>Planejamento</strong><br>
-  <small>Controle de Gastos</small>
+  <small>Orçamentos e Metas</small>
 </td>
 <td align="center" width="25%">
   <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Page%20facing%20up/3D/page_facing_up_3d.png" width="50"><br>
   <strong>Relatórios</strong><br>
-  <small>Exportação PDF</small>
+  <small>Gráficos e PDF</small>
 </td>
 <td align="center" width="25%">
   <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Laptop/3D/laptop_3d.png" width="50"><br>
   <strong>Portátil</strong><br>
-  <small>Executável Windows</small>
+  <small>Executável Standalone</small>
 </td>
 </tr>
 </table>
@@ -65,11 +65,16 @@
 
 ## ✨ Destaques do Projeto
 
-- **Dashboard Interativo**: Visualização clara de receitas, despesas e saldo atual.
-- **Gestão de Investimentos**: Acompanhe suas ações com integração ao **Yahoo Finance** (`yfinance`).
-- **Relatórios Profissionais**: Gere relatórios detalhados em PDF usando `xhtml2pdf`.
-- **Autenticação Segura**: Sistema de login e registro com opção de "Mostrar Senha" e proteção CSRF.
-- **Portabilidade Total**: Versão compilada em `.exe` único que não requer instalação de Python.
+- **Dashboard Financeiro**: Visão centralizada de Saldo, Receitas e Despesas do mês.
+- **Gestão de Orçamento**: Defina limites de gastos por categoria e acompanhe o progresso visualmente.
+- **Módulo de Investimentos Robusto**: 
+    - Acompanhamento de ações e FIIs com integração ao **Yahoo Finance**.
+    - **Sistema Anti-Falha**: Fallback automático para API direta caso a biblioteca falhe, garantindo exibição de preços.
+    - Atualização em tempo real de Lucro/Prejuízo e variação percentual.
+- **Relatórios Avançados**: 
+    - Gráficos de evolução mensal e distribuição de despesas.
+    - Exportação profissional em **PDF** e **CSV**.
+- **Portabilidade Total**: Versão compilada em `.exe` único que roda direto do pendrive ou pasta, sem instalar nada.
 
 ## 🚀 Início Rápido (Modo Portátil)
 
@@ -80,7 +85,7 @@ A maneira mais fácil de usar o sistema é através do executável portátil.
 <td width="50%" align="center">
 
 ### 📥 **1. Baixar**
-Localize o arquivo `finance_project.exe` na pasta de distribuição.
+Localize o arquivo `finance_project.exe` na pasta `dist`.
 
 </td>
 <td width="50%" align="center">
@@ -92,7 +97,7 @@ Dê um duplo clique no arquivo. O servidor iniciará e o navegador abrirá autom
 </tr>
 </table>
 
-> 💡 **Nota:** Na primeira execução, pode levar alguns segundos para o sistema descompactar os arquivos temporários.
+> 💡 **Nota:** Na primeira execução, o sistema pode levar alguns segundos para configurar o ambiente temporário.
 
 ---
 
@@ -109,26 +114,27 @@ Dê um duplo clique no arquivo. O servidor iniciará e o navegador abrirá autom
 <td width="50%">
 
 #### 💰 **Controle Financeiro**
-- **CRUD de Transações**: Adicione, edite e remova receitas e despesas.
-- **Categorização**: Organize seus gastos por categorias personalizadas.
-- **Filtros**: Busque transações por data, tipo ou categoria.
+- **Transações**: Adicione receitas e despesas com datas e descrições.
+- **Orçamentos (Budgets)**: Crie tetos de gastos mensais ou anuais para cada categoria (Ex: R$ 500,00 para Alimentação) e receba alertas visuais.
+- **Categorias Personalizadas**: Flexibilidade total para seu plano de contas.
 
 #### 📈 **Módulo de Investimentos**
-- **Cotações ao Vivo**: Integração com API para valores atualizados.
-- **Carteira**: Visualize a distribuição dos seus ativos.
-- **Histórico**: Acompanhe a evolução do seu patrimônio.
+- **Dashboard Dedicado**: Veja o valor total investido, valor atual e ROI (Retorno sobre Investimento).
+- **Cotações Inteligentes**: Suporte a ações da B3 (Ex: `PETR4.SA`) e Cripto/Dólar (`BRL=X`).
+- **Resiliência**: Mecanismo de fallback manual garante que você nunca fique sem ver os preços, mesmo se a API principal oscilar.
 
 </td>
 <td width="50%">
 
 #### 🔒 **Segurança & UX**
-- **Login/Registro**: Interface amigável com validação de formulários.
-- **Visualização de Senha**: Facilidade para digitar senhas complexas.
-- **Feedback Visual**: Mensagens de sucesso e erro (Toasts/Alerts).
+- **Autenticação**: Login seguro e cadastro de múltiplos usuários.
+- **Interface Moderna**: Design responsivo com Bootstrap 5 e ícones Bootstrap Icons.
+- **Feedback**: Sistema de mensagens (Toasts) para confirmar ações.
 
 #### 📄 **Relatórios & Logs**
-- **PDF Export**: Baixe relatórios para impressão ou arquivamento.
-- **Logging Avançado**: Sistema de logs com `loguru` para monitoramento e debug.
+- **Visualização**: Gráficos de pizza (distribuição) e barras (evolução).
+- **Exportação**: Gere extratos em CSV para Excel ou relatórios formatados em PDF.
+- **Auditoria**: Logs detalhados de todas as operações do sistema.
 
 </td>
 </tr>
@@ -142,7 +148,7 @@ Para facilitar o uso, incluímos scripts automáticos (`.bat`) na raiz do projet
 |---------|--------|
 | `install.bat` | **Instalação Completa**: Configura Python, cria ambiente virtual e instala dependências. |
 | `run.bat` | **Rodar Projeto**: Inicia o servidor local e abre o navegador. |
-| `build.bat` | **Criar Executável**: Gera o arquivo `.exe` na pasta `dist`. |
+| `build.bat` | **Criar Executável**: Gera o arquivo `.exe` (incluindo `staticfiles` e configurações atualizadas) na pasta `dist`. |
 | `populate_data.bat` | **Dados de Exemplo**: Cria usuário teste e transações fictícias. |
 | `backup.bat` | **Backup**: Cria um arquivo `.zip` com todo o código do projeto. |
 
@@ -174,10 +180,7 @@ pip install -r requirements.txt
 # 4. Configure o Banco de Dados
 python manage.py migrate
 
-# 5. Crie um Superusuário (Opcional)
-python manage.py createsuperuser
-
-# 6. Execute o Servidor
+# 5. Execute o Servidor
 python manage.py runserver
 ```
 
@@ -216,7 +219,7 @@ python manage.py runserver
 #### 🎨 **Frontend & Build**
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?style=flat-square&logo=bootstrap)
 ![PyInstaller](https://img.shields.io/badge/PyInstaller-Build-blue?style=flat-square)
-![Inno Setup](https://img.shields.io/badge/Inno-Setup-orange?style=flat-square)
+![Chart.js](https://img.shields.io/badge/Chart.js-Frontend-orange?style=flat-square&logo=chartdotjs)
 
 </td>
 </tr>

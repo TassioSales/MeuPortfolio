@@ -929,3 +929,103 @@ INFO 2025-12-08 14:28:50,738 autoreload 18144 26740 Watching for file changes wi
 INFO 2025-12-08 14:28:55,426 log 18144 6284 "GET / HTTP/1.1" 302 0
 INFO 2025-12-08 14:28:55,453 log 18144 6284 "GET /login/?next=/ HTTP/1.1" 200 4027
 INFO 2025-12-08 14:29:03,560 log 18144 6284 "GET /register/ HTTP/1.1" 200 5232
+INFO 2025-12-11 22:29:34,735 autoreload 22660 23272 Watching for file changes with StatReloader
+INFO 2025-12-11 22:29:58,197 log 22660 3500 "GET / HTTP/1.1" 302 0
+INFO 2025-12-11 22:29:58,523 log 22660 3500 "GET /login/?next=/ HTTP/1.1" 200 4027
+INFO 2025-12-11 22:30:14,901 log 22660 3500 "POST /login/?next=/ HTTP/1.1" 302 0
+INFO 2025-12-11 22:30:15,090 log 22660 3500 "GET / HTTP/1.1" 200 14909
+INFO 2025-12-11 22:30:22,284 log 22660 3500 "GET /investments/ HTTP/1.1" 200 14401
+INFO 2025-12-11 22:30:26,341 log 22660 3500 "GET /investments/add/ HTTP/1.1" 200 5443
+INFO 2025-12-11 22:30:29,584 log 22660 3500 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-11 22:30:29,882 log 22660 3500 "GET /investments/ HTTP/1.1" 200 15962
+INFO 2025-12-11 22:37:16,349 log 22660 24356 "GET /investments/ HTTP/1.1" 200 15890
+INFO 2025-12-11 22:47:08,039 log 22660 24140 "GET / HTTP/1.1" 200 14913
+INFO 2025-12-11 22:47:15,392 log 22660 24140 "GET /transactions/ HTTP/1.1" 200 26142
+INFO 2025-12-11 22:47:18,196 log 22660 24140 "GET /transactions/28/delete/ HTTP/1.1" 200 4150
+INFO 2025-12-11 22:47:19,710 log 22660 24140 "POST /transactions/28/delete/ HTTP/1.1" 302 0
+INFO 2025-12-11 22:47:19,732 log 22660 24140 "GET /transactions/ HTTP/1.1" 200 24353
+INFO 2025-12-11 22:47:21,455 log 22660 24140 "GET /budgets/ HTTP/1.1" 200 4982
+INFO 2025-12-11 22:47:24,577 log 22660 24140 "GET /investments/ HTTP/1.1" 200 14401
+INFO 2025-12-11 22:47:27,636 log 22660 24140 "GET /investments/add/ HTTP/1.1" 200 5443
+INFO 2025-12-11 22:47:45,089 log 22660 24140 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-11 22:47:45,374 log 22660 24140 "GET /investments/ HTTP/1.1" 200 15895
+INFO 2025-12-11 22:48:05,714 log 22660 24140 "GET /transactions/ HTTP/1.1" 200 26144
+INFO 2025-12-11 22:48:07,888 log 22660 24140 "GET /transactions/29/delete/ HTTP/1.1" 200 4151
+INFO 2025-12-11 22:48:09,468 log 22660 24140 "POST /transactions/29/delete/ HTTP/1.1" 302 0
+INFO 2025-12-11 22:48:09,487 log 22660 24140 "GET /transactions/ HTTP/1.1" 200 24353
+INFO 2025-12-11 22:48:10,767 log 22660 24140 "GET /transactions/ HTTP/1.1" 200 24353
+INFO 2025-12-11 22:48:12,620 log 22660 24140 "GET /investments/ HTTP/1.1" 200 14401
+INFO 2025-12-11 22:48:14,366 log 22660 24140 "GET /investments/add/ HTTP/1.1" 200 5443
+INFO 2025-12-11 22:48:20,522 log 22660 24140 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-11 22:48:20,806 log 22660 24140 "GET /investments/ HTTP/1.1" 200 15895
+INFO 2025-12-11 22:51:49,766 autoreload 21984 22220 Watching for file changes with StatReloader
+INFO 2025-12-11 22:51:55,645 log 21984 1308 "GET / HTTP/1.1" 200 14915
+WARNING 2025-12-11 22:51:56,439 log 21984 1308 Not Found: /favicon.ico
+WARNING 2025-12-11 22:51:56,440 log 21984 1308 "GET /favicon.ico HTTP/1.1" 404 179
+INFO 2025-12-11 22:51:58,816 log 21984 1308 "GET /investments/ HTTP/1.1" 200 15895
+INFO 2025-12-11 22:53:00,827 log 21984 1308 "GET / HTTP/1.1" 200 14915
+INFO 2025-12-11 22:53:03,636 log 21984 1308 "GET /investments/ HTTP/1.1" 200 15895
+ERROR 2025-12-11 22:53:12,631 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:12,632 log 21984 1308 "GET /investments/search/?ticker=MXR11 HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:27,399 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:27,401 log 21984 1308 "GET /investments/search/?ticker=MXRF11 HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:28,391 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:28,391 log 21984 1308 "GET /investments/search/?ticker=MXRF11 HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:29,094 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:29,095 log 21984 1308 "GET /investments/search/?ticker=MXRF11 HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:34,777 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:34,778 log 21984 1308 "GET /investments/search/?ticker=MXRF11.SA HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:35,561 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:35,562 log 21984 1308 "GET /investments/search/?ticker=MXRF11.SA HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:36,102 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:36,103 log 21984 1308 "GET /investments/search/?ticker=MXRF11.SA HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:36,558 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:36,559 log 21984 1308 "GET /investments/search/?ticker=MXRF11.SA HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:37,085 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:37,086 log 21984 1308 "GET /investments/search/?ticker=MXRF11.SA HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:48,284 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:48,285 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:48,884 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:48,885 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:49,303 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:49,304 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:49,706 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:49,708 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:50,236 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:50,237 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:50,716 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:50,718 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:51,048 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:51,049 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:51,259 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:51,260 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:51,469 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:51,470 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:51,656 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:51,657 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:51,827 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:51,828 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+ERROR 2025-12-11 22:53:52,032 log 21984 1308 Internal Server Error: /investments/search/
+ERROR 2025-12-11 22:53:52,033 log 21984 1308 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 500 273
+INFO 2025-12-11 22:56:13,931 autoreload 13996 25108 Watching for file changes with StatReloader
+INFO 2025-12-11 22:56:19,245 log 13996 7416 "GET / HTTP/1.1" 200 14915
+INFO 2025-12-11 22:56:21,631 log 13996 7416 "GET /investments/ HTTP/1.1" 200 15895
+INFO 2025-12-11 22:57:52,734 autoreload 25968 9016 Watching for file changes with StatReloader
+INFO 2025-12-11 22:57:59,215 log 25968 2656 "GET / HTTP/1.1" 200 14915
+INFO 2025-12-11 22:58:02,857 log 25968 2656 "GET /investments/ HTTP/1.1" 200 15895
+INFO 2025-12-11 23:03:39,817 autoreload 17324 5424 Watching for file changes with StatReloader
+INFO 2025-12-11 23:03:48,450 log 17324 2976 "GET / HTTP/1.1" 200 14915
+INFO 2025-12-11 23:03:50,966 log 17324 2976 "GET /investments/ HTTP/1.1" 200 15895
+INFO 2025-12-11 23:05:27,246 log 17324 2976 "GET /investments/ HTTP/1.1" 200 15895
+INFO 2025-12-11 23:05:56,180 autoreload 17324 5424 D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\pytz\tzfile.py changed, reloading.
+INFO 2025-12-11 23:06:00,820 autoreload 5216 19860 Watching for file changes with StatReloader
+INFO 2025-12-11 23:07:33,033 autoreload 5216 19860 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-11 23:07:34,314 autoreload 2456 24828 Watching for file changes with StatReloader
+INFO 2025-12-11 23:07:43,119 autoreload 2456 24828 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-11 23:07:44,266 autoreload 4324 2600 Watching for file changes with StatReloader
+INFO 2025-12-11 23:07:54,337 autoreload 4324 2600 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-11 23:07:55,499 autoreload 16908 1468 Watching for file changes with StatReloader
+INFO 2025-12-11 23:09:19,439 log 16908 10680 "GET /investments/ HTTP/1.1" 200 15895
+INFO 2025-12-11 23:09:23,987 log 16908 10680 "GET /investments/add/ HTTP/1.1" 200 5443
+INFO 2025-12-11 23:09:35,988 log 16908 10680 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-11 23:09:36,725 log 16908 10680 "GET /investments/ HTTP/1.1" 200 15900

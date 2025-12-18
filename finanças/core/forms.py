@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Transaction, Budget, Investment
+from .models import Category, Transaction, Budget, Investment, RecurringTransaction, Goal
 
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -7,21 +7,41 @@ class CategoryForm(forms.ModelForm):
         fields = ['name', 'type', 'parent']
 
 class TransactionForm(forms.ModelForm):
+    installments = forms.IntegerField(required=False, min_value=2, max_value=48, label="Parcelas", initial=2)
+    first_due_date = forms.DateField(required=False, label="Data do 1º Vencimento", widget=forms.DateInput(attrs={'type': 'date'}))
+    recurring = forms.BooleanField(required=False, label="Repetir?", widget=forms.CheckboxInput(attrs={'onclick': 'toggleRecurringFields(this)'}))
+    frequency = forms.ChoiceField(required=False, choices=RecurringTransaction.FREQUENCY_CHOICES, label="Frequência")
+
     class Meta:
         model = Transaction
-        fields = ['category', 'type', 'amount', 'date', 'recurring', 'frequency', 'description']
+        fields = ['category', 'type', 'amount', 'date', 'payment_method', 'description']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
+            'payment_method': forms.Select(attrs={'onchange': 'toggleCreditCardFields(this)'}),
         }
 
     def clean(self):
         cleaned_data = super().clean()
         type_ = cleaned_data.get('type')
         category = cleaned_data.get('category')
+        payment_method = cleaned_data.get('payment_method')
+        installments = cleaned_data.get('installments')
+        first_due_date = cleaned_data.get('first_due_date')
 
         if type_ in ['RECEITA', 'DESPESA'] and not category:
             self.add_error('category', 'Category is required for income/expense.')
         
+        if payment_method == 'CREDITO':
+            if not installments:
+                self.add_error('installments', 'Informe o número de parcelas.')
+            if not first_due_date:
+                self.add_error('first_due_date', 'Informe a data do primeiro vencimento.')
+        
+        recurring = cleaned_data.get('recurring')
+        frequency = cleaned_data.get('frequency')
+        if recurring and not frequency:
+            self.add_error('frequency', 'Informe a frequência da repetição.')
+
         return cleaned_data
 
 class BudgetForm(forms.ModelForm):
@@ -65,3 +85,15 @@ class InvestmentForm(forms.ModelForm):
                 pass
                 
         return cleaned_data
+
+class ImportFileForm(forms.Form):
+    file = forms.FileField(label="Arquivo de Extrato (CSV)")
+
+class GoalForm(forms.ModelForm):
+    class Meta:
+        model = Goal
+        fields = ['name', 'target_amount', 'current_amount', 'deadline', 'description']
+        widgets = {
+            'deadline': forms.DateInput(attrs={'type': 'date'}),
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }

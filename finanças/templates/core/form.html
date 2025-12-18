@@ -42,6 +42,49 @@
                 toggleRecurringFields(this);
             });
         }
+
+
+        // Money Mask Logic
+        const moneyInputs = document.querySelectorAll('.money-mask');
+        moneyInputs.forEach(input => {
+            // Format on load
+            if (input.value) {
+                let val = parseFloat(input.value.replace(',', '.'));
+                if (!isNaN(val)) {
+                    // Format to R$ 1.000,00
+                    let formatted = val.toFixed(2).replace('.', ',');
+                    formatted = formatted.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+                    input.value = 'R$ ' + formatted;
+                }
+            }
+
+            // Format on input
+            input.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value === '') {
+                    e.target.value = '';
+                    return;
+                }
+                value = (Number(value) / 100).toFixed(2) + '';
+                value = value.replace('.', ',');
+                value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+                e.target.value = 'R$ ' + value;
+            });
+        });
+
+        // Strip on submit
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                moneyInputs.forEach(input => {
+                    if (input.value) {
+                        // Remove R$, dots, and replace comma with dot
+                        let cleanVal = input.value.replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
+                        input.value = cleanVal;
+                    }
+                });
+            });
+        }
     });
 
     function toggleCreditCardFields(select) {

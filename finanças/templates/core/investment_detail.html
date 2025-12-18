@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h2 class="fw-bold text-dark">
+            <a href="{% url 'investment_dashboard' %}" class="text-decoration-none text-dark">
+                <i class="bi bi-arrow-left me-2 text-primary"></i>
+            </a>
+            {{ investment.symbol }} <small class="text-muted fs-5 ms-2">{{ investment.name }}</small>
+        </h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'investment_edit' investment.pk %}" class="btn btn-outline-primary me-2">
+            <i class="bi bi-pencil me-1"></i>Editar
+        </a>
+        <a href="{% url 'investment_delete' investment.pk %}" class="btn btn-outline-danger">
+            <i class="bi bi-trash me-1"></i>Excluir
+        </a>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4 g-3">
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small fw-bold mb-2">Preço Atual</h6>
+                <h3 class="fw-bold text-dark mb-0">R$ {{ current_price|floatformat:2 }}</h3>
+                <small class="{% if day_change >= 0 %}text-success{% else %}text-danger{% endif %} fw-bold">
+                    {% if day_change >= 0 %}+{% endif %}{{ day_change|floatformat:2 }}% (Hoje)
+                </small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small fw-bold mb-2">Total Investido</h6>
+                <h3 class="fw-bold text-dark mb-0">R$ {{ investment.total_cost|floatformat:2 }}</h3>
+                <small class="text-muted">{{ investment.quantity|floatformat:"-4" }} cotas @ R$ {{
+                    investment.purchase_price|floatformat:2 }}</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small fw-bold mb-2">Valor Atual</h6>
+                <h3 class="fw-bold text-primary mb-0">R$ {{ current_value|floatformat:2 }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small fw-bold mb-2">Lucro/Prejuízo</h6>
+                <h3 class="fw-bold {% if profit_loss >= 0 %}text-success{% else %}text-danger{% endif %} mb-0">
+                    {% if profit_loss >= 0 %}+{% endif %}R$ {{ profit_loss|floatformat:2 }}
+                </h3>
+                <small class="{% if profit_loss_pct >= 0 %}text-success{% else %}text-danger{% endif %} fw-bold">
+                    {% if profit_loss_pct >= 0 %}+{% endif %}{{ profit_loss_pct|floatformat:2 }}%
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Historical Chart -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title mb-0 fw-bold">Histórico de Preços (6 Meses)</h5>
+            </div>
+            <div class="card-body">
+                <div style="position: relative; height: 400px; width: 100%;">
+                    <canvas id="historyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('historyChart').getContext('2d');
+    const labels = JSON.parse('{{ chart_labels|safe }}');
+    const data = JSON.parse('{{ chart_data|safe }}');
+
+    // Create gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(13, 110, 253, 0.5)');
+    gradient.addColorStop(1, 'rgba(13, 110, 253, 0.0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Preço de Fechamento (R$)',
+                data: data,
+                borderColor: '#0d6efd',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    grid: {
+                        color: '#f0f0f0'
+                    },
+                    ticks: {
+                        callback: function (value, index, values) {
+                            return 'R$ ' + value.toFixed(2);
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -12,15 +12,18 @@
     --info-color: #36b9cc;
     --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
     --border-color: #e3e6f0;
-    --navbar-bg: #4e73df; /* Brand color for navbar */
+    --navbar-bg: #4e73df;
+    /* Brand color for navbar */
 }
 
 [data-theme="dark"] {
     /* Dark Theme Variables */
     --bg-body: #121212;
     --bg-card: #1e1e1e;
-    --text-primary: #e0e0e0;
-    --text-secondary: #b0b0b0;
+    --text-primary: #ffffff;
+    /* Pure white for better contrast */
+    --text-secondary: #e0e0e0;
+    /* Lighter gray for secondary text */
     --primary-color: #375a7f;
     --primary-gradient: linear-gradient(135deg, #375a7f 0%, #2c3e50 100%);
     --success-color: #00bc8c;
@@ -30,6 +33,117 @@
     --card-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.5);
     --border-color: #444;
     --navbar-bg: #1a1a1a;
+}
+
+/* Specific overrides for headings in dark mode to ensure visibility */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] .text-dark {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .text-muted {
+    color: #d1d1d1 !important;
+}
+
+/* Force white text on common elements in dark mode */
+[data-theme="dark"] body,
+[data-theme="dark"] .card-title,
+[data-theme="dark"] .card-text,
+[data-theme="dark"] th,
+[data-theme="dark"] td,
+[data-theme="dark"] p,
+[data-theme="dark"] span,
+[data-theme="dark"] div {
+    color: var(--text-primary);
+}
+
+/* Dark Mode Tables */
+[data-theme="dark"] .table {
+    color: var(--text-primary);
+    background-color: var(--bg-card);
+}
+
+[data-theme="dark"] .table tbody,
+[data-theme="dark"] .table tr,
+[data-theme="dark"] .table td,
+[data-theme="dark"] .table th {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .table-striped>tbody>tr:nth-of-type(odd)>* {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .table-hover>tbody>tr:hover>* {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .table thead th,
+[data-theme="dark"] .table-light {
+    background-color: #2c2c2c !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .table-bordered td,
+[data-theme="dark"] .table-bordered th {
+    border-color: var(--border-color);
+}
+
+/* Aggressive Table Text Overrides for Dark Mode */
+[data-theme="dark"] .table td,
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td *,
+[data-theme="dark"] .table th * {
+    color: #ffffff !important;
+}
+
+/* Exceptions for badges and buttons inside tables */
+[data-theme="dark"] .table .badge,
+[data-theme="dark"] .table .badge *,
+[data-theme="dark"] .table .btn,
+[data-theme="dark"] .table .btn * {
+    color: inherit !important;
+    /* Let badges/buttons keep their specific colors */
+}
+
+[data-theme="dark"] .table .text-success {
+    color: #00bc8c !important;
+}
+
+[data-theme="dark"] .table .text-danger {
+    color: #e74c3c !important;
+}
+
+[data-theme="dark"] .table .text-warning {
+    color: #f39c12 !important;
+}
+
+[data-theme="dark"] .table .text-primary {
+    color: #375a7f !important;
+}
+
+/* Calendar Specifics */
+[data-theme="dark"] .bg-light {
+    background-color: #2c2c2c !important;
+    /* Darker background for empty cells */
+}
+
+[data-theme="dark"] .table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Ensure links are visible */
+[data-theme="dark"] a:not(.btn):not(.nav-link) {
+    color: #6ea8fe;
 }
 
 body {
@@ -43,7 +157,8 @@ body {
 .card {
     background-color: var(--bg-card);
     border: none;
-    border-radius: 0.75rem; /* 12px */
+    border-radius: 0.75rem;
+    /* 12px */
     box-shadow: var(--card-shadow);
     transition: transform 0.2s ease-in-out, box-shadow 0.2s;
     margin-bottom: 1.5rem;
@@ -65,7 +180,7 @@ body {
 /* Navbar Styling */
 .navbar {
     background: var(--navbar-bg) !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand {
@@ -77,24 +192,26 @@ body {
 .btn-primary {
     background: var(--primary-gradient);
     border: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: all 0.2s;
 }
 
 .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Form Controls */
-.form-control, .form-select {
+.form-control,
+.form-select {
     background-color: var(--bg-card);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     background-color: var(--bg-card);
     color: var(--text-primary);
     border-color: var(--primary-color);
@@ -105,15 +222,17 @@ body {
 .table {
     color: var(--text-primary);
 }
+
 .table-hover tbody tr:hover {
     color: var(--text-primary);
-    background-color: rgba(0,0,0,0.05);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* Utilities */
 .text-gray-800 {
     color: var(--text-primary) !important;
 }
+
 .text-gray-500 {
     color: var(--text-secondary) !important;
 }
@@ -125,6 +244,7 @@ body {
     border-radius: 50%;
     transition: background-color 0.2s;
 }
+
 .theme-toggle:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255, 255, 255, 0.1);
 }

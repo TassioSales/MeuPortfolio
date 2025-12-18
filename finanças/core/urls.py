@@ -40,6 +40,7 @@ urlpatterns = [
     path('investments/search/', views.search_ticker, name='search_ticker'),
     path('investments/list/', views.InvestmentListView.as_view(), name='investment_list'),
     path('investments/add/', views.InvestmentCreateView.as_view(), name='investment_add'),
+    path('investments/<str:symbol>/', views.InvestmentDetailView.as_view(), name='investment_detail'),
     path('investments/<int:pk>/edit/', views.InvestmentUpdateView.as_view(), name='investment_edit'),
     path('investments/<int:pk>/delete/', views.InvestmentDeleteView.as_view(), name='investment_delete'),
     

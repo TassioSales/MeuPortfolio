@@ -6,9 +6,8 @@ from django.db.models import Sum, Q
 import logging
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
-from django.http import HttpResponse, JsonResponse
-from django.template.loader import get_template
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView, TemplateView
+from django.http import HttpResponse, JsonResponse, Http404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from datetime import timedelta
@@ -67,19 +66,31 @@ fix_ssl()
 @login_required
 def search_ticker(request):
     ticker_symbol = request.GET.get('ticker', '').upper().strip()
+    print(f"DEBUG: Received ticker: '{ticker_symbol}'")
     if not ticker_symbol:
         return JsonResponse({'error': 'Ticker is required'}, status=400)
     
     # Auto-append .SA if it looks like B3
     if any(char.isdigit() for char in ticker_symbol) and '.' not in ticker_symbol and '-' not in ticker_symbol:
          ticker_symbol += '.SA'
+    
+    print(f"DEBUG: Using ticker: '{ticker_symbol}'")
+
+    price = None
+    currency = 'BRL'
+    name = ticker_symbol
+    previous_close = None
+    day_high = None
+    day_low = None
+    year_high = None
+    year_low = None
+    chart_labels = []
+    chart_data = []
 
     try:
         ticker = yf.Ticker(ticker_symbol)
         
-        # Method 1: Try fast_info (often more reliable for current price)
-        price = None
-        currency = 'BRL'
+        # Method 1: Try fast_info
         try:
              price = ticker.fast_info.last_price
              currency = ticker.fast_info.currency
@@ -96,18 +107,8 @@ def search_ticker(request):
                  info = ticker.info
                  price = info.get('currentPrice') or info.get('regularMarketPrice')
                  currency = info.get('currency', 'BRL')
-
-        # Method 4: Manual Fallback
-        if price is None:
-             price, currency_manual = get_price_manual(ticker_symbol)
-             if price is not None:
-                 if currency_manual:
-                     currency = currency_manual
-
-        if price is None:
-             return JsonResponse({'error': f'Ticker {ticker_symbol} not found or data unavailable'}, status=404)
-
-        # Try to get extra info if available, but don't fail if missing
+        
+        # Get extra info
         try:
             info = ticker.info
             name = info.get('longName') or info.get('shortName') or ticker_symbol
@@ -117,48 +118,75 @@ def search_ticker(request):
             year_high = info.get('fiftyTwoWeekHigh')
             year_low = info.get('fiftyTwoWeekLow')
         except:
-            name = ticker_symbol
-            previous_close = None
-            day_high = None
-            day_low = None
-            year_high = None
-            year_low = None
+            pass
 
-        # Currency Conversion Logic
-        usd_brl_rate = 1.0
-        if currency == 'USD':
-            try:
-                usd_brl_rate = yf.Ticker("BRL=X").history(period='1d')['Close'].iloc[-1]
-                price = price * usd_brl_rate
-                currency = 'BRL' # Converted
-            except Exception as e:
-                print(f"Error converting currency: {e}")
-        
-        # Convert additional fields if USD
-        if currency == 'BRL' and usd_brl_rate != 1.0:
-            if previous_close: previous_close *= usd_brl_rate
-            if day_high: day_high *= usd_brl_rate
-            if day_low: day_low *= usd_brl_rate
-            if year_high: year_high *= usd_brl_rate
-            if year_low: year_low *= usd_brl_rate
+        # Fetch History for Chart
+        try:
+            history_chart = ticker.history(period="6mo")
+            for date, row in history_chart.iterrows():
+                chart_labels.append(date.strftime('%d/%m/%Y'))
+                chart_data.append(row['Close'])
+        except Exception as e:
+            print(f"Error fetching history for chart: {e}")
 
-        change_percent = 0
-        if previous_close and price:
-            change_percent = ((price - previous_close) / previous_close) * 100
-
-        return JsonResponse({
-            'symbol': ticker_symbol,
-            'name': name,
-            'price': price,
-            'currency': currency,
-            'change_percent': change_percent,
-            'day_high': day_high,
-            'day_low': day_low,
-            'year_high': year_high,
-            'year_low': year_low,
-        })
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        print(f"YFinance failed for {ticker_symbol}: {e}")
+        # Fallthrough to manual
+
+    # Method 4: Manual Fallback
+    if price is None:
+        price, currency_manual = get_price_manual(ticker_symbol)
+        if price is not None:
+            if currency_manual:
+                currency = currency_manual
+
+    # Currency Conversion Logic
+    usd_brl_rate = 1.0
+    if currency == 'USD':
+        try:
+            usd_brl_rate = yf.Ticker("BRL=X").history(period='1d')['Close'].iloc[-1]
+            price = price * usd_brl_rate
+            currency = 'BRL' # Converted
+        except Exception as e:
+            print(f"Error converting currency: {e}")
+    
+    # Convert additional fields if USD
+    if currency == 'BRL' and usd_brl_rate != 1.0:
+        if previous_close: previous_close *= usd_brl_rate
+        if day_high: day_high *= usd_brl_rate
+        if day_low: day_low *= usd_brl_rate
+        if year_high: year_high *= usd_brl_rate
+        if year_low: year_low *= usd_brl_rate
+
+    change_percent = 0
+    if previous_close and price:
+        change_percent = ((price - previous_close) / previous_close) * 100
+
+    # Fetch History for Chart
+    chart_labels = []
+    chart_data = []
+    try:
+        # Get 6 months of history
+        history_chart = ticker.history(period="6mo")
+        for date, row in history_chart.iterrows():
+            chart_labels.append(date.strftime('%d/%m/%Y'))
+            chart_data.append(row['Close'])
+    except Exception as e:
+        print(f"Error fetching history for chart: {e}")
+
+    return JsonResponse({
+        'symbol': ticker_symbol,
+        'name': name,
+        'price': price,
+        'currency': currency,
+        'change_percent': change_percent,
+        'day_high': day_high,
+        'day_low': day_low,
+        'year_high': year_high,
+        'year_low': year_low,
+        'chart_labels': chart_labels,
+        'chart_data': chart_data,
+    })
 
 @login_required
 def investment_dashboard(request):
@@ -957,6 +985,75 @@ class InvestmentListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Investment.objects.filter(user=self.request.user)
+
+class InvestmentDetailView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/investment_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        symbol = self.kwargs['symbol']
+        
+        investments = Investment.objects.filter(user=self.request.user, symbol=symbol)
+        if not investments.exists():
+            raise Http404("Investimento não encontrado")
+            
+        # Aggregate
+        total_quantity = sum(inv.quantity for inv in investments)
+        total_invested = sum(inv.total_cost for inv in investments)
+        avg_price = total_invested / total_quantity if total_quantity > 0 else 0
+        
+        # Mock object for template
+        investment_data = {
+            'symbol': symbol,
+            'name': investments.first().name,
+            'quantity': total_quantity,
+            'total_cost': total_invested,
+            'purchase_price': avg_price,
+            'pk': investments.first().pk # For edit link (maybe just link to list or first one)
+        }
+        context['investment'] = investment_data
+        
+        # Fetch historical data
+        try:
+            ticker = yf.Ticker(symbol)
+            # Get 6 months of history
+            history = ticker.history(period="6mo")
+            
+            dates = []
+            prices = []
+            
+            for date, row in history.iterrows():
+                dates.append(date.strftime('%d/%m/%Y'))
+                prices.append(row['Close'])
+                
+            context['chart_labels'] = json.dumps(dates)
+            context['chart_data'] = json.dumps(prices)
+            
+            # Current info
+            try:
+                current_price = ticker.fast_info.last_price
+                previous_close = ticker.fast_info.previous_close
+                day_change = ((current_price - previous_close) / previous_close) * 100
+            except:
+                # Fallback to history if fast_info fails
+                current_price = history['Close'].iloc[-1] if not history.empty else 0
+                day_change = 0
+
+            context['current_price'] = current_price
+            context['day_change'] = day_change
+            
+            # Calculate profit/loss
+            current_value = float(total_quantity) * float(current_price)
+            invested_value = float(total_invested)
+            context['current_value'] = current_value
+            context['profit_loss'] = current_value - invested_value
+            context['profit_loss_pct'] = (context['profit_loss'] / invested_value) * 100 if invested_value > 0 else 0
+            
+        except Exception as e:
+            print(f"Error fetching history: {e}")
+            context['error'] = str(e)
+            
+        return context
 
 class InvestmentCreateView(LoginRequiredMixin, CreateView):
     model = Investment

@@ -63388,3 +63388,968 @@ django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Doc
 2025-12-17 15:05:38.801 | INFO     | logging:callHandlers:1737 - Generating reports for user tassiosales
 2025-12-17 15:05:38.845 | INFO     | logging:callHandlers:1737 - "GET /reports/ HTTP/1.1" 200 40627
 2025-12-18 08:41:17.980 | INFO     | logging:callHandlers:1737 - Generating reports for user testuser
+2025-12-18 08:55:05.132 | INFO     | logging:callHandlers:1737 - Watching for file changes with StatReloader
+2025-12-18 08:57:36.380 | INFO     | logging:callHandlers:1737 - Watching for file changes with StatReloader
+2025-12-18 08:57:38.705 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17103
+2025-12-18 08:57:38.943 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css HTTP/1.1" 304 0
+2025-12-18 08:57:42.261 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17103
+2025-12-18 08:57:43.598 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35865
+2025-12-18 08:57:44.412 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40420
+2025-12-18 08:57:45.074 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37289
+2025-12-18 08:57:45.632 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7042
+2025-12-18 08:57:46.113 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 08:57:46.122 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BRL=X', 1, 0])
+2025-12-18 08:57:46.148 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 08:57:46.149 | DEBUG    | logging:callHandlers:1737 - BRL=X: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:46.149 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 08:57:46.149 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 08:57:46.149 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BRL=X
+2025-12-18 08:57:46.150 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:46.150 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 08:57:46.150 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'csrf'
+2025-12-18 08:57:46.150 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_csrf()
+2025-12-18 08:57:46.151 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 08:57:46.151 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_csrf()
+2025-12-18 08:57:46.151 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 08:57:46.424 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 08:57:46.424 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 08:57:46.425 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 08:57:46.505 | DEBUG    | logging:callHandlers:1737 - BRL=X: yfinance received OHLC data: 2025-12-18 10:58:33 only
+2025-12-18 08:57:46.529 | DEBUG    | logging:callHandlers:1737 - BRL=X: OHLC after cleaning: 2025-12-18 10:58:33+00:00 only
+2025-12-18 08:57:46.547 | DEBUG    | logging:callHandlers:1737 - BRL=X: OHLC after combining events: 2025-12-18 00:00:00+00:00 only
+2025-12-18 08:57:46.574 | DEBUG    | logging:callHandlers:1737 - BRL=X: yfinance returning OHLC: 2025-12-18 00:00:00+00:00 only
+2025-12-18 08:57:46.575 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 08:57:46.575 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 08:57:46.577 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 08:57:46.578 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BTHF11.SA', 1, 0])
+2025-12-18 08:57:46.578 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 08:57:46.579 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:46.579 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 08:57:46.579 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 08:57:46.579 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BTHF11.SA
+2025-12-18 08:57:46.579 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:46.579 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 08:57:46.580 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'csrf'
+2025-12-18 08:57:46.580 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_csrf()
+2025-12-18 08:57:46.580 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 08:57:46.580 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_csrf()
+2025-12-18 08:57:46.580 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 08:57:46.782 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 08:57:46.783 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 08:57:46.783 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 08:57:46.837 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance received OHLC data: 2024-12-30 13:00:00 -> 2025-12-17 13:00:00
+2025-12-18 08:57:46.927 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after cleaning: 2024-12-30 10:00:00-03:00 -> 2025-12-17 10:00:00-03:00
+2025-12-18 08:57:46.933 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 6035
+2025-12-18 08:57:47.051 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after combining events: 2024-12-30 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 08:57:47.054 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance returning OHLC: 2024-12-30 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 08:57:47.054 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 08:57:47.057 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 08:57:47.057 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 08:57:47.058 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:47.058 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 08:57:47.058 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 08:57:47.058 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BTHF11.SA
+2025-12-18 08:57:47.059 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:47.059 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 08:57:47.059 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'csrf'
+2025-12-18 08:57:47.059 | DEBUG    | logging:callHandlers:1737 -     Entering _get_crumb_csrf()
+2025-12-18 08:57:47.060 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 08:57:47.060 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_crumb_csrf()
+2025-12-18 08:57:47.060 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 08:57:47.240 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 08:57:47.241 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 08:57:47.241 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 08:57:47.243 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance received OHLC data: 2025-12-11 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 08:57:47.244 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after cleaning: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:47.251 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after combining events: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:47.266 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance returning OHLC: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:47.266 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 08:57:47.308 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 08:57:47.309 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['MXRF11.SA', 1, 0])
+2025-12-18 08:57:47.310 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 08:57:47.310 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:47.310 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 08:57:47.311 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 08:57:47.311 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/MXRF11.SA
+2025-12-18 08:57:47.311 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:47.312 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 08:57:47.312 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'csrf'
+2025-12-18 08:57:47.312 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_csrf()
+2025-12-18 08:57:47.313 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 08:57:47.313 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_csrf()
+2025-12-18 08:57:47.313 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 08:57:47.496 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 08:57:47.496 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 08:57:47.497 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 08:57:47.506 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance received OHLC data: 2024-12-17 13:00:00 -> 2025-12-17 13:00:00
+2025-12-18 08:57:47.512 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after cleaning: 2024-12-17 10:00:00-03:00 -> 2025-12-17 10:00:00-03:00
+2025-12-18 08:57:47.539 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after combining events: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 08:57:47.541 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance returning OHLC: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 08:57:47.542 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 08:57:47.542 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 08:57:47.542 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 08:57:47.543 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:47.543 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 08:57:47.543 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 08:57:47.544 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/MXRF11.SA
+2025-12-18 08:57:47.544 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:47.544 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 08:57:47.545 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'csrf'
+2025-12-18 08:57:47.545 | DEBUG    | logging:callHandlers:1737 -     Entering _get_crumb_csrf()
+2025-12-18 08:57:47.545 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 08:57:47.545 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_crumb_csrf()
+2025-12-18 08:57:47.545 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 08:57:47.642 | INFO     | logging:callHandlers:1737 - "POST /logout/ HTTP/1.1" 302 0
+2025-12-18 08:57:47.740 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 08:57:47.740 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 08:57:47.740 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 08:57:47.743 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance received OHLC data: 2025-12-11 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 08:57:47.743 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after cleaning: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:47.746 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after combining events: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:47.753 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance returning OHLC: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:47.753 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 08:57:47.770 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 08:57:47.772 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['GARE11.SA', 1, 0])
+2025-12-18 08:57:47.772 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 08:57:47.773 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:47.773 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 08:57:47.773 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 08:57:47.774 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/GARE11.SA
+2025-12-18 08:57:47.774 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:47.774 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 08:57:47.774 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'csrf'
+2025-12-18 08:57:47.775 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_csrf()
+2025-12-18 08:57:47.775 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 08:57:47.775 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_csrf()
+2025-12-18 08:57:47.775 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 08:57:47.850 | INFO     | logging:callHandlers:1737 - "GET /login/ HTTP/1.1" 200 5371
+2025-12-18 08:57:47.946 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 08:57:47.946 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 08:57:47.947 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 08:57:47.950 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance received OHLC data: 2024-12-17 13:00:00 -> 2025-12-17 13:00:00
+2025-12-18 08:57:47.951 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after cleaning: 2024-12-17 10:00:00-03:00 -> 2025-12-17 10:00:00-03:00
+2025-12-18 08:57:47.959 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after combining events: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 08:57:47.961 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance returning OHLC: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 08:57:47.961 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 08:57:47.961 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 08:57:47.961 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 08:57:47.961 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:47.961 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 08:57:47.961 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 08:57:47.961 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/GARE11.SA
+2025-12-18 08:57:47.962 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:47.962 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 08:57:47.962 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'csrf'
+2025-12-18 08:57:47.962 | DEBUG    | logging:callHandlers:1737 -     Entering _get_crumb_csrf()
+2025-12-18 08:57:47.962 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 08:57:47.963 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_crumb_csrf()
+2025-12-18 08:57:47.963 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 08:57:48.149 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 08:57:48.149 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 08:57:48.149 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 08:57:48.151 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance received OHLC data: 2025-12-11 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 08:57:48.152 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after cleaning: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:48.165 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after combining events: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:48.303 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance returning OHLC: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:48.304 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 08:57:48.464 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 08:57:48.465 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['VGHF11.SA', 1, 0])
+2025-12-18 08:57:48.465 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 08:57:48.466 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:48.466 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 08:57:48.467 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 08:57:48.467 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/VGHF11.SA
+2025-12-18 08:57:48.467 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:48.468 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 08:57:48.468 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'csrf'
+2025-12-18 08:57:48.468 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_csrf()
+2025-12-18 08:57:48.468 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 08:57:48.469 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_csrf()
+2025-12-18 08:57:48.469 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 08:57:48.640 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 08:57:48.641 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 08:57:48.641 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 08:57:48.647 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance received OHLC data: 2024-12-17 13:00:00 -> 2025-12-17 13:00:00
+2025-12-18 08:57:48.649 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after cleaning: 2024-12-17 10:00:00-03:00 -> 2025-12-17 10:00:00-03:00
+2025-12-18 08:57:48.666 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after combining events: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 08:57:48.668 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance returning OHLC: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 08:57:48.668 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 08:57:48.668 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 08:57:48.668 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 08:57:48.668 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:48.668 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 08:57:48.668 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 08:57:48.668 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/VGHF11.SA
+2025-12-18 08:57:48.669 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 08:57:48.669 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 08:57:48.669 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'csrf'
+2025-12-18 08:57:48.669 | DEBUG    | logging:callHandlers:1737 -     Entering _get_crumb_csrf()
+2025-12-18 08:57:48.669 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 08:57:48.669 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_crumb_csrf()
+2025-12-18 08:57:48.669 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 08:57:48.845 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 08:57:48.845 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 08:57:48.845 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 08:57:48.848 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance received OHLC data: 2025-12-11 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 08:57:48.848 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after cleaning: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:48.853 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after combining events: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:48.865 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance returning OHLC: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 08:57:48.865 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 08:57:48.892 | INFO     | logging:callHandlers:1737 - - Broken pipe from ('127.0.0.1', 65498)
+2025-12-18 08:58:15.461 | INFO     | logging:callHandlers:1737 - Watching for file changes with StatReloader
+2025-12-18 08:58:17.389 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 302 0
+2025-12-18 08:58:17.412 | INFO     | logging:callHandlers:1737 - "GET /login/?next=/ HTTP/1.1" 200 5371
+2025-12-18 09:16:53.821 | INFO     | logging:callHandlers:1737 - Watching for file changes with StatReloader
+2025-12-18 09:17:04.341 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 302 0
+2025-12-18 09:17:04.405 | INFO     | logging:callHandlers:1737 - "GET /login/?next=/ HTTP/1.1" 200 5371
+2025-12-18 09:17:14.303 | INFO     | logging:callHandlers:1737 - "POST /login/?next=/ HTTP/1.1" 302 0
+2025-12-18 09:17:14.337 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17103
+2025-12-18 09:21:00.246 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 09:21:00.473 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 200 4223
+2025-12-18 09:21:04.809 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 09:21:06.174 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 09:21:07.307 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 09:21:08.473 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7046
+2025-12-18 09:21:08.500 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:21:09.039 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 09:21:09.042 | DEBUG    | logging:callHandlers:1737 - ('CREATE TABLE IF NOT EXISTS "_tz_kv" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" VARCHAR(255)) WITHOUT ROWID', [])
+2025-12-18 09:21:09.043 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BRL=X', 1, 0])
+2025-12-18 09:21:09.965 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 09:21:13.283 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 09:21:13.284 | DEBUG    | logging:callHandlers:1737 - BRL=X: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:13.284 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 09:21:13.285 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 09:21:13.285 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BRL=X
+2025-12-18 09:21:13.285 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:13.286 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 09:21:13.286 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 09:21:13.286 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-18 09:21:13.287 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-18 09:21:13.287 | DEBUG    | logging:callHandlers:1737 -        Entering _load_cookie_curlCffi()
+2025-12-18 09:21:13.313 | DEBUG    | logging:callHandlers:1737 - ('CREATE TABLE IF NOT EXISTS "_cookieschema" ("strategy" VARCHAR(255) NOT NULL PRIMARY KEY, "fetch_date" DATETIME NOT NULL, "cookie_bytes" BLOB NOT NULL) WITHOUT ROWID', [])
+2025-12-18 09:21:13.315 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."strategy", "t1"."fetch_date", "t1"."cookie_bytes" FROM "_cookieschema" AS "t1" WHERE ("t1"."strategy" = ?) LIMIT ? OFFSET ?', ['curlCffi', 1, 0])
+2025-12-18 09:21:13.315 | DEBUG    | logging:callHandlers:1737 -        Exiting _load_cookie_curlCffi()
+2025-12-18 09:21:13.316 | DEBUG    | logging:callHandlers:1737 - reusing persistent cookie
+2025-12-18 09:21:13.316 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-18 09:21:13.316 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-18 09:21:13.316 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-18 09:21:13.317 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 09:21:13.317 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-18 09:21:13.595 | DEBUG    | logging:callHandlers:1737 - crumb = 'pAHA.oQLcLF'
+2025-12-18 09:21:13.596 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_crumb_basic()
+2025-12-18 09:21:13.596 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_and_crumb_basic()
+2025-12-18 09:21:13.596 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 09:21:13.841 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 09:21:13.842 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 09:21:13.842 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 09:21:13.847 | DEBUG    | logging:callHandlers:1737 - BRL=X: yfinance received OHLC data: 2025-12-18 12:21:12 only
+2025-12-18 09:21:13.860 | DEBUG    | logging:callHandlers:1737 - BRL=X: OHLC after cleaning: 2025-12-18 12:21:12+00:00 only
+2025-12-18 09:21:13.867 | DEBUG    | logging:callHandlers:1737 - BRL=X: OHLC after combining events: 2025-12-18 00:00:00+00:00 only
+2025-12-18 09:21:13.886 | DEBUG    | logging:callHandlers:1737 - BRL=X: yfinance returning OHLC: 2025-12-18 00:00:00+00:00 only
+2025-12-18 09:21:13.887 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 09:21:13.887 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 09:21:13.889 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 09:21:13.893 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BTHF11.SA', 1, 0])
+2025-12-18 09:21:13.897 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 09:21:13.897 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:13.898 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 09:21:13.898 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 09:21:13.898 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BTHF11.SA
+2025-12-18 09:21:13.898 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:13.898 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 09:21:13.899 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 09:21:13.899 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-18 09:21:13.899 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-18 09:21:13.899 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 09:21:13.900 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-18 09:21:13.900 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-18 09:21:13.901 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 09:21:13.902 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_crumb_basic()
+2025-12-18 09:21:13.902 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_and_crumb_basic()
+2025-12-18 09:21:13.902 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 09:21:14.080 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 09:21:14.081 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 09:21:14.081 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 09:21:14.084 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance received OHLC data: 2024-12-30 13:00:00 -> 2025-12-17 13:00:00
+2025-12-18 09:21:14.087 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after cleaning: 2024-12-30 10:00:00-03:00 -> 2025-12-17 10:00:00-03:00
+2025-12-18 09:21:14.102 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after combining events: 2024-12-30 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 09:21:14.105 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance returning OHLC: 2024-12-30 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 09:21:14.105 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 09:21:14.105 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 09:21:14.105 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 09:21:14.106 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:14.106 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 09:21:14.106 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 09:21:14.111 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BTHF11.SA
+2025-12-18 09:21:14.112 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:14.113 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 09:21:14.113 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 09:21:14.113 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb_basic()
+2025-12-18 09:21:14.113 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-18 09:21:14.114 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 09:21:14.114 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-18 09:21:14.114 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_basic()
+2025-12-18 09:21:14.114 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 09:21:14.114 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_basic()
+2025-12-18 09:21:14.114 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb_basic()
+2025-12-18 09:21:14.115 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 09:21:14.293 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 09:21:14.293 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 09:21:14.293 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 09:21:14.294 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance received OHLC data: 2025-12-11 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 09:21:14.295 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after cleaning: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:14.298 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after combining events: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:14.304 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance returning OHLC: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:14.304 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 09:21:14.330 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 09:21:14.330 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['MXRF11.SA', 1, 0])
+2025-12-18 09:21:14.336 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 09:21:14.336 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:14.336 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 09:21:14.336 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 09:21:14.337 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/MXRF11.SA
+2025-12-18 09:21:14.337 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:14.337 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 09:21:14.337 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 09:21:14.337 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-18 09:21:14.338 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-18 09:21:14.339 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 09:21:14.339 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-18 09:21:14.339 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-18 09:21:14.339 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 09:21:14.340 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_crumb_basic()
+2025-12-18 09:21:14.340 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_and_crumb_basic()
+2025-12-18 09:21:14.344 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 09:21:14.528 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 09:21:14.528 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 09:21:14.530 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 09:21:14.534 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance received OHLC data: 2024-12-17 13:00:00 -> 2025-12-17 13:00:00
+2025-12-18 09:21:14.536 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after cleaning: 2024-12-17 10:00:00-03:00 -> 2025-12-17 10:00:00-03:00
+2025-12-18 09:21:14.549 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after combining events: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 09:21:14.552 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance returning OHLC: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 09:21:14.552 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 09:21:14.553 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 09:21:14.553 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 09:21:14.553 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:14.553 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 09:21:14.553 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 09:21:14.554 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/MXRF11.SA
+2025-12-18 09:21:14.554 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:14.554 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 09:21:14.555 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 09:21:14.555 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb_basic()
+2025-12-18 09:21:14.555 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-18 09:21:14.556 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 09:21:14.556 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-18 09:21:14.556 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_basic()
+2025-12-18 09:21:14.557 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 09:21:14.557 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_basic()
+2025-12-18 09:21:14.558 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb_basic()
+2025-12-18 09:21:14.558 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 09:21:14.745 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 09:21:14.745 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 09:21:14.746 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 09:21:14.747 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance received OHLC data: 2025-12-11 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 09:21:14.748 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after cleaning: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:14.753 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after combining events: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:14.766 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance returning OHLC: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:14.766 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 09:21:14.783 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 09:21:14.784 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['GARE11.SA', 1, 0])
+2025-12-18 09:21:14.785 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 09:21:14.785 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:14.785 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 09:21:14.786 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 09:21:14.786 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/GARE11.SA
+2025-12-18 09:21:14.786 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:14.786 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 09:21:14.786 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 09:21:14.786 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-18 09:21:14.787 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-18 09:21:14.787 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 09:21:14.787 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-18 09:21:14.787 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-18 09:21:14.787 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 09:21:14.787 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_crumb_basic()
+2025-12-18 09:21:14.788 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_and_crumb_basic()
+2025-12-18 09:21:14.788 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 09:21:14.966 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 09:21:14.966 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 09:21:14.967 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 09:21:14.970 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance received OHLC data: 2024-12-17 13:00:00 -> 2025-12-17 13:00:00
+2025-12-18 09:21:14.972 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after cleaning: 2024-12-17 10:00:00-03:00 -> 2025-12-17 10:00:00-03:00
+2025-12-18 09:21:14.981 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after combining events: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 09:21:14.983 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance returning OHLC: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 09:21:14.983 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 09:21:14.983 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 09:21:14.983 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 09:21:14.984 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:14.984 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 09:21:14.984 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 09:21:14.984 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/GARE11.SA
+2025-12-18 09:21:14.985 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:14.985 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 09:21:14.985 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 09:21:14.985 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb_basic()
+2025-12-18 09:21:14.986 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-18 09:21:14.986 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 09:21:14.986 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-18 09:21:14.986 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_basic()
+2025-12-18 09:21:14.987 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 09:21:14.987 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_basic()
+2025-12-18 09:21:14.987 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb_basic()
+2025-12-18 09:21:14.987 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 09:21:15.174 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 09:21:15.174 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 09:21:15.174 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 09:21:15.177 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance received OHLC data: 2025-12-11 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 09:21:15.181 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after cleaning: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:15.188 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after combining events: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:15.210 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance returning OHLC: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:15.211 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 09:21:15.316 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 09:21:15.319 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['VGHF11.SA', 1, 0])
+2025-12-18 09:21:15.321 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 09:21:15.323 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:15.323 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 09:21:15.323 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 09:21:15.324 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/VGHF11.SA
+2025-12-18 09:21:15.324 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:15.324 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 09:21:15.324 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 09:21:15.325 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-18 09:21:15.327 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-18 09:21:15.327 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 09:21:15.328 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-18 09:21:15.329 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-18 09:21:15.329 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 09:21:15.329 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_crumb_basic()
+2025-12-18 09:21:15.330 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_and_crumb_basic()
+2025-12-18 09:21:15.330 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 09:21:15.520 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 09:21:15.520 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 09:21:15.521 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 09:21:15.524 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance received OHLC data: 2024-12-17 13:00:00 -> 2025-12-17 13:00:00
+2025-12-18 09:21:15.527 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after cleaning: 2024-12-17 10:00:00-03:00 -> 2025-12-17 10:00:00-03:00
+2025-12-18 09:21:15.551 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after combining events: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 09:21:15.554 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance returning OHLC: 2024-12-17 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 09:21:15.554 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 09:21:15.555 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 09:21:15.555 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 09:21:15.556 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:15.556 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 09:21:15.558 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 09:21:15.558 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/VGHF11.SA
+2025-12-18 09:21:15.561 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 09:21:15.563 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 09:21:15.564 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 09:21:15.564 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb_basic()
+2025-12-18 09:21:15.565 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-18 09:21:15.566 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 09:21:15.566 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-18 09:21:15.567 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_basic()
+2025-12-18 09:21:15.567 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 09:21:15.567 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_basic()
+2025-12-18 09:21:15.567 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb_basic()
+2025-12-18 09:21:15.567 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 09:21:15.758 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 09:21:15.758 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 09:21:15.759 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 09:21:15.763 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance received OHLC data: 2025-12-11 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 09:21:15.764 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after cleaning: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:15.768 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after combining events: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:15.778 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance returning OHLC: 2025-12-11 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 09:21:15.779 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 09:21:15.804 | INFO     | logging:callHandlers:1737 - - Broken pipe from ('127.0.0.1', 65472)
+2025-12-18 09:21:52.484 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 09:21:52.509 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:23:54.846 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 09:23:54.877 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:23:56.989 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 09:23:58.460 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 09:23:59.545 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 09:24:29.387 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7046
+2025-12-18 09:24:29.419 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:24:30.615 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 09:24:31.726 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 09:24:32.950 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7046
+2025-12-18 09:24:33.831 | INFO     | logging:callHandlers:1737 - "GET /budgets/add/ HTTP/1.1" 200 10155
+2025-12-18 09:24:43.232 | INFO     | logging:callHandlers:1737 - "POST /budgets/add/ HTTP/1.1" 302 0
+2025-12-18 09:24:43.256 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 9490
+2025-12-18 09:24:46.594 | INFO     | logging:callHandlers:1737 - "GET /budgets/3/delete/ HTTP/1.1" 200 6224
+2025-12-18 09:24:47.712 | INFO     | logging:callHandlers:1737 - "POST /budgets/3/delete/ HTTP/1.1" 302 0
+2025-12-18 09:24:47.728 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7046
+2025-12-18 09:24:49.255 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 6039
+2025-12-18 09:24:50.586 | INFO     | logging:callHandlers:1737 - "GET /goals/add/ HTTP/1.1" 200 9335
+2025-12-18 09:25:03.240 | INFO     | logging:callHandlers:1737 - "POST /goals/add/ HTTP/1.1" 302 0
+2025-12-18 09:25:03.262 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 7888
+2025-12-18 09:25:03.309 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 200 4072
+2025-12-18 09:25:12.652 | INFO     | logging:callHandlers:1737 - "POST /goals/add/ HTTP/1.1" 302 0
+2025-12-18 09:25:12.672 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 9727
+2025-12-18 09:25:12.723 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:25:16.395 | INFO     | logging:callHandlers:1737 - Generating reports for user tassiosales
+2025-12-18 09:25:16.471 | INFO     | logging:callHandlers:1737 - "GET /reports/ HTTP/1.1" 200 40631
+2025-12-18 09:25:16.515 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:25:19.833 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 9450
+2025-12-18 09:25:19.871 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:25:25.854 | INFO     | logging:callHandlers:1737 - Generating reports for user tassiosales
+2025-12-18 09:25:26.003 | INFO     | logging:callHandlers:1737 - "GET /reports/ HTTP/1.1" 200 40631
+2025-12-18 09:25:26.057 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:25:29.125 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 09:25:29.175 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:26:42.745 | INFO     | logging:callHandlers:1737 - "POST /goals/add/ HTTP/1.1" 302 0
+2025-12-18 09:26:42.774 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 11566
+2025-12-18 09:26:42.840 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:26:45.913 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 09:26:48.696 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 09:26:49.902 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 09:26:51.289 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 09:26:53.457 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 09:26:53.501 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:26:58.576 | INFO     | logging:callHandlers:1737 - "POST /logout/ HTTP/1.1" 302 0
+2025-12-18 09:26:58.591 | INFO     | logging:callHandlers:1737 - "GET /login/ HTTP/1.1" 200 5375
+2025-12-18 09:27:07.145 | INFO     | logging:callHandlers:1737 - "POST /login/ HTTP/1.1" 302 0
+2025-12-18 09:27:07.174 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 09:27:07.215 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:30:00.312 | INFO     | logging:callHandlers:1737 - Watching for file changes with StatReloader
+2025-12-18 09:30:09.636 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 09:30:09.692 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:30:13.039 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 09:30:14.107 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 09:32:44.865 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 09:32:45.015 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 200 4946
+2025-12-18 09:32:53.112 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 09:32:53.141 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:32:55.058 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 09:32:58.103 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 09:32:58.134 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:32:59.329 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 09:33:00.050 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7046
+2025-12-18 09:33:01.032 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 09:33:51.519 | INFO     | logging:callHandlers:1737 - Generating reports for user tassiosales
+2025-12-18 09:33:51.583 | INFO     | logging:callHandlers:1737 - "GET /reports/ HTTP/1.1" 200 40631
+2025-12-18 09:33:51.608 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:33:58.360 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7046
+2025-12-18 09:34:01.752 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7046
+2025-12-18 09:34:01.784 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:34:03.922 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7046
+2025-12-18 09:34:06.667 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 11289
+2025-12-18 09:34:09.089 | INFO     | logging:callHandlers:1737 - "GET /goals/add/ HTTP/1.1" 200 9335
+2025-12-18 09:34:19.667 | INFO     | logging:callHandlers:1737 - "POST /goals/add/ HTTP/1.1" 302 0
+2025-12-18 09:34:19.686 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 13403
+2025-12-18 09:34:19.736 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:34:26.280 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7046
+2025-12-18 09:34:27.505 | INFO     | logging:callHandlers:1737 - "GET /budgets/add/ HTTP/1.1" 200 10155
+2025-12-18 09:34:35.567 | INFO     | logging:callHandlers:1737 - "POST /budgets/add/ HTTP/1.1" 302 0
+2025-12-18 09:34:35.583 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 9479
+2025-12-18 09:34:35.621 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:34:40.296 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 09:39:42.802 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 09:39:42.832 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 09:39:44.317 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 09:39:46.043 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 09:39:55.318 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 09:39:57.262 | INFO     | logging:callHandlers:1737 - Generating reports for user tassiosales
+2025-12-18 09:39:57.364 | INFO     | logging:callHandlers:1737 - "GET /reports/ HTTP/1.1" 200 40650
+2025-12-18 09:40:00.543 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 09:41:49.238 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 09:41:49.259 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 200 5786
+2025-12-18 10:00:53.722 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 10:00:53.741 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 10:00:54.518 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 10:00:55.111 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 10:00:55.719 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 10:03:26.550 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 10:03:26.568 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 200 6355
+2025-12-18 10:03:31.493 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 10:03:31.524 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 10:03:35.479 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 10:03:37.194 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 9479
+2025-12-18 10:03:37.228 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 10:03:38.318 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 10:03:38.323 | DEBUG    | logging:callHandlers:1737 - ('CREATE TABLE IF NOT EXISTS "_tz_kv" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" VARCHAR(255)) WITHOUT ROWID', [])
+2025-12-18 10:03:38.325 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BRL=X', 1, 0])
+2025-12-18 10:03:38.434 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 10:03:38.435 | DEBUG    | logging:callHandlers:1737 - BRL=X: Yahoo GET parameters: {'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:38.435 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 10:03:38.435 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 10:03:38.435 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BRL=X
+2025-12-18 10:03:38.435 | DEBUG    | logging:callHandlers:1737 - params={'range': '1d', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:38.435 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 10:03:38.436 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 10:03:38.436 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-18 10:03:38.436 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-18 10:03:38.436 | DEBUG    | logging:callHandlers:1737 -        Entering _load_cookie_curlCffi()
+2025-12-18 10:03:38.439 | DEBUG    | logging:callHandlers:1737 - ('CREATE TABLE IF NOT EXISTS "_cookieschema" ("strategy" VARCHAR(255) NOT NULL PRIMARY KEY, "fetch_date" DATETIME NOT NULL, "cookie_bytes" BLOB NOT NULL) WITHOUT ROWID', [])
+2025-12-18 10:03:38.440 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."strategy", "t1"."fetch_date", "t1"."cookie_bytes" FROM "_cookieschema" AS "t1" WHERE ("t1"."strategy" = ?) LIMIT ? OFFSET ?', ['curlCffi', 1, 0])
+2025-12-18 10:03:38.441 | DEBUG    | logging:callHandlers:1737 -        Exiting _load_cookie_curlCffi()
+2025-12-18 10:03:38.441 | DEBUG    | logging:callHandlers:1737 - reusing persistent cookie
+2025-12-18 10:03:38.441 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-18 10:03:38.441 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-18 10:03:38.441 | DEBUG    | logging:callHandlers:1737 -        Entering _get_cookie_basic()
+2025-12-18 10:03:38.441 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 10:03:38.442 | DEBUG    | logging:callHandlers:1737 -        Exiting _get_cookie_basic()
+2025-12-18 10:03:38.802 | DEBUG    | logging:callHandlers:1737 - crumb = 'pAHA.oQLcLF'
+2025-12-18 10:03:38.802 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_crumb_basic()
+2025-12-18 10:03:38.803 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_and_crumb_basic()
+2025-12-18 10:03:38.803 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 10:03:39.047 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 10:03:39.048 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 10:03:39.048 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 10:03:39.073 | DEBUG    | logging:callHandlers:1737 - BRL=X: yfinance received OHLC data: 2025-12-18 13:03:38 only
+2025-12-18 10:03:39.091 | DEBUG    | logging:callHandlers:1737 - BRL=X: OHLC after cleaning: 2025-12-18 13:03:38+00:00 only
+2025-12-18 10:03:39.106 | DEBUG    | logging:callHandlers:1737 - BRL=X: OHLC after combining events: 2025-12-18 00:00:00+00:00 only
+2025-12-18 10:03:39.123 | DEBUG    | logging:callHandlers:1737 - BRL=X: yfinance returning OHLC: 2025-12-18 00:00:00+00:00 only
+2025-12-18 10:03:39.123 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 10:03:39.123 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 10:03:39.125 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 10:03:39.126 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['BTHF11.SA', 1, 0])
+2025-12-18 10:03:39.128 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 10:03:39.128 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:39.128 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 10:03:39.129 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 10:03:39.129 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BTHF11.SA
+2025-12-18 10:03:39.129 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:39.129 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 10:03:39.129 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 10:03:39.129 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-18 10:03:39.129 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-18 10:03:39.129 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 10:03:39.130 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-18 10:03:39.130 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-18 10:03:39.130 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 10:03:39.130 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_crumb_basic()
+2025-12-18 10:03:39.130 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_and_crumb_basic()
+2025-12-18 10:03:39.130 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 10:03:39.322 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 10:03:39.322 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 10:03:39.322 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 10:03:39.327 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance received OHLC data: 2024-12-30 13:00:00 -> 2025-12-17 21:05:00
+2025-12-18 10:03:39.330 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after cleaning: 2024-12-30 10:00:00-03:00 -> 2025-12-17 18:05:00-03:00
+2025-12-18 10:03:39.346 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after combining events: 2024-12-30 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 10:03:39.348 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance returning OHLC: 2024-12-30 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 10:03:39.348 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 10:03:39.349 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 10:03:39.349 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 10:03:39.349 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:39.349 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 10:03:39.349 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 10:03:39.350 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/BTHF11.SA
+2025-12-18 10:03:39.350 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:39.350 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 10:03:39.350 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 10:03:39.350 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb_basic()
+2025-12-18 10:03:39.350 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-18 10:03:39.351 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 10:03:39.351 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-18 10:03:39.351 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_basic()
+2025-12-18 10:03:39.351 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 10:03:39.351 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_basic()
+2025-12-18 10:03:39.351 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb_basic()
+2025-12-18 10:03:39.351 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 10:03:39.533 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 10:03:39.533 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 10:03:39.534 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 10:03:39.535 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance received OHLC data: 2025-12-12 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 10:03:39.536 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after cleaning: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:39.541 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: OHLC after combining events: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:39.558 | DEBUG    | logging:callHandlers:1737 - BTHF11.SA: yfinance returning OHLC: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:39.558 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 10:03:39.594 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 10:03:39.595 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['MXRF11.SA', 1, 0])
+2025-12-18 10:03:39.595 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 10:03:39.595 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:39.595 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 10:03:39.596 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 10:03:39.596 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/MXRF11.SA
+2025-12-18 10:03:39.596 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:39.596 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 10:03:39.596 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 10:03:39.596 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-18 10:03:39.596 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-18 10:03:39.597 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 10:03:39.597 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-18 10:03:39.597 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-18 10:03:39.597 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 10:03:39.597 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_crumb_basic()
+2025-12-18 10:03:39.597 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_and_crumb_basic()
+2025-12-18 10:03:39.597 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 10:03:40.017 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 10:03:40.018 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 10:03:40.018 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 10:03:40.023 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance received OHLC data: 2024-12-18 13:00:00 -> 2025-12-17 21:06:00
+2025-12-18 10:03:40.027 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after cleaning: 2024-12-18 10:00:00-03:00 -> 2025-12-17 18:06:00-03:00
+2025-12-18 10:03:40.044 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after combining events: 2024-12-18 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 10:03:40.046 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance returning OHLC: 2024-12-18 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 10:03:40.046 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 10:03:40.047 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 10:03:40.047 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 10:03:40.047 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:40.048 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 10:03:40.048 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 10:03:40.048 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/MXRF11.SA
+2025-12-18 10:03:40.048 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:40.048 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 10:03:40.048 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 10:03:40.049 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb_basic()
+2025-12-18 10:03:40.049 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-18 10:03:40.049 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 10:03:40.049 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-18 10:03:40.049 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_basic()
+2025-12-18 10:03:40.049 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 10:03:40.050 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_basic()
+2025-12-18 10:03:40.050 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb_basic()
+2025-12-18 10:03:40.050 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 10:03:40.229 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 10:03:40.229 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 10:03:40.230 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 10:03:40.232 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance received OHLC data: 2025-12-12 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 10:03:40.232 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after cleaning: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:40.236 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: OHLC after combining events: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:40.248 | DEBUG    | logging:callHandlers:1737 - MXRF11.SA: yfinance returning OHLC: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:40.249 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 10:03:40.269 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 10:03:40.270 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['GARE11.SA', 1, 0])
+2025-12-18 10:03:40.270 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 10:03:40.271 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:40.272 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 10:03:40.272 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 10:03:40.272 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/GARE11.SA
+2025-12-18 10:03:40.272 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:40.273 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 10:03:40.273 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 10:03:40.273 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-18 10:03:40.273 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-18 10:03:40.274 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 10:03:40.274 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-18 10:03:40.274 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-18 10:03:40.274 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 10:03:40.275 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_crumb_basic()
+2025-12-18 10:03:40.275 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_and_crumb_basic()
+2025-12-18 10:03:40.275 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 10:03:40.447 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 10:03:40.447 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 10:03:40.448 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 10:03:40.452 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance received OHLC data: 2024-12-18 13:00:00 -> 2025-12-17 21:06:00
+2025-12-18 10:03:40.456 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after cleaning: 2024-12-18 10:00:00-03:00 -> 2025-12-17 18:06:00-03:00
+2025-12-18 10:03:40.471 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after combining events: 2024-12-18 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 10:03:40.473 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance returning OHLC: 2024-12-18 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 10:03:40.473 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 10:03:40.473 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 10:03:40.474 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 10:03:40.474 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:40.474 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 10:03:40.475 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 10:03:40.475 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/GARE11.SA
+2025-12-18 10:03:40.476 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:40.476 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 10:03:40.476 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 10:03:40.477 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb_basic()
+2025-12-18 10:03:40.477 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-18 10:03:40.477 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 10:03:40.478 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-18 10:03:40.478 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_basic()
+2025-12-18 10:03:40.478 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 10:03:40.479 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_basic()
+2025-12-18 10:03:40.479 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb_basic()
+2025-12-18 10:03:40.479 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 10:03:40.669 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 10:03:40.669 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 10:03:40.670 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 10:03:40.672 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance received OHLC data: 2025-12-12 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 10:03:40.673 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after cleaning: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:40.677 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: OHLC after combining events: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:40.689 | DEBUG    | logging:callHandlers:1737 - GARE11.SA: yfinance returning OHLC: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:40.689 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 10:03:40.715 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 10:03:40.716 | DEBUG    | logging:callHandlers:1737 - ('SELECT "t1"."key", "t1"."value" FROM "_tz_kv" AS "t1" WHERE ("t1"."key" = ?) LIMIT ? OFFSET ?', ['VGHF11.SA', 1, 0])
+2025-12-18 10:03:40.717 | DEBUG    | logging:callHandlers:1737 -  Entering history()
+2025-12-18 10:03:40.717 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: Yahoo GET parameters: {'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:40.718 | DEBUG    | logging:callHandlers:1737 -   Entering get()
+2025-12-18 10:03:40.718 | DEBUG    | logging:callHandlers:1737 -    Entering _make_request()
+2025-12-18 10:03:40.718 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/VGHF11.SA
+2025-12-18 10:03:40.718 | DEBUG    | logging:callHandlers:1737 - params={'range': '1y', 'interval': '1d', 'includePrePost': False, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:40.719 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb()
+2025-12-18 10:03:40.719 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 10:03:40.719 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_and_crumb_basic()
+2025-12-18 10:03:40.720 | DEBUG    | logging:callHandlers:1737 -       Entering _get_cookie_basic()
+2025-12-18 10:03:40.720 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 10:03:40.720 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_cookie_basic()
+2025-12-18 10:03:40.721 | DEBUG    | logging:callHandlers:1737 -       Entering _get_crumb_basic()
+2025-12-18 10:03:40.721 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 10:03:40.721 | DEBUG    | logging:callHandlers:1737 -       Exiting _get_crumb_basic()
+2025-12-18 10:03:40.722 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_and_crumb_basic()
+2025-12-18 10:03:40.722 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb()
+2025-12-18 10:03:40.907 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 10:03:40.907 | DEBUG    | logging:callHandlers:1737 -    Exiting _make_request()
+2025-12-18 10:03:40.908 | DEBUG    | logging:callHandlers:1737 -   Exiting get()
+2025-12-18 10:03:40.913 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance received OHLC data: 2024-12-18 13:00:00 -> 2025-12-17 21:05:00
+2025-12-18 10:03:40.918 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after cleaning: 2024-12-18 10:00:00-03:00 -> 2025-12-17 18:05:00-03:00
+2025-12-18 10:03:40.941 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after combining events: 2024-12-18 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 10:03:40.945 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance returning OHLC: 2024-12-18 00:00:00-03:00 -> 2025-12-17 00:00:00-03:00
+2025-12-18 10:03:40.946 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
+2025-12-18 10:03:40.946 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 10:03:40.946 | DEBUG    | logging:callHandlers:1737 - Entering history()
+2025-12-18 10:03:40.946 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: Yahoo GET parameters: {'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:40.947 | DEBUG    | logging:callHandlers:1737 -  Entering get()
+2025-12-18 10:03:40.947 | DEBUG    | logging:callHandlers:1737 -   Entering _make_request()
+2025-12-18 10:03:40.947 | DEBUG    | logging:callHandlers:1737 - url=https://query2.finance.yahoo.com/v8/finance/chart/VGHF11.SA
+2025-12-18 10:03:40.947 | DEBUG    | logging:callHandlers:1737 - params={'range': '5d', 'interval': '1h', 'includePrePost': True, 'events': 'div,splits,capitalGains'}
+2025-12-18 10:03:40.948 | DEBUG    | logging:callHandlers:1737 -    Entering _get_cookie_and_crumb()
+2025-12-18 10:03:40.948 | DEBUG    | logging:callHandlers:1737 - cookie_mode = 'basic'
+2025-12-18 10:03:40.948 | DEBUG    | logging:callHandlers:1737 -     Entering _get_cookie_and_crumb_basic()
+2025-12-18 10:03:40.948 | DEBUG    | logging:callHandlers:1737 -      Entering _get_cookie_basic()
+2025-12-18 10:03:40.948 | DEBUG    | logging:callHandlers:1737 - reusing cookie
+2025-12-18 10:03:40.949 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_cookie_basic()
+2025-12-18 10:03:40.949 | DEBUG    | logging:callHandlers:1737 -      Entering _get_crumb_basic()
+2025-12-18 10:03:40.949 | DEBUG    | logging:callHandlers:1737 - reusing crumb
+2025-12-18 10:03:40.949 | DEBUG    | logging:callHandlers:1737 -      Exiting _get_crumb_basic()
+2025-12-18 10:03:40.949 | DEBUG    | logging:callHandlers:1737 -     Exiting _get_cookie_and_crumb_basic()
+2025-12-18 10:03:40.950 | DEBUG    | logging:callHandlers:1737 -    Exiting _get_cookie_and_crumb()
+2025-12-18 10:03:41.134 | DEBUG    | logging:callHandlers:1737 - response code=200
+2025-12-18 10:03:41.135 | DEBUG    | logging:callHandlers:1737 -   Exiting _make_request()
+2025-12-18 10:03:41.135 | DEBUG    | logging:callHandlers:1737 -  Exiting get()
+2025-12-18 10:03:41.137 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance received OHLC data: 2025-12-12 13:00:00 -> 2025-12-17 20:00:00
+2025-12-18 10:03:41.138 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after cleaning: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:41.152 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: OHLC after combining events: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:41.169 | DEBUG    | logging:callHandlers:1737 - VGHF11.SA: yfinance returning OHLC: 2025-12-12 10:00:00-03:00 -> 2025-12-17 17:00:00-03:00
+2025-12-18 10:03:41.170 | DEBUG    | logging:callHandlers:1737 - Exiting history()
+2025-12-18 10:03:41.299 | INFO     | logging:callHandlers:1737 - "GET /investments/ HTTP/1.1" 200 24846
+2025-12-18 10:03:45.620 | INFO     | logging:callHandlers:1737 - Generating reports for user tassiosales
+2025-12-18 10:03:45.719 | INFO     | logging:callHandlers:1737 - "GET /reports/ HTTP/1.1" 200 40650
+2025-12-18 10:03:45.744 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 10:03:54.166 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 10:03:54.201 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 10:04:01.976 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 10:04:02.009 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 10:04:10.777 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 10:04:10.835 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 10:04:28.644 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 9479
+2025-12-18 10:04:28.683 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 10:04:36.558 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 13126
+2025-12-18 10:04:40.632 | INFO     | logging:callHandlers:1737 - "GET /goals/4/delete/ HTTP/1.1" 200 6194
+2025-12-18 10:04:40.660 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 10:04:41.949 | INFO     | logging:callHandlers:1737 - "POST /goals/4/delete/ HTTP/1.1" 302 0
+2025-12-18 10:04:41.965 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 11287
+2025-12-18 10:04:44.407 | INFO     | logging:callHandlers:1737 - "GET /goals/5/delete/ HTTP/1.1" 200 6194
+2025-12-18 10:04:45.439 | INFO     | logging:callHandlers:1737 - "POST /goals/5/delete/ HTTP/1.1" 302 0
+2025-12-18 10:04:45.460 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 9448
+2025-12-18 10:04:47.052 | INFO     | logging:callHandlers:1737 - "GET /goals/3/delete/ HTTP/1.1" 200 6194
+2025-12-18 10:04:47.765 | INFO     | logging:callHandlers:1737 - "POST /goals/3/delete/ HTTP/1.1" 302 0
+2025-12-18 10:04:47.800 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 7609
+2025-12-18 10:04:49.559 | INFO     | logging:callHandlers:1737 - "GET /goals/6/delete/ HTTP/1.1" 200 6192
+2025-12-18 10:04:50.361 | INFO     | logging:callHandlers:1737 - "POST /goals/6/delete/ HTTP/1.1" 302 0
+2025-12-18 10:04:50.393 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 6039
+2025-12-18 10:04:51.582 | INFO     | logging:callHandlers:1737 - Generating reports for user tassiosales
+2025-12-18 10:04:51.673 | INFO     | logging:callHandlers:1737 - "GET /reports/ HTTP/1.1" 200 40650
+2025-12-18 10:25:25.515 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 9479
+2025-12-18 10:25:25.553 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 10:25:28.741 | INFO     | logging:callHandlers:1737 - "GET /budgets/add/ HTTP/1.1" 200 10155
+2025-12-18 10:25:44.214 | INFO     | logging:callHandlers:1737 - "POST /budgets/add/ HTTP/1.1" 302 0
+2025-12-18 10:25:44.233 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 12557
+2025-12-18 10:25:47.603 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 10:25:50.325 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 10:25:52.457 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12213
+2025-12-18 10:26:19.311 | INFO     | logging:callHandlers:1737 - "POST /transactions/add/ HTTP/1.1" 302 0
+2025-12-18 10:26:19.349 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 39054
+2025-12-18 10:26:22.953 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 12561
+2025-12-18 10:26:30.131 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17076
+2025-12-18 11:04:33.436 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 39054
+2025-12-18 11:04:33.474 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 11:04:36.495 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12213
+2025-12-18 11:04:57.100 | INFO     | logging:callHandlers:1737 - "POST /transactions/add/ HTTP/1.1" 302 0
+2025-12-18 11:04:57.141 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 40815
+2025-12-18 11:05:00.299 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 12561
+2025-12-18 11:05:23.907 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17815
+2025-12-18 11:05:49.389 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 40815
+2025-12-18 11:05:51.866 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 12561
+2025-12-18 11:05:55.089 | INFO     | logging:callHandlers:1737 - "GET /budgets/5/delete/ HTTP/1.1" 200 6217
+2025-12-18 11:05:55.963 | INFO     | logging:callHandlers:1737 - "POST /budgets/5/delete/ HTTP/1.1" 302 0
+2025-12-18 11:05:55.981 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 9479
+2025-12-18 11:05:57.977 | INFO     | logging:callHandlers:1737 - "GET /budgets/4/delete/ HTTP/1.1" 200 6220
+2025-12-18 11:05:58.708 | INFO     | logging:callHandlers:1737 - "POST /budgets/4/delete/ HTTP/1.1" 302 0
+2025-12-18 11:05:58.716 | INFO     | logging:callHandlers:1737 - "GET /budgets/ HTTP/1.1" 200 7046
+2025-12-18 11:06:00.210 | INFO     | logging:callHandlers:1737 - "GET /goals/ HTTP/1.1" 200 6039
+2025-12-18 11:06:00.811 | INFO     | logging:callHandlers:1737 - Generating reports for user tassiosales
+2025-12-18 11:06:00.969 | INFO     | logging:callHandlers:1737 - "GET /reports/ HTTP/1.1" 200 42421
+2025-12-18 11:14:41.928 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17045
+2025-12-18 11:14:41.966 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 11:14:45.755 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 40815
+2025-12-18 11:14:47.568 | INFO     | logging:callHandlers:1737 - "GET /transactions/56/delete/ HTTP/1.1" 200 6215
+2025-12-18 11:14:48.865 | INFO     | logging:callHandlers:1737 - "POST /transactions/56/delete/ HTTP/1.1" 302 0
+2025-12-18 11:14:48.903 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 39054
+2025-12-18 11:14:49.986 | INFO     | logging:callHandlers:1737 - "GET /transactions/57/delete/ HTTP/1.1" 200 6215
+2025-12-18 11:14:50.915 | INFO     | logging:callHandlers:1737 - "POST /transactions/57/delete/ HTTP/1.1" 302 0
+2025-12-18 11:14:50.950 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 11:15:29.072 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12213
+2025-12-18 11:15:49.367 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 11:15:52.109 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 40424
+2025-12-18 11:15:53.414 | INFO     | logging:callHandlers:1737 - "GET /categories/add/ HTTP/1.1" 200 9678
+2025-12-18 11:16:08.569 | INFO     | logging:callHandlers:1737 - "POST /categories/add/ HTTP/1.1" 302 0
+2025-12-18 11:16:08.593 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 42180
+2025-12-18 11:16:14.653 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 11:16:16.970 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12266
+2025-12-18 11:19:26.262 | INFO     | logging:callHandlers:1737 - C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\forms.py changed, reloading.
+2025-12-18 11:19:28.677 | INFO     | logging:callHandlers:1737 - Watching for file changes with StatReloader
+2025-12-18 11:20:16.155 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12266
+2025-12-18 11:20:52.223 | INFO     | logging:callHandlers:1737 - "POST /transactions/add/ HTTP/1.1" 302 0
+2025-12-18 11:20:52.265 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 39066
+2025-12-18 11:21:09.253 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17088
+2025-12-18 11:21:13.608 | INFO     | logging:callHandlers:1737 - "GET /?month=1&year=2026 HTTP/1.1" 200 11321
+2025-12-18 11:21:17.747 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17088
+2025-12-18 11:21:21.235 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 39066
+2025-12-18 11:21:24.539 | INFO     | logging:callHandlers:1737 - "GET /transactions/58/delete/ HTTP/1.1" 200 6216
+2025-12-18 11:21:25.589 | INFO     | logging:callHandlers:1737 - "POST /transactions/58/delete/ HTTP/1.1" 302 0
+2025-12-18 11:21:25.643 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 11:21:27.024 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 37293
+2025-12-18 11:21:29.073 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12266
+2025-12-18 11:22:15.000 | INFO     | logging:callHandlers:1737 - "POST /transactions/add/ HTTP/1.1" 302 0
+2025-12-18 11:22:15.038 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 39360
+2025-12-18 11:22:15.084 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 11:22:17.324 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17107
+2025-12-18 11:22:20.942 | INFO     | logging:callHandlers:1737 - "GET /?month=1&year=2026 HTTP/1.1" 200 12320
+2025-12-18 11:22:30.031 | INFO     | logging:callHandlers:1737 - "GET /?month=12&year=2025 HTTP/1.1" 200 17107
+2025-12-18 11:22:43.377 | INFO     | logging:callHandlers:1737 - "GET /?month=1&year=2026 HTTP/1.1" 200 12320
+2025-12-18 11:22:45.052 | INFO     | logging:callHandlers:1737 - "GET /?month=12&year=2025 HTTP/1.1" 200 17107
+2025-12-18 11:28:05.297 | INFO     | logging:callHandlers:1737 - "GET /?month=1&year=2026 HTTP/1.1" 200 12320
+2025-12-18 11:28:07.558 | INFO     | logging:callHandlers:1737 - "GET /?month=12&year=2025 HTTP/1.1" 200 17107
+2025-12-18 11:28:36.072 | INFO     | logging:callHandlers:1737 - C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py changed, reloading.
+2025-12-18 11:28:38.191 | INFO     | logging:callHandlers:1737 - Watching for file changes with StatReloader
+2025-12-18 11:28:48.620 | INFO     | logging:callHandlers:1737 - C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py changed, reloading.
+2025-12-18 11:28:50.860 | INFO     | logging:callHandlers:1737 - Watching for file changes with StatReloader
+2025-12-18 11:56:33.919 | INFO     | logging:callHandlers:1737 - "GET /?month=1&year=2026 HTTP/1.1" 200 12282
+2025-12-18 11:56:33.948 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 11:56:37.462 | INFO     | logging:callHandlers:1737 - "GET /?month=12&year=2025 HTTP/1.1" 200 18141
+2025-12-18 11:56:39.206 | INFO     | logging:callHandlers:1737 - "GET /?month=11&year=2025 HTTP/1.1" 200 11040
+2025-12-18 11:56:40.589 | INFO     | logging:callHandlers:1737 - "GET /?month=11&year=2025 HTTP/1.1" 200 11040
+2025-12-18 11:56:41.733 | INFO     | logging:callHandlers:1737 - "GET /?month=11&year=2025 HTTP/1.1" 200 11040
+2025-12-18 11:56:42.285 | INFO     | logging:callHandlers:1737 - "GET /?month=11&year=2025 HTTP/1.1" 200 11040
+2025-12-18 11:56:42.641 | INFO     | logging:callHandlers:1737 - "GET /?month=11&year=2025 HTTP/1.1" 200 11040
+2025-12-18 11:56:46.247 | INFO     | logging:callHandlers:1737 - "GET /calendar/ HTTP/1.1" 200 35869
+2025-12-18 11:56:47.357 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 42180
+2025-12-18 11:56:47.993 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 39076
+2025-12-18 11:56:48.616 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 18141
+2025-12-18 12:04:44.967 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17900
+2025-12-18 12:04:49.302 | INFO     | logging:callHandlers:1737 - "GET /?month=1&year=2026 HTTP/1.1" 200 13114
+2025-12-18 12:12:16.083 | INFO     | logging:callHandlers:1737 - "GET /?month=12&year=2025 HTTP/1.1" 200 17900
+2025-12-18 12:12:16.108 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2025-12-18 12:13:22.819 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12266
+2025-12-18 12:14:55.256 | INFO     | logging:callHandlers:1737 - "POST /transactions/add/ HTTP/1.1" 302 0
+2025-12-18 12:14:55.298 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 41133
+2025-12-18 12:14:59.939 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12266
+2025-12-18 12:15:08.951 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17900
+2025-12-18 12:15:24.009 | INFO     | logging:callHandlers:1737 - "GET /?month=1&year=2026 HTTP/1.1" 200 14302
+2025-12-18 12:18:32.037 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12266
+2025-12-18 12:18:56.483 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 42180
+2025-12-18 12:19:05.952 | INFO     | logging:callHandlers:1737 - "GET /categories/add/ HTTP/1.1" 200 9731
+2025-12-18 12:19:20.273 | INFO     | logging:callHandlers:1737 - "POST /categories/add/ HTTP/1.1" 302 0
+2025-12-18 12:19:20.316 | INFO     | logging:callHandlers:1737 - "GET /categories/ HTTP/1.1" 200 43685
+2025-12-18 12:19:22.004 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17900
+2025-12-18 12:19:26.702 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12302
+2025-12-18 12:20:06.125 | INFO     | logging:callHandlers:1737 - "POST /transactions/add/ HTTP/1.1" 302 0
+2025-12-18 12:20:06.160 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 42902
+2025-12-18 12:20:18.987 | INFO     | logging:callHandlers:1737 - "GET /transactions/add/ HTTP/1.1" 200 12302
+2025-12-18 12:20:46.765 | INFO     | logging:callHandlers:1737 - "POST /transactions/add/ HTTP/1.1" 302 0
+2025-12-18 12:20:46.834 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 44664
+2025-12-18 12:20:50.789 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 17900
+2025-12-18 12:20:53.307 | INFO     | logging:callHandlers:1737 - "GET /?month=1&year=2026 HTTP/1.1" 200 16661

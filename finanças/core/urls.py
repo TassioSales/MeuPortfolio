@@ -10,6 +10,7 @@ urlpatterns = [
     
     # Dashboard
     path('', views.dashboard, name='dashboard'),
+    path('calendar/', views.calendar_view, name='calendar'),
 
     # Categories
     path('categories/', views.CategoryListView.as_view(), name='category_list'),
@@ -19,6 +20,7 @@ urlpatterns = [
 
     # Transactions
     path('transactions/', views.TransactionListView.as_view(), name='transaction_list'),
+    path('transactions/import/', views.import_transactions, name='transaction_import'),
     path('transactions/add/', views.TransactionCreateView.as_view(), name='transaction_add'),
     path('transactions/<int:pk>/edit/', views.TransactionUpdateView.as_view(), name='transaction_edit'),
     path('transactions/<int:pk>/delete/', views.TransactionDeleteView.as_view(), name='transaction_delete'),
@@ -40,5 +42,11 @@ urlpatterns = [
     path('investments/add/', views.InvestmentCreateView.as_view(), name='investment_add'),
     path('investments/<int:pk>/edit/', views.InvestmentUpdateView.as_view(), name='investment_edit'),
     path('investments/<int:pk>/delete/', views.InvestmentDeleteView.as_view(), name='investment_delete'),
+    
+    # Goals
+    path('goals/', views.GoalListView.as_view(), name='goal_list'),
+    path('goals/add/', views.GoalCreateView.as_view(), name='goal_add'),
+    path('goals/<int:pk>/edit/', views.GoalUpdateView.as_view(), name='goal_edit'),
+    path('goals/<int:pk>/delete/', views.GoalDeleteView.as_view(), name='goal_delete'),
 ]
 # Force reload

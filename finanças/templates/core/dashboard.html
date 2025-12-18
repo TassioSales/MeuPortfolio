@@ -15,6 +15,29 @@
     </div>
 </div>
 
+<!-- Alerts -->
+{% if alerts %}
+<div class="row mb-4">
+    <div class="col-12">
+        {% for alert in alerts %}
+        <div class="alert alert-{{ alert.level }} alert-dismissible fade show shadow-sm" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
+                <div>
+                    <strong>Atenção:</strong> Você já consumiu <strong>{{ alert.percent }}%</strong> do orçamento de
+                    <strong>{{ alert.category }}</strong>.
+                    <div class="small mt-1">
+                        Gasto: R$ {{ alert.used|floatformat:2 }} / Limite: R$ {{ alert.limit|floatformat:2 }}
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 <!-- Month Navigation -->
 <div class="d-flex justify-content-center align-items-center mb-4 bg-white py-2 rounded shadow-sm border">
     <a href="?month={{ previous_month.month }}&year={{ previous_month.year }}"
@@ -31,7 +54,7 @@
 </div>
 
 <!-- Summary Cards -->
-<div class="row mb-4">
+<div class="row mb-4 g-3">
     <div class="col-md-4">
         <div class="card text-white bg-success mb-3 h-100 position-relative overflow-hidden">
             <div class="card-body">
@@ -82,7 +105,9 @@
                     Meses)</h5>
             </div>
             <div class="card-body">
-                <canvas id="cashFlowChart" height="120"></canvas>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="cashFlowChart"></canvas>
+                </div>
             </div>
         </div>
     </div>

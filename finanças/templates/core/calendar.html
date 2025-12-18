@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load humanize core_extras %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h2><i class="bi bi-calendar-date text-primary"></i> Calendário Financeiro</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        <div class="btn-group">
+            <a href="?month={{ prev_month }}&year={{ prev_year }}" class="btn btn-outline-secondary">
+                <i class="bi bi-chevron-left"></i> Anterior
+            </a>
+            <button class="btn btn-outline-secondary disabled fw-bold">
+                {{ month_name }} / {{ current_year }}
+            </button>
+            <a href="?month={{ next_month }}&year={{ next_year }}" class="btn btn-outline-secondary">
+                Próximo <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-bordered mb-0" style="table-layout: fixed;">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th style="width: 14.28%">Dom</th>
+                        <th style="width: 14.28%">Seg</th>
+                        <th style="width: 14.28%">Ter</th>
+                        <th style="width: 14.28%">Qua</th>
+                        <th style="width: 14.28%">Qui</th>
+                        <th style="width: 14.28%">Sex</th>
+                        <th style="width: 14.28%">Sáb</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for week in month_days %}
+                    <tr style="height: 120px;">
+                        {% for day in week %}
+                        <td class="{% if day == 0 %}bg-light{% endif %} p-2 align-top">
+                            {% if day != 0 %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <span
+                                    class="fw-bold {% if day == today.day and current_month == today.month and current_year == today.year %}text-primary{% endif %}">
+                                    {{ day }}
+                                </span>
+                            </div>
+
+                            <div class="overflow-auto" style="max-height: 90px;">
+                                {% for tx in transactions_by_day|get_item:day %}
+                                <div class="small mb-1 p-1 rounded {% if tx.type == 'RECEITA' %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %}"
+                                    title="{{ tx.description }} - {{ tx.get_category_display }}">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-truncate">{{ tx.description }}</span>
+                                        <span class="fw-bold">{{ tx.amount|intcomma }}</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

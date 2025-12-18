@@ -29,11 +29,12 @@ class Transaction(models.Model):
         ('DESPESA', 'Despesa'),
     ]
     
-    FREQUENCY_CHOICES = [
-        ('MENSAL', 'Mensal'),
-        ('SEMANAL', 'Semanal'),
-        ('ANUAL', 'Anual'),
-        ('UNICA', 'Única'),
+
+    PAYMENT_METHODS = [
+        ('DINHEIRO', 'Dinheiro'),
+        ('PIX', 'Pix'),
+        ('DEBITO', 'Débito'),
+        ('CREDITO', 'Crédito'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions', verbose_name='Usuário')
@@ -41,8 +42,7 @@ class Transaction(models.Model):
     type = models.CharField(max_length=15, choices=TRANSACTION_TYPES, verbose_name='Tipo')
     amount = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Valor')
     date = models.DateField(default=timezone.now, verbose_name='Data')
-    recurring = models.BooleanField(default=False, verbose_name='Recorrente')
-    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, default='UNICA', blank=True, verbose_name='Frequência')
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS, default='DINHEIRO', verbose_name='Método de Pagamento')
     description = models.CharField(max_length=255, blank=True, verbose_name='Descrição')
 
     class Meta:
@@ -51,6 +51,32 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.get_type_display()} - {self.amount} - {self.date}"
+
+class RecurringTransaction(models.Model):
+    FREQUENCY_CHOICES = [
+        ('DIARIO', 'Diário'),
+        ('SEMANAL', 'Semanal'),
+        ('QUINZENAL', 'Quinzenal'),
+        ('MENSAL', 'Mensal'),
+        ('ANUAL', 'Anual'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recurring_transactions', verbose_name='Usuário')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Categoria')
+    type = models.CharField(max_length=15, choices=Transaction.TRANSACTION_TYPES, verbose_name='Tipo')
+    amount = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Valor')
+    payment_method = models.CharField(max_length=20, choices=Transaction.PAYMENT_METHODS, default='DINHEIRO', verbose_name='Método de Pagamento')
+    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, default='MENSAL', verbose_name='Frequência')
+    description = models.CharField(max_length=255, blank=True, verbose_name='Descrição')
+    next_run_date = models.DateField(verbose_name='Próxima Execução')
+    active = models.BooleanField(default=True, verbose_name='Ativo')
+
+    class Meta:
+        verbose_name = 'Transação Recorrente'
+        verbose_name_plural = 'Transações Recorrentes'
+
+    def __str__(self):
+        return f"{self.description} ({self.get_frequency_display()})"
 
 class Budget(models.Model):
     PERIOD_CHOICES = [
@@ -119,3 +145,26 @@ class Investment(models.Model):
             self.transaction.date = self.date
             self.transaction.description = f"Compra de {self.symbol} ({self.quantity} un.)"
             self.transaction.save()
+
+class Goal(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='goals', verbose_name='Usuário')
+    name = models.CharField(max_length=100, verbose_name='Nome da Meta')
+    target_amount = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Valor Alvo')
+    current_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0, verbose_name='Valor Atual')
+    deadline = models.DateField(verbose_name='Data Limite')
+    description = models.TextField(blank=True, verbose_name='Descrição')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+
+    class Meta:
+        verbose_name = 'Meta Financeira'
+        verbose_name_plural = 'Metas Financeiras'
+        ordering = ['deadline']
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def progress_percentage(self):
+        if self.target_amount > 0:
+            return min(int((self.current_amount / self.target_amount) * 100), 100)
+        return 0

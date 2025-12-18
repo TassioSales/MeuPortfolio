@@ -1,14 +1,14 @@
 <div align="center">
 
-# 💰 Sistema de Gestão Financeira Pessoal
+# 💰 Sistema de Gestão Financeira & ERP Pessoal
 
-💡 **Controle suas finanças, investimentos e relatórios em um só lugar.**
+💡 **Controle suas finanças, investimentos, estoque e vendas em um só lugar.**
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Money%20with%20wings/3D/money_with_wings_3d.png" width="120" alt="Finance Icon">
 </p>
 
-<h3 align="center">✨ <em>Organize sua vida financeira com inteligência e simplicidade</em> ✨</h3>
+<h3 align="center">✨ <em>Organize sua vida financeira e seu negócio com inteligência</em> ✨</h3>
 <p align="center"><strong>Desenvolvido com Django 6.0 & Python 3.13 - Versão 2025</strong></p>
 
 <p align="center">
@@ -38,22 +38,27 @@
 
 <table>
 <tr>
-<td align="center" width="25%">
+<td align="center" width="20%">
   <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Chart%20increasing/3D/chart_increasing_3d.png" width="50"><br>
   <strong>Investimentos</strong><br>
   <small>Cotações e Rentabilidade</small>
 </td>
-<td align="center" width="25%">
-  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Spiral%20calendar/3D/spiral_calendar_3d.png" width="50"><br>
-  <strong>Planejamento</strong><br>
-  <small>Orçamentos e Metas</small>
+<td align="center" width="20%">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Shopping%20cart/3D/shopping_cart_3d.png" width="50"><br>
+  <strong>PDV & Vendas</strong><br>
+  <small>Frente de Caixa</small>
 </td>
-<td align="center" width="25%">
-  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Page%20facing%20up/3D/page_facing_up_3d.png" width="50"><br>
-  <strong>Relatórios</strong><br>
-  <small>Gráficos e PDF</small>
+<td align="center" width="20%">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png" width="50"><br>
+  <strong>Estoque</strong><br>
+  <small>Controle de Produtos</small>
 </td>
-<td align="center" width="25%">
+<td align="center" width="20%">
+  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Receipt/3D/receipt_3d.png" width="50"><br>
+  <strong>Fiscal</strong><br>
+  <small>Emissão de NFC-e</small>
+</td>
+<td align="center" width="20%">
   <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Laptop/3D/laptop_3d.png" width="50"><br>
   <strong>Portátil</strong><br>
   <small>Executável Standalone</small>
@@ -65,14 +70,15 @@
 
 ## ✨ Destaques do Projeto
 
-- **Dashboard Financeiro**: Visão centralizada de Saldo, Receitas e Despesas do mês.
-- **Gestão de Orçamento**: Defina limites de gastos por categoria e acompanhe o progresso visualmente.
-- **Módulo de Investimentos Robusto**: 
+- **Dashboard Financeiro Completo**: Visão centralizada de Saldo, Receitas, Despesas, Metas e Investimentos.
+- **PDV (Ponto de Venda)**: Interface ágil para vendas, com atalhos de teclado, descontos e suspensão de vendas.
+- **Módulo Fiscal (NFC-e)**: Emissão de Nota Fiscal de Consumidor Eletrônica com geração de XML e DANFE.
+- **Controle de Estoque**: Gestão de produtos, fornecedores e movimentações de entrada/saída.
+- **Investimentos Inteligentes**: 
     - Acompanhamento de ações e FIIs com integração ao **Yahoo Finance**.
-    - **Sistema Anti-Falha**: Fallback automático para API direta caso a biblioteca falhe, garantindo exibição de preços.
     - Atualização em tempo real de Lucro/Prejuízo e variação percentual.
 - **Relatórios Avançados**: 
-    - Gráficos de evolução mensal e distribuição de despesas.
+    - Gráficos interativos de evolução mensal, distribuição de despesas e performance de vendas.
     - Exportação profissional em **PDF** e **CSV**.
 - **Portabilidade Total**: Versão compilada em `.exe` único que roda direto do pendrive ou pasta, sem instalar nada.
 
@@ -115,21 +121,21 @@ Dê um duplo clique no arquivo. O servidor iniciará e o navegador abrirá autom
 
 #### 💰 **Controle Financeiro**
 - **Transações**: Adicione receitas e despesas com datas e descrições.
-- **Orçamentos (Budgets)**: Crie tetos de gastos mensais ou anuais para cada categoria (Ex: R$ 500,00 para Alimentação) e receba alertas visuais.
-- **Categorias Personalizadas**: Flexibilidade total para seu plano de contas.
+- **Orçamentos (Budgets)**: Crie tetos de gastos mensais ou anuais para cada categoria e receba alertas visuais.
+- **Metas Financeiras**: Defina objetivos de poupança e acompanhe o progresso.
 
-#### 📈 **Módulo de Investimentos**
-- **Dashboard Dedicado**: Veja o valor total investido, valor atual e ROI (Retorno sobre Investimento).
-- **Cotações Inteligentes**: Suporte a ações da B3 (Ex: `PETR4.SA`) e Cripto/Dólar (`BRL=X`).
-- **Resiliência**: Mecanismo de fallback manual garante que você nunca fique sem ver os preços, mesmo se a API principal oscilar.
+#### 🏪 **PDV & Estoque**
+- **Frente de Caixa**: Realize vendas rápidas com leitura de código de barras.
+- **Gestão de Produtos**: Cadastro completo com preços, custos e estoque mínimo.
+- **Fiscal**: Emissão e contingência de NFC-e.
 
 </td>
 <td width="50%">
 
-#### 🔒 **Segurança & UX**
-- **Autenticação**: Login seguro e cadastro de múltiplos usuários.
-- **Interface Moderna**: Design responsivo com Bootstrap 5 e ícones Bootstrap Icons.
-- **Feedback**: Sistema de mensagens (Toasts) para confirmar ações.
+#### 📈 **Investimentos**
+- **Carteira**: Acompanhe ações, FIIs e Renda Fixa.
+- **Rentabilidade**: Cálculo automático de lucro/prejuízo com base no preço médio.
+- **Gráficos**: Distribuição de ativos por categoria.
 
 #### 📄 **Relatórios & Logs**
 - **Visualização**: Gráficos de pizza (distribuição) e barras (evolução).
@@ -231,7 +237,10 @@ python manage.py runserver
 
 ```
 finance_project/
-├── 📂 core/                 # Aplicação principal (Views, Models, Forms)
+├── 📂 core/                 # Aplicação Financeira (Views, Models, Forms)
+├── 📂 app_pdv/              # Módulo de Ponto de Venda
+├── 📂 app_estoque/          # Controle de Estoque
+├── 📂 app_fiscal/           # Emissão de Notas Fiscais (NFC-e)
 ├── 📂 finance_project/      # Configurações do Django (settings.py, urls.py)
 ├── 📂 templates/            # Arquivos HTML (Dashboard, Login, Relatórios)
 ├── 📂 static/               # Arquivos CSS, JS e Imagens
@@ -240,19 +249,8 @@ finance_project/
 ├── 📄 manage.py             # CLI do Django
 ├── 📄 run_app.py            # Script de entrada para o executável
 ├── 📄 finance_project.spec  # Configuração do PyInstaller
-├── 📄 setup_script.iss      # Script do instalador Inno Setup
 └── 📄 requirements.txt      # Dependências do projeto
 ```
-
----
-
-## 🐛 Solução de Problemas Comuns
-
-### ❌ **Erro ao abrir o executável em outro PC**
-Se o executável fechar imediatamente, verifique se você copiou o arquivo `finance_project.exe` corretamente. A versão atual possui um tratamento de erro que manterá a janela aberta exibindo o problema.
-
-### ❌ **Banco de Dados não encontrado**
-O sistema cria automaticamente um arquivo `db.sqlite3` na mesma pasta do executável se ele não existir. Se você quiser preservar seus dados ao mover o programa, lembre-se de mover o arquivo `db.sqlite3` junto (embora no modo "Arquivo Único", o DB seja extraído temporariamente, para persistência real em modo portátil, recomenda-se o uso do Instalador ou manter o DB externo).
 
 ---
 
@@ -274,6 +272,6 @@ Este projeto está licenciado sob a **Licença MIT**.
 
 <div align="center">
 
-**Desenvolvido com ❤️ para organização financeira.**
+**Desenvolvido com ❤️ para organização financeira e gestão de negócios.**
 
 </div>

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-hux^5!#g^za0t)3c&kn^!ls%lq=le1yi3g%l2ig=r^ca-o&mr6
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('django_debug', 'False').lower() == 'true'
+DEBUG = os.environ.get('django_debug', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     
     # Third party
     'crispy_forms',

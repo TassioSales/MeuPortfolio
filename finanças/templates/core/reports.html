@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% load custom_filters %}
-{% load l10n %}
+{% load humanize %}
+{% load core_extras %}
 
 {% block content %}
 <div class="row mb-4 align-items-center">
@@ -212,7 +212,12 @@
                             <tr>
                                 <td class="ps-3 text-muted small">{{ transaction.date|date:"d/m/Y" }}</td>
                                 <td class="fw-medium text-dark">{{ transaction.description|truncatechars:30 }}</td>
-                                <td><span class="badge bg-light text-dark border">{{ transaction.category.name }}</span>
+                                <td class="text-muted small">
+                                    {% if transaction.category %}
+                                    <span class="badge bg-light text-dark border">{{ transaction.category.name }}</span>
+                                    {% else %}
+                                    -
+                                    {% endif %}
                                 </td>
                                 <td
                                     class="text-end pe-3 fw-bold {% if transaction.type == 'RECEITA' %}text-success{% else %}text-danger{% endif %}">
@@ -405,13 +410,12 @@
     // 4. Category Pie Chart
     const ctxPie = document.getElementById('categoryPieChart');
     if (ctxPie) {
-        // Generate data from Django template loop
         const pieLabels = [];
         const pieData = [];
 
         {% for item in expense_by_category %}
         pieLabels.push("{{ item.category__name }}");
-        pieData.push({{ item.total | unlocalize }});
+        pieData.push({{ item.total|stringformat:".2f" }});
     {% endfor %}
 
     if (pieLabels.length > 0) {

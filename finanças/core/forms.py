@@ -1,5 +1,6 @@
 from django import forms
 from .models import Category, Transaction, Budget, Investment, RecurringTransaction, Goal
+from decimal import Decimal
 
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -18,6 +19,7 @@ class TransactionForm(forms.ModelForm):
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'payment_method': forms.Select(attrs={'onchange': 'toggleCreditCardFields(this)'}),
+            'amount': forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}),
         }
 
     def clean(self):
@@ -50,9 +52,15 @@ class BudgetForm(forms.ModelForm):
         fields = ['category', 'limit', 'period', 'start_date']
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'limit': forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}),
         }
 
 class InvestmentForm(forms.ModelForm):
+    purchase_price = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}),
+        label='Preço de Compra'
+    )
+
     class Meta:
         model = Investment
         fields = ['symbol', 'quantity', 'purchase_price', 'date']
@@ -86,6 +94,15 @@ class InvestmentForm(forms.ModelForm):
                 
         return cleaned_data
 
+    def clean_purchase_price(self):
+        price = self.cleaned_data.get('purchase_price')
+        if isinstance(price, str):
+            price = price.replace('R$', '').replace('.', '').replace(',', '.').strip()
+        try:
+            return Decimal(price)
+        except (ValueError, TypeError):
+            raise forms.ValidationError("Informe um número válido.")
+
 class ImportFileForm(forms.Form):
     file = forms.FileField(label="Arquivo de Extrato (CSV)")
 
@@ -96,4 +113,6 @@ class GoalForm(forms.ModelForm):
         widgets = {
             'deadline': forms.DateInput(attrs={'type': 'date'}),
             'description': forms.Textarea(attrs={'rows': 3}),
+            'target_amount': forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}),
+            'current_amount': forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}),
         }

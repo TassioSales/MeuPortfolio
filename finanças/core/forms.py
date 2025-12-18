@@ -7,7 +7,7 @@ class CategoryForm(forms.ModelForm):
         fields = ['name', 'type', 'parent']
 
 class TransactionForm(forms.ModelForm):
-    installments = forms.IntegerField(required=False, min_value=2, max_value=48, label="Parcelas", initial=2)
+    installments = forms.IntegerField(required=False, min_value=1, max_value=48, label="Parcelas", initial=1)
     first_due_date = forms.DateField(required=False, label="Data do 1º Vencimento", widget=forms.DateInput(attrs={'type': 'date'}))
     recurring = forms.BooleanField(required=False, label="Repetir?", widget=forms.CheckboxInput(attrs={'onclick': 'toggleRecurringFields(this)'}))
     frequency = forms.ChoiceField(required=False, choices=RecurringTransaction.FREQUENCY_CHOICES, label="Frequência")

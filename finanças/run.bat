@@ -16,8 +16,12 @@ python manage.py migrate
 
 echo.
 echo Servidor rodando em: http://127.0.0.1:8000
+echo O navegador sera aberto automaticamente em 3 segundos...
 echo Pressione CTRL+C para parar.
 echo.
+
+:: Abre o navegador em background
+start "" /B cmd /c "timeout /t 3 /nobreak >nul & start http://127.0.0.1:8000"
 
 python manage.py runserver
 

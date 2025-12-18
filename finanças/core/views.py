@@ -338,6 +338,25 @@ def dashboard(request):
         type='DESPESA', 
         date__range=[start_date, end_date]
     ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    # Accumulated Balance (Previous Months)
+    previous_income = Transaction.objects.filter(
+        user=request.user,
+        type='RECEITA',
+        date__lt=start_date
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    previous_expense = Transaction.objects.filter(
+        user=request.user,
+        type='DESPESA',
+        date__lt=start_date
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    accumulated_balance = previous_income - previous_expense
+    
+    # Total Current Balance
+    net_balance = monthly_income - monthly_expense
+    total_balance = accumulated_balance + net_balance
     
     # Chart Data (Last 6 months from selected month)
     six_months_ago = start_date - timedelta(days=180)
@@ -410,6 +429,8 @@ def dashboard(request):
         'monthly_income': monthly_income,
         'monthly_expense': monthly_expense,
         'net_balance': net_balance,
+        'accumulated_balance': accumulated_balance,
+        'total_balance': total_balance,
         'chart_labels': json.dumps(labels),
         'chart_income': json.dumps(data_income),
         'chart_expense': json.dumps(data_expense),

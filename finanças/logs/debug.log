@@ -5750,3 +5750,684 @@ INFO 2025-12-18 12:20:46,765 log 21608 24484 "POST /transactions/add/ HTTP/1.1" 
 INFO 2025-12-18 12:20:46,832 log 21608 24484 "GET /transactions/ HTTP/1.1" 200 44664
 INFO 2025-12-18 12:20:50,788 log 21608 24484 "GET / HTTP/1.1" 200 17900
 INFO 2025-12-18 12:20:53,304 log 21608 24484 "GET /?month=1&year=2026 HTTP/1.1" 200 16661
+INFO 2025-12-18 12:31:27,796 log 21608 18468 "GET /investments/ HTTP/1.1" 200 24844
+INFO 2025-12-18 12:31:27,829 log 21608 18468 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-18 12:31:39,443 log 21608 18468 "GET /investments/search/?ticker=PETR4 HTTP/1.1" 200 237
+INFO 2025-12-18 12:34:36,660 views 21608 18468 Generating reports for user tassiosales
+INFO 2025-12-18 12:34:36,907 log 21608 18468 "GET /reports/ HTTP/1.1" 200 43703
+INFO 2025-12-18 12:34:43,188 log 21608 18468 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-18 12:34:44,617 log 21608 18468 "GET /calendar/ HTTP/1.1" 200 35869
+INFO 2025-12-18 12:34:46,365 log 21608 18468 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-18 12:34:47,177 log 21608 18468 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-18 12:34:47,923 log 21608 18468 "GET /budgets/ HTTP/1.1" 200 7046
+INFO 2025-12-18 12:34:51,953 log 21608 18468 "GET /investments/ HTTP/1.1" 200 24844
+INFO 2025-12-18 12:36:27,486 log 21608 18468 "GET /investments/ HTTP/1.1" 200 24844
+INFO 2025-12-18 12:36:27,517 log 21608 18468 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-18 12:41:23,812 autoreload 21608 35152 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-18 12:41:27,082 autoreload 1284 36584 Watching for file changes with StatReloader
+INFO 2025-12-18 12:42:04,940 autoreload 1284 36584 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\urls.py changed, reloading.
+INFO 2025-12-18 12:42:06,930 autoreload 41872 22984 Watching for file changes with StatReloader
+INFO 2025-12-18 12:43:00,998 autoreload 41872 22984 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-18 12:43:02,837 autoreload 45036 45024 Watching for file changes with StatReloader
+INFO 2025-12-18 12:43:17,830 autoreload 45036 45024 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\urls.py changed, reloading.
+INFO 2025-12-18 12:43:19,952 autoreload 45564 44880 Watching for file changes with StatReloader
+INFO 2025-12-18 12:44:41,856 autoreload 45564 44880 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2025-12-18 12:44:43,887 autoreload 46628 18804 Watching for file changes with StatReloader
+INFO 2025-12-18 13:36:38,974 log 46628 42804 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-18 13:36:39,024 log 46628 42804 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-18 13:36:46,182 log 46628 42804 "GET /investments/ HTTP/1.1" 200 26490
+INFO 2025-12-18 13:36:52,052 log 46628 42804 "GET /investments/VGHF11.SA/ HTTP/1.1" 200 14991
+INFO 2025-12-18 13:37:19,880 log 46628 42804 "GET /investments/ HTTP/1.1" 200 26503
+INFO 2025-12-18 13:37:35,108 log 46628 42804 "GET /investments/search/?ticker=PETR4 HTTP/1.1" 200 235
+INFO 2025-12-18 13:38:00,740 log 46628 42804 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-18 13:38:03,629 log 46628 42804 "GET /transactions/add/ HTTP/1.1" 200 13993
+INFO 2025-12-18 13:38:16,126 log 46628 42804 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-18 13:47:25,543 log 46628 13776 "GET /investments/ HTTP/1.1" 200 26504
+INFO 2025-12-18 13:47:25,574 log 46628 13776 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-18 13:47:28,401 log 46628 13776 "GET /investments/VGHF11.SA/ HTTP/1.1" 200 14983
+INFO 2025-12-18 13:47:43,786 autoreload 46628 18804 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-18 13:47:48,275 autoreload 44732 23228 Watching for file changes with StatReloader
+INFO 2025-12-18 13:52:36,266 log 44732 24224 "GET /investments/ HTTP/1.1" 200 29176
+INFO 2025-12-18 13:52:47,817 log 44732 24224 "GET /investments/search/?ticker=PETR4 HTTP/1.1" 200 4554
+INFO 2025-12-18 13:53:00,069 basehttp 44732 24224 - Broken pipe from ('127.0.0.1', 59539)
+INFO 2025-12-18 13:53:00,505 log 44732 18872 "GET /investments/VGHF11.SA/ HTTP/1.1" 200 14986
+INFO 2025-12-18 13:53:41,062 log 44732 18872 "GET /investments/VGHF11.SA/ HTTP/1.1" 200 14987
+INFO 2025-12-18 13:55:28,397 log 44732 18872 "GET /investments/VGHF11.SA/ HTTP/1.1" 200 14995
+INFO 2025-12-18 13:55:52,973 log 44732 18872 "GET /investments/ HTTP/1.1" 200 29176
+INFO 2025-12-18 13:56:10,982 basehttp 44732 18872 - Broken pipe from ('127.0.0.1', 54041)
+INFO 2025-12-18 13:56:12,110 basehttp 44732 31720 - Broken pipe from ('127.0.0.1', 57990)
+INFO 2025-12-18 13:56:12,468 log 44732 42468 "GET /investments/ HTTP/1.1" 200 27096
+INFO 2025-12-18 13:56:13,257 log 44732 42468 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-18 13:56:16,198 log 44732 42468 "GET /investments/ HTTP/1.1" 200 27096
+INFO 2025-12-18 13:56:23,600 log 44732 42468 "GET /investments/VGHF11.SA/ HTTP/1.1" 200 14991
+INFO 2025-12-18 13:56:27,724 basehttp 44732 42468 - Broken pipe from ('127.0.0.1', 57723)
+INFO 2025-12-18 13:56:27,750 basehttp 44732 40708 - Broken pipe from ('127.0.0.1', 51674)
+INFO 2025-12-18 13:56:29,089 log 44732 14876 "GET /investments/ HTTP/1.1" 200 27096
+INFO 2025-12-18 13:56:30,777 log 44732 14876 "GET /investments/VGHF11.SA/ HTTP/1.1" 200 14987
+INFO 2025-12-18 13:56:36,051 basehttp 44732 14876 - Broken pipe from ('127.0.0.1', 63245)
+INFO 2025-12-18 13:56:36,605 basehttp 44732 35152 - Broken pipe from ('127.0.0.1', 60836)
+INFO 2025-12-18 13:56:38,860 basehttp 44732 9612 - Broken pipe from ('127.0.0.1', 62642)
+INFO 2025-12-18 13:56:38,935 log 44732 34516 "GET /investments/ HTTP/1.1" 200 27096
+INFO 2025-12-18 13:56:38,936 basehttp 44732 12188 - Broken pipe from ('127.0.0.1', 49280)
+INFO 2025-12-18 13:56:39,024 basehttp 44732 42308 - Broken pipe from ('127.0.0.1', 57385)
+ERROR 2025-12-18 13:58:22,364 log 44732 34516 Internal Server Error: /investments/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py", line 299, in investment_dashboard
+    return render(request, 'core/investment_dashboard.html', context)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 894, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 994, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 634, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\templates\core\investment_dashboard.html, Invalid block tag on line 307: 'endblock', expected 'elif', 'else' or 'endif'. Did you forget to register or load this tag?
+INFO 2025-12-18 13:58:22,812 basehttp 44732 34516 - Broken pipe from ('127.0.0.1', 63376)
+ERROR 2025-12-18 13:58:24,572 log 44732 23452 Internal Server Error: /investments/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py", line 299, in investment_dashboard
+    return render(request, 'core/investment_dashboard.html', context)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 894, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 994, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 634, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\templates\core\investment_dashboard.html, Invalid block tag on line 307: 'endblock', expected 'elif', 'else' or 'endif'. Did you forget to register or load this tag?
+INFO 2025-12-18 13:58:24,619 basehttp 44732 23452 - Broken pipe from ('127.0.0.1', 51955)
+ERROR 2025-12-18 13:58:43,413 log 44732 22004 Internal Server Error: /investments/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py", line 299, in investment_dashboard
+    return render(request, 'core/investment_dashboard.html', context)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 894, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 994, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 634, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\templates\core\investment_dashboard.html, Invalid block tag on line 307: 'endblock', expected 'elif', 'else' or 'endif'. Did you forget to register or load this tag?
+ERROR 2025-12-18 13:58:43,440 log 44732 22004 "GET /investments/ HTTP/1.1" 500 246257
+ERROR 2025-12-18 13:59:15,389 log 44732 22004 Internal Server Error: /investments/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py", line 299, in investment_dashboard
+    return render(request, 'core/investment_dashboard.html', context)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 894, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 994, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 634, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\templates\core\investment_dashboard.html, Invalid block tag on line 307: 'endblock', expected 'elif', 'else' or 'endif'. Did you forget to register or load this tag?
+ERROR 2025-12-18 13:59:15,414 log 44732 22004 "GET /investments/ HTTP/1.1" 500 246244
+INFO 2025-12-18 14:10:43,849 log 44732 35076 "GET /investments/ HTTP/1.1" 200 29174
+INFO 2025-12-18 14:10:43,887 log 44732 35076 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+WARNING 2025-12-18 14:10:47,130 log 44732 35076 Not Found: /investments/add/
+WARNING 2025-12-18 14:10:47,132 log 44732 35076 "GET /investments/add/ HTTP/1.1" 404 9204
+INFO 2025-12-18 14:11:02,431 autoreload 31024 18316 Watching for file changes with StatReloader
+INFO 2025-12-18 14:21:21,708 log 31024 43048 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-18 14:21:28,385 log 31024 43048 "GET /investments/ HTTP/1.1" 200 29174
+INFO 2025-12-18 14:21:43,573 log 31024 43048 "GET /investments/ HTTP/1.1" 200 29174
+INFO 2025-12-18 14:21:47,529 log 31024 43048 "GET /investments/VGHF11.SA/ HTTP/1.1" 200 14986
+WARNING 2025-12-18 14:21:50,756 log 31024 43048 Not Found: /investments/add/
+WARNING 2025-12-18 14:21:50,757 log 31024 43048 "GET /investments/add/ HTTP/1.1" 404 9204
+INFO 2025-12-18 14:22:47,933 autoreload 31024 18316 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\urls.py changed, reloading.
+INFO 2025-12-18 14:22:50,816 autoreload 38680 30208 Watching for file changes with StatReloader
+INFO 2025-12-18 14:27:27,685 log 38680 32096 "GET /investments/add/ HTTP/1.1" 200 10843
+INFO 2025-12-18 14:27:51,471 log 38680 32096 "GET /investments/search/?ticker=B3SA3 HTTP/1.1" 200 4613
+INFO 2025-12-18 14:28:20,149 log 38680 32096 "GET /investments/add/ HTTP/1.1" 200 10843
+INFO 2025-12-18 15:00:09,368 log 38680 3044 "POST /investments/add/ HTTP/1.1" 200 11100
+INFO 2025-12-18 15:00:09,394 log 38680 3044 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-18 15:00:20,656 log 38680 3044 "POST /investments/add/ HTTP/1.1" 200 11100
+INFO 2025-12-18 15:00:22,349 log 38680 3044 "POST /investments/add/ HTTP/1.1" 200 11100
+INFO 2025-12-18 15:00:35,774 log 38680 3044 "POST /investments/add/ HTTP/1.1" 200 11100
+INFO 2025-12-18 15:06:15,211 autoreload 38680 30208 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-18 15:06:18,304 autoreload 23328 8648 Watching for file changes with StatReloader
+INFO 2025-12-18 15:08:33,531 autoreload 23328 8648 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-18 15:08:36,761 autoreload 12648 17140 Watching for file changes with StatReloader
+INFO 2025-12-18 15:09:37,493 autoreload 43548 16776 Watching for file changes with StatReloader
+INFO 2025-12-18 15:10:25,539 autoreload 43548 16776 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-18 15:10:28,261 autoreload 23412 30312 Watching for file changes with StatReloader
+INFO 2025-12-18 15:11:08,958 autoreload 30920 44260 Watching for file changes with StatReloader
+INFO 2025-12-18 15:12:12,280 autoreload 30920 44260 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-18 15:12:14,371 autoreload 9340 45232 Watching for file changes with StatReloader
+INFO 2025-12-18 15:12:36,528 log 9340 18540 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-18 15:12:44,062 log 9340 18540 "GET /investments/ HTTP/1.1" 200 29176
+INFO 2025-12-18 15:13:02,765 log 9340 18540 "GET /investments/add/ HTTP/1.1" 200 10843
+INFO 2025-12-18 15:13:20,242 log 9340 18540 "POST /investments/add/ HTTP/1.1" 200 11099
+INFO 2025-12-18 15:13:26,069 log 9340 18540 "POST /investments/add/ HTTP/1.1" 200 11099
+INFO 2025-12-18 15:13:26,582 log 9340 18540 "POST /investments/add/ HTTP/1.1" 200 11099
+INFO 2025-12-18 15:13:35,095 log 9340 18540 "POST /investments/add/ HTTP/1.1" 200 11099
+INFO 2025-12-18 15:13:39,479 log 9340 18540 "GET /investments/ HTTP/1.1" 200 29177
+INFO 2025-12-18 15:13:41,790 log 9340 18540 "GET /investments/add/ HTTP/1.1" 200 10843
+INFO 2025-12-18 15:14:02,636 log 9340 18540 "POST /investments/add/ HTTP/1.1" 200 11099
+INFO 2025-12-18 15:15:51,772 autoreload 9340 45232 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2025-12-18 15:15:53,938 autoreload 29620 22088 Watching for file changes with StatReloader
+INFO 2025-12-18 15:16:41,314 log 29620 32240 "POST /investments/add/ HTTP/1.1" 200 11099
+INFO 2025-12-18 15:16:49,698 log 29620 32240 "POST /investments/add/ HTTP/1.1" 200 11099
+INFO 2025-12-18 15:16:53,422 log 29620 32240 "POST /investments/add/ HTTP/1.1" 200 11099
+INFO 2025-12-18 15:17:05,695 autoreload 31348 39068 Watching for file changes with StatReloader
+INFO 2025-12-18 15:17:11,533 log 31348 25948 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-18 15:17:14,050 views 31348 25948 Generating reports for user tassiosales
+INFO 2025-12-18 15:17:14,241 log 31348 25948 "GET /reports/ HTTP/1.1" 200 43703
+INFO 2025-12-18 15:17:15,409 log 31348 25948 "GET /goals/ HTTP/1.1" 200 6039
+INFO 2025-12-18 15:17:18,757 log 31348 25948 "GET /investments/ HTTP/1.1" 200 29161
+INFO 2025-12-18 15:17:22,373 log 31348 25948 "GET /investments/add/ HTTP/1.1" 200 10843
+INFO 2025-12-18 15:17:35,032 log 31348 25948 "POST /investments/add/ HTTP/1.1" 200 11099
+INFO 2025-12-18 15:18:27,088 autoreload 31348 39068 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2025-12-18 15:18:29,240 autoreload 14516 36652 Watching for file changes with StatReloader
+INFO 2025-12-18 15:18:45,382 log 14516 42488 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-18 15:18:48,185 log 14516 42488 "GET /investments/ HTTP/1.1" 200 31883
+INFO 2025-12-18 15:18:48,761 autoreload 14516 36652 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2025-12-18 15:18:51,547 autoreload 44808 46256 Watching for file changes with StatReloader
+INFO 2025-12-18 15:19:10,612 log 44808 6396 "GET /investments/add/ HTTP/1.1" 200 10843
+INFO 2025-12-18 15:19:16,837 log 44808 6396 "GET /investments/ HTTP/1.1" 200 31883
+INFO 2025-12-18 15:19:23,884 log 44808 6396 "GET /investments/B3SA3.SA/ HTTP/1.1" 200 15083
+INFO 2025-12-18 15:19:38,051 autoreload 44808 46256 C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2025-12-18 15:19:40,980 autoreload 7768 35944 Watching for file changes with StatReloader
+INFO 2025-12-18 15:20:35,543 log 7768 5184 "GET /transactions/ HTTP/1.1" 200 46169
+INFO 2025-12-18 15:20:52,555 log 7768 5184 "GET /transactions/ HTTP/1.1" 200 46169
+INFO 2025-12-18 15:20:58,102 log 7768 5184 "GET /investments/ HTTP/1.1" 200 32011
+INFO 2025-12-18 15:21:04,803 log 7768 5184 "GET /investments/GARE11.SA/ HTTP/1.1" 200 14924
+INFO 2025-12-18 15:21:10,898 log 7768 5184 "GET /investments/BTHF11.SA/ HTTP/1.1" 200 14967
+INFO 2025-12-18 15:21:48,919 log 7768 5184 "GET / HTTP/1.1" 200 17897
+INFO 2025-12-18 15:21:52,120 log 7768 5184 "GET /transactions/ HTTP/1.1" 200 46169
+INFO 2025-12-18 15:22:06,890 log 7768 5184 "GET /transactions/63/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-18 15:22:07,979 log 7768 5184 "POST /transactions/63/delete/ HTTP/1.1" 302 0
+INFO 2025-12-18 15:22:08,020 log 7768 5184 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-18 15:22:11,589 log 7768 5184 "GET /investments/ HTTP/1.1" 200 29267
+INFO 2025-12-18 15:22:14,369 log 7768 5184 "GET /investments/add/ HTTP/1.1" 200 10843
+INFO 2025-12-18 15:22:26,738 log 7768 5184 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-18 15:22:29,051 log 7768 5184 "GET /investments/ HTTP/1.1" 200 32013
+INFO 2025-12-18 15:23:41,928 log 7768 5184 "GET /investments/ HTTP/1.1" 200 32013
+INFO 2025-12-18 15:23:44,695 log 7768 5184 "GET /investments/ HTTP/1.1" 200 32013
+INFO 2025-12-18 15:23:52,733 basehttp 7768 5184 - Broken pipe from ('127.0.0.1', 60620)
+INFO 2025-12-18 15:23:53,609 log 7768 42488 "GET /investments/BTHF11.SA/ HTTP/1.1" 200 14988
+INFO 2025-12-18 15:25:20,125 log 7768 42488 "GET /investments/ HTTP/1.1" 200 32000
+INFO 2025-12-18 15:28:54,695 log 7768 42488 "GET /investments/ HTTP/1.1" 200 32002
+INFO 2025-12-18 15:28:57,371 log 7768 42488 "GET /investments/ HTTP/1.1" 200 32002
+INFO 2025-12-18 15:29:00,994 log 7768 42488 "GET /investments/add/ HTTP/1.1" 200 10843
+INFO 2025-12-18 15:29:03,958 log 7768 42488 "GET /transactions/ HTTP/1.1" 200 46169
+INFO 2025-12-18 15:29:08,204 log 7768 42488 "GET /investments/ HTTP/1.1" 200 32011
+INFO 2025-12-18 15:29:16,901 log 7768 42488 "GET /investments/BTHF11.SA/ HTTP/1.1" 200 14990
+INFO 2025-12-18 15:30:32,790 log 7768 42488 "GET / HTTP/1.1" 200 17897
+INFO 2025-12-18 15:30:32,817 log 7768 42488 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-18 15:30:35,839 log 7768 42488 "GET /calendar/ HTTP/1.1" 200 36414
+INFO 2025-12-18 15:30:39,697 log 7768 42488 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-18 15:30:43,724 log 7768 42488 "GET /transactions/ HTTP/1.1" 200 46169
+INFO 2025-12-18 15:30:53,737 log 7768 42488 "GET /transactions/ HTTP/1.1" 200 46169
+INFO 2025-12-18 15:30:55,685 log 7768 42488 "GET /budgets/ HTTP/1.1" 200 7046
+INFO 2025-12-18 15:30:59,317 log 7768 42488 "GET /investments/ HTTP/1.1" 200 32012
+ERROR 2025-12-18 15:38:46,968 log 7768 37040 Internal Server Error: /investments/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'foobar'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py", line 314, in investment_dashboard
+    return render(request, 'core/investment_dashboard.html', context)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 644, in invalid_block_tag
+    raise self.error(
+    ...<3 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\templates\core\investment_dashboard.html, Invalid block tag on line 2: 'foobar'. Did you forget to register or load this tag?
+ERROR 2025-12-18 15:38:47,036 log 7768 37040 "GET /investments/ HTTP/1.1" 500 226431
+INFO 2025-12-18 15:44:32,823 log 7768 16656 "GET /investments/ HTTP/1.1" 200 31998
+INFO 2025-12-18 16:01:18,322 log 7768 27424 "GET /investments/BTHF11.SA/ HTTP/1.1" 200 14992
+INFO 2025-12-18 16:01:23,083 log 7768 27424 "GET /investments/ HTTP/1.1" 200 28640
+INFO 2025-12-18 16:01:43,657 autoreload 25080 43856 Watching for file changes with StatReloader
+INFO 2025-12-18 16:02:34,069 log 25080 31684 "GET /investments/GARE11.SA/ HTTP/1.1" 200 14925
+INFO 2025-12-18 16:02:59,510 log 25080 31684 "GET /investments/ HTTP/1.1" 200 32012
+INFO 2025-12-18 16:03:11,749 log 25080 31684 "GET /goals/ HTTP/1.1" 200 6039
+INFO 2025-12-18 16:03:12,557 views 25080 31684 Generating reports for user tassiosales
+INFO 2025-12-18 16:03:12,918 log 25080 31684 "GET /reports/ HTTP/1.1" 200 43719
+INFO 2025-12-18 16:03:19,443 log 25080 31684 "GET /goals/ HTTP/1.1" 200 6039
+INFO 2025-12-18 16:03:23,053 log 25080 31684 "GET /investments/ HTTP/1.1" 200 32001
+INFO 2025-12-18 16:03:23,094 log 25080 31684 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-18 16:05:40,796 log 25080 31684 "GET /investments/ HTTP/1.1" 200 29399
+ERROR 2025-12-18 16:06:18,087 log 25080 38624 Internal Server Error: /investments/
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endwith'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\core\views.py", line 314, in investment_dashboard
+    return render(request, 'core/investment_dashboard.html', context)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 894, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 994, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 634, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: C:\Users\Bio Mundo\Documents\GitHub\MeuPortfolio\finanças\templates\core\investment_dashboard.html, Invalid block tag on line 148: 'endwith', expected 'elif', 'else' or 'endif'. Did you forget to register or load this tag?
+ERROR 2025-12-18 16:06:18,141 log 25080 38624 "GET /investments/ HTTP/1.1" 500 274835
+INFO 2025-12-18 16:12:22,347 log 25080 35348 "GET /investments/ HTTP/1.1" 200 30501
+INFO 2025-12-18 16:12:26,004 log 25080 35348 "GET /investments/B3SA3.SA/ HTTP/1.1" 200 15083
+INFO 2025-12-18 16:16:15,529 autoreload 40052 39688 Watching for file changes with StatReloader
+INFO 2025-12-18 16:16:33,935 log 40052 27920 "GET /investments/ HTTP/1.1" 200 32383
+INFO 2025-12-18 16:16:47,967 log 40052 27920 "GET /investments/BTHF11.SA/ HTTP/1.1" 200 14975
+INFO 2025-12-18 16:54:54,297 log 40052 13576 "GET / HTTP/1.1" 200 17897
+INFO 2025-12-18 16:54:54,344 log 40052 13576 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-18 16:55:00,953 log 40052 13576 "GET /transactions/ HTTP/1.1" 200 46169
+INFO 2025-12-18 16:55:06,476 log 40052 13576 "GET /transactions/64/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-18 16:55:07,310 log 40052 13576 "POST /transactions/64/delete/ HTTP/1.1" 302 0
+INFO 2025-12-18 16:55:07,361 log 40052 13576 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-18 16:55:08,362 log 40052 13576 "GET /calendar/ HTTP/1.1" 200 35869
+INFO 2025-12-18 16:55:09,488 log 40052 13576 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-18 16:55:11,439 log 40052 13576 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-18 16:55:13,076 log 40052 13576 "GET /budgets/ HTTP/1.1" 200 7046
+INFO 2025-12-18 16:55:16,887 log 40052 13576 "GET /investments/ HTTP/1.1" 200 29573
+INFO 2025-12-18 16:55:28,459 log 40052 13576 "GET /investments/search/?ticker=PETR4 HTTP/1.1" 200 4555
+INFO 2025-12-18 16:55:37,874 log 40052 13576 "GET /investments/BTHF11.SA/ HTTP/1.1" 200 14976
+INFO 2025-12-18 16:55:43,485 log 40052 13576 "GET /investments/ HTTP/1.1" 200 29574
+INFO 2025-12-18 16:55:44,420 log 40052 13576 "GET /goals/ HTTP/1.1" 200 6039
+INFO 2025-12-18 16:55:45,595 views 40052 13576 Generating reports for user tassiosales
+INFO 2025-12-18 16:55:45,640 log 40052 13576 "GET /reports/ HTTP/1.1" 200 43703
+INFO 2025-12-18 17:24:25,654 log 40052 40560 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-18 17:24:44,416 log 40052 40560 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-18 17:24:48,824 log 40052 40560 "GET /calendar/ HTTP/1.1" 200 35869
+INFO 2025-12-18 17:24:50,269 log 40052 40560 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-18 17:24:51,333 log 40052 40560 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-18 17:24:53,941 log 40052 40560 "GET /budgets/ HTTP/1.1" 200 7046
+INFO 2025-12-18 17:24:57,416 log 40052 40560 "GET /investments/ HTTP/1.1" 200 29586
+INFO 2025-12-18 17:25:06,741 log 40052 40560 "GET /goals/ HTTP/1.1" 200 6039
+INFO 2025-12-18 17:25:15,778 log 40052 40560 "GET /investments/ HTTP/1.1" 200 29571
+INFO 2025-12-18 17:25:27,346 log 40052 40560 "GET /goals/ HTTP/1.1" 200 6039
+INFO 2025-12-18 17:25:28,224 views 40052 40560 Generating reports for user tassiosales
+INFO 2025-12-18 17:25:28,303 log 40052 40560 "GET /reports/ HTTP/1.1" 200 43703

@@ -105,7 +105,7 @@
                         </thead>
                         <tbody>
                             {% for item in portfolio %}
-                            <tr style="transition: background-color 0.2s;">
+                            <tr class="position-relative" style="transition: background-color 0.2s;">
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
                                         <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center me-3 fw-bold shadow-sm border"
@@ -113,7 +113,12 @@
                                             {{ item.investment.symbol|slice:":2" }}
                                         </div>
                                         <div>
-                                            <div class="fw-bold text-dark">{{ item.investment.symbol }}</div>
+                                            <div class="fw-bold text-dark">
+                                                <a href="{% url 'investment_detail' item.investment.symbol %}"
+                                                    class="text-decoration-none text-dark stretched-link">
+                                                    {{ item.investment.symbol }}
+                                                </a>
+                                            </div>
                                             <div class="text-muted small"
                                                 style="font-size: 0.8rem; letter-spacing: 0.3px;">
                                                 {% if item.investment.name %}
@@ -133,17 +138,25 @@
                                 <td class="fw-bold text-dark">R$ {{ item.current_value|floatformat:2 }}</td>
                                 <td class="pe-4 text-end">
                                     {% if item.profit_loss >= 0 %}
-                                    <span class="fw-bold text-success d-block mb-1">+R$ {{ item.profit_loss|floatformat:2 }}</span>
+                                    {% with pl=item.profit_loss|floatformat:2 %}
+                                    {% with pl_pct=item.profit_loss_pct|floatformat:2 %}
+                                    <span class="fw-bold text-success d-block mb-1">+R$ {{ pl }}</span>
                                     <span
                                         class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2">
-                                        <i class="bi bi-arrow-up-short"></i>{{ item.profit_loss_pct|floatformat:2 }}%
+                                        <i class="bi bi-arrow-up-short"></i>{{ pl_pct }}%
                                     </span>
+                                    {% endwith %}
+                                    {% endwith %}
                                     {% else %}
-                                    <span class="fw-bold text-danger d-block mb-1">R$ {{ item.profit_loss|floatformat:2 }}</span>
+                                    {% with pl=item.profit_loss|floatformat:2 %}
+                                    {% with pl_pct=item.profit_loss_pct|floatformat:2 %}
+                                    <span class="fw-bold text-danger d-block mb-1">R$ {{ pl }}</span>
                                     <span
                                         class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2">
-                                        <i class="bi bi-arrow-down-short"></i>{{ item.profit_loss_pct|floatformat:2 }}%
+                                        <i class="bi bi-arrow-down-short"></i>{{ pl_pct }}%
                                     </span>
+                                    {% endwith %}
+                                    {% endwith %}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -277,8 +290,60 @@
                         </div>
                     </div>
                     ${extraInfo}
+                    <!-- Search Chart -->
+                    <div style="height: 200px; width: 100%; margin-top: 15px;">
+                        <canvas id="searchChart"></canvas>
+                    </div>
                 `;
                 resultDiv.classList.remove('d-none');
+
+                // Render Chart
+                if (d.chart_labels && d.chart_data && d.chart_labels.length > 0) {
+                    setTimeout(() => {
+                        const ctxSearch = document.getElementById('searchChart');
+                        if (ctxSearch) {
+                            // Destroy previous instance if exists
+                            if (window.searchChartInstance) {
+                                window.searchChartInstance.destroy();
+                            }
+
+                            const gradient = ctxSearch.getContext('2d').createLinearGradient(0, 0, 0, 200);
+                            gradient.addColorStop(0, 'rgba(13, 110, 253, 0.3)');
+                            gradient.addColorStop(1, 'rgba(13, 110, 253, 0.0)');
+
+                            window.searchChartInstance = new Chart(ctxSearch, {
+                                type: 'line',
+                                data: {
+                                    labels: d.chart_labels,
+                                    datasets: [{
+                                        label: 'Preço',
+                                        data: d.chart_data,
+                                        borderColor: '#0d6efd',
+                                        backgroundColor: gradient,
+                                        borderWidth: 2,
+                                        fill: true,
+                                        tension: 0.4,
+                                        pointRadius: 0,
+                                        pointHoverRadius: 4
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        x: { display: false },
+                                        y: { display: false } // Minimalist look
+                                    },
+                                    interaction: {
+                                        mode: 'index',
+                                        intersect: false,
+                                    },
+                                }
+                            });
+                        }
+                    }, 100);
+                }
             })
             .catch(err => {
                 console.error(err);

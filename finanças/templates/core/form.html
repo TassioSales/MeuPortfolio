@@ -22,3 +22,53 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const paymentMethodSelect = document.getElementById('id_payment_method');
+        const recurringCheckbox = document.getElementById('id_recurring');
+
+        if (paymentMethodSelect) {
+            toggleCreditCardFields(paymentMethodSelect);
+            paymentMethodSelect.addEventListener('change', function () {
+                toggleCreditCardFields(this);
+            });
+        }
+
+        if (recurringCheckbox) {
+            toggleRecurringFields(recurringCheckbox);
+            recurringCheckbox.addEventListener('change', function () {
+                toggleRecurringFields(this);
+            });
+        }
+    });
+
+    function toggleCreditCardFields(select) {
+        const installmentsDiv = document.getElementById('div_id_installments');
+        const firstDueDateDiv = document.getElementById('div_id_first_due_date');
+
+        if (installmentsDiv && firstDueDateDiv) {
+            if (select.value === 'CREDITO') {
+                installmentsDiv.style.display = 'block';
+                firstDueDateDiv.style.display = 'block';
+            } else {
+                installmentsDiv.style.display = 'none';
+                firstDueDateDiv.style.display = 'none';
+            }
+        }
+    }
+
+    function toggleRecurringFields(checkbox) {
+        const frequencyDiv = document.getElementById('div_id_frequency');
+
+        if (frequencyDiv) {
+            if (checkbox.checked) {
+                frequencyDiv.style.display = 'block';
+            } else {
+                frequencyDiv.style.display = 'none';
+            }
+        }
+    }
+</script>
+{% endblock %}

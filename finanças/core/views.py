@@ -12,6 +12,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from datetime import timedelta
+import datetime
 import calendar
 import csv
 import json
@@ -38,9 +39,9 @@ def get_price_manual(symbol):
         print(f"Manual fetch failed for {symbol}: {e}")
         return None, None
 
-from .models import Transaction, Category, Budget, Investment
+from .models import Transaction, Category, Budget, Investment, RecurringTransaction, Goal
 from django.db.models.functions import TruncMonth, TruncDay
-from .forms import CategoryForm, TransactionForm, BudgetForm, InvestmentForm
+from .forms import CategoryForm, TransactionForm, BudgetForm, InvestmentForm, ImportFileForm, GoalForm
 
 logger = logging.getLogger('core')
 
@@ -296,8 +297,15 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
+from .services import process_recurring_transactions
+
 @login_required
 def dashboard(request):
+    # Process recurring transactions automatically
+    processed_count = process_recurring_transactions(request.user)
+    if processed_count > 0:
+        messages.info(request, f'{processed_count} transações recorrentes foram geradas automaticamente.')
+
     # Get month and year from request, default to current
     today = timezone.now().date()
     try:
@@ -372,6 +380,31 @@ def dashboard(request):
     }
     current_month_name = f"{month_names[month]} {year}"
 
+    # Budget Alerts
+    alerts = []
+    budgets = Budget.objects.filter(user=request.user, period='MENSAL')
+    for budget in budgets:
+        # Calculate total expenses for this category in the current month
+        expense_sum = Transaction.objects.filter(
+            user=request.user,
+            category=budget.category,
+            type='DESPESA',
+            date__range=[start_date, end_date]
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        if budget.limit > 0:
+            percent_used = (expense_sum / budget.limit) * 100
+            if percent_used >= 90:
+                alerts.append({
+                    'category': budget.category.name,
+                    'percent': int(percent_used),
+                    'limit': budget.limit,
+                    'used': expense_sum,
+                    'limit': budget.limit,
+                    'used': expense_sum,
+                    'level': 'danger' if percent_used >= 100 else 'warning'
+                })
+
     context = {
         'recent_transactions': recent_transactions,
         'monthly_income': monthly_income,
@@ -385,6 +418,7 @@ def dashboard(request):
         'next_month': next_month,
         'selected_month': month,
         'selected_year': year,
+        'alerts': alerts,
     }
     return render(request, 'core/dashboard.html', context)
 
@@ -424,6 +458,108 @@ class CategoryDeleteView(LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         return Category.objects.filter(user=self.request.user)
 
+
+@login_required
+def calendar_view(request):
+    # Get month and year
+    today = timezone.now().date()
+    try:
+        month = int(request.GET.get('month', today.month))
+        year = int(request.GET.get('year', today.year))
+    except ValueError:
+        month = today.month
+        year = today.year
+
+    # Navigation logic
+    prev_month = month - 1 if month > 1 else 12
+    prev_year = year if month > 1 else year - 1
+    next_month = month + 1 if month < 12 else 1
+    next_year = year if month < 12 else year + 1
+
+    # Get transactions for the month
+    _, last_day = calendar.monthrange(year, month)
+    start_date = datetime.date(year, month, 1)
+    end_date = datetime.date(year, month, last_day)
+
+    transactions = Transaction.objects.filter(
+        user=request.user,
+        date__range=[start_date, end_date]
+    )
+
+    # Group by day
+    transactions_by_day = {}
+    for tx in transactions:
+        day = tx.date.day
+        if day not in transactions_by_day:
+            transactions_by_day[day] = []
+        transactions_by_day[day].append(tx)
+
+    # Build calendar grid
+    cal = calendar.Calendar(firstweekday=6) # Sunday first
+    month_days = cal.monthdayscalendar(year, month)
+
+    context = {
+        'month_days': month_days,
+        'transactions_by_day': transactions_by_day,
+        'current_month': month,
+        'current_year': year,
+        'prev_month': prev_month,
+        'prev_year': prev_year,
+        'next_month': next_month,
+        'next_year': next_year,
+        'month_name': calendar.month_name[month],
+    }
+    return render(request, 'core/calendar.html', context)
+
+@login_required
+def import_transactions(request):
+    if request.method == 'POST':
+        form = ImportFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = request.FILES['file']
+            try:
+                decoded_file = csv_file.read().decode('utf-8').splitlines()
+                reader = csv.reader(decoded_file)
+                next(reader, None) # Skip header
+                
+                count = 0
+                for row in reader:
+                    if len(row) >= 3:
+                        # Assume format: Date (YYYY-MM-DD), Description, Amount, Category (Optional)
+                        date_str = row[0].strip()
+                        description = row[1].strip()
+                        amount = float(row[2].strip())
+                        
+                        category_name = row[3].strip() if len(row) > 3 else None
+                        
+                        type_ = 'RECEITA' if amount > 0 else 'DESPESA'
+                        
+                        category = None
+                        if category_name:
+                            category, _ = Category.objects.get_or_create(
+                                user=request.user,
+                                name=category_name,
+                                defaults={'type': type_}
+                            )
+                        
+                        Transaction.objects.create(
+                            user=request.user,
+                            date=date_str,
+                            description=description,
+                            amount=abs(amount),
+                            type=type_,
+                            category=category
+                        )
+                        count += 1
+                messages.success(request, f'{count} transações importadas com sucesso!')
+                return redirect('transaction_list')
+            except Exception as e:
+                messages.error(request, f'Erro ao importar arquivo: {e}')
+    else:
+        form = ImportFileForm()
+    
+    return render(request, 'core/import.html', {'form': form})
+
 # Transaction CRUD
 class TransactionListView(LoginRequiredMixin, ListView):
     model = Transaction
@@ -441,6 +577,84 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        
+        # Check for Credit Card Logic
+        payment_method = form.cleaned_data.get('payment_method')
+        if payment_method == 'CREDITO':
+            installments = form.cleaned_data.get('installments')
+            first_due_date = form.cleaned_data.get('first_due_date')
+            total_amount = form.cleaned_data.get('amount')
+            description = form.cleaned_data.get('description')
+            category = form.cleaned_data.get('category')
+            
+            installment_amount = total_amount / installments
+            
+            # Create transactions for each installment
+            for i in range(installments):
+                # Calculate date
+                month = first_due_date.month - 1 + i
+                year = first_due_date.year + month // 12
+                month = month % 12 + 1
+                day = min(first_due_date.day, calendar.monthrange(year, month)[1])
+                due_date = datetime.date(year, month, day)
+                
+                Transaction.objects.create(
+                    user=self.request.user,
+                    category=category,
+                    type='DESPESA',
+                    amount=installment_amount,
+                    date=due_date,
+                    payment_method='CREDITO',
+                    description=f"{description} ({i+1}/{installments})"
+                )
+            
+            messages.success(self.request, f'{installments} parcelas criadas com sucesso!')
+            return redirect(self.success_url)
+        
+        # Check for Recurring Logic
+        recurring = form.cleaned_data.get('recurring')
+        if recurring:
+            frequency = form.cleaned_data.get('frequency')
+            # Calculate next run date based on frequency
+            # For simplicity, next run is today + frequency delta, OR just today if it's due today.
+            # But usually, if I create a recurring transaction today, I want it to repeat starting NEXT period?
+            # Or does it mean "This transaction repeats"?
+            # If I create a transaction today (01/01) and say "Monthly", the next one should be 01/02.
+            
+            # First, save the current transaction
+            response = super().form_valid(form)
+            
+            # Then create the recurring rule
+            next_date = form.instance.date
+            if frequency == 'DIARIO':
+                next_date += datetime.timedelta(days=1)
+            elif frequency == 'SEMANAL':
+                next_date += datetime.timedelta(weeks=1)
+            elif frequency == 'QUINZENAL':
+                next_date += datetime.timedelta(days=15)
+            elif frequency == 'MENSAL':
+                month = next_date.month - 1 + 1
+                year = next_date.year + month // 12
+                month = month % 12 + 1
+                day = min(next_date.day, calendar.monthrange(year, month)[1])
+                next_date = datetime.date(year, month, day)
+            elif frequency == 'ANUAL':
+                next_date = next_date.replace(year=next_date.year + 1)
+
+            RecurringTransaction.objects.create(
+                user=self.request.user,
+                category=form.instance.category,
+                type=form.instance.type,
+                amount=form.instance.amount,
+                payment_method=form.instance.payment_method,
+                frequency=frequency,
+                description=form.instance.description,
+                next_run_date=next_date,
+                active=True
+            )
+            messages.success(self.request, 'Transação recorrente criada com sucesso!')
+            return response
+
         return super().form_valid(form)
 
 class TransactionUpdateView(LoginRequiredMixin, UpdateView):
@@ -749,3 +963,44 @@ class InvestmentDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return Investment.objects.filter(user=self.request.user)
+
+# Goal CRUD
+class GoalListView(LoginRequiredMixin, ListView):
+    model = Goal
+    template_name = 'core/goal_list.html'
+    context_object_name = 'goals'
+
+    def get_queryset(self):
+        return Goal.objects.filter(user=self.request.user)
+
+class GoalCreateView(LoginRequiredMixin, CreateView):
+    model = Goal
+    form_class = GoalForm
+    template_name = 'core/form.html'
+    success_url = reverse_lazy('goal_list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        messages.success(self.request, 'Meta criada com sucesso!')
+        return super().form_valid(form)
+
+class GoalUpdateView(LoginRequiredMixin, UpdateView):
+    model = Goal
+    form_class = GoalForm
+    template_name = 'core/form.html'
+    success_url = reverse_lazy('goal_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Meta atualizada com sucesso!')
+        return super().form_valid(form)
+
+    def get_queryset(self):
+        return Goal.objects.filter(user=self.request.user)
+
+class GoalDeleteView(LoginRequiredMixin, DeleteView):
+    model = Goal
+    template_name = 'core/confirm_delete.html'
+    success_url = reverse_lazy('goal_list')
+
+    def get_queryset(self):
+        return Goal.objects.filter(user=self.request.user)

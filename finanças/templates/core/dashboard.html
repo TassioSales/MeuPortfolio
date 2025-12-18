@@ -55,8 +55,9 @@
 
 <!-- Summary Cards -->
 <div class="row mb-4 g-3">
-    <div class="col-md-4">
-        <div class="card text-white bg-success mb-3 h-100 position-relative overflow-hidden">
+    <!-- Receitas -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card text-white bg-success mb-3 h-100 position-relative overflow-hidden shadow-sm">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
@@ -68,8 +69,9 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-danger mb-3 h-100 position-relative overflow-hidden">
+    <!-- Despesas -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card text-white bg-danger mb-3 h-100 position-relative overflow-hidden shadow-sm">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
@@ -81,13 +83,28 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3 h-100 position-relative overflow-hidden">
+    <!-- Saldo Anterior -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card text-white bg-secondary mb-3 h-100 position-relative overflow-hidden shadow-sm">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <h6 class="card-subtitle mb-2 opacity-75">Saldo (Mês)</h6>
-                        <h3 class="card-title fw-bold">R$ {{ net_balance|floatformat:2 }}</h3>
+                        <h6 class="card-subtitle mb-2 opacity-75">Saldo Anterior</h6>
+                        <h3 class="card-title fw-bold">R$ {{ accumulated_balance|floatformat:2 }}</h3>
+                    </div>
+                    <i class="bi bi-clock-history fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Saldo Atual (Total) -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card text-white bg-primary mb-3 h-100 position-relative overflow-hidden shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="card-subtitle mb-2 opacity-75">Saldo Atual (Total)</h6>
+                        <h3 class="card-title fw-bold">R$ {{ total_balance|floatformat:2 }}</h3>
                     </div>
                     <i class="bi bi-wallet2 fs-1 opacity-50"></i>
                 </div>
@@ -99,7 +116,7 @@
 <div class="row">
     <!-- Charts -->
     <div class="col-lg-8 mb-4">
-        <div class="card h-100">
+        <div class="card h-100 shadow-sm">
             <div class="card-header bg-white py-3">
                 <h5 class="card-title mb-0 fw-bold"><i class="bi bi-graph-up me-2 text-primary"></i>Fluxo de Caixa (6
                     Meses)</h5>
@@ -114,7 +131,7 @@
 
     <!-- Recent Activity -->
     <div class="col-lg-4 mb-4">
-        <div class="card h-100">
+        <div class="card h-100 shadow-sm">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0 fw-bold"><i class="bi bi-clock-history me-2 text-primary"></i>Recentes</h5>
                 <a href="{% url 'transaction_list' %}" class="btn btn-sm btn-outline-primary">Ver Tudo</a>

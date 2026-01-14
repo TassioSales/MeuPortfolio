@@ -98,12 +98,33 @@ class Budget(models.Model):
         return f"Orçamento para {self.category.name}: {self.limit}"
 
 class Investment(models.Model):
+    CATEGORY_CHOICES = [
+        ('VARIABLE', 'Renda Variável'),
+        ('FIXED', 'Renda Fixa'),
+        ('CURRENCY', 'Moedas'),
+    ]
+
+    INDEX_CHOICES = [
+        ('CDI', 'CDI'),
+        ('IPCA', 'IPCA'),
+        ('PRE', 'Pré-fixado'),
+        ('POUPANCA', 'Poupança'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='investments', verbose_name='Usuário')
+    category_type = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='VARIABLE', verbose_name='Tipo de Categoria')
     symbol = models.CharField(max_length=20, verbose_name='Símbolo (Ticker)')
     name = models.CharField(max_length=100, blank=True, verbose_name='Nome do Ativo')
     quantity = models.DecimalField(max_digits=15, decimal_places=4, verbose_name='Quantidade')
     purchase_price = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Preço de Compra')
     date = models.DateField(default=timezone.now, verbose_name='Data da Compra')
+    
+    # Fixed Income Specific
+    fixed_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name='Taxa (%)', help_text="Ex: 120 para 120% do CDI ou 10.5 para 10.5% a.a.")
+    index_type = models.CharField(max_length=10, choices=INDEX_CHOICES, null=True, blank=True, verbose_name='Índice')
+    due_date = models.DateField(null=True, blank=True, verbose_name='Data de Vencimento')
+    tax_free = models.BooleanField(default=False, verbose_name='Isento de IR?')
+    
     transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE, null=True, blank=True, related_name='investment', verbose_name='Transação Associada')
 
     class Meta:
@@ -118,6 +139,7 @@ class Investment(models.Model):
         return self.quantity * self.purchase_price
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
         super().save(*args, **kwargs)
         
         # Create or update associated transaction

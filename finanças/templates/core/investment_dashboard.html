@@ -1,362 +1,281 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row mb-4 align-items-center">
-    <div class="col-md-8">
-        <h2 class="fw-bold text-dark">
-            <i class="bi bi-graph-up-arrow me-2 text-primary"></i>Investimentos
-        </h2>
-        <p class="text-muted">Acompanhe a performance da sua carteira de ativos.</p>
-    </div>
-    <div class="col-md-4 text-end">
-        <a href="{% url 'investment_add' %}" class="btn btn-primary shadow-sm">
-            <i class="bi bi-plus-lg me-1"></i>Novo Investimento
-        </a>
-    </div>
-</div>
-
-<!-- Summary Cards -->
-<div class="row mb-4 g-3">
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-muted text-uppercase small fw-bold mb-2">Total Investido</h6>
-                <h3 class="fw-bold text-dark mb-0">R$ {{ total_invested|floatformat:2 }}</h3>
-            </div>
+<div class="animate-entrance">
+    <!-- Header Section -->
+    <div class="row mb-5 align-items-end">
+        <div class="col-md-7">
+            <h1 class="display-5 fw-bold mb-2">Carteira de Ativos</h1>
+            <p class="text-muted mb-0">Gestão de performance e alocação estratégica de patrimônio.</p>
+        </div>
+        <div class="col-md-5 text-end">
+            <a href="{% url 'investment_add' %}" class="btn-premium px-4">
+                <i class="bi bi-plus-lg me-2"></i> Novo Ativo
+            </a>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-muted text-uppercase small fw-bold mb-2">Valor Atual</h6>
-                <h3 class="fw-bold text-primary mb-0">R$ {{ total_current_value|floatformat:2 }}</h3>
+
+    <!-- Summary KPI Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-xl-4 col-md-6">
+            <div class="glass-card p-4">
+                <h6 class="text-muted fw-bold small text-uppercase mb-2">Total Investido</h6>
+                <div class="d-flex align-items-baseline gap-2">
+                    <h2 class="fw-bold mb-0">R$ {{ total_invested|floatformat:2 }}</h2>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-muted text-uppercase small fw-bold mb-2">Rentabilidade</h6>
-                <h3 class="fw-bold {% if roi >= 0 %}text-success{% else %}text-danger{% endif %} mb-0">
-                    {% if roi >= 0 %}+{% endif %}R$ {{ roi|floatformat:2 }}
-                    <small class="fs-6 text-muted ms-1">({{ roi_pct|floatformat:2 }}%)</small>
-                </h3>
+        <div class="col-xl-4 col-md-6">
+            <div class="glass-card p-4">
+                <h6 class="text-muted fw-bold small text-uppercase mb-2">Valor Atual</h6>
+                <div class="d-flex align-items-baseline gap-2">
+                    <h2 class="fw-bold text-primary mb-0">R$ {{ total_current_value|floatformat:2 }}</h2>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="row">
-    <!-- Chart & Search -->
-    <div class="col-md-12 mb-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 border-end">
-                        <h5 class="card-title fw-bold mb-3 text-dark">Distribuição</h5>
-                        <div style="max-height: 250px; position: relative;">
-                            <canvas id="portfolioPieChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-md-6 ps-md-4">
-                        <h5 class="card-title fw-bold mb-3 text-dark">Consultar Cotação</h5>
-                        <div class="input-group mb-3">
-                            <input type="text" id="tickerInput" class="form-control" placeholder="Ex: PETR4, ITUB4">
-                            <button class="btn btn-outline-primary" type="button" id="searchButton">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
-
-                        <div id="searchLoading" class="d-none text-center py-3">
-                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                            <span class="ms-2 text-muted">Buscando...</span>
-                        </div>
-
-                        <div id="searchResult" class="d-none p-3 bg-light rounded border">
-                            <!-- Conteúdo injetado via JS -->
-                        </div>
-
-                        <div id="searchError" class="d-none alert alert-danger mt-3 py-2 small">
-                            <i class="bi bi-exclamation-circle me-1"></i>Ativo não encontrado.
-                        </div>
-                    </div>
+        <div class="col-xl-4 col-md-12">
+            <div class="glass-card p-4"
+                style="background: {% if roi >= 0 %}rgba(16, 185, 129, 0.05){% else %}rgba(239, 68, 68, 0.05){% endif %};">
+                <h6 class="text-muted fw-bold small text-uppercase mb-2">Resultado (ROI)</h6>
+                <div class="d-flex align-items-center gap-3">
+                    <h2 class="fw-bold mb-0 {% if roi >= 0 %}text-success{% else %}text-danger{% endif %}">
+                        {% if roi >= 0 %}+{% endif %}R$ {{ roi|floatformat:2 }}
+                    </h2>
+                    <span class="indicator-pill {% if roi >= 0 %}indicator-up{% else %}indicator-down{% endif %}">
+                        {{ roi_pct|floatformat:2 }}%
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Table -->
-    <div class="col-md-12">
-        <div class="card shadow-sm border-0 overflow-hidden">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="py-3 ps-4 text-uppercase text-muted small fw-bold">Ativo</th>
-                                <th class="py-3 text-uppercase text-muted small fw-bold">Qtd.</th>
-                                <th class="py-3 text-uppercase text-muted small fw-bold">Preço Médio</th>
-                                <th class="py-3 text-uppercase text-muted small fw-bold">Total Investido</th>
-                                <th class="py-3 text-uppercase text-muted small fw-bold">Preço Atual</th>
-                                <th class="py-3 text-uppercase text-muted small fw-bold">Valor Atual</th>
-                                <th class="py-3 pe-4 text-end text-uppercase text-muted small fw-bold">Lucro/Prejuízo
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in portfolio %}
-                            <tr class="position-relative" style="transition: background-color 0.2s;">
-                                <td class="ps-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center me-3 fw-bold shadow-sm border"
-                                            style="width: 42px; height: 42px; font-size: 0.9rem;">
-                                            {{ item.investment.symbol|slice:":2" }}
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold text-dark">
-                                                <a href="{% url 'investment_detail' item.investment.symbol %}"
-                                                    class="text-decoration-none text-dark stretched-link">
-                                                    {{ item.investment.symbol }}
-                                                </a>
-                                            </div>
-                                            <div class="text-muted small"
-                                                style="font-size: 0.8rem; letter-spacing: 0.3px;">
-                                                {% if item.investment.name %}
-                                                {{ item.investment.name|truncatechars:25 }}
-                                                {% else %}
-                                                {{ item.investment.symbol }}
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="fw-medium text-secondary">{{ item.investment.quantity|floatformat:"-4" }}
-                                </td>
-                                <td class="text-secondary">R$ {{ item.investment.purchase_price|floatformat:2 }}</td>
-                                <td class="text-secondary fw-medium">R$ {{ item.invested_value|floatformat:2 }}</td>
-                                <td class="fw-medium">R$ {{ item.current_price|floatformat:2 }}</td>
-                                <td class="fw-bold text-dark">R$ {{ item.current_value|floatformat:2 }}</td>
-                                <td class="pe-4 text-end">
-                                    {% if item.profit_loss >= 0 %}
-                                    {% with pl=item.profit_loss|floatformat:2 %}
-                                    {% with pl_pct=item.profit_loss_pct|floatformat:2 %}
-                                    <span class="fw-bold text-success d-block mb-1">+R$ {{ pl }}</span>
-                                    <span
-                                        class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2">
-                                        <i class="bi bi-arrow-up-short"></i>{{ pl_pct }}%
-                                    </span>
-                                    {% endwith %}
-                                    {% endwith %}
-                                    {% else %}
-                                    {% with pl=item.profit_loss|floatformat:2 %}
-                                    {% with pl_pct=item.profit_loss_pct|floatformat:2 %}
-                                    <span class="fw-bold text-danger d-block mb-1">R$ {{ pl }}</span>
-                                    <span
-                                        class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2">
-                                        <i class="bi bi-arrow-down-short"></i>{{ pl_pct }}%
-                                    </span>
-                                    {% endwith %}
-                                    {% endwith %}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <div class="text-muted">
-                                        <i class="bi bi-graph-up fs-1 d-block mb-3 opacity-50"></i>
-                                        <p class="mb-2">Nenhum investimento encontrado.</p>
-                                        <a href="{% url 'investment_add' %}"
-                                            class="btn btn-sm btn-outline-primary mt-2">
-                                            Adicionar primeiro ativo
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+    <div class="row g-4 mb-5">
+        <!-- Distribution Widget -->
+        <div class="col-lg-7">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-4">Alocação por Ativo</h5>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="portfolioPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Smart Search Widget -->
+        <div class="col-lg-5">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-4">Market Intelligence</h5>
+                <div class="input-group mb-4">
+                    <span class="input-group-text border-0 bg-light-soft text-muted"><i class="bi bi-search"></i></span>
+                    <input type="text" id="tickerInput" class="form-control border-0 bg-light-soft"
+                        placeholder="TICKER (ex: PETR4, BTC)...">
+                    <button class="btn btn-primary shadow-none px-4" type="button" id="searchButton">Consultar</button>
+                </div>
+
+                <div id="searchLoading" class="d-none text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+
+                <div id="searchResult" class="d-none animate-entrance">
+                    <!-- Dynamic content -->
+                </div>
+
+                <div id="searchError"
+                    class="d-none text-center py-4 text-danger glass-card border-danger bg-danger-subtle">
+                    Ativo não encontrado ou erro na API.
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Assets Table -->
+    <div class="glass-card p-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="premium-table mb-0">
+                <thead>
+                    <tr class="text-muted small text-uppercase fw-bold">
+                        <th class="ps-4">Ativo</th>
+                        <th>Quantidade</th>
+                        <th>Preço Médio</th>
+                        <th>Valor Atual</th>
+                        <th class="text-end pe-4">Lucro / Perda</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in portfolio %}
+                    <tr class="animate-entrance" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="brand-icon"
+                                    style="width: 48px; height: 48px; border-radius: 12px; font-weight: 800; background: rgba(99, 102, 241, 0.1); color: var(--brand-primary); box-shadow: none;">
+                                    {{ item.investment.symbol|slice:":2" }}
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-main">{{ item.investment.symbol }}</div>
+                                    <small class="text-muted">{{
+                                        item.investment.name|default:item.investment.symbol|truncatechars:20 }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="fw-medium">{{ item.investment.quantity|floatformat:"-4" }}</td>
+                        <td class="text-muted">R$ {{ item.investment.purchase_price|floatformat:2 }}</td>
+                        <td>
+                            <div class="fw-bold">R$ {{ item.current_value|floatformat:2 }}</div>
+                            <small class="text-muted">Cotação: R$ {{ item.current_price|floatformat:2 }}</small>
+                        </td>
+                        <td class="pe-4 text-end">
+                            <div
+                                class="fw-bold {% if item.profit_loss >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                {% if item.profit_loss >= 0 %}+{% endif %}R$ {{ item.profit_loss|floatformat:2 }}
+                            </div>
+                            <span
+                                class="indicator-pill {% if item.profit_loss >= 0 %}indicator-up{% else %}indicator-down{% endif %} py-0 px-2 mt-1"
+                                style="font-size: 0.7rem;">
+                                {{ item.profit_loss_pct|floatformat:2 }}%
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="opacity-50">
+                                <i class="bi bi-graph-up-arrow fs-1 d-block mb-3"></i>
+                                <p class="fw-bold mb-0">Carteira Vazia</p>
+                                <a href="{% url 'investment_add' %}" class="small text-primary">Começar a investir →</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<!-- Chart.js + Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .bg-light-soft {
+        background: rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="dark"] .bg-light-soft {
+        background: rgba(255, 255, 255, 0.03);
+    }
+</style>
+
 <script>
-    // Gráfico de Pizza
-    const ctx = document.getElementById('portfolioPieChart');
-    if (ctx) {
-        try {
+    document.addEventListener('DOMContentLoaded', function () {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+        // Distribution Chart
+        const pieCtx = document.getElementById('portfolioPieChart');
+        if (pieCtx) {
             const labels = JSON.parse('{{ chart_labels|safe }}'.replace(/'/g, '"') || '[]');
             const data = JSON.parse('{{ chart_data|safe }}'.replace(/'/g, '"') || '[]');
 
-            if (labels.length > 0 && data.length > 0) {
-                new Chart(ctx.getContext('2d'), {
+            if (labels.length > 0) {
+                new Chart(pieCtx, {
                     type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
                             data: data,
-                            backgroundColor: ['#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545', '#fd7e14', '#198754', '#ffc107'],
-                            borderWidth: 0
+                            backgroundColor: ['#6366f1', '#a855f7', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#64748b'],
+                            borderWidth: 2,
+                            borderColor: isDark ? '#020617' : '#ffffff'
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        cutout: '70%',
                         plugins: {
                             legend: {
                                 position: 'right',
-                                labels: { boxWidth: 12 }
+                                labels: {
+                                    color: '#94a3b8',
+                                    font: { family: 'Plus Jakarta Sans', weight: '600' },
+                                    padding: 20
+                                }
                             }
                         }
                     }
                 });
             } else {
-                ctx.style.display = 'none';
-                ctx.parentElement.innerHTML = '<p class="text-center text-muted mt-5 small">Sem dados para exibir</p>';
+                pieCtx.parentElement.innerHTML = '<div class="h-100 d-flex align-items-center justify-content-center text-muted opacity-50">Sem dados</div>';
             }
-        } catch (e) {
-            console.error("Erro no gráfico:", e);
         }
-    }
 
-    // Busca de cotações
-    const searchButton = document.getElementById('searchButton');
-    const tickerInput = document.getElementById('tickerInput');
-    const loadingDiv = document.getElementById('searchLoading');
-    const resultDiv = document.getElementById('searchResult');
-    const errorDiv = document.getElementById('searchError');
+        // Intelligence Search
+        const searchBtn = document.getElementById('searchButton');
+        const searchInput = document.getElementById('tickerInput');
 
-    function performSearch() {
-        const ticker = tickerInput.value.trim().toUpperCase();
-        if (!ticker) return;
+        async function runSearch() {
+            const ticker = searchInput.value.trim().toUpperCase();
+            if (!ticker) return;
 
-        loadingDiv.classList.remove('d-none');
-        resultDiv.classList.add('d-none');
-        errorDiv.classList.add('d-none');
+            document.getElementById('searchLoading').classList.remove('d-none');
+            document.getElementById('searchResult').classList.add('d-none');
+            document.getElementById('searchError').classList.add('d-none');
 
-        fetch(`{% url 'search_ticker' %}?ticker=${ticker}`)
-            .then(r => r.json())
-            .then(d => {
-                loadingDiv.classList.add('d-none');
+            try {
+                const res = await fetch(`{% url 'search_ticker' %}?ticker=${ticker}`);
+                const d = await res.json();
+                document.getElementById('searchLoading').classList.add('d-none');
 
-                if (d.error) {
-                    errorDiv.classList.remove('d-none');
-                    return;
-                }
+                if (d.error) throw new Error();
 
-                const fmt = (val) => (val == null) ? '-' : val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-                // Variação diária
-                let changeHtml = '-';
-                let colorClass = 'text-muted';
-                if (d.change_percent !== undefined && d.change_percent !== null) {
-                    colorClass = d.change_percent >= 0 ? 'text-success' : 'text-danger';
-                    const sign = d.change_percent >= 0 ? '+' : '';
-                    changeHtml = `${sign}${fmt(d.change_percent)}%`;
-                }
-
-                const extraInfo = `
-                    <div class="mt-3 pt-3 border-top">
-                        <div class="row text-center">
-                            <div class="col-4 border-end">
-                                <div class="text-muted text-uppercase small">Variação</div>
-                                <div class="${colorClass} fw-bold">${changeHtml}</div>
+                const changeClass = d.change_percent >= 0 ? 'text-success' : 'text-danger';
+                document.getElementById('searchResult').innerHTML = `
+                    <div class="widget-result glass-card p-3 border-0 bg-light-soft">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h4 class="fw-bold mb-0">${d.symbol}</h4>
+                                <small class="text-muted">${d.name || ''}</small>
                             </div>
-                            <div class="col-4 border-end">
-                                <div class="text-muted text-uppercase small">Dia (Min/Máx)</div>
-                                <div class="text-dark fw-medium small">${fmt(d.day_low)} / ${fmt(d.day_high)}</div>
+                            <div class="text-end">
+                                <div class="fs-4 fw-bold">R$ ${d.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                                <span class="indicator-pill ${d.change_percent >= 0 ? 'indicator-up' : 'indicator-down'} py-0 px-2 small">
+                                    ${d.change_percent >= 0 ? '+' : ''}${d.change_percent.toFixed(2)}%
+                                </span>
                             </div>
-                            <div class="col-4">
-                                <div class="text-muted text-uppercase small">52 Semanas</div>
-                                <div class="text-dark fw-medium small">${fmt(d.year_low)} / ${fmt(d.year_high)}</div>
-                            </div>
+                        </div>
+                        <div style="height: 120px;">
+                            <canvas id="miniChart"></canvas>
                         </div>
                     </div>
                 `;
+                document.getElementById('searchResult').classList.remove('d-none');
 
-                resultDiv.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <h6 class="fw-bold mb-0">${d.symbol}</h6>
-                            <small class="text-muted">${d.name || ''}</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="badge bg-success mb-1">Cotação Atual</span>
-                            <div class="fw-bold fs-5 text-dark">R$ ${fmt(d.price)}</div>
-                        </div>
-                    </div>
-                    ${extraInfo}
-                    <!-- Search Chart -->
-                    <div style="height: 200px; width: 100%; margin-top: 15px;">
-                        <canvas id="searchChart"></canvas>
-                    </div>
-                `;
-                resultDiv.classList.remove('d-none');
-
-                // Render Chart
-                if (d.chart_labels && d.chart_data && d.chart_labels.length > 0) {
-                    setTimeout(() => {
-                        const ctxSearch = document.getElementById('searchChart');
-                        if (ctxSearch) {
-                            // Destroy previous instance if exists
-                            if (window.searchChartInstance) {
-                                window.searchChartInstance.destroy();
-                            }
-
-                            const gradient = ctxSearch.getContext('2d').createLinearGradient(0, 0, 0, 200);
-                            gradient.addColorStop(0, 'rgba(13, 110, 253, 0.3)');
-                            gradient.addColorStop(1, 'rgba(13, 110, 253, 0.0)');
-
-                            window.searchChartInstance = new Chart(ctxSearch, {
-                                type: 'line',
-                                data: {
-                                    labels: d.chart_labels,
-                                    datasets: [{
-                                        label: 'Preço',
-                                        data: d.chart_data,
-                                        borderColor: '#0d6efd',
-                                        backgroundColor: gradient,
-                                        borderWidth: 2,
-                                        fill: true,
-                                        tension: 0.4,
-                                        pointRadius: 0,
-                                        pointHoverRadius: 4
-                                    }]
-                                },
-                                options: {
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    plugins: { legend: { display: false } },
-                                    scales: {
-                                        x: { display: false },
-                                        y: { display: false } // Minimalist look
-                                    },
-                                    interaction: {
-                                        mode: 'index',
-                                        intersect: false,
-                                    },
-                                }
-                            });
+                if (d.chart_data) {
+                    new Chart(document.getElementById('miniChart'), {
+                        type: 'line',
+                        data: {
+                            labels: d.chart_labels,
+                            datasets: [{
+                                data: d.chart_data,
+                                borderColor: d.change_percent >= 0 ? '#10b981' : '#ef4444',
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                fill: true,
+                                backgroundColor: d.change_percent >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: { x: { display: false }, y: { display: false } }
                         }
-                    }, 100);
+                    });
                 }
-            })
-            .catch(err => {
-                console.error(err);
-                loadingDiv.classList.add('d-none');
-                errorDiv.classList.remove('d-none');
-            });
-    }
+            } catch (e) {
+                document.getElementById('searchLoading').classList.add('d-none');
+                document.getElementById('searchError').classList.remove('d-none');
+            }
+        }
 
-    if (searchButton) searchButton.addEventListener('click', performSearch);
-    if (tickerInput) {
-        tickerInput.addEventListener('keypress', e => {
-            if (e.key === 'Enter') performSearch();
-        });
-    }
+        searchBtn.addEventListener('click', runSearch);
+        searchInput.addEventListener('keypress', e => e.key === 'Enter' && runSearch());
+    });
 </script>
 {% endblock %}

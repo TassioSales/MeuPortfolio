@@ -1,232 +1,222 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row mb-4 align-items-center">
-    <div class="col-md-8">
-        <h2 class="fw-bold text-dark">
-            <i class="bi bi-speedometer2 me-2 text-primary"></i>Painel de Controle
-        </h2>
-        <p class="text-muted">Bem-vindo de volta, {{ user.username }}! Aqui está o resumo das suas finanças.</p>
+<div class="animate-entrance">
+    <!-- Header Summary Section -->
+    <div class="row mb-5 align-items-end">
+        <div class="col-md-7">
+            <h1 class="display-5 fw-bold mb-2">Painel de Controle</h1>
+            <p class="text-muted mb-0">
+                <i class="bi bi-stars text-primary me-2"></i>
+                Bem-vindo, <span class="text-main fw-bold">{{ user.username }}</span>. Seus dados estão atualizados para
+                {{ current_month_name }}.
+            </p>
+        </div>
+        <div class="col-md-5 text-end">
+            <div class="d-flex justify-content-end gap-2">
+                <a href="?month={{ previous_month.month }}&year={{ previous_month.year }}"
+                    class="btn btn-light glass-card border px-3">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+                <div class="glass-card border px-4 py-2 d-flex align-items-center gap-3">
+                    <i class="bi bi-calendar3 text-primary"></i>
+                    <span class="fw-bold text-capitalize text-main">{{ current_month_name }}</span>
+                </div>
+                <a href="?month={{ next_month.month }}&year={{ next_month.year }}"
+                    class="btn btn-light glass-card border px-3">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+                <a href="{% url 'transaction_add' %}" class="btn-premium ms-3">
+                    <i class="bi bi-plus-lg"></i> Novo
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4 text-end">
-        <a href="{% url 'transaction_add' %}" class="btn btn-primary shadow-sm">
-            <i class="bi bi-plus-lg me-1"></i>Nova Transação
-        </a>
-    </div>
-</div>
 
-<!-- Alerts -->
-{% if alerts %}
-<div class="row mb-4">
-    <div class="col-12">
-        {% for alert in alerts %}
-        <div class="alert alert-{{ alert.level }} alert-dismissible fade show shadow-sm" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
-                <div>
-                    <strong>Atenção:</strong> Você já consumiu <strong>{{ alert.percent }}%</strong> do orçamento de
-                    <strong>{{ alert.category }}</strong>.
-                    <div class="small mt-1">
-                        Gasto: R$ {{ alert.used|floatformat:2 }} / Limite: R$ {{ alert.limit|floatformat:2 }}
+    <!-- Main KPIs Row -->
+    <div class="row g-4 mb-5">
+        <div class="col-xl-3 col-md-6">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="brand-icon"
+                        style="background: rgba(16, 185, 129, 0.1); color: var(--success); box-shadow: none;">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
+                    {% if monthly_income_change >= 0 %}
+                    <span class="indicator-pill indicator-up">{{ monthly_income_change|floatformat:0 }}%</span>
+                    {% else %}
+                    <span class="indicator-pill indicator-down">{{ monthly_income_change|floatformat:0 }}%</span>
+                    {% endif %}
+                </div>
+                <h6 class="text-muted fw-bold small text-uppercase mb-1">Receitas</h6>
+                <h2 class="fw-bold mb-0">R$ {{ monthly_income|floatformat:2 }}</h2>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="brand-icon"
+                        style="background: rgba(239, 68, 68, 0.1); color: var(--danger); box-shadow: none;">
+                        <i class="bi bi-arrow-down-left"></i>
+                    </div>
+                    {% if monthly_expense_change >= 0 %}
+                    <span class="indicator-pill indicator-up">{{ monthly_expense_change|floatformat:0 }}%</span>
+                    {% else %}
+                    <span class="indicator-pill indicator-down">{{ monthly_expense_change|floatformat:0 }}%</span>
+                    {% endif %}
+                </div>
+                <h6 class="text-muted fw-bold small text-uppercase mb-1">Despesas</h6>
+                <h2 class="fw-bold mb-0">R$ {{ monthly_expense|floatformat:2 }}</h2>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="brand-icon"
+                        style="background: rgba(59, 130, 246, 0.1); color: var(--info); box-shadow: none;">
+                        <i class="bi bi-hourglass-split"></i>
                     </div>
                 </div>
+                <h6 class="text-muted fw-bold small text-uppercase mb-1">Saldo Anterior</h6>
+                <h2 class="fw-bold mb-0">R$ {{ accumulated_balance|floatformat:2 }}</h2>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        {% endfor %}
+        <div class="col-xl-3 col-md-6">
+            <div class="glass-card p-4 h-100" style="background: var(--brand-gradient);">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="brand-icon" style="background: rgba(255,255,255,0.2); color: white; box-shadow: none;">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                </div>
+                <h6 class="text-white opacity-75 fw-bold small text-uppercase mb-1">Saldo Total</h6>
+                <h2 class="text-white fw-bold mb-0">R$ {{ total_balance|floatformat:2 }}</h2>
+            </div>
+        </div>
     </div>
-</div>
-{% endif %}
 
-<!-- Month Navigation -->
-<div class="d-flex justify-content-center align-items-center mb-4 bg-white py-2 rounded shadow-sm border">
-    <a href="?month={{ previous_month.month }}&year={{ previous_month.year }}"
-        class="btn btn-outline-primary btn-sm me-3 border-0">
-        <i class="bi bi-chevron-left"></i> Anterior
-    </a>
-    <h5 class="fw-bold text-dark m-0 text-capitalize d-flex align-items-center">
-        <i class="bi bi-calendar-event me-2 text-muted"></i> {{ current_month_name }}
-    </h5>
-    <a href="?month={{ next_month.month }}&year={{ next_month.year }}"
-        class="btn btn-outline-primary btn-sm ms-3 border-0">
-        Próximo <i class="bi bi-chevron-right"></i>
-    </a>
-</div>
-
-<!-- Summary Cards -->
-<div class="row mb-4 g-3">
-    <!-- Receitas -->
-    <div class="col-xl-3 col-md-6">
-        <div class="card text-white bg-success mb-3 h-100 position-relative overflow-hidden shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="card-subtitle mb-2 opacity-75">Receitas (Mês)</h6>
-                        <h3 class="card-title fw-bold">R$ {{ monthly_income|floatformat:2 }}</h3>
+    <!-- Charts & Activity Group -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Fluxo Financeiro</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm glass-card border px-3 dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown">
+                            Últimos 6 meses
+                        </button>
                     </div>
-                    <i class="bi bi-arrow-up-circle fs-1 opacity-50"></i>
                 </div>
-            </div>
-        </div>
-    </div>
-    <!-- Despesas -->
-    <div class="col-xl-3 col-md-6">
-        <div class="card text-white bg-danger mb-3 h-100 position-relative overflow-hidden shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="card-subtitle mb-2 opacity-75">Despesas (Mês)</h6>
-                        <h3 class="card-title fw-bold">R$ {{ monthly_expense|floatformat:2 }}</h3>
-                    </div>
-                    <i class="bi bi-arrow-down-circle fs-1 opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Saldo Anterior -->
-    <div class="col-xl-3 col-md-6">
-        <div class="card text-white bg-secondary mb-3 h-100 position-relative overflow-hidden shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="card-subtitle mb-2 opacity-75">Saldo Anterior</h6>
-                        <h3 class="card-title fw-bold">R$ {{ accumulated_balance|floatformat:2 }}</h3>
-                    </div>
-                    <i class="bi bi-clock-history fs-1 opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Saldo Atual (Total) -->
-    <div class="col-xl-3 col-md-6">
-        <div class="card text-white bg-primary mb-3 h-100 position-relative overflow-hidden shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="card-subtitle mb-2 opacity-75">Saldo Atual (Total)</h6>
-                        <h3 class="card-title fw-bold">R$ {{ total_balance|floatformat:2 }}</h3>
-                    </div>
-                    <i class="bi bi-wallet2 fs-1 opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <!-- Charts -->
-    <div class="col-lg-8 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-header bg-white py-3">
-                <h5 class="card-title mb-0 fw-bold"><i class="bi bi-graph-up me-2 text-primary"></i>Fluxo de Caixa (6
-                    Meses)</h5>
-            </div>
-            <div class="card-body">
-                <div style="position: relative; height: 300px; width: 100%;">
+                <div style="height: 350px;">
                     <canvas id="cashFlowChart"></canvas>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Recent Activity -->
-    <div class="col-lg-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0 fw-bold"><i class="bi bi-clock-history me-2 text-primary"></i>Recentes</h5>
-                <a href="{% url 'transaction_list' %}" class="btn btn-sm btn-outline-primary">Ver Tudo</a>
-            </div>
-            <div class="list-group list-group-flush">
-                {% for transaction in recent_transactions %}
-                <div class="list-group-item border-0 border-bottom py-3">
-                    <div class="d-flex w-100 justify-content-between align-items-center mb-1">
-                        <div class="d-flex align-items-center">
+        <div class="col-lg-4">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Atividades</h5>
+                    <a href="{% url 'transaction_list' %}" class="small fw-bold text-primary">Ver Tudo</a>
+                </div>
+
+                <div class="list-group list-group-flush gap-3">
+                    {% for transaction in recent_transactions %}
+                    <div
+                        class="d-flex align-items-center gap-3 p-2 bg-light-soft rounded-4 transition-all hover-translate">
+                        <div class="brand-icon"
+                            style="width: 48px; height: 48px; flex-shrink: 0; background: {% if transaction.type == 'RECEITA' %}rgba(16, 185, 129, 0.1){% else %}rgba(239, 68, 68, 0.1){% endif %}; color: {% if transaction.type == 'RECEITA' %}var(--success){% else %}var(--danger){% endif %}; box-shadow: none;">
+                            <i
+                                class="bi {% if transaction.type == 'RECEITA' %}bi-plus-circle{% else %}bi-dash-circle{% endif %}"></i>
+                        </div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h6 class="mb-0 fw-bold text-main text-truncate">{{ transaction.description }}</h6>
+                            <small class="text-muted">{{ transaction.date|date:"d M" }} • {{ transaction.category.name|default:"Geral" }}</small>
+                        </div>
+                        <div class="text-end">
                             <div
-                                class="rounded-circle p-2 me-3 {% if transaction.type == 'RECEITA' %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %}">
-                                <i
-                                    class="bi {% if transaction.type == 'RECEITA' %}bi-arrow-up{% else %}bi-arrow-down{% endif %} fs-5"></i>
-                            </div>
-                            <div>
-                                <h6 class="mb-0 fw-semibold text-dark">{{ transaction.description }}</h6>
-                                <small class="text-muted">
-                                    {{ transaction.date|date:"d/m/Y" }} •
-                                    {% if transaction.category %}
-                                    {{ transaction.category.name }}
-                                    {% else %}
-                                    -
-                                    {% endif %}
-                                </small>
+                                class="fw-bold {% if transaction.type == 'RECEITA' %}text-success{% else %}text-danger{% endif %}">
+                                {% if transaction.type == 'DESPESA' %}-{% endif %}R${{ transaction.amount|floatformat:0 }}
                             </div>
                         </div>
-                        <span
-                            class="fw-bold {% if transaction.type == 'RECEITA' %}text-success{% else %}text-danger{% endif %}">
-                            {% if transaction.type == 'DESPESA' %}-{% endif %}R$ {{ transaction.amount|floatformat:2 }}
-                        </span>
                     </div>
+                    {% empty %}
+                    <div class="text-center py-5 text-muted opacity-50">
+                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                        Vazio
+                    </div>
+                    {% endfor %}
                 </div>
-                {% empty %}
-                <div class="text-center py-4 text-muted">
-                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                    Nenhuma transação recente neste mês.
-                </div>
-                {% endfor %}
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    const ctx = document.getElementById('cashFlowChart').getContext('2d');
-    const labels = JSON.parse('{{ chart_labels|safe }}');
-    const dataIncome = JSON.parse('{{ chart_income|safe }}');
-    const dataExpense = JSON.parse('{{ chart_expense|safe }}');
+<style>
+    .bg-light-soft {
+        background: rgba(0, 0, 0, 0.02);
+    }
 
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Receitas',
-                    data: dataIncome,
-                    backgroundColor: 'rgba(25, 135, 84, 0.7)',
-                    borderColor: 'rgba(25, 135, 84, 1)',
-                    borderWidth: 1,
-                    borderRadius: 4
-                },
-                {
-                    label: 'Despesas',
-                    data: dataExpense,
-                    backgroundColor: 'rgba(220, 53, 69, 0.7)',
-                    borderColor: 'rgba(220, 53, 69, 1)',
-                    borderWidth: 1,
-                    borderRadius: 4
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        borderDash: [2, 4],
-                        color: '#e9ecef'
+    [data-theme="dark"] .bg-light-soft {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .hover-translate:hover {
+        transform: translateX(5px);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const ctx = document.getElementById('cashFlowChart').getContext('2d');
+        const labels = JSON.parse('{{ chart_labels|safe }}');
+        const dataIncome = JSON.parse('{{ chart_income|safe }}');
+        const dataExpense = JSON.parse('{{ chart_expense|safe }}');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Receitas',
+                        data: dataIncome,
+                        backgroundColor: '#10b981',
+                        borderRadius: 8,
+                        barThickness: 15,
+                    },
+                    {
+                        label: 'Despesas',
+                        data: dataExpense,
+                        backgroundColor: '#ef4444',
+                        borderRadius: 8,
+                        barThickness: 15,
                     }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
                 },
-                x: {
-                    grid: {
-                        display: false
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                            drawBorder: false
+                        },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8' }
                     }
                 }
             }
-        }
+        });
     });
 </script>
 {% endblock %}

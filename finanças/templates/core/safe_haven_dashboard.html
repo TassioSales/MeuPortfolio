@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="animate-entrance">
+    <!-- Header Section -->
+    <div class="row mb-5 align-items-end">
+        <div class="col-md-7">
+            <h1 class="display-5 fw-bold mb-2">Porto Seguro</h1>
+            <p class="text-muted mb-0">Gestão de ativos de baixa volatilidade, Renda Fixa e reserva de moedas.</p>
+        </div>
+        <div class="col-md-5 text-end">
+            <a href="{% url 'investment_add' %}" class="btn-premium px-4">
+                <i class="bi bi-shield-plus me-2"></i> Adicionar Aporte
+            </a>
+        </div>
+    </div>
+
+    <!-- Real-time Rates Header -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center border-0" style="background: rgba(99, 102, 241, 0.03);">
+                <h6 class="text-muted fw-bold small text-uppercase mb-2">Dólar Comercial</h6>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                    <span class="fs-4 fw-bold">R$ {{ usd_rate|floatformat:2 }}</span>
+                    <i class="bi bi-currency-dollar text-primary"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center border-0" style="background: rgba(99, 102, 241, 0.03);">
+                <h6 class="text-muted fw-bold small text-uppercase mb-2">Euro Comercial</h6>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                    <span class="fs-4 fw-bold">R$ {{ eur_rate|floatformat:2 }}</span>
+                    <i class="bi bi-currency-euro text-primary"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center border-0" style="background: rgba(16, 185, 129, 0.03);">
+                <h6 class="text-muted fw-bold small text-uppercase mb-2">SELIC / CDI (Meta)</h6>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                    <span class="fs-4 fw-bold text-success">{{ cdi_rate }}%</span>
+                    <small class="text-muted fw-bold">a.a.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Assets Table -->
+        <div class="col-lg-8">
+            <div class="glass-card p-0 mb-4 overflow-hidden">
+                <div class="p-4 border-bottom">
+                    <h5 class="fw-bold mb-0">Ativos de Renda Fixa</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="premium-table mb-0">
+                        <thead>
+                            <tr class="text-muted small text-uppercase fw-bold">
+                                <th class="ps-4">Título</th>
+                                <th>Rentabilidade</th>
+                                <th>Investido</th>
+                                <th>Saldo Estimado</th>
+                                <th class="text-end pe-4">Ganho Absoluto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in fixed_assets %}
+                            <tr class="animate-entrance" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
+                                <td class="ps-4">
+                                    <div class="fw-bold text-main">{{ item.investment.symbol }}</div>
+                                    <small class="text-muted">{{ item.investment.name|default:'-'|truncatechars:20
+                                        }}</small>
+                                </td>
+                                <td>
+                                    <span class="indicator-pill indicator-up py-0 px-2" style="font-size: 0.8rem;">
+                                        {{ item.rate_display }}
+                                    </span>
+                                </td>
+                                <td class="text-muted">R$ {{ item.investment.total_cost|floatformat:2 }}</td>
+                                <td class="fw-bold">R$ {{ item.current_value|floatformat:2 }}</td>
+                                <td class="pe-4 text-end">
+                                    <div class="fw-bold text-success">+ R$ {{ item.gain|floatformat:2 }}</div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Sem títulos registrados.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% if fixed_assets %}
+                        <tfoot class="bg-light-soft border-top">
+                            <tr class="fw-bold">
+                                <td colspan="2" class="ps-4 text-end text-muted small uppercase">Patrimônio em Renda
+                                    Fixa:</td>
+                                <td class="text-muted">R$ {{ total_fixed_invested|floatformat:2 }}</td>
+                                <td class="text-primary fs-5">R$ {{ total_fixed_current|floatformat:2 }}</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+
+            <!-- Currencies Table -->
+            <div class="glass-card p-0 overflow-hidden">
+                <div class="p-4 border-bottom">
+                    <h5 class="fw-bold mb-0">Proteção em Moeda Estrangeira</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="premium-table mb-0">
+                        <thead>
+                            <tr class="text-muted small text-uppercase fw-bold">
+                                <th class="ps-4">Moeda</th>
+                                <th>Quantidade</th>
+                                <th>Preço Médio</th>
+                                <th>Cotação</th>
+                                <th class="text-end pe-4">Valor em BRL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in currencies %}
+                            <tr class="animate-entrance">
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="brand-icon"
+                                            style="width: 32px; height: 32px; flex-shrink: 0; background: rgba(99, 102, 241, 0.1); color: var(--brand-primary); box-shadow: none;">
+                                            <i class="bi bi-cash-stack"></i>
+                                        </div>
+                                        <span class="fw-bold text-main">{{ item.investment.symbol }}</span>
+                                    </div>
+                                </td>
+                                <td class="fw-medium">{{ item.investment.quantity }}</td>
+                                <td class="text-muted">R$ {{ item.investment.purchase_price|floatformat:2 }}</td>
+                                <td>R$ {{ item.current_price|floatformat:2 }}</td>
+                                <td class="pe-4 text-end fw-bold">R$ {{ item.current_value|floatformat:2 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Nenhuma moeda estrangeira.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulator Widget -->
+        <div class="col-lg-4">
+            <div class="glass-card p-4 border-0 text-white"
+                style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);">
+                <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <i class="bi bi-lightning-charge-fill text-warning"></i>
+                    Simulador CDI
+                </h5>
+                <form id="simulatorForm" class="row g-3">
+                    <div class="col-6">
+                        <label class="form-label small fw-bold opacity-75">INVESTIMENTO (R$)</label>
+                        <input type="number" id="simInitial"
+                            class="form-control form-control-sm bg-white bg-opacity-10 border-0 text-white"
+                            value="5000">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-bold opacity-75">APORTE MENSAL</label>
+                        <input type="number" id="simMonthly"
+                            class="form-control form-control-sm bg-white bg-opacity-10 border-0 text-white" value="500">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-bold opacity-75">MESES</label>
+                        <input type="number" id="simMonths"
+                            class="form-control form-control-sm bg-white bg-opacity-10 border-0 text-white" value="24">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-bold opacity-75">% DO CDI</label>
+                        <input type="number" id="simRate"
+                            class="form-control form-control-sm bg-white bg-opacity-10 border-0 text-white" value="110">
+                    </div>
+                    <div class="col-12 mt-4">
+                        <button type="button" class="btn btn-warning w-100 fw-bold py-2 shadow-none"
+                            onclick="runSimulation()">
+                            SIMULAR EVOLUÇÃO
+                        </button>
+                    </div>
+                </form>
+
+                <div id="simResult" class="mt-5 pt-3 border-top border-white border-opacity-10 d-none">
+                    <div class="mb-4">
+                        <small class="d-block opacity-75 text-uppercase fw-bold mb-1">Total Projetado ({{ cdi_rate }}%
+                            CDI)</small>
+                        <h3 class="fw-bold mb-0 text-warning" id="resMyAsset">R$ 0,00</h3>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center opacity-75">
+                        <small class="fw-bold">POUPANÇA (REF)</small>
+                        <span class="fw-bold" id="resSavings">R$ 0,00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Educational Tip -->
+            <div class="glass-card p-4 mt-4 border-0" style="background: rgba(99, 102, 241, 0.05);">
+                <div class="d-flex gap-3">
+                    <i class="bi bi-info-circle-fill text-primary fs-4"></i>
+                    <div>
+                        <h6 class="fw-bold mb-1">Por que CDI?</h6>
+                        <p class="small text-muted mb-0">O CDI (Certificado de Depósito Interbancário) é a principal
+                            referência para investimentos de baixo risco no Brasil, geralmente acompanhando a taxa
+                            Selic.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-light-soft {
+        background: rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="dark"] .bg-light-soft {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    #simulatorForm input::-webkit-outer-spin-button,
+    #simulatorForm input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<script>
+    function runSimulation() {
+        const P = parseFloat(document.getElementById('simInitial').value) || 0;
+        const PMT = parseFloat(document.getElementById('simMonthly').value) || 0;
+        const months = parseInt(document.getElementById('simMonths').value) || 12;
+        const pctCDI = parseFloat(document.getElementById('simRate').value) || 100;
+
+        const cdiAnual = parseFloat('{{ cdi_rate }}') / 100 || 0.1315;
+        const poupancaAnual = 0.0617; // Ref 6.17% fixed phase
+
+        const myRateMonthly = Math.pow(1 + (cdiAnual * (pctCDI / 100)), 1 / 12) - 1;
+        const poupancaMonthly = Math.pow(1 + poupancaAnual, 1 / 12) - 1;
+
+        const calcFV = (r, n, p, pmt) => {
+            if (r === 0) return p + (pmt * n);
+            return (p * Math.pow(1 + r, n)) + (pmt * ((Math.pow(1 + r, n) - 1) / r));
+        }
+
+        const myResult = calcFV(myRateMonthly, months, P, PMT);
+        const poupancaResult = calcFV(poupancaMonthly, months, P, PMT);
+
+        const fmt = val => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        document.getElementById('resMyAsset').innerText = fmt(myResult);
+        document.getElementById('resSavings').innerText = fmt(poupancaResult);
+        document.getElementById('simResult').classList.remove('d-none');
+    }
+</script>
+{% endblock %}

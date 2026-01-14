@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-lg border-0 overflow-hidden">
+            <div class="card-header bg-gradient-primary text-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="bi bi-briefcase-fill me-2"></i>Cadastro de Investimento</h3>
+                    <span id="investment-badge" class="badge bg-white text-primary rounded-pill px-3">Novo</span>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" id="investment-form">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <!-- Left Column: Core Data -->
+                        <div class="col-md-6 border-end">
+                            <h5 class="text-primary mb-3"><i class="bi bi-info-circle me-2"></i>Dados Básicos</h5>
+                            {{ form.category_type|as_crispy_field }}
+
+                            <div id="div_id_symbol" class="mb-3">
+                                <label for="id_symbol" class="form-label requiredField">
+                                    Símbolo (Ticker) <span class="asteriskField">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" name="symbol" maxlength="20" class="textinput form-control"
+                                        required id="id_symbol" placeholder="Ex: PETR4, USD, CDB-ITAU"
+                                        value="{{ form.symbol.value|default:'' }}">
+                                    <button class="btn-premium px-4" type="button" id="btn-search-ticker"
+                                        style="display: none; border-radius: 0 10px 10px 0;">
+                                        <i class="bi bi-search me-1"></i> Buscar
+                                    </button>
+                                </div>
+                                {% if form.symbol.errors %}
+                                {% for error in form.symbol.errors %}
+                                <div class="invalid-feedback d-block"><strong>{{ error }}</strong></div>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+
+                            {{ form.name|as_crispy_field }}
+
+                            <div class="row">
+                                <div class="col-md-6">{{ form.quantity|as_crispy_field }}</div>
+                                <div class="col-md-6">{{ form.purchase_price|as_crispy_field }}</div>
+                            </div>
+
+                            {{ form.date|as_crispy_field }}
+                        </div>
+
+                        <!-- Right Column: Specific/Dynamic Fields -->
+                        <div class="col-md-6 ps-md-4">
+                            <div id="dynamic-context-section">
+                                <h5 class="text-primary mb-3"><i class="bi bi-gear-fill me-2"></i>Detalhes Específicos
+                                </h5>
+
+                                <!-- Fixed Income Group -->
+                                <div id="fixed-income-fields" style="display: none;">
+                                    <div class="alert alert-info border-0 shadow-sm mb-4">
+                                        <small><i class="bi bi-lightbulb me-2"></i>Preencha os dados de rentabilidade
+                                            para que o Porto Seguro calcule seu saldo corrigido.</small>
+                                    </div>
+                                    {{ form.index_type|as_crispy_field }}
+                                    {{ form.fixed_rate|as_crispy_field }}
+                                    {{ form.due_date|as_crispy_field }}
+                                    {{ form.tax_free|as_crispy_field }}
+
+                                    <div id="projection-box" class="mt-3 p-3 bg-light rounded shadow-sm border"
+                                        style="display: none;">
+                                        <p class="mb-1 text-muted small">Expectativa de Rendimento:</p>
+                                        <h4 class="text-success mb-0" id="projected-return">--</h4>
+                                        <small class="text-muted" id="projection-desc">Baseado na taxa informada</small>
+                                    </div>
+                                </div>
+
+                                <!-- Variable Income Context -->
+                                <div id="variable-income-context" style="display: none;">
+                                    <div class="card bg-light border-0 shadow-sm h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-muted mb-3">Referência de Mercado</h6>
+                                            <div id="ticker-info" style="display: none;">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <h2 class="mb-0 me-2" id="current-price">R$ 0,00</h2>
+                                                    <span class="badge" id="price-change">0.00%</span>
+                                                </div>
+                                                <p class="text-muted small mb-0" id="ticker-long-name">--</p>
+                                                <hr>
+                                                <div class="row text-center small">
+                                                    <div class="col-6">
+                                                        <span class="text-muted d-block">Mín. Dia</span>
+                                                        <span class="fw-bold" id="day-low">--</span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span class="text-muted d-block">Máx. Dia</span>
+                                                        <span class="fw-bold" id="day-high">--</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="ticker-placeholder" class="text-center py-4">
+                                                <i class="bi bi-graph-up text-muted" style="font-size: 2rem;"></i>
+                                                <p class="text-muted small mt-2">Digite um ticker p/ ver cotação</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Currency Context -->
+                                <div id="currency-context" style="display: none;">
+                                    <div class="alert alert-primary border-0 shadow-sm d-flex align-items-center">
+                                        <i class="bi bi-currency-exchange fs-4 me-3"></i>
+                                        <div>
+                                            <h6 class="mb-0">Cotação Real</h6>
+                                            <p class="mb-0 small" id="currency-rate">Digite a sigla da moeda...</p>
+                                        </div>
+                                    </div>
+                                    <div class="list-group list-group-flush small">
+                                        <button type="button" class="list-group-item list-group-item-action py-2"
+                                            onclick="setCurrency('USD')">Dólar (USD)</button>
+                                        <button type="button" class="list-group-item list-group-item-action py-2"
+                                            onclick="setCurrency('EUR')">Euro (EUR)</button>
+                                        <button type="button" class="list-group-item list-group-item-action py-2"
+                                            onclick="setCurrency('BTC')">Bitcoin (BTC)</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-between">
+                        <a href="javascript:history.back()" class="btn btn-light px-4">
+                            <i class="bi bi-arrow-left me-2"></i>Voltar
+                        </a>
+                        <button type="submit" class="btn-premium px-5 h-auto">
+                            <i class="bi bi-check-lg me-2"></i>Salvar Investimento
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const categorySelect = document.getElementById('id_category_type');
+        const symbolInput = document.getElementById('id_symbol');
+        const searchBtn = document.getElementById('btn-search-ticker');
+        const symbolLabel = document.querySelector('label[for="id_symbol"]');
+
+        // Initial setup
+        toggleInvestmentFields(categorySelect);
+
+        // Category change
+        categorySelect.addEventListener('change', function () {
+            toggleInvestmentFields(this);
+            updateSymbolHint(this.value);
+        });
+
+        // Symbol interaction
+        symbolInput.addEventListener('input', function () {
+            const type = categorySelect.value;
+            if (type === 'VARIABLE' || type === 'CURRENCY') {
+                searchBtn.style.display = this.value.length >= 3 ? 'block' : 'none';
+            }
+        });
+
+        searchBtn.addEventListener('click', function () {
+            fetchTickerData();
+        });
+
+        // Logic for Fixed Income Projection
+        const fixedRateInput = document.getElementById('id_fixed_rate');
+        const indexTypeSelect = document.getElementById('id_index_type');
+
+        [fixedRateInput, indexTypeSelect].forEach(el => {
+            el?.addEventListener('change', updateProjection);
+            el?.addEventListener('input', updateProjection);
+        });
+
+        function updateSymbolHint(type) {
+            if (type === 'FIXED') {
+                symbolLabel.innerHTML = 'Identificador (Ex: CDB BB, Tesouro Selic) <span class="asteriskField">*</span>';
+            } else if (type === 'CURRENCY') {
+                symbolLabel.innerHTML = 'Moeda / Ticker (Ex: USD, BTC) <span class="asteriskField">*</span>';
+            } else {
+                symbolLabel.innerHTML = 'Símbolo (Ticker B3) <span class="asteriskField">*</span>';
+            }
+        }
+
+        function toggleInvestmentFields(select) {
+            const type = select.value;
+            const fixedDiv = document.getElementById('fixed-income-fields');
+            const variableDiv = document.getElementById('variable-income-context');
+            const currencyDiv = document.getElementById('currency-context');
+            const searchBtn = document.getElementById('btn-search-ticker');
+
+            // Basic Fields to Adapt
+            const qtyLabel = document.querySelector('label[for="id_quantity"]');
+            const priceLabel = document.querySelector('label[for="id_purchase_price"]');
+            const priceDiv = document.getElementById('div_id_purchase_price');
+            const nameLabel = document.querySelector('label[for="id_name"]');
+
+            // Reset Specific Contexts
+            fixedDiv.style.display = 'none';
+            variableDiv.style.display = 'none';
+            currencyDiv.style.display = 'none';
+            searchBtn.style.display = 'none';
+
+            if (type === 'FIXED') {
+                fixedDiv.style.display = 'block';
+                qtyLabel.innerHTML = 'Valor Investido <span class="asteriskField">*</span>';
+                priceDiv.style.display = 'none'; // Hide price, we will set to 1.0
+                document.getElementById('id_purchase_price').value = '1,00';
+                nameLabel.innerHTML = 'Instituição / emissor';
+            } else if (type === 'VARIABLE') {
+                variableDiv.style.display = 'block';
+                if (document.getElementById('id_symbol').value) searchBtn.style.display = 'block';
+                qtyLabel.innerHTML = 'Quantidade <span class="asteriskField">*</span>';
+                priceDiv.style.display = 'block';
+                priceLabel.innerHTML = 'Preço de Compra <span class="asteriskField">*</span>';
+                nameLabel.innerHTML = 'Nome do Ativo';
+            } else if (type === 'CURRENCY') {
+                currencyDiv.style.display = 'block';
+                if (document.getElementById('id_symbol').value) searchBtn.style.display = 'block';
+                qtyLabel.innerHTML = 'Quantidade de Moeda <span class="asteriskField">*</span>';
+                priceDiv.style.display = 'block';
+                priceLabel.innerHTML = 'Taxa de Pagamento (P/ 1 unid) <span class="asteriskField">*</span>';
+                nameLabel.innerHTML = 'Descrição';
+            }
+        }
+
+        function fetchTickerData() {
+            const symbol = symbolInput.value;
+            if (!symbol) return;
+
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+            fetch(`/investments/search/?ticker=${symbol}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Erro ao buscar ativo: ' + data.error);
+                    } else {
+                        // Fill name
+                        document.getElementById('id_name').value = data.name;
+
+                        if (categorySelect.value === 'VARIABLE') {
+                            document.getElementById('ticker-placeholder').style.display = 'none';
+                            document.getElementById('ticker-info').style.display = 'block';
+
+                            const priceEl = document.getElementById('current-price');
+                            priceEl.innerText = formatBRL(data.price);
+
+                            const changeEl = document.getElementById('price-change');
+                            changeEl.innerText = (data.change_percent >= 0 ? '+' : '') + data.change_percent.toFixed(2) + '%';
+                            changeEl.className = 'badge ' + (data.change_percent >= 0 ? 'bg-success' : 'bg-danger');
+
+                            document.getElementById('ticker-long-name').innerText = data.name;
+                            document.getElementById('day-low').innerText = formatBRL(data.day_low);
+                            document.getElementById('day-high').innerText = formatBRL(data.day_high);
+                        } else if (categorySelect.value === 'CURRENCY') {
+                            document.getElementById('currency-rate').innerText = `1 ${data.symbol} = ${formatBRL(data.price)}`;
+                        }
+                    }
+                })
+                .finally(() => {
+                    searchBtn.disabled = false;
+                    searchBtn.innerHTML = '<i class="bi bi-search me-1"></i> Buscar';
+                });
+        }
+
+        function updateProjection() {
+            const rate = parseFloat(fixedRateInput.value);
+            const index = indexTypeSelect.value;
+            const box = document.getElementById('projection-box');
+
+            if (!isNaN(rate) && index) {
+                box.style.display = 'block';
+                let display = '';
+                let desc = '';
+
+                if (index === 'CDI') {
+                    display = (rate).toFixed(0) + '% do CDI';
+                    desc = `Referência: ~${(11.15 * (rate / 100)).toFixed(2)}% a.a.`;
+                } else if (index === 'PRE') {
+                    display = rate.toFixed(2) + '% a.a.';
+                    desc = 'Taxa pré-definida no momento da compra';
+                } else if (index === 'IPCA') {
+                    display = 'IPCA + ' + rate.toFixed(2) + '%';
+                    desc = 'Inflação + taxa real';
+                }
+
+                document.getElementById('projected-return').innerText = display;
+                document.getElementById('projection-desc').innerText = desc;
+            } else {
+                box.style.display = 'none';
+            }
+        }
+
+        function formatBRL(val) {
+            if (!val) return '--';
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+        }
+
+        // Money Mask Logic (Vanilla JS)
+        document.querySelectorAll('.money-mask').forEach(input => {
+            input.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                value = (value / 100).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                e.target.value = value;
+            });
+        });
+    });
+
+    function setCurrency(sigla) {
+        const symbolInput = document.getElementById('id_symbol');
+        symbolInput.value = sigla;
+        // Trigger search
+        document.getElementById('btn-search-ticker').click();
+    }
+</script>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, var(--indigo-600), var(--violet-600));
+    }
+
+    .card {
+        border-radius: 1rem;
+    }
+
+    .btn-primary {
+        background-color: var(--indigo-600);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--indigo-700);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}

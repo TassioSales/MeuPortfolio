@@ -37,9 +37,10 @@ urlpatterns = [
     path('reports/export/pdf/', views.export_pdf, name='export_pdf'),
     # Investments
     path('investments/', views.investment_dashboard, name='investment_dashboard'),
-    path('investments/search/', views.search_ticker, name='search_ticker'),
-    path('investments/list/', views.InvestmentListView.as_view(), name='investment_list'),
+    path('investments/safe/', views.safe_haven_dashboard, name='safe_haven_dashboard'),
     path('investments/add/', views.InvestmentCreateView.as_view(), name='investment_add'),
+    path('investments/list/', views.InvestmentListView.as_view(), name='investment_list'),
+    path('investments/search/', views.search_ticker, name='search_ticker'),
     path('investments/<str:symbol>/', views.InvestmentDetailView.as_view(), name='investment_detail'),
     path('investments/<int:pk>/edit/', views.InvestmentUpdateView.as_view(), name='investment_edit'),
     path('investments/<int:pk>/delete/', views.InvestmentDeleteView.as_view(), name='investment_delete'),

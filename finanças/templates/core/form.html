@@ -78,9 +78,11 @@
             form.addEventListener('submit', function (e) {
                 moneyInputs.forEach(input => {
                     if (input.value) {
-                        // Remove R$, dots, and replace comma with dot
-                        let cleanVal = input.value.replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
-                        input.value = cleanVal;
+                        // Only clean if it starts with R$ (meaning it wasn't cleaned yet)
+                        if (input.value.includes('R$')) {
+                            let cleanVal = input.value.replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
+                            input.value = cleanVal;
+                        }
                     }
                 });
             });
@@ -104,12 +106,58 @@
 
     function toggleRecurringFields(checkbox) {
         const frequencyDiv = document.getElementById('div_id_frequency');
+        const endDateDiv = document.getElementById('div_id_recurrence_end_date');
 
         if (frequencyDiv) {
-            if (checkbox.checked) {
-                frequencyDiv.style.display = 'block';
+            frequencyDiv.style.display = checkbox.checked ? 'block' : 'none';
+        }
+        if (endDateDiv) {
+            endDateDiv.style.display = checkbox.checked ? 'block' : 'none';
+        }
+    }
+
+    // Dynamic Investment Form
+    document.addEventListener('DOMContentLoaded', function () {
+        const categorySelect = document.getElementById('id_category_type');
+        if (categorySelect) {
+            toggleInvestmentFields(categorySelect);
+            categorySelect.addEventListener('change', function () {
+                toggleInvestmentFields(this);
+            });
+        }
+    });
+
+    function toggleInvestmentFields(select) {
+        const type = select.value;
+        const fixedFields = [
+            document.getElementById('div_id_fixed_rate'),
+            document.getElementById('div_id_index_type'),
+            document.getElementById('div_id_due_date'),
+            document.getElementById('div_id_tax_free')
+        ];
+
+        // Logic:
+        // VARIABLE: Hide Fixed
+        // FIXED: Show Fixed
+        // CURRENCY: Hide Fixed
+
+        let showFixed = (type === 'FIXED');
+
+        fixedFields.forEach(field => {
+            if (field) {
+                field.style.display = showFixed ? 'block' : 'none';
+            }
+        });
+
+        // Optional Label tweaks
+        const symbolLabel = document.querySelector('label[for="id_symbol"]');
+        if (symbolLabel) {
+            if (type === 'FIXED') {
+                symbolLabel.innerHTML = 'Identificador <span class="asteriskField">*</span>'; // e.g. CDB-ITAU
+            } else if (type === 'CURRENCY') {
+                symbolLabel.innerHTML = 'Moeda (Ex: USD, EUR) <span class="asteriskField">*</span>';
             } else {
-                frequencyDiv.style.display = 'none';
+                symbolLabel.innerHTML = 'Símbolo (Ticker) <span class="asteriskField">*</span>';
             }
         }
     }

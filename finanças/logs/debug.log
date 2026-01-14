@@ -6431,3 +6431,1656 @@ INFO 2025-12-18 17:25:15,778 log 40052 40560 "GET /investments/ HTTP/1.1" 200 29
 INFO 2025-12-18 17:25:27,346 log 40052 40560 "GET /goals/ HTTP/1.1" 200 6039
 INFO 2025-12-18 17:25:28,224 views 40052 40560 Generating reports for user tassiosales
 INFO 2025-12-18 17:25:28,303 log 40052 40560 "GET /reports/ HTTP/1.1" 200 43703
+INFO 2025-12-20 16:27:45,311 autoreload 2944 4036 Watching for file changes with StatReloader
+INFO 2025-12-20 16:27:46,860 log 2944 20036 "GET / HTTP/1.1" 302 0
+INFO 2025-12-20 16:27:47,027 log 2944 20036 "GET /login/?next=/ HTTP/1.1" 200 5375
+INFO 2025-12-20 16:27:47,253 log 2944 20036 "GET /static/css/custom.css?v=2 HTTP/1.1" 200 6355
+WARNING 2025-12-20 16:27:48,282 log 2944 20036 Not Found: /favicon.ico
+WARNING 2025-12-20 16:27:48,283 log 2944 20036 "GET /favicon.ico HTTP/1.1" 404 10943
+INFO 2025-12-20 16:28:02,264 log 2944 20036 "POST /login/?next=/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:28:02,317 log 2944 20036 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-20 16:28:08,565 log 2944 20036 "GET /calendar/ HTTP/1.1" 200 35869
+INFO 2025-12-20 16:28:11,897 log 2944 20036 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-20 16:28:12,004 log 2944 20036 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:31:54,732 log 2944 20036 "GET /?month=1&year=2026 HTTP/1.1" 200 16661
+INFO 2025-12-20 16:31:54,859 log 2944 20036 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:32:08,856 log 2944 20036 "GET /?month=12&year=2025 HTTP/1.1" 200 17900
+INFO 2025-12-20 16:32:10,083 log 2944 20036 "GET /?month=1&year=2026 HTTP/1.1" 200 16661
+INFO 2025-12-20 16:32:10,663 log 2944 20036 "GET /?month=2&year=2026 HTTP/1.1" 200 12141
+INFO 2025-12-20 16:32:14,902 log 2944 20036 "GET /?month=1&year=2026 HTTP/1.1" 200 16661
+INFO 2025-12-20 16:32:17,031 log 2944 20036 "GET /?month=2&year=2026 HTTP/1.1" 200 12141
+INFO 2025-12-20 16:32:17,849 log 2944 20036 "GET /?month=3&year=2026 HTTP/1.1" 200 12138
+INFO 2025-12-20 16:32:20,294 log 2944 20036 "GET /?month=2&year=2026 HTTP/1.1" 200 12141
+INFO 2025-12-20 16:32:21,106 log 2944 20036 "GET /?month=1&year=2026 HTTP/1.1" 200 16661
+INFO 2025-12-20 16:32:26,421 log 2944 20036 "GET /calendar/ HTTP/1.1" 200 35869
+INFO 2025-12-20 16:32:34,134 log 2944 20036 "GET /calendar/?month=1&year=2026 HTTP/1.1" 200 28815
+INFO 2025-12-20 16:32:38,771 log 2944 20036 "GET /calendar/?month=12&year=2025 HTTP/1.1" 200 35869
+INFO 2025-12-20 16:32:40,411 log 2944 20036 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-20 16:32:50,319 log 2944 20036 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-20 16:32:50,435 log 2944 20036 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:33:11,450 log 2944 20036 "GET /budgets/ HTTP/1.1" 200 7046
+INFO 2025-12-20 16:33:14,283 log 2944 20036 "GET /budgets/add/ HTTP/1.1" 200 11935
+INFO 2025-12-20 16:33:29,718 log 2944 20036 "POST /budgets/add/ HTTP/1.1" 200 12141
+INFO 2025-12-20 16:33:45,493 log 2944 20036 "POST /budgets/add/ HTTP/1.1" 200 12141
+INFO 2025-12-20 16:33:45,590 log 2944 20036 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:33:57,174 log 2944 20036 "GET /investments/ HTTP/1.1" 200 29551
+INFO 2025-12-20 16:34:27,319 log 2944 20036 "GET /investments/search/?ticker=PETR4 HTTP/1.1" 200 208
+INFO 2025-12-20 16:34:44,464 log 2944 20036 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 200 210
+INFO 2025-12-20 16:34:56,398 log 2944 20036 "GET /investments/search/?ticker=BTC-USD HTTP/1.1" 200 210
+INFO 2025-12-20 16:34:59,463 log 2944 20036 "GET /investments/search/?ticker=ETH HTTP/1.1" 200 198
+INFO 2025-12-20 16:35:37,202 log 2944 20036 "GET /goals/ HTTP/1.1" 200 6039
+INFO 2025-12-20 16:35:37,365 log 2944 20036 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:35:40,530 log 2944 20036 "GET /goals/add/ HTTP/1.1" 200 11043
+INFO 2025-12-20 16:36:13,271 log 2944 20036 "POST /goals/add/ HTTP/1.1" 200 11538
+INFO 2025-12-20 16:36:21,977 views 2944 20036 Generating reports for user tassiosales
+INFO 2025-12-20 16:36:22,048 log 2944 20036 "GET /reports/ HTTP/1.1" 200 43703
+INFO 2025-12-20 16:36:34,779 views 2944 20036 Generating reports for user tassiosales
+INFO 2025-12-20 16:36:34,791 log 2944 20036 "GET /reports/?start_date=&end_date=&category=7 HTTP/1.1" 200 22784
+INFO 2025-12-20 16:36:38,514 views 2944 20036 Generating reports for user tassiosales
+INFO 2025-12-20 16:36:38,528 log 2944 20036 "GET /reports/?start_date=&end_date=&category=11 HTTP/1.1" 200 23919
+INFO 2025-12-20 16:36:45,866 views 2944 20036 Generating reports for user tassiosales
+INFO 2025-12-20 16:36:45,884 log 2944 20036 "GET /reports/?start_date=&end_date=&category=24 HTTP/1.1" 200 23940
+INFO 2025-12-20 16:36:52,355 views 2944 20036 Generating reports for user tassiosales
+INFO 2025-12-20 16:36:52,374 log 2944 20036 "GET /reports/?start_date=&end_date=&category=24 HTTP/1.1" 200 23940
+INFO 2025-12-20 16:36:52,520 log 2944 20036 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:36:54,137 views 2944 20036 Generating reports for user tassiosales
+INFO 2025-12-20 16:36:54,149 log 2944 20036 "GET /reports/?start_date=&end_date=&category=24 HTTP/1.1" 200 23940
+INFO 2025-12-20 16:36:59,106 views 2944 20036 Generating reports for user tassiosales
+INFO 2025-12-20 16:36:59,161 log 2944 20036 "GET /reports/?start_date=&end_date=&category= HTTP/1.1" 200 43817
+INFO 2025-12-20 16:37:55,369 log 2944 20036 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-20 16:38:00,797 log 2944 20036 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-20 16:38:03,323 log 2944 20036 "GET /calendar/ HTTP/1.1" 200 35869
+INFO 2025-12-20 16:38:04,375 log 2944 20036 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-20 16:38:05,269 log 2944 20036 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-20 16:38:08,419 log 2944 20036 "GET /transactions/add/ HTTP/1.1" 200 13993
+INFO 2025-12-20 16:39:36,365 log 2944 20036 "POST /transactions/add/ HTTP/1.1" 200 14248
+INFO 2025-12-20 16:39:36,470 log 2944 20036 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:42:05,300 log 2944 20036 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-20 16:42:05,408 log 2944 20036 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:42:24,062 autoreload 2944 4036 D:\GithubGit\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2025-12-20 16:42:32,436 autoreload 24188 16160 Watching for file changes with StatReloader
+INFO 2025-12-20 16:43:28,332 autoreload 24188 16160 D:\GithubGit\MeuPortfolio\finanças\manage.py changed, reloading.
+INFO 2025-12-20 16:43:29,116 autoreload 22948 14800 Watching for file changes with StatReloader
+INFO 2025-12-20 16:44:03,838 autoreload 6000 10688 Watching for file changes with StatReloader
+INFO 2025-12-20 16:44:05,558 log 22948 17852 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-20 16:44:05,705 log 22948 17852 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:44:10,102 log 22948 17852 "GET /calendar/ HTTP/1.1" 200 35869
+INFO 2025-12-20 16:44:11,650 log 22948 17852 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-20 16:44:12,986 log 22948 17852 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-20 16:44:17,863 log 22948 17852 "GET /transactions/add/ HTTP/1.1" 200 13993
+INFO 2025-12-20 16:44:25,183 log 22948 17852 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-20 16:44:26,789 log 22948 17852 "GET /categories/add/ HTTP/1.1" 200 11441
+INFO 2025-12-20 16:44:44,280 log 22948 17852 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-20 16:44:46,735 log 22948 17852 "GET /transactions/add/ HTTP/1.1" 200 13993
+INFO 2025-12-20 16:45:06,360 log 22948 17852 "GET /calendar/ HTTP/1.1" 200 35869
+INFO 2025-12-20 16:45:06,978 log 22948 17852 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-20 16:45:16,612 log 22948 17852 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-20 16:45:20,035 log 22948 17852 "GET /transactions/add/ HTTP/1.1" 200 13993
+INFO 2025-12-20 16:46:09,641 log 22948 17852 "POST /transactions/add/ HTTP/1.1" 200 14251
+INFO 2025-12-20 16:46:09,752 log 22948 17852 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:48:15,684 autoreload 22948 14800 D:\GithubGit\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2025-12-20 16:48:16,592 autoreload 7616 9516 Watching for file changes with StatReloader
+INFO 2025-12-20 16:48:26,551 autoreload 7616 9516 D:\GithubGit\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2025-12-20 16:48:27,550 autoreload 3428 10336 Watching for file changes with StatReloader
+INFO 2025-12-20 16:48:38,286 autoreload 19776 22740 Watching for file changes with StatReloader
+INFO 2025-12-20 16:48:40,344 log 3428 21656 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-20 16:48:40,475 log 3428 21656 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:48:42,639 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-20 16:48:44,271 log 3428 21656 "GET /transactions/add/ HTTP/1.1" 200 13993
+INFO 2025-12-20 16:48:55,824 log 3428 21656 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:48:55,848 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 46138
+INFO 2025-12-20 16:49:00,651 log 3428 21656 "GET /transactions/65/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 16:49:01,870 log 3428 21656 "POST /transactions/65/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:49:01,898 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 44380
+INFO 2025-12-20 16:49:03,259 log 3428 21656 "GET /transactions/add/ HTTP/1.1" 200 13993
+INFO 2025-12-20 16:49:45,057 log 3428 21656 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:49:45,085 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 53539
+INFO 2025-12-20 16:50:00,478 log 3428 21656 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-20 16:50:03,809 log 3428 21656 "GET /?month=1&year=2026 HTTP/1.1" 200 17849
+INFO 2025-12-20 16:50:06,174 log 3428 21656 "GET /?month=2&year=2026 HTTP/1.1" 200 13128
+INFO 2025-12-20 16:50:08,090 log 3428 21656 "GET /?month=3&year=2026 HTTP/1.1" 200 13148
+INFO 2025-12-20 16:50:09,748 log 3428 21656 "GET /?month=4&year=2026 HTTP/1.1" 200 13169
+INFO 2025-12-20 16:50:11,307 log 3428 21656 "GET /?month=5&year=2026 HTTP/1.1" 200 13189
+INFO 2025-12-20 16:51:11,526 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 53255
+INFO 2025-12-20 16:51:11,645 log 3428 21656 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:51:13,048 log 3428 21656 "GET /transactions/add/ HTTP/1.1" 200 13993
+INFO 2025-12-20 16:51:49,213 log 3428 21656 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:51:49,240 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 55315
+INFO 2025-12-20 16:51:54,268 log 3428 21656 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-20 16:51:56,108 log 3428 21656 "GET /?month=1&year=2026 HTTP/1.1" 200 17859
+INFO 2025-12-20 16:51:59,328 log 3428 21656 "GET /?month=2&year=2026 HTTP/1.1" 200 13136
+INFO 2025-12-20 16:52:03,032 log 3428 21656 "GET /?month=3&year=2026 HTTP/1.1" 200 13154
+INFO 2025-12-20 16:52:03,825 log 3428 21656 "GET /?month=4&year=2026 HTTP/1.1" 200 13174
+INFO 2025-12-20 16:52:04,848 log 3428 21656 "GET /?month=5&year=2026 HTTP/1.1" 200 13194
+INFO 2025-12-20 16:52:05,594 log 3428 21656 "GET /?month=6&year=2026 HTTP/1.1" 200 12228
+INFO 2025-12-20 16:52:06,419 log 3428 21656 "GET /?month=7&year=2026 HTTP/1.1" 200 12200
+INFO 2025-12-20 16:52:07,919 log 3428 21656 "GET /?month=6&year=2026 HTTP/1.1" 200 12228
+INFO 2025-12-20 16:52:08,552 log 3428 21656 "GET /?month=5&year=2026 HTTP/1.1" 200 13194
+INFO 2025-12-20 16:52:09,244 log 3428 21656 "GET /?month=4&year=2026 HTTP/1.1" 200 13174
+INFO 2025-12-20 16:52:09,973 log 3428 21656 "GET /?month=3&year=2026 HTTP/1.1" 200 13154
+INFO 2025-12-20 16:52:12,131 log 3428 21656 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-20 16:52:15,120 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 55020
+INFO 2025-12-20 16:52:19,011 log 3428 21656 "GET /transactions/70/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 16:52:20,388 log 3428 21656 "POST /transactions/70/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:52:20,415 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 53245
+INFO 2025-12-20 16:52:21,516 log 3428 21656 "GET /transactions/69/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 16:52:22,826 log 3428 21656 "POST /transactions/69/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:52:22,853 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 51470
+INFO 2025-12-20 16:52:23,949 log 3428 21656 "GET /transactions/68/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 16:52:24,991 log 3428 21656 "POST /transactions/68/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:52:25,017 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 49695
+INFO 2025-12-20 16:52:27,238 log 3428 21656 "GET /transactions/67/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 16:52:28,384 log 3428 21656 "POST /transactions/67/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:52:28,408 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 47920
+INFO 2025-12-20 16:52:35,442 log 3428 21656 "GET /transactions/71/delete/ HTTP/1.1" 200 6217
+INFO 2025-12-20 16:52:36,653 log 3428 21656 "POST /transactions/71/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:52:36,678 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 46155
+INFO 2025-12-20 16:55:03,407 log 3428 21656 "GET / HTTP/1.1" 200 17900
+INFO 2025-12-20 16:55:03,560 log 3428 21656 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:55:04,841 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 46155
+INFO 2025-12-20 16:55:54,171 log 3428 21656 "GET /transactions/add/ HTTP/1.1" 200 13993
+INFO 2025-12-20 16:56:26,898 log 3428 21656 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:56:26,927 log 3428 21656 "GET /transactions/ HTTP/1.1" 200 47919
+INFO 2025-12-20 16:56:32,922 log 3428 21656 "GET / HTTP/1.1" 200 17876
+INFO 2025-12-20 16:56:56,550 autoreload 3428 10336 D:\GithubGit\MeuPortfolio\finanças\manage.py changed, reloading.
+INFO 2025-12-20 16:57:17,247 autoreload 13276 10676 Watching for file changes with StatReloader
+INFO 2025-12-20 16:57:18,690 log 13276 21044 "GET /budgets/ HTTP/1.1" 200 7046
+INFO 2025-12-20 16:57:19,439 log 13276 21044 "GET / HTTP/1.1" 200 17876
+INFO 2025-12-20 16:57:22,412 log 13276 21044 "GET /budgets/ HTTP/1.1" 200 7046
+INFO 2025-12-20 16:57:23,909 log 13276 21044 "GET /budgets/add/ HTTP/1.1" 200 11935
+INFO 2025-12-20 16:57:37,831 log 13276 21044 "POST /budgets/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:57:37,849 log 13276 21044 "GET /budgets/ HTTP/1.1" 200 9479
+INFO 2025-12-20 16:57:42,893 log 13276 21044 "GET /budgets/6/delete/ HTTP/1.1" 200 6219
+INFO 2025-12-20 16:57:44,131 log 13276 21044 "POST /budgets/6/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:57:44,141 log 13276 21044 "GET /budgets/ HTTP/1.1" 200 7046
+INFO 2025-12-20 16:57:45,685 log 13276 21044 "GET /budgets/ HTTP/1.1" 200 7046
+INFO 2025-12-20 16:57:48,346 log 13276 21044 "GET /budgets/add/ HTTP/1.1" 200 11935
+INFO 2025-12-20 16:58:50,518 autoreload 13276 10676 D:\GithubGit\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2025-12-20 16:58:51,403 autoreload 16444 23160 Watching for file changes with StatReloader
+INFO 2025-12-20 16:58:54,832 log 16444 17240 "POST /budgets/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:58:54,854 log 16444 17240 "GET /budgets/ HTTP/1.1" 200 9476
+INFO 2025-12-20 16:58:54,983 log 16444 17240 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 16:59:00,641 log 16444 17240 "GET /transactions/ HTTP/1.1" 200 47919
+INFO 2025-12-20 16:59:02,642 log 16444 17240 "GET /budgets/ HTTP/1.1" 200 9476
+INFO 2025-12-20 16:59:06,386 autoreload 16444 23160 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-20 16:59:07,186 autoreload 19952 18116 Watching for file changes with StatReloader
+INFO 2025-12-20 16:59:09,852 log 19952 584 "GET /transactions/ HTTP/1.1" 200 47919
+INFO 2025-12-20 16:59:12,098 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14282
+INFO 2025-12-20 16:59:37,696 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 16:59:37,723 log 19952 584 "GET /transactions/ HTTP/1.1" 200 49680
+INFO 2025-12-20 16:59:39,927 log 19952 584 "GET / HTTP/1.1" 200 18615
+INFO 2025-12-20 17:00:22,477 log 19952 584 "GET / HTTP/1.1" 200 18615
+INFO 2025-12-20 17:00:33,985 log 19952 584 "GET /?month=1&year=2026 HTTP/1.1" 200 17853
+INFO 2025-12-20 17:00:37,837 log 19952 584 "GET /budgets/ HTTP/1.1" 200 9481
+INFO 2025-12-20 17:00:41,113 log 19952 584 "GET /budgets/7/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 17:00:42,444 log 19952 584 "POST /budgets/7/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:00:42,455 log 19952 584 "GET /budgets/ HTTP/1.1" 200 7046
+INFO 2025-12-20 17:00:44,529 log 19952 584 "GET / HTTP/1.1" 200 17845
+INFO 2025-12-20 17:00:48,352 log 19952 584 "GET /transactions/ HTTP/1.1" 200 49680
+INFO 2025-12-20 17:00:51,448 log 19952 584 "GET /transactions/59/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 17:00:52,940 log 19952 584 "POST /transactions/59/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:00:52,964 log 19952 584 "GET /transactions/ HTTP/1.1" 200 47897
+INFO 2025-12-20 17:01:00,910 views 19952 584 Generating reports for user tassiosales
+INFO 2025-12-20 17:01:00,938 log 19952 584 "GET /reports/ HTTP/1.1" 200 43646
+INFO 2025-12-20 17:01:05,244 log 19952 584 "GET / HTTP/1.1" 200 17845
+INFO 2025-12-20 17:01:18,973 log 19952 584 "GET /transactions/ HTTP/1.1" 200 47897
+INFO 2025-12-20 17:01:29,046 log 19952 584 "GET /transactions/73/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 17:01:30,391 log 19952 584 "POST /transactions/73/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:01:30,413 log 19952 584 "GET /transactions/ HTTP/1.1" 200 46136
+INFO 2025-12-20 17:01:40,761 log 19952 584 "GET /transactions/66/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 17:01:41,994 log 19952 584 "POST /transactions/66/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:01:42,019 log 19952 584 "GET /transactions/ HTTP/1.1" 200 44361
+INFO 2025-12-20 17:01:47,150 log 19952 584 "GET /transactions/62/edit/ HTTP/1.1" 200 14501
+INFO 2025-12-20 17:02:08,376 log 19952 584 "POST /transactions/62/edit/ HTTP/1.1" 200 14769
+INFO 2025-12-20 17:02:15,851 log 19952 584 "GET /transactions/62/edit/ HTTP/1.1" 200 14501
+INFO 2025-12-20 17:02:19,280 log 19952 584 "GET /transactions/62/delete/ HTTP/1.1" 200 6214
+INFO 2025-12-20 17:02:20,474 log 19952 584 "POST /transactions/62/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:02:20,497 log 19952 584 "GET /transactions/ HTTP/1.1" 200 42599
+INFO 2025-12-20 17:03:26,734 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14488
+INFO 2025-12-20 17:03:26,857 log 19952 584 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 17:04:11,496 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:04:11,519 log 19952 584 "GET /transactions/ HTTP/1.1" 200 44365
+INFO 2025-12-20 17:04:18,102 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14488
+INFO 2025-12-20 17:05:17,946 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:05:17,972 log 19952 584 "GET /transactions/ HTTP/1.1" 200 46423
+INFO 2025-12-20 17:05:35,327 log 19952 584 "GET /transactions/ HTTP/1.1" 200 46139
+INFO 2025-12-20 17:05:42,332 log 19952 584 "GET /transactions/75/edit/ HTTP/1.1" 200 14512
+INFO 2025-12-20 17:06:13,677 log 19952 584 "POST /transactions/75/edit/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:06:13,702 log 19952 584 "GET /transactions/ HTTP/1.1" 200 46132
+INFO 2025-12-20 17:06:22,154 log 19952 584 "GET /transactions/75/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 17:06:23,413 log 19952 584 "POST /transactions/75/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:06:23,437 log 19952 584 "GET /transactions/ HTTP/1.1" 200 44365
+INFO 2025-12-20 17:06:24,984 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14488
+INFO 2025-12-20 17:06:58,226 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:06:58,251 log 19952 584 "GET /transactions/ HTTP/1.1" 200 46421
+INFO 2025-12-20 17:07:04,807 log 19952 584 "GET /transactions/76/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 17:07:06,344 log 19952 584 "POST /transactions/76/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:07:06,367 log 19952 584 "GET /transactions/ HTTP/1.1" 200 44365
+INFO 2025-12-20 17:07:07,618 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14488
+INFO 2025-12-20 17:07:38,374 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:07:38,400 log 19952 584 "GET /transactions/ HTTP/1.1" 200 46422
+INFO 2025-12-20 17:07:38,523 log 19952 584 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 17:07:48,561 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14488
+INFO 2025-12-20 17:08:12,560 log 19952 584 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-20 17:08:18,120 log 19952 584 "GET /categories/add/ HTTP/1.1" 200 11647
+INFO 2025-12-20 17:08:25,422 log 19952 584 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-20 17:08:28,948 log 19952 584 "GET /transactions/ HTTP/1.1" 200 46138
+INFO 2025-12-20 17:08:33,376 log 19952 584 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-20 17:08:35,278 log 19952 584 "GET /transactions/ HTTP/1.1" 200 46138
+INFO 2025-12-20 17:08:45,869 log 19952 584 "GET /categories/ HTTP/1.1" 200 43685
+INFO 2025-12-20 17:08:47,327 log 19952 584 "GET /categories/add/ HTTP/1.1" 200 11647
+INFO 2025-12-20 17:08:57,185 log 19952 584 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:08:57,207 log 19952 584 "GET /categories/ HTTP/1.1" 200 45434
+INFO 2025-12-20 17:08:59,639 log 19952 584 "GET /transactions/ HTTP/1.1" 200 46138
+INFO 2025-12-20 17:09:01,519 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14534
+INFO 2025-12-20 17:09:41,651 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:09:41,677 log 19952 584 "GET /transactions/ HTTP/1.1" 200 48189
+INFO 2025-12-20 17:09:48,664 log 19952 584 "GET /transactions/ HTTP/1.1" 200 47905
+INFO 2025-12-20 17:10:03,678 log 19952 584 "GET / HTTP/1.1" 200 17876
+INFO 2025-12-20 17:10:10,469 log 19952 584 "GET /?month=1&year=2026 HTTP/1.1" 200 17839
+INFO 2025-12-20 17:10:29,146 log 19952 584 "GET / HTTP/1.1" 200 17876
+INFO 2025-12-20 17:10:32,111 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14534
+INFO 2025-12-20 17:11:17,601 log 19952 584 "GET /categories/ HTTP/1.1" 200 45434
+INFO 2025-12-20 17:11:19,676 log 19952 584 "GET /categories/add/ HTTP/1.1" 200 11693
+INFO 2025-12-20 17:11:38,819 log 19952 584 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:11:38,837 log 19952 584 "GET /categories/ HTTP/1.1" 200 46949
+INFO 2025-12-20 17:11:40,399 log 19952 584 "GET /categories/add/ HTTP/1.1" 200 11739
+INFO 2025-12-20 17:11:58,605 log 19952 584 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:11:58,623 log 19952 584 "GET /categories/ HTTP/1.1" 200 48715
+INFO 2025-12-20 17:12:03,852 log 19952 584 "GET /transactions/ HTTP/1.1" 200 47905
+INFO 2025-12-20 17:12:03,958 log 19952 584 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 17:12:05,700 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14643
+INFO 2025-12-20 17:12:41,410 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:12:41,437 log 19952 584 "GET /transactions/ HTTP/1.1" 200 49967
+INFO 2025-12-20 17:12:46,576 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14643
+INFO 2025-12-20 17:14:13,573 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:14:13,601 log 19952 584 "GET /transactions/ HTTP/1.1" 200 51750
+INFO 2025-12-20 17:14:20,990 log 19952 584 "GET /transactions/80/edit/ HTTP/1.1" 200 14678
+INFO 2025-12-20 17:14:49,159 log 19952 584 "POST /transactions/80/edit/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:14:49,186 log 19952 584 "GET /transactions/ HTTP/1.1" 200 51466
+INFO 2025-12-20 17:14:57,584 log 19952 584 "GET / HTTP/1.1" 200 17867
+INFO 2025-12-20 17:15:02,766 log 19952 584 "GET /?month=1&year=2026 HTTP/1.1" 200 17839
+INFO 2025-12-20 17:15:05,328 log 19952 584 "GET /?month=12&year=2025 HTTP/1.1" 200 17867
+INFO 2025-12-20 17:15:08,111 log 19952 584 "GET /categories/ HTTP/1.1" 200 48715
+INFO 2025-12-20 17:15:08,828 log 19952 584 "GET /transactions/ HTTP/1.1" 200 51466
+INFO 2025-12-20 17:15:11,789 log 19952 584 "GET /transactions/80/delete/ HTTP/1.1" 200 6216
+INFO 2025-12-20 17:15:13,186 log 19952 584 "POST /transactions/80/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:15:13,219 log 19952 584 "GET /transactions/ HTTP/1.1" 200 49683
+INFO 2025-12-20 17:15:14,782 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14643
+INFO 2025-12-20 17:15:21,398 log 19952 584 "GET /categories/ HTTP/1.1" 200 48715
+INFO 2025-12-20 17:15:23,053 log 19952 584 "GET /categories/add/ HTTP/1.1" 200 11802
+INFO 2025-12-20 17:15:45,288 log 19952 584 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:15:45,307 log 19952 584 "GET /categories/ HTTP/1.1" 200 50466
+INFO 2025-12-20 17:15:52,452 log 19952 584 "GET /transactions/ HTTP/1.1" 200 49683
+INFO 2025-12-20 17:15:54,802 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14691
+INFO 2025-12-20 17:16:28,536 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:16:28,564 log 19952 584 "GET /transactions/ HTTP/1.1" 200 55286
+INFO 2025-12-20 17:16:43,278 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14691
+INFO 2025-12-20 17:16:54,039 log 19952 584 "GET / HTTP/1.1" 200 17876
+INFO 2025-12-20 17:16:54,162 log 19952 584 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 17:16:57,231 log 19952 584 "GET /transactions/ HTTP/1.1" 200 55002
+INFO 2025-12-20 17:17:00,288 log 19952 584 "GET /transactions/83/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 17:17:01,466 log 19952 584 "POST /transactions/83/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:17:01,490 log 19952 584 "GET /transactions/ HTTP/1.1" 200 53229
+INFO 2025-12-20 17:17:03,138 log 19952 584 "GET /transactions/82/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 17:17:04,096 log 19952 584 "POST /transactions/82/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:17:04,142 log 19952 584 "GET /transactions/ HTTP/1.1" 200 51456
+INFO 2025-12-20 17:17:07,345 log 19952 584 "GET /transactions/81/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 17:17:08,430 log 19952 584 "POST /transactions/81/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:17:08,459 log 19952 584 "GET /transactions/ HTTP/1.1" 200 49683
+INFO 2025-12-20 17:17:10,844 log 19952 584 "GET /transactions/ HTTP/1.1" 200 49683
+INFO 2025-12-20 17:17:13,456 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14691
+INFO 2025-12-20 17:17:55,491 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:17:55,520 log 19952 584 "GET /transactions/ HTTP/1.1" 200 55286
+INFO 2025-12-20 17:17:58,989 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14691
+INFO 2025-12-20 17:18:28,751 log 19952 584 "GET /calendar/ HTTP/1.1" 200 36379
+INFO 2025-12-20 17:18:32,691 log 19952 584 "GET /categories/ HTTP/1.1" 200 50466
+INFO 2025-12-20 17:18:33,729 log 19952 584 "GET /categories/add/ HTTP/1.1" 200 11850
+INFO 2025-12-20 17:18:41,999 log 19952 584 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:18:42,017 log 19952 584 "GET /categories/ HTTP/1.1" 200 51972
+INFO 2025-12-20 17:18:45,417 log 19952 584 "GET /categories/ HTTP/1.1" 200 51972
+INFO 2025-12-20 17:18:47,106 log 19952 584 "GET /transactions/ HTTP/1.1" 200 55002
+INFO 2025-12-20 17:18:48,926 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:19:35,876 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:19:35,908 log 19952 584 "GET /transactions/ HTTP/1.1" 200 60593
+INFO 2025-12-20 17:20:02,672 log 19952 584 "GET /transactions/89/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 17:20:03,904 log 19952 584 "POST /transactions/89/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:20:03,931 log 19952 584 "GET /transactions/ HTTP/1.1" 200 58540
+INFO 2025-12-20 17:20:06,503 log 19952 584 "GET /transactions/88/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 17:20:07,624 log 19952 584 "POST /transactions/88/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:20:07,653 log 19952 584 "GET /transactions/ HTTP/1.1" 200 56771
+INFO 2025-12-20 17:20:12,153 log 19952 584 "GET /transactions/87/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 17:20:13,242 log 19952 584 "POST /transactions/87/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:20:13,269 log 19952 584 "GET /transactions/ HTTP/1.1" 200 55002
+INFO 2025-12-20 17:20:14,919 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:21:21,547 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:21:21,583 log 19952 584 "GET /transactions/ HTTP/1.1" 200 60629
+INFO 2025-12-20 17:21:32,139 log 19952 584 "GET / HTTP/1.1" 200 17876
+INFO 2025-12-20 17:21:39,116 log 19952 584 "GET /?month=1&year=2026 HTTP/1.1" 200 17839
+INFO 2025-12-20 17:23:45,936 log 19952 584 "GET /transactions/ HTTP/1.1" 200 60345
+INFO 2025-12-20 17:23:46,063 log 19952 584 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 17:23:48,794 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:24:02,454 log 19952 584 "GET /transactions/ HTTP/1.1" 200 60345
+INFO 2025-12-20 17:24:03,818 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:24:06,793 log 19952 584 "GET /categories/ HTTP/1.1" 200 51972
+INFO 2025-12-20 17:24:09,621 log 19952 584 "GET /categories/add/ HTTP/1.1" 200 11887
+INFO 2025-12-20 17:24:29,793 log 19952 584 "GET /transactions/ HTTP/1.1" 200 60345
+INFO 2025-12-20 17:24:31,665 log 19952 584 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:28:04,855 log 19952 584 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:28:04,888 log 19952 584 "GET /transactions/ HTTP/1.1" 200 73068
+INFO 2025-12-20 17:28:39,993 log 19952 584 "GET /transactions/ HTTP/1.1" 200 72784
+INFO 2025-12-20 17:29:43,840 log 19952 584 "GET /transactions/import/ HTTP/1.1" 200 6688
+INFO 2025-12-20 17:36:56,603 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 72784
+INFO 2025-12-20 17:36:56,711 log 19952 9356 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 17:37:04,403 log 19952 9356 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:38:29,990 log 19952 9356 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:38:30,040 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 74552
+INFO 2025-12-20 17:38:32,538 log 19952 9356 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:38:50,049 log 19952 9356 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:38:50,089 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 76320
+INFO 2025-12-20 17:39:05,495 log 19952 9356 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:39:49,719 log 19952 9356 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:39:49,760 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 78092
+INFO 2025-12-20 17:39:56,472 log 19952 9356 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:40:29,360 log 19952 9356 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:40:29,394 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 79858
+INFO 2025-12-20 17:40:41,392 log 19952 9356 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:41:09,197 log 19952 9356 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:41:09,233 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 81619
+INFO 2025-12-20 17:41:23,347 log 19952 9356 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:42:04,409 log 19952 9356 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:42:04,446 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 83391
+INFO 2025-12-20 17:42:10,527 log 19952 9356 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:42:27,731 log 19952 9356 "GET / HTTP/1.1" 200 17813
+INFO 2025-12-20 17:42:35,426 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 83391
+INFO 2025-12-20 17:42:47,832 log 19952 9356 "GET /transactions/99/delete/ HTTP/1.1" 200 6214
+INFO 2025-12-20 17:42:48,999 log 19952 9356 "POST /transactions/99/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:42:49,039 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 81614
+INFO 2025-12-20 17:42:50,120 log 19952 9356 "GET /transactions/98/delete/ HTTP/1.1" 200 6214
+INFO 2025-12-20 17:42:51,134 log 19952 9356 "POST /transactions/98/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:42:51,185 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 79837
+INFO 2025-12-20 17:42:52,398 log 19952 9356 "GET /transactions/97/delete/ HTTP/1.1" 200 6214
+INFO 2025-12-20 17:42:53,324 log 19952 9356 "POST /transactions/97/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:42:53,379 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 78060
+INFO 2025-12-20 17:42:54,315 log 19952 9356 "GET /transactions/96/delete/ HTTP/1.1" 200 6214
+INFO 2025-12-20 17:42:55,254 log 19952 9356 "POST /transactions/96/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:42:55,303 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 76283
+INFO 2025-12-20 17:42:58,273 log 19952 9356 "GET /transactions/95/delete/ HTTP/1.1" 200 6214
+INFO 2025-12-20 17:42:59,152 log 19952 9356 "POST /transactions/95/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:42:59,197 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 74506
+INFO 2025-12-20 17:43:00,637 log 19952 9356 "GET /transactions/94/delete/ HTTP/1.1" 200 6214
+INFO 2025-12-20 17:43:01,548 log 19952 9356 "POST /transactions/94/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:43:01,607 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 72729
+INFO 2025-12-20 17:43:04,093 log 19952 9356 "GET /transactions/93/delete/ HTTP/1.1" 200 6214
+INFO 2025-12-20 17:43:05,304 log 19952 9356 "POST /transactions/93/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:43:05,337 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 70952
+INFO 2025-12-20 17:43:18,812 log 19952 9356 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:44:31,539 log 19952 9356 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:44:31,576 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 83766
+INFO 2025-12-20 17:44:31,695 log 19952 9356 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 17:44:58,710 log 19952 9356 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 17:48:12,109 log 19952 9356 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 17:48:12,148 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 85220
+INFO 2025-12-20 17:48:20,954 log 19952 9356 "GET / HTTP/1.1" 200 17813
+INFO 2025-12-20 17:48:23,804 log 19952 9356 "GET /?month=1&year=2026 HTTP/1.1" 200 17839
+INFO 2025-12-20 17:48:27,396 log 19952 9356 "GET /transactions/ HTTP/1.1" 200 85220
+INFO 2025-12-20 17:52:05,816 autoreload 19952 18116 D:\GithubGit\MeuPortfolio\finanças\manage.py changed, reloading.
+INFO 2025-12-20 17:53:46,821 autoreload 22268 22312 Watching for file changes with StatReloader
+INFO 2025-12-20 17:53:48,486 log 22268 24524 "GET / HTTP/1.1" 200 17813
+INFO 2025-12-20 17:53:48,639 log 22268 24524 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+ERROR 2025-12-20 17:53:50,509 log 22268 24524 Internal Server Error: /transactions/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 181, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "filter_type=='RECEITA'"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 221, in _get_response
+    response = response.render()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 993, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 926, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 172, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 183, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 929, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 776, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: D:\GithubGit\MeuPortfolio\finanças\templates\core\transaction_list.html, Could not parse the remainder: '=='RECEITA'' from 'filter_type=='RECEITA''
+ERROR 2025-12-20 17:53:50,583 log 22268 24524 "GET /transactions/ HTTP/1.1" 500 260602
+INFO 2025-12-20 17:55:46,229 autoreload 22268 22312 D:\GithubGit\MeuPortfolio\finanças\manage.py changed, reloading.
+INFO 2025-12-20 17:57:59,971 autoreload 14204 18196 Watching for file changes with StatReloader
+INFO 2025-12-20 17:58:01,573 log 14204 12376 "GET / HTTP/1.1" 200 17813
+ERROR 2025-12-20 17:58:10,295 log 14204 12376 Internal Server Error: /transactions/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 181, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "filter_type=='RECEITA'"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 221, in _get_response
+    response = response.render()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 993, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 926, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 172, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 183, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 929, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 776, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: D:\GithubGit\MeuPortfolio\finanças\templates\core\transaction_list.html, Could not parse the remainder: '=='RECEITA'' from 'filter_type=='RECEITA''
+ERROR 2025-12-20 17:58:10,317 log 14204 12376 "GET /transactions/ HTTP/1.1" 500 260602
+INFO 2025-12-20 17:58:13,639 log 14204 12376 "GET / HTTP/1.1" 200 17813
+INFO 2025-12-20 17:58:15,466 log 14204 12376 "GET /calendar/ HTTP/1.1" 200 39425
+ERROR 2025-12-20 17:58:16,757 log 14204 12376 Internal Server Error: /transactions/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 181, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "filter_type=='RECEITA'"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 221, in _get_response
+    response = response.render()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 993, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 926, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 172, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 183, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 929, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 776, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: D:\GithubGit\MeuPortfolio\finanças\templates\core\transaction_list.html, Could not parse the remainder: '=='RECEITA'' from 'filter_type=='RECEITA''
+ERROR 2025-12-20 17:58:16,773 log 14204 12376 "GET /transactions/ HTTP/1.1" 500 260611
+INFO 2025-12-20 17:58:40,885 log 14204 12376 "GET / HTTP/1.1" 200 17813
+INFO 2025-12-20 17:59:06,146 autoreload 14204 18196 D:\GithubGit\MeuPortfolio\finanças\manage.py changed, reloading.
+INFO 2025-12-20 18:01:25,628 autoreload 24692 13904 Watching for file changes with StatReloader
+INFO 2025-12-20 18:01:27,361 log 24692 18108 "GET / HTTP/1.1" 200 17813
+ERROR 2025-12-20 18:01:29,309 log 24692 18108 Internal Server Error: /transactions/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 181, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "filter_type=='RECEITA'"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 221, in _get_response
+    response = response.render()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 993, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 926, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 172, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 183, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 929, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 776, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: D:\GithubGit\MeuPortfolio\finanças\templates\core\transaction_list.html, Could not parse the remainder: '=='RECEITA'' from 'filter_type=='RECEITA''
+ERROR 2025-12-20 18:01:29,328 log 24692 18108 "GET /transactions/ HTTP/1.1" 500 260732
+INFO 2025-12-20 18:02:24,458 autoreload 26356 25804 Watching for file changes with StatReloader
+INFO 2025-12-20 18:02:30,634 log 24692 18108 "GET / HTTP/1.1" 200 17813
+INFO 2025-12-20 18:02:33,607 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 90509
+INFO 2025-12-20 18:02:54,169 log 24692 18108 "GET /transactions/?search=&start_date=&end_date=&type=&category=4 HTTP/1.1" 200 16069
+INFO 2025-12-20 18:02:54,301 log 24692 18108 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 18:02:57,803 log 24692 18108 "GET /transactions/?search=&start_date=&end_date=&type=&category=28 HTTP/1.1" 200 14303
+INFO 2025-12-20 18:03:01,628 log 24692 18108 "GET /transactions/?search=&start_date=&end_date=&type=&category= HTTP/1.1" 200 90509
+INFO 2025-12-20 18:03:05,943 log 24692 18108 "GET /transactions/add/ HTTP/1.1" 200 14728
+INFO 2025-12-20 18:03:19,447 log 24692 18108 "GET /categories/ HTTP/1.1" 200 51972
+INFO 2025-12-20 18:03:21,490 log 24692 18108 "GET /categories/add/ HTTP/1.1" 200 11887
+INFO 2025-12-20 18:03:36,284 log 24692 18108 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:03:36,303 log 24692 18108 "GET /categories/ HTTP/1.1" 200 53733
+INFO 2025-12-20 18:03:39,650 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 90607
+INFO 2025-12-20 18:03:40,428 log 24692 18108 "GET /transactions/add/ HTTP/1.1" 200 14786
+INFO 2025-12-20 18:04:53,691 log 24692 18108 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:04:53,736 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 94492
+INFO 2025-12-20 18:05:11,605 log 24692 18108 "GET /transactions/add/ HTTP/1.1" 200 14786
+INFO 2025-12-20 18:05:48,200 log 24692 18108 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:05:48,241 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 95954
+INFO 2025-12-20 18:05:50,286 log 24692 18108 "GET /transactions/add/ HTTP/1.1" 200 14786
+INFO 2025-12-20 18:06:26,631 log 24692 18108 "GET /categories/ HTTP/1.1" 200 53733
+INFO 2025-12-20 18:06:27,895 log 24692 18108 "GET /categories/add/ HTTP/1.1" 200 11945
+INFO 2025-12-20 18:07:00,123 log 24692 18108 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:07:00,144 log 24692 18108 "GET /categories/ HTTP/1.1" 200 55489
+INFO 2025-12-20 18:07:05,784 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 96059
+INFO 2025-12-20 18:07:07,518 log 24692 18108 "GET /transactions/add/ HTTP/1.1" 200 14839
+INFO 2025-12-20 18:07:37,584 log 24692 18108 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:07:37,627 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 97831
+INFO 2025-12-20 18:07:42,105 log 24692 18108 "GET /transactions/add/ HTTP/1.1" 200 14839
+INFO 2025-12-20 18:08:09,823 log 24692 18108 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:08:09,865 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 99605
+INFO 2025-12-20 18:08:11,533 log 24692 18108 "GET /transactions/add/ HTTP/1.1" 200 14839
+INFO 2025-12-20 18:09:10,804 log 24692 18108 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:09:10,848 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 101373
+INFO 2025-12-20 18:09:12,591 log 24692 18108 "GET /transactions/add/ HTTP/1.1" 200 14839
+INFO 2025-12-20 18:09:43,753 log 24692 18108 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:09:43,794 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 103144
+INFO 2025-12-20 18:09:51,035 log 24692 18108 "GET /transactions/add/ HTTP/1.1" 200 14839
+INFO 2025-12-20 18:10:13,745 log 24692 18108 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:10:13,788 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 104910
+INFO 2025-12-20 18:10:18,818 log 24692 18108 "GET /transactions/add/ HTTP/1.1" 200 14839
+INFO 2025-12-20 18:10:39,154 log 24692 18108 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:10:39,198 log 24692 18108 "GET /transactions/ HTTP/1.1" 200 106682
+INFO 2025-12-20 18:10:40,858 log 24692 18108 "GET / HTTP/1.1" 200 17806
+INFO 2025-12-20 18:10:56,740 log 24692 18108 "GET /investments/ HTTP/1.1" 200 29551
+INFO 2025-12-20 18:17:51,539 log 24692 23860 "GET /investments/search/?ticker=CPTS11 HTTP/1.1" 200 209
+INFO 2025-12-20 18:18:19,742 log 24692 23860 "GET /investments/ HTTP/1.1" 200 29551
+INFO 2025-12-20 18:18:19,842 log 24692 23860 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 18:18:21,923 log 24692 23860 "GET /investments/add/ HTTP/1.1" 200 11049
+INFO 2025-12-20 18:20:20,977 log 24692 23860 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:20:24,630 log 24692 27528 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:20:26,268 log 24692 23876 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:20:26,671 basehttp 24692 20392 - Broken pipe from ('127.0.0.1', 58174)
+INFO 2025-12-20 18:20:27,103 basehttp 24692 23168 - Broken pipe from ('127.0.0.1', 58734)
+INFO 2025-12-20 18:20:27,374 log 24692 25948 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:20:29,777 basehttp 24692 23860 - Broken pipe from ('127.0.0.1', 50717)
+INFO 2025-12-20 18:20:34,214 basehttp 24692 27528 - Broken pipe from ('127.0.0.1', 63416)
+INFO 2025-12-20 18:20:36,651 basehttp 24692 23876 - Broken pipe from ('127.0.0.1', 50146)
+INFO 2025-12-20 18:20:36,909 log 24692 25948 "GET /investments/ HTTP/1.1" 200 32339
+INFO 2025-12-20 18:20:48,017 log 24692 25948 "GET / HTTP/1.1" 200 17831
+INFO 2025-12-20 18:20:50,916 log 24692 25948 "GET /calendar/ HTTP/1.1" 200 46283
+INFO 2025-12-20 18:20:52,365 log 24692 25948 "GET /transactions/ HTTP/1.1" 200 117440
+INFO 2025-12-20 18:21:07,363 log 24692 25948 "GET /transactions/?search=&start_date=&end_date=&type=&category=3 HTTP/1.1" 200 30654
+INFO 2025-12-20 18:21:14,159 log 24692 25948 "GET /transactions/127/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 18:21:15,753 log 24692 25948 "POST /transactions/127/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:21:15,799 log 24692 25948 "GET /transactions/ HTTP/1.1" 200 115647
+INFO 2025-12-20 18:21:20,992 log 24692 25948 "GET /transactions/?search=&start_date=&end_date=&type=&category=3 HTTP/1.1" 200 28861
+INFO 2025-12-20 18:21:27,673 log 24692 25948 "GET /transactions/128/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 18:21:29,062 log 24692 25948 "POST /transactions/128/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:21:29,106 log 24692 25948 "GET /transactions/ HTTP/1.1" 200 113854
+INFO 2025-12-20 18:21:44,205 log 24692 25948 "GET /transactions/?search=&start_date=2025-12-19&end_date=2025-12-19&type=&category= HTTP/1.1" 200 25231
+INFO 2025-12-20 18:21:48,702 log 24692 25948 "GET /transactions/126/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 18:21:50,027 log 24692 25948 "POST /transactions/126/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:21:50,075 log 24692 25948 "GET /transactions/ HTTP/1.1" 200 112061
+INFO 2025-12-20 18:22:01,859 log 24692 25948 "GET /transactions/125/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 18:22:03,096 log 24692 25948 "POST /transactions/125/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:22:03,140 log 24692 25948 "GET /transactions/ HTTP/1.1" 200 110268
+INFO 2025-12-20 18:22:08,006 log 24692 25948 "GET /transactions/124/delete/ HTTP/1.1" 200 6215
+INFO 2025-12-20 18:22:09,128 log 24692 25948 "POST /transactions/124/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:22:09,180 log 24692 25948 "GET /transactions/ HTTP/1.1" 200 108475
+INFO 2025-12-20 18:22:18,291 views 24692 25948 Generating reports for user tassiosales
+INFO 2025-12-20 18:22:18,323 log 24692 25948 "GET /reports/ HTTP/1.1" 200 45518
+INFO 2025-12-20 18:22:43,750 log 24692 25948 "GET / HTTP/1.1" 200 17831
+INFO 2025-12-20 18:22:51,576 log 24692 25948 "GET /transactions/ HTTP/1.1" 200 108475
+INFO 2025-12-20 18:22:53,325 log 24692 25948 "GET /categories/ HTTP/1.1" 200 55489
+INFO 2025-12-20 18:22:54,875 log 24692 25948 "GET /calendar/ HTTP/1.1" 200 43538
+INFO 2025-12-20 18:22:58,143 log 24692 25948 "GET /calendar/?month=1&year=2026 HTTP/1.1" 200 32478
+INFO 2025-12-20 18:22:59,399 log 24692 25948 "GET /calendar/?month=2&year=2026 HTTP/1.1" 200 26405
+INFO 2025-12-20 18:23:00,780 log 24692 25948 "GET /calendar/?month=3&year=2026 HTTP/1.1" 200 28341
+INFO 2025-12-20 18:23:02,165 log 24692 25948 "GET /calendar/?month=2&year=2026 HTTP/1.1" 200 26405
+INFO 2025-12-20 18:23:02,643 log 24692 25948 "GET /calendar/?month=1&year=2026 HTTP/1.1" 200 32478
+INFO 2025-12-20 18:23:11,385 log 24692 25948 "GET /investments/ HTTP/1.1" 200 32346
+INFO 2025-12-20 18:23:18,869 log 24692 25948 "GET /investments/MXRF11.SA/ HTTP/1.1" 200 10731
+INFO 2025-12-20 18:23:32,563 log 24692 25948 "GET /investments/ HTTP/1.1" 200 32346
+INFO 2025-12-20 18:30:36,767 autoreload 26356 25804 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-20 18:30:37,169 autoreload 24692 13904 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-20 18:30:38,197 autoreload 23000 8116 Watching for file changes with StatReloader
+INFO 2025-12-20 18:30:38,536 autoreload 5600 3412 Watching for file changes with StatReloader
+INFO 2025-12-20 18:30:51,593 log 23000 19708 "GET /investments/GARE11.SA/ HTTP/1.1" 200 10731
+INFO 2025-12-20 18:30:51,820 log 23000 19708 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 18:30:52,565 autoreload 23000 8116 D:\GithubGit\MeuPortfolio\finanças\manage.py changed, reloading.
+INFO 2025-12-20 18:30:53,059 autoreload 5600 3412 D:\GithubGit\MeuPortfolio\finanças\manage.py changed, reloading.
+INFO 2025-12-20 18:30:54,142 autoreload 27228 27244 Watching for file changes with StatReloader
+INFO 2025-12-20 18:30:54,636 autoreload 25772 20016 Watching for file changes with StatReloader
+INFO 2025-12-20 18:31:09,507 log 27228 6452 "GET /investments/ HTTP/1.1" 200 32337
+INFO 2025-12-20 18:31:23,655 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 108475
+INFO 2025-12-20 18:31:25,141 log 27228 6452 "GET /transactions/add/ HTTP/1.1" 200 14839
+INFO 2025-12-20 18:31:36,650 log 27228 6452 "GET /categories/ HTTP/1.1" 200 55489
+INFO 2025-12-20 18:31:38,341 log 27228 6452 "GET /categories/add/ HTTP/1.1" 200 11998
+INFO 2025-12-20 18:31:49,567 log 27228 6452 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:31:49,599 log 27228 6452 "GET /categories/ HTTP/1.1" 200 57241
+INFO 2025-12-20 18:31:52,209 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 108571
+INFO 2025-12-20 18:31:53,400 log 27228 6452 "GET /transactions/add/ HTTP/1.1" 200 14888
+INFO 2025-12-20 18:32:26,830 log 27228 6452 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:32:26,892 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 110621
+INFO 2025-12-20 18:32:29,348 log 27228 6452 "GET /transactions/add/ HTTP/1.1" 200 14888
+INFO 2025-12-20 18:33:30,034 log 27228 6452 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:33:30,087 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 112387
+INFO 2025-12-20 18:33:32,550 log 27228 6452 "GET /transactions/add/ HTTP/1.1" 200 14888
+INFO 2025-12-20 18:34:06,037 log 27228 6452 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:34:06,083 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 114153
+INFO 2025-12-20 18:34:12,787 log 27228 6452 "GET /transactions/add/ HTTP/1.1" 200 14888
+INFO 2025-12-20 18:34:38,011 log 27228 6452 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:34:38,058 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 115919
+INFO 2025-12-20 18:34:43,971 views 27228 6452 Generating reports for user tassiosales
+INFO 2025-12-20 18:34:44,002 log 27228 6452 "GET /reports/ HTTP/1.1" 200 45672
+INFO 2025-12-20 18:34:58,231 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 115635
+INFO 2025-12-20 18:34:59,771 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 115635
+INFO 2025-12-20 18:35:02,629 log 27228 6452 "GET /transactions/add/ HTTP/1.1" 200 14888
+INFO 2025-12-20 18:35:54,689 log 27228 6452 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:35:54,737 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 117685
+INFO 2025-12-20 18:36:54,534 log 27228 6452 "GET /investments/ HTTP/1.1" 200 32346
+INFO 2025-12-20 18:37:03,557 log 27228 6452 "GET /investments/search/?ticker=PETR4 HTTP/1.1" 200 208
+INFO 2025-12-20 18:37:06,041 log 27228 6452 "GET / HTTP/1.1" 200 17831
+INFO 2025-12-20 18:37:07,113 log 27228 6452 "GET /categories/ HTTP/1.1" 200 57241
+INFO 2025-12-20 18:37:07,756 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 117401
+INFO 2025-12-20 18:37:09,116 log 27228 6452 "GET /transactions/add/ HTTP/1.1" 200 14888
+INFO 2025-12-20 18:38:06,177 log 27228 6452 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:38:06,224 log 27228 6452 "GET /transactions/ HTTP/1.1" 200 119461
+INFO 2025-12-20 18:38:44,878 log 27228 6452 "GET /investments/ HTTP/1.1" 200 32346
+INFO 2025-12-20 18:38:47,151 log 27228 6452 "GET /investments/BTHF11.SA/ HTTP/1.1" 200 10735
+INFO 2025-12-20 18:39:16,802 autoreload 27236 12612 Watching for file changes with StatReloader
+INFO 2025-12-20 18:39:21,507 log 27236 18004 "GET / HTTP/1.1" 200 17831
+INFO 2025-12-20 18:39:30,874 log 27236 18004 "GET /investments/ HTTP/1.1" 200 32337
+INFO 2025-12-20 18:42:06,146 log 27236 18004 "GET /transactions/ HTTP/1.1" 200 119177
+INFO 2025-12-20 18:42:07,608 log 27236 18004 "GET /transactions/add/ HTTP/1.1" 200 14888
+INFO 2025-12-20 18:42:54,732 log 27236 18004 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:42:54,791 log 27236 18004 "GET /transactions/ HTTP/1.1" 200 121235
+INFO 2025-12-20 18:42:56,395 log 27236 18004 "GET /transactions/add/ HTTP/1.1" 200 14888
+INFO 2025-12-20 18:43:34,736 log 27236 18004 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:43:34,793 log 27236 18004 "GET /transactions/ HTTP/1.1" 200 123013
+INFO 2025-12-20 18:43:34,928 log 27236 18004 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 18:43:36,936 log 27236 18004 "GET /transactions/add/ HTTP/1.1" 200 14888
+INFO 2025-12-20 18:44:26,543 log 27236 18004 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:44:26,595 log 27236 18004 "GET /transactions/ HTTP/1.1" 200 124798
+INFO 2025-12-20 18:44:40,919 log 27236 18004 "GET /transactions/add/ HTTP/1.1" 200 14888
+INFO 2025-12-20 18:45:14,051 log 27236 18004 "GET /categories/ HTTP/1.1" 200 57241
+INFO 2025-12-20 18:45:15,647 log 27236 18004 "GET /categories/add/ HTTP/1.1" 200 12047
+INFO 2025-12-20 18:45:36,472 log 27236 18004 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:45:36,493 log 27236 18004 "GET /categories/ HTTP/1.1" 200 58995
+INFO 2025-12-20 18:45:39,104 log 27236 18004 "GET /transactions/ HTTP/1.1" 200 124612
+INFO 2025-12-20 18:45:41,353 log 27236 18004 "GET /transactions/add/ HTTP/1.1" 200 14939
+INFO 2025-12-20 18:46:13,169 log 27236 18004 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:46:13,222 log 27236 18004 "GET /transactions/ HTTP/1.1" 200 126670
+INFO 2025-12-20 18:48:10,361 log 27236 18004 "GET /investments/ HTTP/1.1" 200 32346
+INFO 2025-12-20 18:49:11,658 autoreload 27236 12612 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-20 18:49:12,566 autoreload 7692 25948 Watching for file changes with StatReloader
+INFO 2025-12-20 18:49:29,171 autoreload 7692 25948 D:\GithubGit\MeuPortfolio\finanças\manage.py changed, reloading.
+INFO 2025-12-20 18:50:09,839 autoreload 27612 25928 Watching for file changes with StatReloader
+INFO 2025-12-20 18:50:16,087 log 27612 26076 "GET / HTTP/1.1" 200 17831
+INFO 2025-12-20 18:50:21,796 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 126386
+INFO 2025-12-20 18:50:23,889 log 27612 26076 "GET /transactions/add/ HTTP/1.1" 200 14939
+INFO 2025-12-20 18:50:59,720 log 27612 26076 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:50:59,778 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 128447
+INFO 2025-12-20 18:51:10,092 log 27612 26076 "GET /investments/ HTTP/1.1" 200 32383
+INFO 2025-12-20 18:51:22,038 log 27612 26076 "GET /investments/BTHF11.SA/ HTTP/1.1" 200 14976
+INFO 2025-12-20 18:51:35,906 log 27612 26076 "GET /investments/ HTTP/1.1" 200 32383
+INFO 2025-12-20 18:51:46,110 log 27612 26076 "GET /investments/search/?ticker=PETR4 HTTP/1.1" 200 4554
+INFO 2025-12-20 18:53:34,467 log 27612 26076 "GET /investments/BTHF11.SA/ HTTP/1.1" 200 14977
+INFO 2025-12-20 18:54:11,841 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 128163
+INFO 2025-12-20 18:54:20,704 log 27612 26076 "GET /transactions/add/ HTTP/1.1" 200 14939
+INFO 2025-12-20 18:55:06,901 log 27612 26076 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:55:06,955 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 131989
+INFO 2025-12-20 18:55:14,363 log 27612 26076 "GET /transactions/add/ HTTP/1.1" 200 14939
+INFO 2025-12-20 18:56:04,677 log 27612 26076 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:56:04,733 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 133769
+INFO 2025-12-20 18:56:14,259 log 27612 26076 "GET / HTTP/1.1" 200 17831
+INFO 2025-12-20 18:56:23,584 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 133485
+INFO 2025-12-20 18:56:25,173 log 27612 26076 "GET /transactions/add/ HTTP/1.1" 200 14939
+INFO 2025-12-20 18:57:00,099 log 27612 26076 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 18:57:00,156 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 135534
+INFO 2025-12-20 18:57:06,652 log 27612 26076 "GET / HTTP/1.1" 200 17831
+INFO 2025-12-20 18:57:08,381 log 27612 26076 "GET /?month=1&year=2026 HTTP/1.1" 200 17838
+INFO 2025-12-20 18:59:19,286 views 27612 26076 Generating reports for user tassiosales
+INFO 2025-12-20 18:59:19,318 log 27612 26076 "GET /reports/ HTTP/1.1" 200 45887
+INFO 2025-12-20 18:59:19,453 log 27612 26076 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 19:00:34,947 log 27612 26076 "GET / HTTP/1.1" 200 17831
+INFO 2025-12-20 19:00:36,086 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 135250
+INFO 2025-12-20 19:00:39,148 log 27612 26076 "GET /transactions/add/ HTTP/1.1" 200 14939
+INFO 2025-12-20 19:01:09,146 log 27612 26076 "GET /categories/ HTTP/1.1" 200 58995
+INFO 2025-12-20 19:01:10,437 log 27612 26076 "GET /categories/add/ HTTP/1.1" 200 12098
+INFO 2025-12-20 19:01:27,086 log 27612 26076 "POST /categories/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 19:01:27,107 log 27612 26076 "GET /categories/ HTTP/1.1" 200 60505
+INFO 2025-12-20 19:01:29,178 log 27612 26076 "GET /categories/add/ HTTP/1.1" 200 12139
+INFO 2025-12-20 19:01:42,147 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 135354
+INFO 2025-12-20 19:01:44,879 log 27612 26076 "GET /transactions/add/ HTTP/1.1" 200 14980
+INFO 2025-12-20 19:02:36,269 log 27612 26076 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 19:02:36,331 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 137421
+INFO 2025-12-20 19:02:42,180 log 27612 26076 "GET / HTTP/1.1" 200 17831
+INFO 2025-12-20 19:02:49,651 log 27612 26076 "GET /?month=1&year=2026 HTTP/1.1" 200 17840
+INFO 2025-12-20 19:06:35,508 views 27612 26076 Generating reports for user tassiosales
+INFO 2025-12-20 19:06:35,543 log 27612 26076 "GET /reports/ HTTP/1.1" 200 46095
+INFO 2025-12-20 19:09:51,775 log 27612 26076 "GET / HTTP/1.1" 200 17831
+INFO 2025-12-20 19:09:59,540 log 27612 26076 "GET /?month=1&year=2026 HTTP/1.1" 200 17840
+INFO 2025-12-20 19:10:43,901 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 137137
+INFO 2025-12-20 19:11:08,611 log 27612 26076 "GET /transactions/?search=&start_date=2025-12-19&end_date=2025-12-19&type=DESPESA&category= HTTP/1.1" 200 20158
+INFO 2025-12-20 19:11:12,518 log 27612 26076 "GET /transactions/add/ HTTP/1.1" 200 14980
+INFO 2025-12-20 19:11:48,185 log 27612 26076 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 19:11:48,242 log 27612 26076 "GET /transactions/ HTTP/1.1" 200 138900
+INFO 2025-12-20 19:34:13,987 autoreload 26496 24732 Watching for file changes with StatReloader
+INFO 2025-12-20 19:34:23,278 log 26496 10140 "GET / HTTP/1.1" 200 18011
+INFO 2025-12-20 19:34:23,448 log 26496 10140 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 19:34:29,493 log 26496 10140 "GET /investments/ HTTP/1.1" 200 32563
+WARNING 2025-12-20 19:34:32,099 log 26496 27056 Not Found: /investments/safe/
+WARNING 2025-12-20 19:34:32,100 log 26496 27056 "GET /investments/safe/ HTTP/1.1" 404 9479
+INFO 2025-12-20 19:34:58,943 autoreload 26496 24732 D:\GithubGit\MeuPortfolio\finanças\core\urls.py changed, reloading.
+INFO 2025-12-20 19:34:59,883 autoreload 8556 9816 Watching for file changes with StatReloader
+INFO 2025-12-20 19:35:08,792 autoreload 8556 9816 D:\GithubGit\MeuPortfolio\finanças\manage.py changed, reloading.
+INFO 2025-12-20 19:35:59,933 autoreload 23340 5680 Watching for file changes with StatReloader
+INFO 2025-12-20 19:36:13,876 log 23340 25740 "GET / HTTP/1.1" 200 18011
+INFO 2025-12-20 19:36:18,501 log 23340 25740 "GET /investments/safe/ HTTP/1.1" 200 14111
+INFO 2025-12-20 19:36:24,717 log 23340 25740 "GET /investments/safe/ HTTP/1.1" 200 14111
+INFO 2025-12-20 19:37:42,741 log 23340 25740 "GET /investments/add/ HTTP/1.1" 200 13012
+INFO 2025-12-20 19:39:28,923 autoreload 23340 5680 D:\GithubGit\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2025-12-20 19:39:29,907 autoreload 23972 26796 Watching for file changes with StatReloader
+INFO 2025-12-20 19:39:35,668 autoreload 23972 26796 D:\GithubGit\MeuPortfolio\finanças\manage.py changed, reloading.
+INFO 2025-12-20 19:43:43,077 autoreload 22404 21076 Watching for file changes with StatReloader
+INFO 2025-12-20 19:43:50,990 log 22404 25756 "GET /investments/safe/ HTTP/1.1" 200 14111
+INFO 2025-12-20 19:43:55,117 log 22404 25756 "GET /investments/add/ HTTP/1.1" 200 14662
+INFO 2025-12-20 19:44:29,788 log 22404 25756 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 19:44:33,139 log 22404 25756 "GET /investments/ HTTP/1.1" 200 32563
+INFO 2025-12-20 19:44:40,152 log 22404 25756 "GET /investments/safe/ HTTP/1.1" 200 14157
+INFO 2025-12-20 19:44:55,630 log 22404 25756 "GET /investments/add/ HTTP/1.1" 200 14662
+INFO 2025-12-20 19:45:57,978 log 22404 25756 "GET / HTTP/1.1" 200 18009
+INFO 2025-12-20 19:46:09,396 log 22404 25756 "GET /transactions/ HTTP/1.1" 200 140870
+INFO 2025-12-20 19:46:30,317 log 22404 25756 "GET /transactions/146/delete/ HTTP/1.1" 200 6397
+INFO 2025-12-20 19:46:31,664 log 22404 25756 "POST /transactions/146/delete/ HTTP/1.1" 302 0
+INFO 2025-12-20 19:46:31,717 log 22404 25756 "GET /transactions/ HTTP/1.1" 200 139080
+INFO 2025-12-20 19:47:42,061 log 22404 26884 "GET /investments/safe/ HTTP/1.1" 200 14111
+INFO 2025-12-20 19:47:42,459 basehttp 22404 25756 - Broken pipe from ('127.0.0.1', 63434)
+INFO 2025-12-20 19:48:08,807 log 22404 26884 "GET /investments/add/ HTTP/1.1" 200 14662
+INFO 2025-12-20 19:52:57,797 log 22404 26884 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 19:53:02,393 log 22404 26884 "GET /investments/ HTTP/1.1" 200 32563
+INFO 2025-12-20 19:53:08,086 log 22404 26884 "GET /investments/safe/ HTTP/1.1" 200 14809
+INFO 2025-12-20 19:54:25,228 log 22404 26884 "GET /investments/add/ HTTP/1.1" 200 14662
+INFO 2025-12-20 19:54:25,345 log 22404 26884 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2025-12-20 19:54:33,002 autoreload 22404 21076 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-20 19:54:34,182 autoreload 10148 16548 Watching for file changes with StatReloader
+INFO 2025-12-20 19:55:10,446 autoreload 10148 16548 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-20 19:55:11,431 autoreload 12644 2480 Watching for file changes with StatReloader
+INFO 2025-12-20 19:56:26,051 log 12644 8220 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2025-12-20 19:56:30,223 log 12644 8220 "GET /investments/ HTTP/1.1" 200 32563
+INFO 2025-12-20 19:56:34,858 log 12644 8220 "GET /investments/safe/ HTTP/1.1" 200 15782
+INFO 2025-12-20 19:58:29,852 autoreload 12644 2480 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2025-12-20 19:58:31,121 autoreload 23660 28584 Watching for file changes with StatReloader
+INFO 2026-01-13 21:28:30,623 autoreload 31820 21728 Watching for file changes with StatReloader
+INFO 2026-01-13 21:28:32,457 log 31820 36316 "GET / HTTP/1.1" 302 0
+INFO 2026-01-13 21:28:32,677 log 31820 36316 "GET /login/?next=/ HTTP/1.1" 200 8380
+INFO 2026-01-13 21:28:33,003 log 31820 36316 "GET /static/css/custom.css?v=2 HTTP/1.1" 200 11494
+WARNING 2026-01-13 21:28:33,322 log 31820 36316 Not Found: /favicon.ico
+WARNING 2026-01-13 21:28:33,323 log 31820 36316 "GET /favicon.ico HTTP/1.1" 404 11222
+INFO 2026-01-13 21:28:55,444 log 31820 36316 "POST /login/?next=/ HTTP/1.1" 200 8600
+INFO 2026-01-13 21:28:55,546 log 31820 36316 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 21:29:00,878 log 31820 36316 "POST /login/?next=/ HTTP/1.1" 302 0
+INFO 2026-01-13 21:29:00,947 log 31820 36316 "GET / HTTP/1.1" 200 14016
+INFO 2026-01-13 21:29:11,148 log 31820 36316 "GET /calendar/ HTTP/1.1" 200 28653
+INFO 2026-01-13 21:29:11,252 log 31820 36316 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 21:29:13,119 views 31820 36316 Generating reports for user tassiosales
+INFO 2026-01-13 21:29:13,177 log 31820 36316 "GET /reports/ HTTP/1.1" 200 25745
+INFO 2026-01-13 21:29:15,460 log 31820 36316 "GET /transactions/ HTTP/1.1" 200 12004
+INFO 2026-01-13 21:29:17,471 log 31820 36316 "GET /categories/ HTTP/1.1" 200 62429
+INFO 2026-01-13 21:29:20,536 log 31820 36316 "GET /budgets/ HTTP/1.1" 200 8970
+INFO 2026-01-13 21:29:22,160 log 31820 36316 "GET /goals/ HTTP/1.1" 200 7963
+INFO 2026-01-13 21:29:27,436 log 31820 36316 "GET /investments/ HTTP/1.1" 200 21060
+INFO 2026-01-13 21:29:27,544 log 31820 36316 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 21:29:30,421 log 31820 36316 "GET /investments/safe/ HTTP/1.1" 200 15855
+INFO 2026-01-13 21:33:14,731 autoreload 31820 21728 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2026-01-13 21:33:23,621 autoreload 34204 36036 Watching for file changes with StatReloader
+INFO 2026-01-13 21:34:07,056 autoreload 34204 36036 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2026-01-13 21:34:07,993 autoreload 10556 26080 Watching for file changes with StatReloader
+INFO 2026-01-13 21:34:31,021 log 10556 23792 "GET /investments/safe/ HTTP/1.1" 200 15853
+INFO 2026-01-13 21:34:31,119 log 10556 23792 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 21:35:15,755 autoreload 34376 16020 Watching for file changes with StatReloader
+INFO 2026-01-13 21:35:17,411 log 34376 15092 "GET / HTTP/1.1" 200 14016
+INFO 2026-01-13 21:35:17,571 log 34376 15092 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 21:35:22,140 log 34376 15092 "GET /investments/safe/ HTTP/1.1" 200 15853
+INFO 2026-01-13 21:37:28,763 autoreload 34376 16020 D:\GithubGit\MeuPortfolio\finanças\core\market_data.py changed, reloading.
+INFO 2026-01-13 21:37:29,782 autoreload 29868 13340 Watching for file changes with StatReloader
+INFO 2026-01-13 21:38:17,898 autoreload 29868 13340 D:\GithubGit\MeuPortfolio\finanças\core\market_data.py changed, reloading.
+INFO 2026-01-13 21:38:20,191 autoreload 25048 9104 Watching for file changes with StatReloader
+INFO 2026-01-13 21:44:56,157 autoreload 25048 9104 D:\GithubGit\MeuPortfolio\finanças\core\market_data.py changed, reloading.
+INFO 2026-01-13 21:44:57,140 autoreload 35528 30164 Watching for file changes with StatReloader
+INFO 2026-01-13 21:45:10,861 autoreload 35528 30164 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2026-01-13 21:45:11,833 autoreload 11080 12860 Watching for file changes with StatReloader
+INFO 2026-01-13 21:52:20,609 autoreload 11080 12860 D:\GithubGit\MeuPortfolio\finanças\core\market_data.py changed, reloading.
+INFO 2026-01-13 21:52:21,483 autoreload 3988 35368 Watching for file changes with StatReloader
+INFO 2026-01-13 21:54:17,695 autoreload 19128 7496 Watching for file changes with StatReloader
+INFO 2026-01-13 21:54:19,355 log 19128 2716 "GET / HTTP/1.1" 200 14016
+INFO 2026-01-13 21:54:19,510 log 19128 2716 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+WARNING 2026-01-13 21:54:25,990 market_data 19128 2716 YFinance failed for USD: 'currentTradingPeriod'
+WARNING 2026-01-13 21:54:26,394 market_data 19128 2716 YFinance failed for EUR: 'currentTradingPeriod'
+INFO 2026-01-13 21:54:27,642 log 19128 2716 "GET /investments/safe/ HTTP/1.1" 200 15853
+INFO 2026-01-13 21:54:37,189 log 19128 2716 "GET /investments/add/ HTTP/1.1" 200 16400
+INFO 2026-01-13 21:54:59,394 log 19128 2716 "GET /transactions/ HTTP/1.1" 200 12004
+INFO 2026-01-13 21:55:01,021 log 19128 2716 "GET /categories/ HTTP/1.1" 200 62429
+INFO 2026-01-13 21:55:02,492 log 19128 2716 "GET /transactions/ HTTP/1.1" 200 12004
+INFO 2026-01-13 21:55:04,850 views 19128 2716 Generating reports for user tassiosales
+INFO 2026-01-13 21:55:04,863 log 19128 2716 "GET /reports/ HTTP/1.1" 200 25745
+INFO 2026-01-13 21:55:06,641 log 19128 2716 "GET / HTTP/1.1" 200 14016
+INFO 2026-01-13 22:00:25,562 autoreload 19128 7496 D:\GithubGit\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2026-01-13 22:00:26,904 autoreload 35264 8872 Watching for file changes with StatReloader
+INFO 2026-01-13 22:01:01,467 autoreload 35264 8872 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2026-01-13 22:01:03,101 autoreload 24788 14612 Watching for file changes with StatReloader
+INFO 2026-01-13 22:01:44,155 autoreload 27976 26664 Watching for file changes with StatReloader
+INFO 2026-01-13 22:01:45,843 log 27976 24444 "GET / HTTP/1.1" 200 14016
+INFO 2026-01-13 22:01:45,997 log 27976 24444 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+WARNING 2026-01-13 22:01:52,452 market_data 27976 24444 YFinance failed for USD: 'currentTradingPeriod'
+WARNING 2026-01-13 22:01:52,886 market_data 27976 24444 YFinance failed for EUR: 'currentTradingPeriod'
+INFO 2026-01-13 22:01:53,700 log 27976 24444 "GET /investments/safe/ HTTP/1.1" 200 15853
+WARNING 2026-01-13 22:01:55,818 market_data 27976 24444 YFinance failed for USD: 'currentTradingPeriod'
+WARNING 2026-01-13 22:01:56,255 market_data 27976 24444 YFinance failed for EUR: 'currentTradingPeriod'
+INFO 2026-01-13 22:01:56,645 log 27976 24444 "GET /investments/safe/ HTTP/1.1" 200 15853
+INFO 2026-01-13 22:01:59,444 log 27976 24444 "GET /investments/add/ HTTP/1.1" 200 29249
+WARNING 2026-01-13 22:02:19,660 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:19,661 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:25,468 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:25,469 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:26,370 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:26,371 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:26,857 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:26,858 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:27,103 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:27,104 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:27,562 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:27,562 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:27,766 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:27,767 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:27,971 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:27,972 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:28,162 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:28,162 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:28,352 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:28,354 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:28,525 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:28,526 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+WARNING 2026-01-13 22:02:28,701 log 27976 24444 Not Found: /search_ticker/
+WARNING 2026-01-13 22:02:28,702 log 27976 24444 "GET /search_ticker/?ticker=USD HTTP/1.1" 404 11242
+INFO 2026-01-13 22:03:16,519 log 27976 24444 "GET /investments/add/ HTTP/1.1" 200 29249
+INFO 2026-01-13 22:04:39,789 autoreload 27976 26664 D:\GithubGit\MeuPortfolio\finanças\core\market_data.py changed, reloading.
+INFO 2026-01-13 22:04:40,777 autoreload 34236 34940 Watching for file changes with StatReloader
+INFO 2026-01-13 22:05:15,714 autoreload 34236 34940 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2026-01-13 22:05:16,587 autoreload 11796 252 Watching for file changes with StatReloader
+INFO 2026-01-13 22:06:57,861 autoreload 31712 12612 Watching for file changes with StatReloader
+INFO 2026-01-13 22:06:59,411 log 31712 31160 "GET / HTTP/1.1" 200 14016
+INFO 2026-01-13 22:06:59,569 log 31712 31160 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 22:07:02,770 log 31712 31160 "GET /investments/safe/ HTTP/1.1" 200 15853
+INFO 2026-01-13 22:07:06,003 log 31712 31160 "GET /investments/add/ HTTP/1.1" 200 30680
+INFO 2026-01-13 22:07:47,650 log 31712 31160 "GET /investments/search/?ticker=usd HTTP/1.1" 200 224
+ERROR 2026-01-13 22:08:28,928 log 31712 31160 Internal Server Error: /investments/search/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "D:\GithubGit\MeuPortfolio\finanças\core\views.py", line 145, in search_ticker
+    if price is None:
+       ^^^^^
+UnboundLocalError: cannot access local variable 'price' where it is not associated with a value
+ERROR 2026-01-13 22:08:29,005 log 31712 31160 "GET /investments/search/?ticker=PAB HTTP/1.1" 500 74403
+ERROR 2026-01-13 22:08:30,869 log 31712 31160 Internal Server Error: /investments/search/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "D:\GithubGit\MeuPortfolio\finanças\core\views.py", line 145, in search_ticker
+    if price is None:
+       ^^^^^
+UnboundLocalError: cannot access local variable 'price' where it is not associated with a value
+ERROR 2026-01-13 22:08:30,875 log 31712 31160 "GET /investments/search/?ticker=PAB HTTP/1.1" 500 74403
+ERROR 2026-01-13 22:08:39,278 log 31712 31160 Internal Server Error: /investments/search/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "D:\GithubGit\MeuPortfolio\finanças\core\views.py", line 145, in search_ticker
+    if price is None:
+       ^^^^^
+UnboundLocalError: cannot access local variable 'price' where it is not associated with a value
+ERROR 2026-01-13 22:08:39,284 log 31712 31160 "GET /investments/search/?ticker=EURO HTTP/1.1" 500 74413
+ERROR 2026-01-13 22:08:40,223 log 31712 31160 Internal Server Error: /investments/search/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "D:\GithubGit\MeuPortfolio\finanças\core\views.py", line 145, in search_ticker
+    if price is None:
+       ^^^^^
+UnboundLocalError: cannot access local variable 'price' where it is not associated with a value
+ERROR 2026-01-13 22:08:40,230 log 31712 31160 "GET /investments/search/?ticker=EURO HTTP/1.1" 500 74413
+INFO 2026-01-13 22:08:43,467 log 31712 31160 "GET /investments/search/?ticker=EUR HTTP/1.1" 200 208
+INFO 2026-01-13 22:09:16,146 log 31712 31160 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:09:17,149 log 31712 31160 "GET /investments/ HTTP/1.1" 200 23062
+INFO 2026-01-13 22:09:31,809 log 31712 31160 "GET /categories/ HTTP/1.1" 200 62429
+INFO 2026-01-13 22:09:34,122 log 31712 31160 "GET /transactions/ HTTP/1.1" 200 13154
+INFO 2026-01-13 22:09:36,385 log 31712 31160 "GET /transactions/149/delete/ HTTP/1.1" 200 8136
+INFO 2026-01-13 22:09:37,793 log 31712 31160 "POST /transactions/149/delete/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:09:37,805 log 31712 31160 "GET /transactions/ HTTP/1.1" 200 12004
+INFO 2026-01-13 22:11:13,652 autoreload 31712 12612 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2026-01-13 22:11:14,690 autoreload 27872 26240 Watching for file changes with StatReloader
+INFO 2026-01-13 22:11:52,140 autoreload 27872 26240 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2026-01-13 22:11:53,627 autoreload 19500 14324 Watching for file changes with StatReloader
+INFO 2026-01-13 22:12:02,108 log 19500 5548 "GET /transactions/ HTTP/1.1" 200 12004
+INFO 2026-01-13 22:12:02,233 log 19500 5548 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 22:12:11,723 log 19500 5548 "GET /investments/safe/ HTTP/1.1" 200 15853
+INFO 2026-01-13 22:12:27,466 log 19500 5548 "GET /investments/add/ HTTP/1.1" 200 30528
+INFO 2026-01-13 22:12:35,781 log 19500 5548 "GET /investments/search/?ticker=USD HTTP/1.1" 200 219
+INFO 2026-01-13 22:12:56,065 log 19500 5548 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:12:57,736 log 19500 5548 "GET /investments/ HTTP/1.1" 200 23089
+INFO 2026-01-13 22:13:38,937 log 19500 5548 "GET /investments/safe/ HTTP/1.1" 200 15896
+INFO 2026-01-13 22:15:04,919 log 19500 5548 "GET /transactions/ HTTP/1.1" 200 13152
+INFO 2026-01-13 22:15:27,313 log 19500 5548 "GET /investments/ HTTP/1.1" 200 23089
+INFO 2026-01-13 22:21:49,784 autoreload 19500 14324 D:\GithubGit\MeuPortfolio\finanças\core\forms.py changed, reloading.
+INFO 2026-01-13 22:21:58,740 autoreload 11768 26688 Watching for file changes with StatReloader
+INFO 2026-01-13 22:26:33,333 log 11768 29976 "GET /investments/ HTTP/1.1" 200 23072
+INFO 2026-01-13 22:26:33,446 log 11768 29976 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 22:26:36,967 log 11768 29976 "GET /transactions/ HTTP/1.1" 200 13152
+INFO 2026-01-13 22:26:38,942 log 11768 29976 "GET /transactions/150/delete/ HTTP/1.1" 200 8135
+INFO 2026-01-13 22:26:40,146 log 11768 29976 "POST /transactions/150/delete/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:26:40,161 log 11768 29976 "GET /transactions/ HTTP/1.1" 200 12004
+INFO 2026-01-13 22:27:24,837 autoreload 19260 27448 Watching for file changes with StatReloader
+INFO 2026-01-13 22:27:26,414 log 19260 6292 "GET / HTTP/1.1" 200 14016
+INFO 2026-01-13 22:27:30,789 log 19260 6292 "GET /investments/safe/ HTTP/1.1" 200 15853
+INFO 2026-01-13 22:27:36,278 log 19260 6292 "GET /investments/add/ HTTP/1.1" 200 31003
+INFO 2026-01-13 22:27:44,800 log 19260 6292 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:27:45,691 log 19260 6292 "GET /investments/ HTTP/1.1" 200 23059
+INFO 2026-01-13 22:38:17,172 autoreload 5840 21632 Watching for file changes with StatReloader
+INFO 2026-01-13 22:38:18,882 log 5840 36648 "GET / HTTP/1.1" 200 15803
+INFO 2026-01-13 22:38:19,167 log 5840 36648 "GET /static/css/custom.css?v=2 HTTP/1.1" 200 8623
+INFO 2026-01-13 22:38:27,151 log 5840 36648 "GET /calendar/ HTTP/1.1" 200 29002
+INFO 2026-01-13 22:38:28,873 views 5840 36648 Generating reports for user tassiosales
+INFO 2026-01-13 22:38:28,924 log 5840 36648 "GET /reports/ HTTP/1.1" 200 26735
+ERROR 2026-01-13 22:38:35,612 log 5840 36648 Internal Server Error: /transactions/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 181, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "filter_type=='RECEITA'"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 221, in _get_response
+    response = response.render()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 993, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 926, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 172, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 183, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 929, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 776, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: D:\GithubGit\MeuPortfolio\finanças\templates\core\transaction_list.html, Could not parse the remainder: '=='RECEITA'' from 'filter_type=='RECEITA''
+ERROR 2026-01-13 22:38:35,655 log 5840 36648 "GET /transactions/ HTTP/1.1" 500 257524
+INFO 2026-01-13 22:38:41,588 log 5840 36648 "GET /categories/ HTTP/1.1" 200 88527
+INFO 2026-01-13 22:38:44,286 log 5840 36648 "GET /budgets/ HTTP/1.1" 200 8782
+INFO 2026-01-13 22:38:45,812 log 5840 36648 "GET /goals/ HTTP/1.1" 200 7775
+INFO 2026-01-13 22:38:48,414 log 5840 36648 "GET /investments/ HTTP/1.1" 200 18968
+INFO 2026-01-13 22:38:52,073 log 5840 36648 "GET /investments/safe/ HTTP/1.1" 200 17982
+ERROR 2026-01-13 22:38:56,904 log 5840 36648 Internal Server Error: /transactions/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 181, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "filter_type=='RECEITA'"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 221, in _get_response
+    response = response.render()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 993, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 926, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 172, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 183, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 929, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 776, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: D:\GithubGit\MeuPortfolio\finanças\templates\core\transaction_list.html, Could not parse the remainder: '=='RECEITA'' from 'filter_type=='RECEITA''
+ERROR 2026-01-13 22:38:56,922 log 5840 36648 "GET /transactions/ HTTP/1.1" 500 257533
+INFO 2026-01-13 22:41:28,220 log 5840 36648 "GET / HTTP/1.1" 200 15803
+INFO 2026-01-13 22:41:28,335 log 5840 36648 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 22:42:01,418 log 5840 36648 "GET /calendar/ HTTP/1.1" 200 29002
+INFO 2026-01-13 22:42:03,346 views 5840 36648 Generating reports for user tassiosales
+INFO 2026-01-13 22:42:03,374 log 5840 36648 "GET /reports/ HTTP/1.1" 200 26735
+ERROR 2026-01-13 22:42:05,383 log 5840 36648 Internal Server Error: /transactions/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 181, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "filter_type=='RECEITA'"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 221, in _get_response
+    response = response.render()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 993, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 926, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 172, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 183, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 929, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 776, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: D:\GithubGit\MeuPortfolio\finanças\templates\core\transaction_list.html, Could not parse the remainder: '=='RECEITA'' from 'filter_type=='RECEITA''
+ERROR 2026-01-13 22:42:05,402 log 5840 36648 "GET /transactions/ HTTP/1.1" 500 257524
+INFO 2026-01-13 22:42:10,466 log 5840 36648 "GET / HTTP/1.1" 200 15803
+INFO 2026-01-13 22:43:24,799 log 5840 36648 "GET /transactions/ HTTP/1.1" 200 13806
+INFO 2026-01-13 22:43:24,914 log 5840 36648 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 22:43:35,807 log 5840 36648 "GET /transactions/151/delete/ HTTP/1.1" 200 7945
+INFO 2026-01-13 22:43:37,365 log 5840 36648 "POST /transactions/151/delete/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:43:37,376 log 5840 36648 "GET /transactions/ HTTP/1.1" 200 11711
+INFO 2026-01-13 22:43:39,630 log 5840 36648 "GET /categories/ HTTP/1.1" 200 88527
+INFO 2026-01-13 22:43:41,806 log 5840 36648 "GET /budgets/ HTTP/1.1" 200 8782
+INFO 2026-01-13 22:43:43,071 log 5840 36648 "GET /goals/ HTTP/1.1" 200 7775
+INFO 2026-01-13 22:43:45,118 log 5840 36648 "GET /investments/ HTTP/1.1" 200 17689
+INFO 2026-01-13 22:43:47,583 log 5840 36648 "GET /investments/safe/ HTTP/1.1" 200 17145
+INFO 2026-01-13 22:43:51,244 log 5840 36648 "GET /goals/ HTTP/1.1" 200 7775
+INFO 2026-01-13 22:43:52,855 log 5840 36648 "GET /goals/add/ HTTP/1.1" 200 14619
+INFO 2026-01-13 22:44:19,377 log 5840 36648 "POST /goals/add/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:44:19,389 log 5840 36648 "GET /goals/ HTTP/1.1" 200 9842
+INFO 2026-01-13 22:44:22,467 log 5840 36648 "GET /goals/7/delete/ HTTP/1.1" 200 7922
+INFO 2026-01-13 22:44:23,897 log 5840 36648 "POST /goals/7/delete/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:44:23,908 log 5840 36648 "GET /goals/ HTTP/1.1" 200 7775
+INFO 2026-01-13 22:44:24,772 log 5840 36648 "GET /budgets/ HTTP/1.1" 200 8782
+INFO 2026-01-13 22:44:26,304 log 5840 36648 "GET /budgets/add/ HTTP/1.1" 200 16013
+INFO 2026-01-13 22:44:36,092 log 5840 36648 "POST /budgets/add/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:44:36,104 log 5840 36648 "GET /budgets/ HTTP/1.1" 200 11215
+INFO 2026-01-13 22:44:36,207 log 5840 36648 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 22:44:41,668 log 5840 36648 "GET /budgets/8/delete/ HTTP/1.1" 200 7950
+INFO 2026-01-13 22:44:43,977 log 5840 36648 "POST /budgets/8/delete/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:44:43,987 log 5840 36648 "GET /budgets/ HTTP/1.1" 200 8782
+INFO 2026-01-13 22:44:45,120 log 5840 36648 "GET /categories/ HTTP/1.1" 200 88527
+INFO 2026-01-13 22:44:46,781 log 5840 36648 "GET /transactions/ HTTP/1.1" 200 11711
+INFO 2026-01-13 22:44:49,861 log 5840 36648 "GET /budgets/ HTTP/1.1" 200 8782
+INFO 2026-01-13 22:44:50,784 log 5840 36648 "GET /goals/ HTTP/1.1" 200 7775
+INFO 2026-01-13 22:44:53,413 log 5840 36648 "GET /investments/safe/ HTTP/1.1" 200 17145
+INFO 2026-01-13 22:45:19,506 log 5840 36648 "GET /transactions/ HTTP/1.1" 200 11711
+INFO 2026-01-13 22:45:21,187 views 5840 36648 Generating reports for user tassiosales
+INFO 2026-01-13 22:45:21,206 log 5840 36648 "GET /reports/ HTTP/1.1" 200 25557
+INFO 2026-01-13 22:45:23,447 log 5840 36648 "GET /calendar/ HTTP/1.1" 200 28465
+INFO 2026-01-13 22:45:24,573 log 5840 36648 "GET / HTTP/1.1" 200 14813
+INFO 2026-01-13 22:45:28,118 log 5840 36648 "GET /transactions/ HTTP/1.1" 200 11711
+INFO 2026-01-13 22:45:30,652 log 5840 36648 "GET / HTTP/1.1" 200 14813
+INFO 2026-01-13 22:45:32,352 log 5840 36648 "GET /transactions/ HTTP/1.1" 200 11711
+INFO 2026-01-13 22:45:39,202 log 5840 36648 "GET /transactions/add/ HTTP/1.1" 200 18360
+INFO 2026-01-13 22:45:54,454 log 5840 36648 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:45:54,465 log 5840 36648 "GET /transactions/ HTTP/1.1" 200 13784
+INFO 2026-01-13 22:45:54,576 log 5840 36648 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 22:45:57,159 log 5840 36648 "GET / HTTP/1.1" 200 15788
+INFO 2026-01-13 22:50:35,073 autoreload 5840 21632 D:\GithubGit\MeuPortfolio\finanças\core\views.py changed, reloading.
+INFO 2026-01-13 22:50:36,803 autoreload 17928 36236 Watching for file changes with StatReloader
+INFO 2026-01-13 22:52:58,657 log 17928 14676 "GET / HTTP/1.1" 200 15867
+INFO 2026-01-13 22:52:58,760 log 17928 14676 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 22:53:05,086 log 17928 14676 "GET /?month=12&year=2025 HTTP/1.1" 200 14894
+INFO 2026-01-13 22:53:08,513 log 17928 14676 "GET /transactions/add/ HTTP/1.1" 200 18360
+INFO 2026-01-13 22:53:28,862 log 17928 14676 "POST /transactions/add/ HTTP/1.1" 302 0
+INFO 2026-01-13 22:53:28,885 log 17928 14676 "GET /transactions/ HTTP/1.1" 200 16370
+INFO 2026-01-13 22:53:33,502 log 17928 14676 "GET / HTTP/1.1" 200 15892
+INFO 2026-01-13 22:53:53,595 log 17928 14676 "GET /transactions/ HTTP/1.1" 200 16370
+INFO 2026-01-13 22:54:21,240 log 17928 14676 "GET / HTTP/1.1" 200 15892
+INFO 2026-01-13 22:54:58,181 log 17928 14676 "GET /transactions/ HTTP/1.1" 200 16370
+INFO 2026-01-13 22:55:41,847 log 17928 14676 "GET /categories/ HTTP/1.1" 200 88527
+INFO 2026-01-13 22:55:41,975 log 17928 14676 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 22:55:46,909 log 17928 14676 "GET /budgets/ HTTP/1.1" 200 8782
+INFO 2026-01-13 22:55:48,636 log 17928 14676 "GET /goals/ HTTP/1.1" 200 7775
+INFO 2026-01-13 22:55:50,195 log 17928 14676 "GET /investments/ HTTP/1.1" 200 17689
+INFO 2026-01-13 22:56:04,689 log 17928 14676 "GET /investments/search/?ticker=PETR4 HTTP/1.1" 200 4522
+INFO 2026-01-13 23:00:29,065 log 17928 14676 "GET /investments/ HTTP/1.1" 200 17689
+INFO 2026-01-13 23:00:29,172 log 17928 14676 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 23:00:31,726 log 17928 14676 "GET / HTTP/1.1" 200 15892
+INFO 2026-01-13 23:00:54,725 autoreload 11060 18460 Watching for file changes with StatReloader
+INFO 2026-01-13 23:00:56,371 log 11060 8856 "GET / HTTP/1.1" 200 15892
+ERROR 2026-01-13 23:01:45,929 log 11060 8856 Internal Server Error: /transactions/
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 181, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "filter_type=='RECEITA'"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\core\handlers\base.py", line 221, in _get_response
+    response = response.render()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 585, in parse
+    raise self.error(token, e)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 993, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 926, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 172, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\smartif.py", line 183, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\defaulttags.py", line 929, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 676, in compile_filter
+    return FilterExpression(token, self)
+  File "D:\GithubGit\MeuPortfolio\finanças\venv\Lib\site-packages\django\template\base.py", line 776, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Template: D:\GithubGit\MeuPortfolio\finanças\templates\core\transaction_list.html, Could not parse the remainder: '=='RECEITA'' from 'filter_type=='RECEITA''
+ERROR 2026-01-13 23:01:45,951 log 11060 8856 "GET /transactions/ HTTP/1.1" 500 257516
+INFO 2026-01-13 23:03:48,426 log 11060 8856 "GET / HTTP/1.1" 200 15755
+INFO 2026-01-13 23:03:48,530 log 11060 8856 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 23:03:51,677 log 11060 8856 "GET /transactions/ HTTP/1.1" 200 16204
+INFO 2026-01-13 23:04:07,042 log 11060 8856 "GET /transactions/153/delete/ HTTP/1.1" 200 7947
+INFO 2026-01-13 23:04:08,576 log 11060 8856 "POST /transactions/153/delete/ HTTP/1.1" 302 0
+INFO 2026-01-13 23:04:08,587 log 11060 8856 "GET /transactions/ HTTP/1.1" 200 13701
+INFO 2026-01-13 23:04:14,964 log 11060 8856 "GET /transactions/152/delete/ HTTP/1.1" 200 7947
+INFO 2026-01-13 23:04:16,240 log 11060 8856 "POST /transactions/152/delete/ HTTP/1.1" 302 0
+INFO 2026-01-13 23:04:16,249 log 11060 8856 "GET /transactions/ HTTP/1.1" 200 11711
+INFO 2026-01-13 23:04:26,784 log 11060 8856 "GET /investments/safe/ HTTP/1.1" 200 17145
+INFO 2026-01-13 23:04:43,483 log 11060 8856 "GET /investments/ HTTP/1.1" 200 17689
+INFO 2026-01-13 23:04:44,648 log 11060 8856 "GET /goals/ HTTP/1.1" 200 7775
+INFO 2026-01-13 23:04:46,915 log 11060 8856 "GET /investments/ HTTP/1.1" 200 17689
+INFO 2026-01-13 23:04:49,349 log 11060 8856 "GET /investments/add/ HTTP/1.1" 200 30815
+INFO 2026-01-13 23:05:09,106 log 11060 8856 "GET /investments/ HTTP/1.1" 200 17689
+INFO 2026-01-13 23:05:12,148 log 11060 8856 "GET /investments/add/ HTTP/1.1" 200 30815
+INFO 2026-01-13 23:05:19,201 log 11060 8856 "GET /investments/search/?ticker=MXRF11 HTTP/1.1" 200 4412
+INFO 2026-01-13 23:05:39,861 log 11060 8856 "POST /investments/add/ HTTP/1.1" 302 0
+INFO 2026-01-13 23:05:40,659 log 11060 8856 "GET /investments/ HTTP/1.1" 200 18990
+INFO 2026-01-13 23:05:57,978 log 11060 8856 "GET /investments/add/ HTTP/1.1" 200 30815
+INFO 2026-01-13 23:08:38,858 log 11060 8856 "GET /transactions/ HTTP/1.1" 200 13734
+INFO 2026-01-13 23:08:38,980 log 11060 8856 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 23:08:56,373 log 11060 8856 "GET /calendar/ HTTP/1.1" 200 29014
+INFO 2026-01-13 23:08:57,831 log 11060 8856 "GET / HTTP/1.1" 200 15754
+INFO 2026-01-13 23:09:00,325 log 11060 8856 "GET /calendar/ HTTP/1.1" 200 29014
+INFO 2026-01-13 23:09:01,204 views 11060 8856 Generating reports for user tassiosales
+INFO 2026-01-13 23:09:01,222 log 11060 8856 "GET /reports/ HTTP/1.1" 200 26741
+INFO 2026-01-13 23:15:36,803 log 11060 27436 "GET / HTTP/1.1" 200 15754
+INFO 2026-01-13 23:15:36,975 log 11060 27436 "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+INFO 2026-01-13 23:15:40,050 log 11060 27436 "GET /calendar/ HTTP/1.1" 200 29014
+INFO 2026-01-13 23:15:41,398 views 11060 27436 Generating reports for user tassiosales
+INFO 2026-01-13 23:15:41,415 log 11060 27436 "GET /reports/ HTTP/1.1" 200 26741
+INFO 2026-01-13 23:17:09,081 log 11060 27436 "GET /transactions/ HTTP/1.1" 200 13734
+INFO 2026-01-13 23:17:16,085 log 11060 27436 "GET /investments/ HTTP/1.1" 200 18990
+INFO 2026-01-13 23:17:21,053 log 11060 27436 "GET /investments/add/ HTTP/1.1" 200 30852
+INFO 2026-01-13 23:17:26,512 log 11060 27436 "GET /investments/search/?ticker=MXRF11 HTTP/1.1" 200 4408

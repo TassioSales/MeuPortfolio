@@ -22,6 +22,7 @@ import certifi
 import requests
 from xhtml2pdf import pisa
 import yfinance as yf
+from .market_data import get_real_time_currency, get_latest_indicator, calculate_cdi_correction, calculate_pre_fixado, SERIES_SELIC_META, SERIES_CDI_MENSAL
 
 def get_price_manual(symbol):
     try:
@@ -44,13 +45,16 @@ from .forms import CategoryForm, TransactionForm, BudgetForm, InvestmentForm, Im
 
 logger = logging.getLogger('core')
 
-# Fix for SSL error with spaces in path (curl 77)
+# Fix for SSL error with special characters or spaces in path (curl 77)
 def fix_ssl():
     ca_bundle = certifi.where()
-    if ' ' in ca_bundle:
-        # Create a temp copy if path has spaces
+    # Check for spaces OR non-ascii characters (like 'ç' in 'finanças')
+    is_path_problematic = any(ord(c) > 127 for c in ca_bundle) or ' ' in ca_bundle
+    
+    if is_path_problematic:
+        # Create a temp copy in a clear ASCII path
         temp_dir = tempfile.gettempdir()
-        temp_cert = os.path.join(temp_dir, 'cacert.pem')
+        temp_cert = os.path.join(temp_dir, 'cacert_finance.pem')
         try:
             shutil.copy(ca_bundle, temp_cert)
             os.environ['CURL_CA_BUNDLE'] = temp_cert
@@ -76,6 +80,11 @@ def search_ticker(request):
     
     print(f"DEBUG: Using ticker: '{ticker_symbol}'")
 
+    # Normalize aliases
+    if ticker_symbol == 'EURO': ticker_symbol = 'EUR'
+    if ticker_symbol == 'DOLAR': ticker_symbol = 'USD'
+    if ticker_symbol == 'BITCOIN': ticker_symbol = 'BTC'
+
     price = None
     currency = 'BRL'
     name = ticker_symbol
@@ -86,6 +95,24 @@ def search_ticker(request):
     year_low = None
     chart_labels = []
     chart_data = []
+
+    # Direct handling for Currencies to avoid YF 404s/noise
+    if ticker_symbol in ['USD', 'EUR']:
+        price = get_real_time_currency(ticker_symbol)
+        if price:
+            return JsonResponse({
+                'symbol': ticker_symbol,
+                'name': 'Dólar Americano' if ticker_symbol == 'USD' else 'Euro',
+                'price': price,
+                'currency': 'BRL',
+                'change_percent': 0,
+                'day_high': price,
+                'day_low': price,
+                'year_high': price,
+                'year_low': price,
+                'chart_labels': [],
+                'chart_data': [],
+            })
 
     try:
         ticker = yf.Ticker(ticker_symbol)
@@ -144,7 +171,7 @@ def search_ticker(request):
     usd_brl_rate = 1.0
     if currency == 'USD':
         try:
-            usd_brl_rate = yf.Ticker("BRL=X").history(period='1d')['Close'].iloc[-1]
+            usd_brl_rate = get_real_time_currency('USD')
             price = price * usd_brl_rate
             currency = 'BRL' # Converted
         except Exception as e:
@@ -201,77 +228,88 @@ def investment_dashboard(request):
     
     # Fetch USD rate once to optimize
     try:
-        usd_brl_rate = yf.Ticker("BRL=X").history(period='1d')['Close'].iloc[-1]
+        usd_brl_rate = get_real_time_currency('USD')
     except:
         usd_brl_rate = 5.0 # Fallback
 
-    # Aggregate investments by symbol
+    # Aggregate investments by symbol and CATEGORY
     aggregated_portfolio = {}
     for inv in investments:
-        symbol = inv.symbol
-        if symbol not in aggregated_portfolio:
-            aggregated_portfolio[symbol] = {
-                'symbol': symbol,
+        key = (inv.symbol, inv.category_type)
+        if key not in aggregated_portfolio:
+            aggregated_portfolio[key] = {
+                'symbol': inv.symbol,
+                'category': inv.category_type,
                 'name': inv.name,
                 'quantity': 0.0,
                 'total_cost': 0.0,
             }
         
-        aggregated_portfolio[symbol]['quantity'] += float(inv.quantity)
-        aggregated_portfolio[symbol]['total_cost'] += float(inv.total_cost)
-        # Update name if missing
-        if not aggregated_portfolio[symbol]['name'] and inv.name:
-            aggregated_portfolio[symbol]['name'] = inv.name
+        aggregated_portfolio[key]['quantity'] += float(inv.quantity)
+        aggregated_portfolio[key]['total_cost'] += float(inv.total_cost)
+        if not aggregated_portfolio[key]['name'] and inv.name:
+            aggregated_portfolio[key]['name'] = inv.name
 
-    for symbol, data in aggregated_portfolio.items():
+    for key, data in aggregated_portfolio.items():
+        symbol = data['symbol']
+        category = data['category']
         quantity = data['quantity']
         invested_value = data['total_cost']
         avg_price = invested_value / quantity if quantity > 0 else 0
         
         total_invested += invested_value
-        
-        # Fetch current price
-        try:
-            ticker = yf.Ticker(symbol)
-            current_price = None
+        current_price = None
 
-            # 1. fast_info
-            try:
-                current_price = ticker.fast_info.last_price
-            except:
+        # Logic per Category
+        if category == 'CURRENCY':
+            # Use our robust currency fetcher instead of yfinance directly
+            current_price = get_real_time_currency(symbol)
+            if current_price:
+                # current_price is already in BRL from our service
                 pass
+            else:
+                current_price = avg_price
 
-            # 2. history
-            if current_price is None:
-                history = ticker.history(period='1d')
-                if not history.empty:
-                    current_price = history['Close'].iloc[-1]
-            
-            # 3. info fallback (rarely needed if above fail)
-            if current_price is None:
-                 try:
-                    info = ticker.info
-                    current_price = info.get('currentPrice') or info.get('regularMarketPrice')
-                 except:
-                    pass
-            
-            # 4. Manual Fallback
-            if current_price is None:
-                p, _ = get_price_manual(symbol)
-                if p is not None:
+        elif category == 'FIXED':
+            # For fixed income in the general dashboard, we use a simple correction estimate
+            # (Similar to safe_haven but simplified)
+            current_price = avg_price # Base for simple view
+            # Try to get a more refined value if possible (optional for this view)
+
+        else: # VARIABLE (Stock/FII)
+            try:
+                ticker = yf.Ticker(symbol)
+                # 1. fast_info
+                try:
+                    current_price = ticker.fast_info.last_price
+                except: pass
+
+                # 2. history
+                if current_price is None:
+                    history = ticker.history(period='1d')
+                    if not history.empty:
+                        current_price = history['Close'].iloc[-1]
+                
+                # 3. Manual Fallback
+                if current_price is None:
+                    p, _ = get_price_manual(symbol)
                     current_price = p
 
-            if current_price is not None:
-                # Check currency
-                is_brl = symbol.endswith('.SA')
-                if not is_brl:
-                     current_price = current_price * usd_brl_rate
-            else:
-                current_price = avg_price # Fallback to avg price
-
-        except Exception as e:
-            print(f"Error fetching data for {symbol}: {e}")
-            current_price = avg_price
+                if current_price is not None:
+                    # Check if it needs conversion (non-BRL stocks)
+                    # Simple heuristic: if no .SA and not CURRENCY, check metadata
+                    try:
+                        currency_code = ticker.fast_info.currency
+                        if currency_code == 'USD':
+                            current_price *= usd_brl_rate
+                    except:
+                        if not symbol.endswith('.SA'):
+                            current_price *= usd_brl_rate
+                else:
+                    current_price = avg_price
+            except Exception as e:
+                print(f"Error fetching data for {symbol}: {e}")
+                current_price = avg_price
             
         current_value = quantity * float(current_price)
         total_current_value += current_value
@@ -367,6 +405,33 @@ def dashboard(request):
         date__range=[start_date, end_date]
     ).aggregate(Sum('amount'))['amount__sum'] or 0
 
+    # Previous month range
+    prev_month_end = start_date - timedelta(days=1)
+    prev_month_start = prev_month_end.replace(day=1)
+
+    previous_income_for_change = Transaction.objects.filter(
+        user=request.user,
+        type='RECEITA',
+        date__range=[prev_month_start, prev_month_end]
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    previous_expense_for_change = Transaction.objects.filter(
+        user=request.user,
+        type='DESPESA',
+        date__range=[prev_month_start, prev_month_end]
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    # Percentage change calculations (avoid division by zero)
+    if previous_income_for_change:
+        monthly_income_change = ((monthly_income - previous_income_for_change) / previous_income_for_change) * 100
+    else:
+        monthly_income_change = 0
+
+    if previous_expense_for_change:
+        monthly_expense_change = ((monthly_expense - previous_expense_for_change) / previous_expense_for_change) * 100
+    else:
+        monthly_expense_change = 0
+
     # Accumulated Balance (Previous Months)
     previous_income = Transaction.objects.filter(
         user=request.user,
@@ -456,6 +521,8 @@ def dashboard(request):
         'recent_transactions': recent_transactions,
         'monthly_income': monthly_income,
         'monthly_expense': monthly_expense,
+        'monthly_income_change': monthly_income_change,
+        'monthly_expense_change': monthly_expense_change,
         'net_balance': net_balance,
         'accumulated_balance': accumulated_balance,
         'total_balance': total_balance,
@@ -1058,7 +1125,7 @@ class InvestmentDetailView(LoginRequiredMixin, TemplateView):
 class InvestmentCreateView(LoginRequiredMixin, CreateView):
     model = Investment
     form_class = InvestmentForm
-    template_name = 'core/form.html'
+    template_name = 'core/investment_form.html'
     success_url = reverse_lazy('investment_dashboard')
 
     def form_valid(self, form):
@@ -1068,7 +1135,7 @@ class InvestmentCreateView(LoginRequiredMixin, CreateView):
 class InvestmentUpdateView(LoginRequiredMixin, UpdateView):
     model = Investment
     form_class = InvestmentForm
-    template_name = 'core/form.html'
+    template_name = 'core/investment_form.html'
     success_url = reverse_lazy('investment_dashboard')
 
     def get_queryset(self):
@@ -1122,3 +1189,77 @@ class GoalDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return Goal.objects.filter(user=self.request.user)
+
+from .market_data import get_latest_indicator, calculate_cdi_correction, calculate_pre_fixado, get_real_time_currency, SERIES_SELIC_META, SERIES_CDI_MENSAL
+
+@login_required
+def safe_haven_dashboard(request):
+    # 1. Fetch Key Indicators
+    usd_rate = get_real_time_currency('USD') or 0.0
+    eur_rate = get_real_time_currency('EUR') or 0.0
+    selic_rate = get_latest_indicator(SERIES_SELIC_META)
+    cdi_rate = selic_rate - 0.10 # Approximation if exact CDI series isn't returning specific 'annual' rate instantly, or use monthly * 12
+
+    # 2. Process Assets
+    safe_investments = Investment.objects.filter(
+        user=request.user, 
+        category_type__in=['FIXED', 'CURRENCY', 'POUPANCA']
+    )
+
+    fixed_assets = []
+    my_currencies = []
+    
+    total_fixed_invested = 0
+    total_fixed_current = 0
+
+    for inv in safe_investments:
+        current_val = float(inv.total_cost) # Default
+        
+        # Logic for Fixed Income
+        if inv.category_type in ['FIXED', 'POUPANCA']:
+            if inv.index_type == 'CDI':
+                current_val = calculate_cdi_correction(inv.total_cost, inv.date, percentage_of_cdi=inv.fixed_rate or 100)
+            elif inv.index_type == 'PRE':
+                current_val = calculate_pre_fixado(inv.total_cost, inv.date, rate_yearly=inv.fixed_rate)
+            elif inv.index_type == 'IPCA':
+                 # Estimation
+                 rate = 4.0 + float(inv.fixed_rate or 0)
+                 current_val = calculate_pre_fixado(inv.total_cost, inv.date, rate_yearly=rate)
+            
+            gain = current_val - float(inv.total_cost)
+            
+            fixed_assets.append({
+                'investment': inv,
+                'rate_display': f"{inv.fixed_rate or 100}% {inv.get_index_type_display()}",
+                'current_value': current_val,
+                'gain': gain
+            })
+            
+            total_fixed_invested += float(inv.total_cost)
+            total_fixed_current += current_val
+
+        # Logic for Currencies
+        elif inv.category_type == 'CURRENCY':
+            rate = 1.0
+            if 'USD' in inv.symbol.upper(): rate = usd_rate
+            elif 'EUR' in inv.symbol.upper(): rate = eur_rate
+            
+            current_val = float(inv.quantity) * rate
+            
+            my_currencies.append({
+                'investment': inv,
+                'current_price': rate,
+                'current_value': current_val
+            })
+
+    context = {
+        'usd_rate': usd_rate,
+        'eur_rate': eur_rate,
+        'selic_rate': selic_rate,
+        'cdi_rate': cdi_rate,
+        'fixed_assets': fixed_assets,
+        'currencies': my_currencies, # Holdings
+        'total_fixed_invested': total_fixed_invested,
+        'total_fixed_current': total_fixed_current,
+    }
+    return render(request, 'core/safe_haven_dashboard.html', context)

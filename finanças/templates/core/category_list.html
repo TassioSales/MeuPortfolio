@@ -1,84 +1,86 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row mb-4 align-items-center">
-    <div class="col-md-8">
-        <h2 class="fw-bold text-dark">
-            <i class="bi bi-tags me-2 text-primary"></i>Categorias
-        </h2>
-        <p class="text-muted">Gerencie as categorias para organizar suas receitas e despesas.</p>
+<div class="animate-entrance">
+    <!-- Header Section -->
+    <div class="row mb-5 align-items-end">
+        <div class="col-md-7">
+            <h1 class="display-5 fw-bold mb-2">Categorias</h1>
+            <p class="text-muted mb-0">Estruture sua organização financeira para relatórios mais precisos.</p>
+        </div>
+        <div class="col-md-5 text-end">
+            <a href="{% url 'category_add' %}" class="btn-premium px-4">
+                <i class="bi bi-plus-lg me-2"></i> Nova Categoria
+            </a>
+        </div>
     </div>
-    <div class="col-md-4 text-end">
-        <a href="{% url 'category_add' %}" class="btn btn-primary shadow-sm">
-            <i class="bi bi-plus-lg me-1"></i>Nova Categoria
-        </a>
-    </div>
-</div>
 
-<div class="card shadow-sm border-0 overflow-hidden">
-    <div class="card-body p-0">
+    <!-- Table Section -->
+    <div class="glass-card p-0 overflow-hidden">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
-                    <tr>
-                        <th class="py-3 ps-4 text-uppercase text-muted small fw-bold" style="width: 40%;">Nome</th>
-                        <th class="py-3 text-uppercase text-muted small fw-bold">Tipo</th>
-                        <th class="py-3 text-uppercase text-muted small fw-bold">Categoria Pai</th>
-                        <th class="py-3 pe-4 text-end text-uppercase text-muted small fw-bold">Ações</th>
+            <table class="premium-table mb-0">
+                <thead>
+                    <tr class="text-muted small text-uppercase fw-bold">
+                        <th class="ps-4">Nome da Categoria</th>
+                        <th>Fluxo</th>
+                        <th>Hierarquia</th>
+                        <th class="text-end pe-4">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for category in categories %}
-                    <tr>
+                    <tr class="animate-entrance" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
                         <td class="ps-4">
-                            <div class="fw-semibold text-dark">{{ category.name }}</div>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="brand-icon"
+                                    style="width: 40px; height: 40px; background: rgba(99, 102, 241, 0.05); color: var(--brand-primary); box-shadow: none;">
+                                    <i class="bi bi-folder2-open"></i>
+                                </div>
+                                <span class="fw-bold text-main">{{ category.name }}</span>
+                            </div>
                         </td>
                         <td>
                             {% if category.type == 'RECEITA' %}
-                            <span
-                                class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3">
-                                <i class="bi bi-arrow-up-circle me-1"></i>Receita
-                            </span>
+                            <span class="indicator-pill indicator-up">Receita</span>
                             {% else %}
-                            <span
-                                class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3">
-                                <i class="bi bi-arrow-down-circle me-1"></i>Despesa
-                            </span>
+                            <span class="indicator-pill indicator-down">Despesa</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if category.parent %}
-                            <span
-                                class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-3 fw-normal">
-                                <i class="bi bi-diagram-3 me-1"></i>
-                                {{ category.parent.name }}
+                            <span class="badge bg-light text-muted border px-3 rounded-pill fw-normal">
+                                <i class="bi bi-arrow-return-right me-1"></i> {{ category.parent.name }}
                             </span>
                             {% else %}
-                            <span class="text-muted opacity-50">-</span>
+                            <span class="text-muted small">Nível Principal</span>
                             {% endif %}
                         </td>
                         <td class="pe-4 text-end">
-                            <div class="btn-group">
-                                <a href="{% url 'category_edit' category.pk %}"
-                                    class="btn btn-sm btn-outline-secondary border-0" title="Editar">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a href="{% url 'category_delete' category.pk %}"
-                                    class="btn btn-sm btn-outline-danger border-0" title="Excluir">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm glass-card border rounded-circle"
+                                    style="width: 32px; height: 32px; padding: 0;" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end glass-card border shadow-lg">
+                                    <li><a class="dropdown-item" href="{% url 'category_edit' category.pk %}"><i
+                                                class="bi bi-pencil me-2"></i>Editar</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger"
+                                            href="{% url 'category_delete' category.pk %}"><i
+                                                class="bi bi-trash me-2"></i>Excluir</a></li>
+                                </ul>
                             </div>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
                         <td colspan="4" class="text-center py-5">
-                            <div class="text-muted">
-                                <i class="bi bi-tags fs-1 d-block mb-3 opacity-50"></i>
-                                <p class="mb-2">Nenhuma categoria encontrada.</p>
-                                <a href="{% url 'category_add' %}" class="btn btn-sm btn-outline-primary mt-2">
-                                    Criar primeira categoria
-                                </a>
+                            <div class="opacity-50">
+                                <i class="bi bi-tags fs-1 d-block mb-3"></i>
+                                <p class="fw-bold mb-0">Nenhuma categoria</p>
+                                <a href="{% url 'category_add' %}" class="small text-primary">Criar agora →</a>
                             </div>
                         </td>
                     </tr>
@@ -88,4 +90,17 @@
         </div>
     </div>
 </div>
+
+<style>
+    .dropdown-item {
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .dropdown-item:hover {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--brand-primary);
+    }
+</style>
 {% endblock %}

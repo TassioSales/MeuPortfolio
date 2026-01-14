@@ -2,20 +2,40 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.flakes8
+lib/
+lib64/
+parts/
+sdist/
+var/
+venv/
+*.egg-info/
+.installed.cfg
+*.egg
 
 # Django
 *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+db.sqlite3-shm
+db.sqlite3-wal
 media/
 staticfiles/
+static/admin/
+static/collected/
 
 # Environment
 .env
 .venv
-env/
-venv/
 ENV/
 env.bak/
 venv.bak/
@@ -25,22 +45,34 @@ venv.bak/
 .idea/
 *.swp
 *.swo
+.project
+.pydevproject
+.settings/
 
 # OS
 Thumbs.db
 Desktop.ini
 .DS_Store
+*.tmp
+*.bak
 
 # PyInstaller / Build
-build/
-dist/
 *.manifest
-
-# Logs
-logs/
-*.log
+*.spec
+# Note: we ignore build/ and dist/ in Python section above
 
 # Project Specific
 *.zip
 *.rar
 backup_*.zip
+*.pdf
+logs/
+
+# MCP / AI Assistants
+.gemini/
+.agent/
+brain/
+implementation_plan.md
+walkthrough.md
+task.md
+cleanup_plan.md

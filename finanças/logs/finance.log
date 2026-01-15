@@ -100060,3 +100060,13 @@ django.template.exceptions.TemplateSyntaxError: Template: D:\GithubGit\MeuPortfo
 2026-01-13 23:17:26.506 | DEBUG    | logging:callHandlers:1737 -  Exiting history()
 2026-01-13 23:17:26.506 | DEBUG    | logging:callHandlers:1737 - Exiting history()
 2026-01-13 23:17:26.512 | INFO     | logging:callHandlers:1737 - "GET /investments/search/?ticker=MXRF11 HTTP/1.1" 200 4408
+2026-01-13 23:29:01.582 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 13734
+2026-01-13 23:29:01.723 | INFO     | logging:callHandlers:1737 - "GET /static/css/custom.css?v=2 HTTP/1.1" 304 0
+2026-01-13 23:29:06.128 | INFO     | logging:callHandlers:1737 - "GET /transactions/154/delete/ HTTP/1.1" 200 7945
+2026-01-13 23:29:07.798 | INFO     | logging:callHandlers:1737 - "POST /transactions/154/delete/ HTTP/1.1" 302 0
+2026-01-13 23:29:07.814 | INFO     | logging:callHandlers:1737 - "GET /transactions/ HTTP/1.1" 200 11711
+2026-01-13 23:29:09.379 | INFO     | logging:callHandlers:1737 - "GET / HTTP/1.1" 200 14892
+2026-01-13 23:29:14.913 | INFO     | logging:callHandlers:1737 - "GET /?month=2&year=2026 HTTP/1.1" 200 14895
+2026-01-13 23:29:16.291 | INFO     | logging:callHandlers:1737 - "GET /?month=3&year=2026 HTTP/1.1" 200 14889
+2026-01-13 23:29:17.276 | INFO     | logging:callHandlers:1737 - "GET /?month=4&year=2026 HTTP/1.1" 200 14887
+2026-01-13 23:29:18.291 | INFO     | logging:callHandlers:1737 - "GET /?month=5&year=2026 HTTP/1.1" 200 14885

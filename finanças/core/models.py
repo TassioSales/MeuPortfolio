@@ -142,6 +142,10 @@ class Investment(models.Model):
         is_new = self.pk is None
         super().save(*args, **kwargs)
         
+        # Check if we should skip transaction creation
+        if getattr(self, '_skip_transaction', False):
+            return
+
         # Create or update associated transaction
         if not self.transaction:
             # Find or create 'Investimentos' category

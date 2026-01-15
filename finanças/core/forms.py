@@ -97,6 +97,12 @@ class InvestmentForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}),
         label='Preço de Compra'
     )
+    create_transaction = forms.BooleanField(
+        required=False,
+        initial=True,
+        label='Registrar como Transação de Saída?',
+        help_text="Desmarque se este for um investimento antigo que você apenas deseja monitorar saldo."
+    )
 
     class Meta:
         model = Investment

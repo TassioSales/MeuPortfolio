@@ -1138,6 +1138,12 @@ class InvestmentUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'core/investment_form.html'
     success_url = reverse_lazy('investment_dashboard')
 
+    def form_valid(self, form):
+        # Allow updating skip flag during edit too
+        if not form.cleaned_data.get('create_transaction'):
+            form.instance._skip_transaction = True
+        return super().form_valid(form)
+
     def get_queryset(self):
         return Investment.objects.filter(user=self.request.user)
 

@@ -270,8 +270,49 @@ h6 {
 
 .form-control:focus {
     background: transparent;
-    border-color: var(--brand-primary);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    transition: var(--transition-base);
+    box-shadow: 20px 0 30px rgba(0, 0, 0, 0.05);
+}
+
+/* Sidebar Responsive behavior */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1050;
+        visibility: hidden;
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 1rem !important;
+    }
+}
+
+.sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(2, 6, 23, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1040;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 [data-theme="light"] .form-control {
@@ -293,6 +334,60 @@ h6 {
 
 .animate-entrance {
     animation: fadeInSlide 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Dashboards adjustments for small screens */
+@media (max-width: 768.98px) {
+    .display-5 {
+        font-size: 2rem;
+    }
+    
+    .glass-card {
+        padding: 1.25rem !important;
+    }
+
+    .btn-premium {
+        width: 100%;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+    
+    .premium-table thead {
+        display: none;
+    }
+    
+    .premium-table tr {
+        display: block;
+        margin-bottom: 1.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: var(--radius-md);
+        padding: 1rem;
+    }
+    
+    .premium-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+        padding: 0.5rem 0;
+        border: none !important;
+    }
+    
+    .premium-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        text-align: left;
+    }
+
+    .premium-table td:last-child {
+        justify-content: center;
+        background: rgba(99, 102, 241, 0.05);
+        margin-top: 0.5rem;
+        border-radius: var(--radius-sm);
+    }
 }
 
 /* Tables */

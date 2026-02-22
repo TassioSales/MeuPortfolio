@@ -8,9 +8,9 @@
             <h1 class="display-5 fw-bold mb-2">Porto Seguro</h1>
             <p class="text-muted mb-0">Gestão de ativos de baixa volatilidade, Renda Fixa e reserva de moedas.</p>
         </div>
-        <div class="col-md-5 text-end">
-            <a href="{% url 'investment_add' %}" class="btn-premium px-4">
-                <i class="bi bi-shield-plus me-2"></i> Adicionar Aporte
+        <div class="col-md-5 mt-3 mt-md-0 text-md-end text-center">
+            <a href="{% url 'investment_add' %}" class="btn-premium px-4 w-100 w-md-auto">
+                <i class="bi bi-shield-plus me-2"></i> Novo Aporte
             </a>
         </div>
     </div>
@@ -67,19 +67,21 @@
                         <tbody>
                             {% for item in fixed_assets %}
                             <tr class="animate-entrance" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
-                                <td class="ps-4">
+                                <td class="ps-4" data-label="Título">
                                     <div class="fw-bold text-main">{{ item.investment.symbol }}</div>
                                     <small class="text-muted">{{ item.investment.name|default:'-'|truncatechars:20
                                         }}</small>
                                 </td>
-                                <td>
+                                <td data-label="Rentabilidade">
                                     <span class="indicator-pill indicator-up py-0 px-2" style="font-size: 0.8rem;">
                                         {{ item.rate_display }}
                                     </span>
                                 </td>
-                                <td class="text-muted">R$ {{ item.investment.total_cost|floatformat:2 }}</td>
-                                <td class="fw-bold">R$ {{ item.current_value|floatformat:2 }}</td>
-                                <td class="pe-4 text-end">
+                                <td class="text-muted" data-label="Investido">R$ {{
+                                    item.investment.total_cost|floatformat:2 }}</td>
+                                <td class="fw-bold" data-label="Saldo Estimado">R$ {{ item.current_value|floatformat:2
+                                    }}</td>
+                                <td class="pe-4 text-end" data-label="Ganho Absoluto">
                                     <div class="fw-bold text-success">+ R$ {{ item.gain|floatformat:2 }}</div>
                                 </td>
                             </tr>
@@ -123,7 +125,7 @@
                         <tbody>
                             {% for item in currencies %}
                             <tr class="animate-entrance">
-                                <td class="ps-4">
+                                <td class="ps-4" data-label="Moeda">
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="brand-icon"
                                             style="width: 32px; height: 32px; flex-shrink: 0; background: rgba(99, 102, 241, 0.1); color: var(--brand-primary); box-shadow: none;">
@@ -132,10 +134,12 @@
                                         <span class="fw-bold text-main">{{ item.investment.symbol }}</span>
                                     </div>
                                 </td>
-                                <td class="fw-medium">{{ item.investment.quantity }}</td>
-                                <td class="text-muted">R$ {{ item.investment.purchase_price|floatformat:2 }}</td>
-                                <td>R$ {{ item.current_price|floatformat:2 }}</td>
-                                <td class="pe-4 text-end fw-bold">R$ {{ item.current_value|floatformat:2 }}</td>
+                                <td class="fw-medium" data-label="Quantidade">{{ item.investment.quantity }}</td>
+                                <td class="text-muted" data-label="Preço Médio">R$ {{
+                                    item.investment.purchase_price|floatformat:2 }}</td>
+                                <td data-label="Cotação">R$ {{ item.current_price|floatformat:2 }}</td>
+                                <td class="pe-4 text-end fw-bold" data-label="Valor em BRL">R$ {{
+                                    item.current_value|floatformat:2 }}</td>
                             </tr>
                             {% empty %}
                             <tr>

@@ -97,7 +97,8 @@ Localize o arquivo `finance_project.exe` na pasta `dist`.
 <td width="50%" align="center">
 
 ### 🖱️ **2. Executar**
-Dê um duplo clique no arquivo. O servidor iniciará e o navegador abrirá automaticamente.
+Dê um duplo clique. O servidor iniciará na **porta 8080** e o navegador abrirá automaticamente.
+- **Acesso Mobile:** O terminal mostrará o seu IP local (ex: `http://192.168.1.55:8080`). Digite este endereço no navegador do seu celular para acessar na mesma Wi-Fi.
 
 </td>
 </tr>

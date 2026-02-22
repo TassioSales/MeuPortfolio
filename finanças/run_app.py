@@ -6,7 +6,21 @@ from waitress import serve
 from django.core.wsgi import get_wsgi_application
 from django.core.management import call_command
 
+import socket
+
+def get_local_ip():
+    try:
+        # Create a dummy socket to detect the preferred interface
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
+
 def open_browser():
+    # Only open locally
     webbrowser.open_new("http://127.0.0.1:8080/")
 
 def main():
@@ -41,11 +55,20 @@ def main():
     # For simplicity with Whitenoise, we ensure STATIC_ROOT exists.
     
     # Start the server
-    print("Starting server at http://127.0.0.1:8080/")
+    local_ip = get_local_ip()
+    print("\n" + "="*50)
+    print(" SERVIDOR INICIADO COM SUCESSO")
+    print("="*50)
+    print(f" Acesso Local (PC):    http://127.0.0.1:8080/")
+    if local_ip != "127.0.0.1":
+        print(f" Acesso na Rede (Celular/Tablet): http://{local_ip}:8080/")
+    print("="*50 + "\n")
+    
     Timer(1.5, open_browser).start()
     
     application = get_wsgi_application()
-    serve(application, host='127.0.0.1', port=8080)
+    # Bind to 0.0.0.0 to allow external access (mobile)
+    serve(application, host='0.0.0.0', port=8080)
 
 if __name__ == '__main__':
     try:

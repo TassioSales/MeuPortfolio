@@ -1,4 +1,5 @@
 @echo off
+setlocal
 echo ==========================================
 echo      Criando Backup do Projeto
 echo ==========================================
@@ -9,9 +10,9 @@ if not exist venv (
     exit /b
 )
 
-call venv\Scripts\activate
-
-python backup_project.py
+echo Executando script de backup...
+venv\Scripts\python.exe backup_project.py
 
 echo.
+echo Backup concluido com sucesso!
 pause

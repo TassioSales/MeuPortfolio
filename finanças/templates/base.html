@@ -143,10 +143,12 @@
         <!-- Main Content -->
         <main class="main-content">
             <!-- Mobile Toggle -->
-            <button class="btn btn-light d-lg-none mb-3 shadow-sm mobile-toggle" type="button" data-bs-toggle="collapse"
-                data-bs-target="#sidebar">
-                <i class="bi bi-list fs-4"></i>
-            </button>
+            <div class="d-lg-none d-flex align-items-center justify-content-between mb-4 glass-card p-2">
+                <button class="btn btn-primary shadow-sm" type="button" onclick="toggleSidebar()">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+                <div class="fw-bold text-primary pe-2">MeuPortfolio</div>
+            </div>
 
             {% if messages %}
             {% for message in messages %}
@@ -190,16 +192,27 @@
         }
 
         // Mobile Sidebar Logic
-        document.addEventListener('click', function (event) {
+        function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
-            const toggler = document.querySelector('.mobile-toggle');
-
-            if (window.innerWidth < 992 && sidebar.classList.contains('show')) {
-                if (!sidebar.contains(event.target) && !toggler.contains(event.target)) {
-                    // Close sidebar logic via Bootstrap (optional or custom)
-                    // For now, simple toggler usage is handled by data-bs-toggle
-                }
+            sidebar.classList.toggle('show');
+            if (sidebar.classList.contains('show')) {
+                document.body.style.overflow = 'hidden';
+                const backdrop = document.createElement('div');
+                backdrop.className = 'sidebar-backdrop';
+                backdrop.onclick = toggleSidebar;
+                document.body.appendChild(backdrop);
+            } else {
+                document.body.style.overflow = '';
+                const backdrop = document.querySelector('.sidebar-backdrop');
+                if (backdrop) backdrop.remove();
             }
+        }
+
+        // Close sidebar on link click (mobile)
+        document.querySelectorAll('#sidebar .nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 992) toggleSidebar();
+            });
         });
     </script>
     {% block scripts %}{% endblock %}

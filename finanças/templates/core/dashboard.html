@@ -12,22 +12,24 @@
                 {{ current_month_name }}.
             </p>
         </div>
-        <div class="col-md-5 text-end">
-            <div class="d-flex justify-content-end gap-2">
-                <a href="?month={{ previous_month.month }}&year={{ previous_month.year }}"
-                    class="btn btn-light glass-card border px-3">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
-                <div class="glass-card border px-4 py-2 d-flex align-items-center gap-3">
-                    <i class="bi bi-calendar3 text-primary"></i>
-                    <span class="fw-bold text-capitalize text-main">{{ current_month_name }}</span>
+        <div class="col-md-5 mt-3 mt-md-0">
+            <div class="d-flex justify-content-md-end justify-content-center gap-2 flex-wrap">
+                <div class="d-flex gap-2">
+                    <a href="?month={{ previous_month.month }}&year={{ previous_month.year }}"
+                        class="btn btn-light glass-card border px-3">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                    <div class="glass-card border px-3 py-2 d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar3 text-primary d-none d-sm-block"></i>
+                        <span class="fw-bold text-capitalize text-main small">{{ current_month_name }}</span>
+                    </div>
+                    <a href="?month={{ next_month.month }}&year={{ next_month.year }}"
+                        class="btn btn-light glass-card border px-3">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
                 </div>
-                <a href="?month={{ next_month.month }}&year={{ next_month.year }}"
-                    class="btn btn-light glass-card border px-3">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-                <a href="{% url 'transaction_add' %}" class="btn-premium ms-3">
-                    <i class="bi bi-plus-lg"></i> Novo
+                <a href="{% url 'transaction_add' %}" class="btn-premium px-4">
+                    <i class="bi bi-plus-lg"></i> <span class="d-inline">Novo</span>
                 </a>
             </div>
         </div>
@@ -131,12 +133,14 @@
                         </div>
                         <div class="flex-grow-1 overflow-hidden">
                             <h6 class="mb-0 fw-bold text-main text-truncate">{{ transaction.description }}</h6>
-                            <small class="text-muted">{{ transaction.date|date:"d M" }} • {{ transaction.category.name|default:"Geral" }}</small>
+                            <small class="text-muted">{{ transaction.date|date:"d M" }} • {{
+                                transaction.category.name|default:"Geral" }}</small>
                         </div>
                         <div class="text-end">
                             <div
                                 class="fw-bold {% if transaction.type == 'RECEITA' %}text-success{% else %}text-danger{% endif %}">
-                                {% if transaction.type == 'DESPESA' %}-{% endif %}R${{ transaction.amount|floatformat:0 }}
+                                {% if transaction.type == 'DESPESA' %}-{% endif %}R${{ transaction.amount|floatformat:0
+                                }}
                             </div>
                         </div>
                     </div>

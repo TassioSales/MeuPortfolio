@@ -17,7 +17,14 @@ Bem-vindo ao **MeuPortfolio**, seu sistema premium de gestão financeira e inves
 4. **Executar:** Use o arquivo `run.bat` para iniciar o servidor local.
 
 ### Uso do Executável (Usuário Final)
-Se você utiliza a versão compilada, basta executar o arquivo `dist/finance_project.exe`. Nenhuma instalação de Python é necessária.
+Se você utiliza a versão compilada, basta executar o arquivo `dist/finance_project.exe`. 
+
+#### 📱 Acesso pelo Celular/Tablet
+O sistema agora é responsivo e acessível em rede:
+1. Inicie o sistema no seu computador.
+2. Observe a mensagem no terminal: **"Acesso na Rede (Celular/Tablet): http://192.168.x.x:8080"**.
+3. No seu celular, conectado à mesma rede Wi-Fi, abra o navegador e digite esse endereço.
+4. O design se ajustará automaticamente para a tela do seu aparelho.
 
 ---
 

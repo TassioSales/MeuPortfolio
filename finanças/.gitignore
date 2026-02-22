@@ -60,6 +60,7 @@ Desktop.ini
 *.manifest
 *.spec
 # Note: we ignore build/ and dist/ in Python section above
+dist/finance_project.exe
 
 # Project Specific
 *.zip

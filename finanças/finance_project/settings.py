@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -183,9 +184,19 @@ if sys.stderr:
         colorize=True,
     )
 
-# Add a sink to a file
+# Determine the base directory for persistent data (like logs and db)
+if getattr(sys, 'frozen', False):
+    # If running as an executable, data should be next to the EXE
+    DATA_DIR = Path(sys.executable).parent
+else:
+    DATA_DIR = BASE_DIR
+
+LOGS_DIR = DATA_DIR / "logs"
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
+# Add a sink to a file (sem compression para evitar PermissionError no Windows)
 logger.add(
-    BASE_DIR / "logs" / "finance.log",
+    LOGS_DIR / "finance.log",
     rotation="10 MB",
     retention="10 days",
     level="DEBUG",
@@ -237,7 +248,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),
+            'filename': os.path.join(LOGS_DIR, 'debug.log'),
             'formatter': 'verbose',
         },
     },

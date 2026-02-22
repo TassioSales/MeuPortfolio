@@ -1,28 +1,29 @@
 @echo off
-echo ==========================================
-echo      Iniciando Servidor de Desenvolvimento
-echo ==========================================
+chcp 65001 >nul 2>&1
+title Finanças - Dashboard de Investimentos
 
-if not exist venv (
-    echo Erro: Ambiente virtual nao encontrado. Execute 'install.bat' primeiro.
+echo ==========================================
+echo    Finanças - Dashboard de Investimentos
+echo ==========================================
+echo.
+
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo [ERRO] Python não encontrado no PATH.
     pause
-    exit /b
+    exit /b 1
 )
 
-call venv\Scripts\activate
-
-echo Aplicando migracoes do banco de dados...
-python manage.py migrate
+python -c "import waitress" >nul 2>&1
+if errorlevel 1 (
+    echo [INFO] Instalando dependências...
+    pip install -r requirements.txt
+)
 
 echo.
-echo Servidor rodando em: http://127.0.0.1:8000
-echo O navegador sera aberto automaticamente em 3 segundos...
-echo Pressione CTRL+C para parar.
+echo [INFO] Iniciando aplicação (Porta 8080)...
+echo [INFO] Pressione CTRL+C para encerrar.
 echo.
 
-:: Abre o navegador em background
-start "" /B cmd /c "timeout /t 3 /nobreak >nul & start http://127.0.0.1:8000"
-
-python manage.py runserver
-
+python run_app.py
 pause

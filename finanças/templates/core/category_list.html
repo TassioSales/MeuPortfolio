@@ -8,8 +8,8 @@
             <h1 class="display-5 fw-bold mb-2">Categorias</h1>
             <p class="text-muted mb-0">Estruture sua organização financeira para relatórios mais precisos.</p>
         </div>
-        <div class="col-md-5 text-end">
-            <a href="{% url 'category_add' %}" class="btn-premium px-4">
+        <div class="col-md-5 mt-3 mt-md-0 text-md-end text-center">
+            <a href="{% url 'category_add' %}" class="btn-premium px-4 w-100 w-md-auto">
                 <i class="bi bi-plus-lg me-2"></i> Nova Categoria
             </a>
         </div>
@@ -30,7 +30,7 @@
                 <tbody>
                     {% for category in categories %}
                     <tr class="animate-entrance" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
-                        <td class="ps-4">
+                        <td class="ps-4" data-label="Nome da Categoria">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="brand-icon"
                                     style="width: 40px; height: 40px; background: rgba(99, 102, 241, 0.05); color: var(--brand-primary); box-shadow: none;">
@@ -39,14 +39,14 @@
                                 <span class="fw-bold text-main">{{ category.name }}</span>
                             </div>
                         </td>
-                        <td>
+                        <td data-label="Fluxo">
                             {% if category.type == 'RECEITA' %}
                             <span class="indicator-pill indicator-up">Receita</span>
                             {% else %}
                             <span class="indicator-pill indicator-down">Despesa</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td data-label="Hierarquia">
                             {% if category.parent %}
                             <span class="badge bg-light text-muted border px-3 rounded-pill fw-normal">
                                 <i class="bi bi-arrow-return-right me-1"></i> {{ category.parent.name }}
@@ -55,7 +55,7 @@
                             <span class="text-muted small">Nível Principal</span>
                             {% endif %}
                         </td>
-                        <td class="pe-4 text-end">
+                        <td class="pe-4 text-end" data-label="Ações">
                             <div class="dropdown">
                                 <button class="btn btn-light btn-sm glass-card border rounded-circle"
                                     style="width: 32px; height: 32px; padding: 0;" data-bs-toggle="dropdown">

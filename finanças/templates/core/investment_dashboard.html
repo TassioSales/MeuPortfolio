@@ -103,7 +103,7 @@
                 <tbody>
                     {% for item in portfolio %}
                     <tr class="animate-entrance" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
-                        <td class="ps-4">
+                        <td class="ps-4" data-label="Ativo">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="brand-icon"
                                     style="width: 48px; height: 48px; border-radius: 12px; font-weight: 800; background: rgba(99, 102, 241, 0.1); color: var(--brand-primary); box-shadow: none;">
@@ -116,13 +116,15 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="fw-medium">{{ item.investment.quantity|floatformat:"-4" }}</td>
-                        <td class="text-muted">R$ {{ item.investment.purchase_price|floatformat:2 }}</td>
-                        <td>
+                        <td class="fw-medium" data-label="Quantidade">{{ item.investment.quantity|floatformat:"-4" }}
+                        </td>
+                        <td class="text-muted" data-label="Preço Médio">R$ {{
+                            item.investment.purchase_price|floatformat:2 }}</td>
+                        <td data-label="Valor Atual">
                             <div class="fw-bold">R$ {{ item.current_value|floatformat:2 }}</div>
                             <small class="text-muted">Cotação: R$ {{ item.current_price|floatformat:2 }}</small>
                         </td>
-                        <td class="pe-4 text-end">
+                        <td class="pe-4 text-end" data-label="Lucro / Perda">
                             <div
                                 class="fw-bold {% if item.profit_loss >= 0 %}text-success{% else %}text-danger{% endif %}">
                                 {% if item.profit_loss >= 0 %}+{% endif %}R$ {{ item.profit_loss|floatformat:2 }}

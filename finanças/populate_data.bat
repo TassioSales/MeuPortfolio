@@ -1,4 +1,5 @@
 @echo off
+setlocal
 echo ==========================================
 echo      Gerando Dados de Exemplo
 echo ==========================================
@@ -9,10 +10,9 @@ if not exist venv (
     exit /b
 )
 
-call venv\Scripts\activate
-
 echo Executando script de populacao...
-python examples.py
+venv\Scripts\python.exe examples.py
 
 echo.
+echo Dados populados com sucesso!
 pause

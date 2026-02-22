@@ -100070,3 +100070,9 @@ django.template.exceptions.TemplateSyntaxError: Template: D:\GithubGit\MeuPortfo
 2026-01-13 23:29:16.291 | INFO     | logging:callHandlers:1737 - "GET /?month=3&year=2026 HTTP/1.1" 200 14889
 2026-01-13 23:29:17.276 | INFO     | logging:callHandlers:1737 - "GET /?month=4&year=2026 HTTP/1.1" 200 14887
 2026-01-13 23:29:18.291 | INFO     | logging:callHandlers:1737 - "GET /?month=5&year=2026 HTTP/1.1" 200 14885
+2026-02-22 15:46:08.819 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080
+2026-02-22 15:56:10.148 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080
+2026-02-22 15:57:04.172 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
+2026-02-22 15:57:04.674 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/USD-BRL HTTP/1.1" 200 None
+2026-02-22 15:57:30.479 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
+2026-02-22 15:57:30.935 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/USD-BRL HTTP/1.1" 200 None

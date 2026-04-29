@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-ink text-white font-body antialiased selection:bg-accent/30;
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(54, 214, 167, 0.16), transparent 34%),
+    radial-gradient(circle at 100% 0%, rgba(244, 184, 96, 0.16), transparent 30%),
+    radial-gradient(circle at 100% 35%, rgba(139, 125, 255, 0.16), transparent 28%),
+    radial-gradient(circle at 25% 85%, rgba(107, 184, 255, 0.14), transparent 28%),
+    linear-gradient(180deg, #030507 0%, #09111a 38%, #0a1621 100%);
+  background-attachment: fixed;
+}
+
+main {
+  @apply min-h-screen relative z-10;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: radial-gradient(circle at center, black, transparent 88%);
+  opacity: 0.5;
+}
+
+.grid-bg {
+  background-image: theme("backgroundImage.grid");
+  background-size: 40px 40px;
+}
+
+.glass-panel {
+  @apply border border-glass-border backdrop-blur-xl shadow-float;
+  background:
+    linear-gradient(145deg, rgba(15, 26, 39, 0.9), rgba(10, 17, 26, 0.82)),
+    rgba(255, 255, 255, 0.03);
+}
+
+.glow-accent {
+  @apply shadow-glow border-accent/20;
+}
+
+.panel-surface {
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+    rgba(7, 13, 20, 0.68);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(18px);
+}
+
+.section-shell {
+  @apply rounded-[2rem] border border-white/10 bg-white/[0.03] p-4 md:p-5;
+}
+
+.mesh-accent {
+  background-image:
+    radial-gradient(circle at top left, rgba(54,214,167,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(244,184,96,0.14), transparent 28%),
+    radial-gradient(circle at bottom center, rgba(107,184,255,0.12), transparent 28%);
+}
+
+* {
+  @apply transition-colors duration-200;
+}

@@ -1,0 +1,335 @@
+{
+  "warehouse_path": "D:\\GithubGit\\MeuPortfolio\\analise_de_combustiveis\\data-lake\\warehouse\\fuel_analytics.duckdb",
+  "tables": [
+    {
+      "table": "curated_weekly_prices",
+      "row_count": 109618,
+      "sample_rows": [
+        {
+          "week": "2021-01-18",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.251764705882353,
+          "volatility": 0.025058754487615346,
+          "avg_buy_price": 4.36,
+          "dollar": 5.0,
+          "brent": 4.305882352941176,
+          "ipca": 5.1,
+          "brand_count": 4
+        },
+        {
+          "week": "2021-02-15",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.222941176470589,
+          "volatility": 0.07664974770688698,
+          "avg_buy_price": 4.335294117647059,
+          "dollar": 5.0,
+          "brent": 4.2817647058823525,
+          "ipca": 5.1,
+          "brand_count": 4
+        },
+        {
+          "week": "2021-02-22",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.749499999999999,
+          "volatility": 0.20656272145461477,
+          "avg_buy_price": 4.774500000000001,
+          "dollar": 5.0,
+          "brent": 4.7165,
+          "ipca": 5.1,
+          "brand_count": 4
+        },
+        {
+          "week": "2021-03-01",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.85,
+          "volatility": 0.0,
+          "avg_buy_price": 4.86,
+          "dollar": 5.0,
+          "brent": 4.8,
+          "ipca": 5.1,
+          "brand_count": 2
+        },
+        {
+          "week": "2021-03-08",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.859999999999999,
+          "volatility": 0.019402850002906497,
+          "avg_buy_price": 4.867222222222222,
+          "dollar": 5.0,
+          "brent": 4.807222222222222,
+          "ipca": 5.1,
+          "brand_count": 4
+        }
+      ]
+    },
+    {
+      "table": "latest_overview",
+      "row_count": 128,
+      "sample_rows": [
+        {
+          "state": "PI",
+          "product": "diesel",
+          "avg_price": 7.599175824175824,
+          "volatility": 0.17665699265063356,
+          "dollar": 5.0,
+          "brent": 6.232447552447552,
+          "ipca": 5.1,
+          "price_direction": "up"
+        },
+        {
+          "state": "AL",
+          "product": "etanol",
+          "avg_price": 5.358266666666667,
+          "volatility": 0.1567091162387366,
+          "dollar": 5.0,
+          "brent": 4.393177777777778,
+          "ipca": 5.1,
+          "price_direction": "up"
+        },
+        {
+          "state": "AM",
+          "product": "etanol",
+          "avg_price": 5.475142857142857,
+          "volatility": 0.12622466095111348,
+          "dollar": 5.0,
+          "brent": 4.488809523809524,
+          "ipca": 5.1,
+          "price_direction": "up"
+        },
+        {
+          "state": "PE",
+          "product": "gasolina",
+          "avg_price": 7.121368020314833,
+          "volatility": 0.12261900433223476,
+          "dollar": 5.0,
+          "brent": 5.8395591686001005,
+          "ipca": 5.099999999999999,
+          "price_direction": "up"
+        },
+        {
+          "state": "TO",
+          "product": "gasolina",
+          "avg_price": 7.192819444444445,
+          "volatility": 0.14086666279094695,
+          "dollar": 5.0,
+          "brent": 5.897939814814815,
+          "ipca": 5.1,
+          "price_direction": "up"
+        }
+      ]
+    },
+    {
+      "table": "raw_prices",
+      "row_count": 109618,
+      "sample_rows": [
+        {
+          "week": "2021-01-18",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.251764705882353,
+          "volatility": 0.025058754487615346,
+          "avg_buy_price": 4.36,
+          "dollar": 5.0,
+          "brent": 4.305882352941176,
+          "ipca": 5.1,
+          "brand_count": 4
+        },
+        {
+          "week": "2021-02-15",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.222941176470589,
+          "volatility": 0.07664974770688698,
+          "avg_buy_price": 4.335294117647059,
+          "dollar": 5.0,
+          "brent": 4.2817647058823525,
+          "ipca": 5.1,
+          "brand_count": 4
+        },
+        {
+          "week": "2021-02-22",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.749499999999999,
+          "volatility": 0.20656272145461477,
+          "avg_buy_price": 4.774500000000001,
+          "dollar": 5.0,
+          "brent": 4.7165,
+          "ipca": 5.1,
+          "brand_count": 4
+        },
+        {
+          "week": "2021-03-01",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.85,
+          "volatility": 0.0,
+          "avg_buy_price": 4.86,
+          "dollar": 5.0,
+          "brent": 4.8,
+          "ipca": 5.1,
+          "brand_count": 2
+        },
+        {
+          "week": "2021-03-08",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.859999999999999,
+          "volatility": 0.019402850002906497,
+          "avg_buy_price": 4.867222222222222,
+          "dollar": 5.0,
+          "brent": 4.807222222222222,
+          "ipca": 5.1,
+          "brand_count": 4
+        }
+      ]
+    },
+    {
+      "table": "staging_prices",
+      "row_count": 109618,
+      "sample_rows": [
+        {
+          "week": "2021-01-18",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.251764705882353,
+          "volatility": 0.025058754487615346,
+          "avg_buy_price": 4.36,
+          "dollar": 5.0,
+          "brent": 4.305882352941176,
+          "ipca": 5.1,
+          "brand_count": 4
+        },
+        {
+          "week": "2021-02-15",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.222941176470589,
+          "volatility": 0.07664974770688698,
+          "avg_buy_price": 4.335294117647059,
+          "dollar": 5.0,
+          "brent": 4.2817647058823525,
+          "ipca": 5.1,
+          "brand_count": 4
+        },
+        {
+          "week": "2021-02-22",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.749499999999999,
+          "volatility": 0.20656272145461477,
+          "avg_buy_price": 4.774500000000001,
+          "dollar": 5.0,
+          "brent": 4.7165,
+          "ipca": 5.1,
+          "brand_count": 4
+        },
+        {
+          "week": "2021-03-01",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.85,
+          "volatility": 0.0,
+          "avg_buy_price": 4.86,
+          "dollar": 5.0,
+          "brent": 4.8,
+          "ipca": 5.1,
+          "brand_count": 2
+        },
+        {
+          "week": "2021-03-08",
+          "state": "AC",
+          "city": "Cruzeiro Do Sul",
+          "product": "diesel",
+          "avg_price": 5.859999999999999,
+          "volatility": 0.019402850002906497,
+          "avg_buy_price": 4.867222222222222,
+          "dollar": 5.0,
+          "brent": 4.807222222222222,
+          "ipca": 5.1,
+          "brand_count": 4
+        }
+      ]
+    },
+    {
+      "table": "state_summary",
+      "row_count": 10514,
+      "sample_rows": [
+        {
+          "week": "2021-01-18",
+          "state": "AC",
+          "product": "diesel",
+          "avg_price": 4.9106918767507,
+          "volatility": 0.062068712733328646,
+          "avg_buy_price": 4.076309523809524,
+          "dollar": 5.0,
+          "brent": 4.026631652661064,
+          "ipca": 5.1
+        },
+        {
+          "week": "2021-08-02",
+          "state": "AC",
+          "product": "diesel",
+          "avg_price": 5.836967032967033,
+          "volatility": 0.06632624428940342,
+          "avg_buy_price": 4.845225274725275,
+          "dollar": 5.0,
+          "brent": 4.786423076923077,
+          "ipca": 5.1
+        },
+        {
+          "week": "2021-08-09",
+          "state": "AC",
+          "product": "diesel",
+          "avg_price": 5.834133689839572,
+          "volatility": 0.04439297652288423,
+          "avg_buy_price": 4.842860962566846,
+          "dollar": 5.0,
+          "brent": 4.7842513368983965,
+          "ipca": 5.1
+        },
+        {
+          "week": "2021-11-29",
+          "state": "AC",
+          "product": "diesel",
+          "avg_price": 6.375230769230769,
+          "volatility": 0.055714562979651265,
+          "avg_buy_price": 5.290788461538462,
+          "dollar": 5.0,
+          "brent": 5.226788461538462,
+          "ipca": 5.1
+        },
+        {
+          "week": "2025-11-03",
+          "state": "AC",
+          "product": "diesel",
+          "avg_price": 7.794166666666667,
+          "volatility": 0.07081348099253518,
+          "avg_buy_price": 6.467791666666667,
+          "dollar": 5.0,
+          "brent": 6.391125000000001,
+          "ipca": 5.1
+        }
+      ]
+    }
+  ]
+}

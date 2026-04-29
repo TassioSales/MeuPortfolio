@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fuel-analytics"
+version = "0.1.0"
+description = "Pipeline de dados e forecast para analise de combustiveis da ANP"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "duckdb>=1.2.2",
+  "fastexcel>=0.15.1",
+  "httpx>=0.28.1",
+  "loguru>=0.7.3",
+  "polars>=1.30.0",
+  "pyarrow>=21.0.0",
+  "prefect>=3.4.0",
+  "pydantic>=2.11.0",
+  "python-dateutil>=2.9.0",
+  "scikit-learn>=1.7.0",
+  "statsmodels>=0.14.5",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.4.0",
+  "ruff>=0.12.0",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100

@@ -1,0 +1,15 @@
+duckdb>=1.2.2
+fastexcel>=0.15.1
+httpx>=0.28.1
+loguru>=0.7.3
+polars>=1.30.0
+pyarrow>=21.0.0
+prefect>=3.4.0
+pydantic>=2.11.0
+python-dateutil>=2.9.0
+scikit-learn>=1.7.0
+statsmodels>=0.14.5
+
+[dev]
+pytest>=8.4.0
+ruff>=0.12.0

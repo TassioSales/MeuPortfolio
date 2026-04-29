@@ -1,0 +1,33 @@
+Metadata-Version: 2.4
+Name: fuel-analytics
+Version: 0.1.0
+Summary: Pipeline de dados e forecast para analise de combustiveis da ANP
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: duckdb>=1.2.2
+Requires-Dist: fastexcel>=0.15.1
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: loguru>=0.7.3
+Requires-Dist: polars>=1.30.0
+Requires-Dist: pyarrow>=21.0.0
+Requires-Dist: prefect>=3.4.0
+Requires-Dist: pydantic>=2.11.0
+Requires-Dist: python-dateutil>=2.9.0
+Requires-Dist: scikit-learn>=1.7.0
+Requires-Dist: statsmodels>=0.14.5
+Provides-Extra: dev
+Requires-Dist: pytest>=8.4.0; extra == "dev"
+Requires-Dist: ruff>=0.12.0; extra == "dev"
+
+# Data Pipeline
+
+Pipeline Python para ingestao da ANP, normalizacao, enriquecimento e previsao.
+
+## Comandos
+
+```powershell
+python -m fuel_analytics.cli bootstrap --sample
+python -m fuel_analytics.cli run --sample
+python -m fuel_analytics.cli run --source anp
+```
+

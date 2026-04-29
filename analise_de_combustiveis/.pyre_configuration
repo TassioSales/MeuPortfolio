@@ -1,0 +1,17 @@
+{
+  "site_package_search_strategy": "all",
+  "source_directories": [
+    "data-pipeline-python/src"
+  ],
+  "search_path": [
+    "data-pipeline-python/.venv/Lib/site-packages"
+  ],
+  "ignore_all_errors": [
+    "frontend-next",
+    "backend-go",
+    "data-lake",
+    "models",
+    "docs"
+  ]
+}
+

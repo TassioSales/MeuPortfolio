@@ -1,0 +1,5 @@
+backend/*.log
+backend/documind-local.exe
+storage/uploads/*
+storage/db.json
+!storage/uploads/.gitkeep

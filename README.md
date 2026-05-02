@@ -34,6 +34,46 @@
 
 <div align="center">
 
+### ⛽ Fuel Analytics Platform
+
+**Tecnologias:** Python, DuckDB, Go, Next.js, Mistral AI
+
+Plataforma completa para coleta, processamento, forecast e visualização de preços de combustíveis no Brasil.
+
+[Ver Projeto](/analise_de_combustiveis)
+
+---
+
+### 💰 Sistema de Gestão Financeira & ERP Pessoal
+
+**Tecnologias:** Python, Django, SQLite, Bootstrap
+
+Controle financeiro, investimentos, PDV, estoque e emissão de notas com versão compilada executável.
+
+[Ver Projeto](/finanças)
+
+---
+
+### 🧠 DocuMind Local
+
+**Tecnologias:** Go, Python, Mistral AI, Vanilla JS
+
+Gerenciador local de documentos com upload, extração de texto, busca e análise por IA.
+
+[Ver Projeto](/documind_local)
+
+---
+
+### 🎨 CollabCanvas
+
+**Tecnologias:** Go, WebSockets, Next.js, TailwindCSS
+
+Mural multiplayer em tempo real de pixel art onde múltiplos usuários desenham simultaneamente.
+
+[Ver Projeto](/collab_canvas)
+
+---
+
 ### 🗺️ Gerador de Roteiros de Viagem com IA
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://jiqucdwsimgpjhzzhmn3f2.streamlit.app/)
@@ -46,11 +86,33 @@ Gere roteiros de viagem personalizados com IA avançada, integração com APIs e
 
 ---
 
+### 🤖 PriceTrack AI
+
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pricetrack-ai.streamlit.app)
+
+**Tecnologias:** Python, Streamlit, Google Gemini
+
+Consultora de e-commerce inteligente com alertas proativos e análises de preço com IA.
+
+[Ver Projeto](/pricetrack-ai) | [Demo Online](https://pricetrack-ai.streamlit.app)
+
+---
+
+### 📰 News Sentiment Radar
+
+**Tecnologias:** Go, IA, Vanilla JS
+
+Dashboard de análise de sentimento de notícias coletadas via RSS com classificação setorial automática.
+
+[Ver Projeto](/news_sentiment_radar)
+
+---
+
 ### 🎟️ Plataforma de Rifas PRO
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://plataforma-rifas-pro.streamlit.app)
 
-**Tecnologias:** Python, Streamlit, SQLite, Docker
+**Tecnologias:** Python, Streamlit, SQLite
 
 Sistema completo para gerenciamento de rifas online com analytics avançado e geração de PDF.
 
@@ -58,43 +120,23 @@ Sistema completo para gerenciamento de rifas online com analytics avançado e ge
 
 ---
 
-### 📊 Análises de Dados
+### 🎲 Sorteador de Rifa PRO
 
-**Tecnologias:** Python, Pandas, Matplotlib, Seaborn, Altair
+**Tecnologias:** Python, Streamlit, Pandas
 
-Coleção de projetos de análise exploratória, visualização de dados e modelagem preditiva.
-
-[Explorar Projetos](/analises_de_dados)
-
----
-
-### 🤖 PriceTrack AI
-
-**Tecnologias:** Python, Web Scraping, Machine Learning
-
-Ferramenta de monitoramento de preços com alertas e análise de tendências de mercado.
-
-[Ver Projeto](/pricetrack-ai)
-
----
-
-### 🏪 Sistema PDV
-
-**Tecnologias:** Python, Banco de Dados, Interface Gráfica
-
-Sistema de Ponto de Venda completo para gestão de vendas, estoque e relatórios.
-
-[Ver Projeto](/sistema-pdv)
-
----
-
-### 🎲 Sorteador de Rifa
-
-**Tecnologias:** Python, Interface Gráfica
-
-Aplicativo desktop para realização de sorteios de forma justa e transparente.
+Sorteios justos e transparentes com suporte a múltiplos formatos e geração de resultados.
 
 [Ver Projeto](/sorteador_rifa_app)
+
+---
+
+### 🕹️ Arcade Neon (Drift & Snake)
+
+**Tecnologias:** HTML5 Canvas, JS, Go
+
+Jogos arcade single-player com backend Go para configuração e placar de líderes global.
+
+[Neon Drift](/neon_drift) | [Neon Snake](/neon_snake)
 
 </div>
 
@@ -104,15 +146,17 @@ Aplicativo desktop para realização de sorteios de forma justa e transparente.
 <tr>
 <td width="33%" align="center">
 
-#### 🐍 Backend
+#### 🐍 Backend & Dados
 ![Python](https://img.shields.io/badge/Python-3.12+-3776ab?style=flat-square&logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi)
+![Go](https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go)
+![Django](https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django)
 ![SQL](https://img.shields.io/badge/SQL-003b57?style=flat-square&logo=sqlite)
 
 </td>
 <td width="33%" align="center">
 
 #### 🌐 Frontend
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js)
 ![Streamlit](https://img.shields.io/badge/Streamlit-ff4b4b?style=flat-square&logo=streamlit)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3)
@@ -120,7 +164,7 @@ Aplicativo desktop para realização de sorteios de forma justa e transparente.
 </td>
 <td width="33%" align="center">
 
-#### 🛠️ Ferramentas
+#### 🛠️ Ferramentas & Infra
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git)
 ![Docker](https://img.shields.io/badge/Docker-2496ed?style=flat-square&logo=docker)
 ![VSCode](https://img.shields.io/badge/VSCode-007ACC?style=flat-square&logo=visual-studio-code)

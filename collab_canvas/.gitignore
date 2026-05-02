@@ -1,0 +1,4 @@
+backend/*.log
+frontend/.next/
+frontend/node_modules/
+frontend/*.log

@@ -1,14 +1,22 @@
-from fastapi import FastAPI, Depends, HTTPException, Query
+from fastapi import FastAPI, Depends, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 import yfinance as yf
+import asyncio
+from contextlib import asynccontextmanager
 
-import models, schemas, database, services, ml_services
+import models, schemas, database, services, ml_services, sentiment_service, ai_ws_services
 
 models.Base.metadata.create_all(bind=database.engine)
 
-app = FastAPI(title="WealthMap Analytics API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    task = asyncio.create_task(ai_ws_services.market_ticker_generator())
+    yield
+    task.cancel()
+
+app = FastAPI(title="WealthMap Analytics PRO API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -87,16 +95,28 @@ def get_portfolio(db: Session = Depends(database.get_db)):
             
     return portfolio
 
+import requests
+
 @app.get("/search/")
-def search_assets(q: str = Query(..., min_length=2)):
-    # Very simple search using yfinance. In a real app we'd use a better search API.
-    # We will simulate returning a standard response.
+def search_assets(q: str = Query(..., min_length=1)):
     try:
-        # yf.Ticker(q).info is too slow for real-time search without a DB cache, 
-        # but for demonstration we just return the ticker if it exists.
-        # Alternatively, we just return the query formatted.
-        return [{"ticker": q.upper(), "name": f"Pesquisa: {q.upper()}", "asset_type": "STOCK"}]
-    except:
+        url = f"https://query2.finance.yahoo.com/v1/finance/search?q={q}"
+        headers = {"User-Agent": "Mozilla/5.0"}
+        res = requests.get(url, headers=headers, timeout=5).json()
+        results = []
+        for quote in res.get('quotes', []):
+            q_type = quote.get('quoteType', '')
+            if q_type in ['EQUITY', 'ETF', 'MUTUALFUND', 'CRYPTOCURRENCY', 'INDEX']:
+                # Heuristica de tipo
+                asset_type = "CRYPTO" if q_type == 'CRYPTOCURRENCY' else ("FII" if "FII" in quote.get('shortname', '') else "STOCK")
+                results.append({
+                    "ticker": quote.get('symbol'),
+                    "name": quote.get('shortname', quote.get('longname', 'Desconhecido')),
+                    "asset_type": asset_type
+                })
+        return results[:8]
+    except Exception as e:
+        print("Search error:", e)
         return []
 
 @app.get("/analytics/risk")
@@ -106,9 +126,49 @@ def get_risk_analytics(db: Session = Depends(database.get_db)):
     return ml_services.calculate_risk_metrics(tickers)
 
 @app.get("/forecast/{ticker}")
-def get_forecast(ticker: str, days: int = 30):
+def get_forecast(ticker: str, days: int = 15):
     return ml_services.forecast_price(ticker, days)
+
+@app.get("/sentiment/{ticker}")
+def get_sentiment(ticker: str):
+    return sentiment_service.get_asset_sentiment(ticker)
+
+@app.get("/analytics/macro")
+def get_macro_data():
+    try:
+        # Mocking or fetching simple macro data for the dashboard
+        return {
+            "selic_target": 10.75,
+            "ipca_12m": 4.50,
+            "us_fed_rate": 5.50,
+            "status": "Atenção (Juros Altos)"
+        }
+    except:
+        return {}
+
+from pydantic import BaseModel
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/ai/chat")
+def chat_with_ai(req: ChatRequest, db: Session = Depends(database.get_db)):
+    portfolio = get_portfolio(db)
+    tickers = [p.asset.ticker for p in portfolio]
+    risk_metrics = ml_services.calculate_risk_metrics(tickers)
+    
+    reply = ai_ws_services.generate_ai_response(req.message, [p.dict() for p in portfolio], risk_metrics)
+    return {"reply": reply}
+
+@app.websocket("/ws/ticker")
+async def websocket_ticker(websocket: WebSocket):
+    await ai_ws_services.manager.connect(websocket)
+    try:
+        while True:
+            # We keep the connection alive, ping/pong. The actual data is sent by the background task.
+            data = await websocket.receive_text()
+    except WebSocketDisconnect:
+        ai_ws_services.manager.disconnect(websocket)
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to WealthMap Analytics API"}
+    return {"message": "Welcome to WealthMap Analytics PRO API"}

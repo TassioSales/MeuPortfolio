@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News Sentiment Radar</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">NS</span>
+          <div>
+            <strong>News Radar</strong>
+            <small>Sentiment Ops</small>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#overview" class="active">Overview</a>
+          <a href="#sectors">Setores</a>
+          <a href="#sources">Fontes</a>
+          <a href="#articles">Noticias</a>
+        </nav>
+        <div class="sidebar-card">
+          <span>Coleta</span>
+          <strong id="updatedAt">Atualizando...</strong>
+        </div>
+      </aside>
+
+      <section class="shell">
+        <header class="topbar" id="overview">
+          <div>
+            <p class="eyebrow">News intelligence</p>
+            <h1>Sentiment Command Center</h1>
+          </div>
+          <div class="actions">
+            <span class="live-dot">RSS live</span>
+            <button id="refreshButton">Atualizar RSS</button>
+          </div>
+        </header>
+
+        <section class="status-strip">
+          <article>
+            <span>Pulso editorial</span>
+            <strong id="marketPulse">Neutro</strong>
+          </article>
+          <article>
+            <span>Sentimento dominante</span>
+            <strong id="dominantSentiment">-</strong>
+          </article>
+          <article>
+            <span>Mix de fontes</span>
+            <strong id="coverageMix">0</strong>
+          </article>
+        </section>
+
+      <section class="kpis">
+        <article class="kpi-card">
+          <span>Total de noticias</span>
+          <strong id="totalArticles">0</strong>
+          <small>itens monitorados</small>
+        </article>
+        <article class="kpi-card">
+          <span>Termometro geral</span>
+          <strong id="averageScore">0.00</strong>
+          <small>media ponderada</small>
+        </article>
+        <article class="kpi-card">
+          <span>Indice de risco</span>
+          <strong id="riskIndex">0%</strong>
+          <small>sinal negativo</small>
+        </article>
+        <article class="kpi-card">
+          <span>Setor em alerta</span>
+          <strong id="alertSector">-</strong>
+          <small>menor termometro</small>
+        </article>
+      </section>
+
+      <section class="filters panel-toolbar">
+        <label>
+          Setor
+          <select id="sectorFilter">
+            <option value="all">Todos</option>
+          </select>
+        </label>
+        <label>
+          Sentimento
+          <select id="sentimentFilter">
+            <option value="all">Todos</option>
+            <option value="positivo">Positivo</option>
+            <option value="neutro">Neutro</option>
+            <option value="negativo">Negativo</option>
+          </select>
+        </label>
+        <label class="search">
+          Busca
+          <input id="searchInput" placeholder="empresa, tema, entidade..." />
+        </label>
+      </section>
+
+      <section class="grid">
+        <section class="panel span-2" id="sectors">
+          <div class="panel-title">
+            <h2>Termometro por setor</h2>
+            <p>Economia, politica, tecnologia, saude e geral</p>
+          </div>
+          <div id="sectorThermometers" class="thermometers"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <h2>Sentimento</h2>
+            <p>Distribuicao atual</p>
+          </div>
+          <canvas id="sentimentChart" width="420" height="280"></canvas>
+        </section>
+
+        <section class="panel span-2">
+          <div class="panel-title">
+            <h2>Linha temporal</h2>
+            <p>Volume e tom das ultimas horas</p>
+          </div>
+          <canvas id="timelineChart" width="820" height="260"></canvas>
+        </section>
+
+        <section class="panel" id="sources">
+          <div class="panel-title">
+            <h2>Fontes</h2>
+            <p>Volume por origem</p>
+          </div>
+          <div id="sources" class="sources"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <h2>Entidades</h2>
+            <p>Nomes mais citados</p>
+          </div>
+          <div id="entities" class="entities"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <h2>Alertas</h2>
+            <p>Sinais que merecem atencao</p>
+          </div>
+          <div id="alerts" class="alerts"></div>
+        </section>
+
+        <section class="panel span-3" id="articles">
+          <div class="panel-title">
+            <h2>Noticias recentes</h2>
+            <p id="articleCount">Com sentimento, setor e origem</p>
+          </div>
+          <div id="articlesList" class="articles"></div>
+        </section>
+      </section>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DocuMind Local</title>
+    <link rel="stylesheet" href="./src/styles.css?v=20260502-upload-fix" />
+  </head>
+  <body>
+    <main class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <span>DM</span>
+          <div>
+            <strong>DocuMind</strong>
+            <small>Local AI Vault</small>
+          </div>
+        </div>
+        <nav>
+          <a class="active" href="#library" data-nav-link="library">Biblioteca</a>
+          <a href="#upload" data-nav-link="upload">Upload</a>
+          <a href="#insights" data-nav-link="insights">Insights</a>
+        </nav>
+        <div class="model-card">
+          <span>Modelo</span>
+          <strong id="modelName">Mistral</strong>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <header class="hero">
+          <div>
+            <p class="eyebrow">Document intelligence</p>
+            <h1>Organize, busque e entenda seus arquivos.</h1>
+          </div>
+          <form id="searchForm" class="search">
+            <input id="searchInput" placeholder="Buscar por texto, tag, entidade..." />
+            <button type="submit">Buscar</button>
+          </form>
+        </header>
+
+        <section class="kpis">
+          <article>
+            <span>Documentos</span>
+            <strong id="totalDocuments">0</strong>
+          </article>
+          <article>
+            <span>Volume</span>
+            <strong id="totalBytes">0 KB</strong>
+          </article>
+          <article>
+            <span>Tags</span>
+            <strong id="tagCount">0</strong>
+          </article>
+          <article>
+            <span>Risco alto</span>
+            <strong id="highRisk">0</strong>
+          </article>
+        </section>
+
+        <section class="grid">
+          <section class="panel upload-panel" id="upload">
+            <div class="panel-title">
+              <h2>Upload</h2>
+              <p>TXT, MD, CSV, JSON, HTML, PDF, DOCX e XLSX</p>
+            </div>
+            <input
+              id="fileInput"
+              class="native-file-input"
+              name="file"
+              type="file"
+              accept=".txt,.md,.csv,.json,.html,.htm,.pdf,.docx,.xlsx,.log"
+              onchange="window.__documindFileSelected && window.__documindFileSelected(this.files && this.files[0])"
+            />
+            <form id="uploadForm" class="dropzone">
+              <button id="chooseFileButton" class="file-picker" type="button" onclick="document.getElementById('fileInput').click()">
+                <strong>Selecionar arquivo</strong>
+                <span id="fileName">Nenhum arquivo escolhido</span>
+                <small>ou arraste o arquivo aqui</small>
+              </button>
+              <button type="submit">Enviar e analisar</button>
+            </form>
+            <p id="uploadStatus" class="status"></p>
+          </section>
+
+          <section class="panel library" id="library">
+            <div class="panel-title">
+              <h2>Biblioteca</h2>
+              <p id="documentCount">0 arquivos</p>
+            </div>
+            <div id="documents" class="documents"></div>
+          </section>
+
+          <section class="panel detail" id="insights">
+            <div class="panel-title">
+              <h2>Insights</h2>
+              <p id="selectedName">Selecione um documento</p>
+            </div>
+            <div id="detail" class="empty-state">
+              Nenhum documento selecionado.
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      window.__documindFileSelected = function (file) {
+        var fileName = document.getElementById("fileName");
+        var uploadStatus = document.getElementById("uploadStatus");
+        if (!fileName || !uploadStatus) return;
+        fileName.textContent = file ? file.name + " (" + Math.round(file.size / 1024) + " KB)" : "Nenhum arquivo escolhido";
+        uploadStatus.textContent = file ? "Arquivo pronto para envio." : "";
+      };
+    </script>
+    <script type="module" src="./src/main.js?v=20260502-upload-fix"></script>
+  </body>
+</html>

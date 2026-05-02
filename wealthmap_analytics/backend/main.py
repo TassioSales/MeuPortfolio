@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+import yfinance as yf
 
-import models, schemas, database, services
+import models, schemas, database, services, ml_services
 
 models.Base.metadata.create_all(bind=database.engine)
 
@@ -85,6 +86,28 @@ def get_portfolio(db: Session = Depends(database.get_db)):
             ))
             
     return portfolio
+
+@app.get("/search/")
+def search_assets(q: str = Query(..., min_length=2)):
+    # Very simple search using yfinance. In a real app we'd use a better search API.
+    # We will simulate returning a standard response.
+    try:
+        # yf.Ticker(q).info is too slow for real-time search without a DB cache, 
+        # but for demonstration we just return the ticker if it exists.
+        # Alternatively, we just return the query formatted.
+        return [{"ticker": q.upper(), "name": f"Pesquisa: {q.upper()}", "asset_type": "STOCK"}]
+    except:
+        return []
+
+@app.get("/analytics/risk")
+def get_risk_analytics(db: Session = Depends(database.get_db)):
+    assets = db.query(models.Asset).all()
+    tickers = [a.ticker for a in assets]
+    return ml_services.calculate_risk_metrics(tickers)
+
+@app.get("/forecast/{ticker}")
+def get_forecast(ticker: str, days: int = 30):
+    return ml_services.forecast_price(ticker, days)
 
 @app.get("/")
 def read_root():

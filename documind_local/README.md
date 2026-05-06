@@ -8,6 +8,14 @@ Gerenciador local de documentos com upload, extracao de texto, busca e analise c
 start_documind.bat
 ```
 
+## Fluxo de estudo
+
+- `Dashboard`: fila de revisões do dia e materiais recentes.
+- `Biblioteca`: todos os materiais importados, filtro de PDFs e botão de excluir.
+- `Upload`: importa PDF/TXT/DOCX/XLSX e cria plano de estudos.
+- `Revisão`: mostra objetivos, agenda espaçada, tópicos e flashcards.
+- `Pesquisa`: gera buscas úteis para temas, apostilas e PDFs online.
+
 Abra:
 
 ```txt

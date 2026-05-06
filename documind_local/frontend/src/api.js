@@ -18,6 +18,10 @@ export async function searchDocuments(query) {
   return request(`/api/search?q=${encodeURIComponent(query)}`);
 }
 
+export async function researchTopic(query) {
+  return request(`/api/research?q=${encodeURIComponent(query)}`);
+}
+
 export async function uploadDocument(file) {
   const form = new FormData();
   form.append("file", file);
@@ -38,10 +42,33 @@ export async function uploadDocument(file) {
   return response.json();
 }
 
-async function request(path) {
-  const response = await fetch(path);
+export async function deleteDocument(id) {
+  return request(`/api/documents/${id}`, { method: "DELETE" });
+}
+
+export async function analyzeDocument(id) {
+  return request(`/api/documents/${id}/analyze`, { method: "POST" });
+}
+
+export async function reviewFlashcard(id, cardId, result) {
+  return request(`/api/documents/${id}/review`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cardId, result }),
+  });
+}
+
+async function request(path, options = {}) {
+  const response = await fetch(path, options);
   if (!response.ok) {
-    throw new Error(`Request failed: ${path}`);
+    let message = `Request failed: ${path}`;
+    try {
+      const error = await response.json();
+      message = error.error || message;
+    } catch {
+      message = await response.text();
+    }
+    throw new Error(message);
   }
   return response.json();
 }

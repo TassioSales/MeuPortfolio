@@ -82,16 +82,21 @@ nav {
   margin-top: 28px;
 }
 
-nav a {
+nav button {
+  border: 0;
   border-radius: 8px;
+  background: transparent;
   color: var(--muted);
+  cursor: pointer;
+  height: auto;
   padding: 11px 12px;
-  text-decoration: none;
   font-weight: 850;
+  text-align: left;
+  text-transform: none;
 }
 
-nav a.active,
-nav a:hover {
+nav button.active,
+nav button:hover {
   background: rgba(34, 211, 238, 0.10);
   color: #cffafe;
 }
@@ -231,6 +236,34 @@ button {
   align-items: start;
 }
 
+.tab-view {
+  display: none;
+  margin-top: 12px;
+}
+
+.tab-view.active {
+  display: block;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(420px, 1fr) minmax(360px, 0.75fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 380px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.upload-shell,
+.research-panel {
+  max-width: 920px;
+}
+
 .panel {
   padding: 16px;
 }
@@ -325,8 +358,19 @@ button {
 .documents {
   display: grid;
   gap: 10px;
-  max-height: 650px;
+  max-height: 720px;
   overflow: auto;
+}
+
+.library-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.library-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
 .doc-card {
@@ -335,6 +379,39 @@ button {
   background: rgba(2, 6, 23, 0.46);
   cursor: pointer;
   padding: 12px;
+}
+
+.doc-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+
+.file-badge {
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 999px;
+  color: var(--muted);
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+}
+
+.file-badge.pdf {
+  border-color: rgba(251, 113, 133, 0.32);
+  color: #fecdd3;
+}
+
+.icon-danger {
+  width: auto;
+  height: 30px;
+  border: 1px solid rgba(251, 113, 133, 0.28);
+  background: rgba(251, 113, 133, 0.08);
+  color: #fecdd3;
+  padding: 0 9px;
+  font-size: 11px;
 }
 
 .doc-card:hover,
@@ -361,6 +438,21 @@ button {
   flex-wrap: wrap;
   gap: 7px;
   margin-top: 10px;
+}
+
+.progress-bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.12);
+  margin-top: 10px;
+}
+
+.progress-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--cyan), var(--green));
 }
 
 .chip {
@@ -398,6 +490,197 @@ button {
   padding: 12px;
 }
 
+.detail-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ghost-button {
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(2, 6, 23, 0.42);
+  color: var(--text);
+}
+
+.ghost-button.active {
+  border-color: rgba(34, 211, 238, 0.45);
+  background: rgba(34, 211, 238, 0.12);
+  color: #cffafe;
+}
+
+.ghost-button.danger {
+  border-color: rgba(251, 113, 133, 0.38);
+  color: #fecdd3;
+}
+
+.study-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.10), rgba(134, 239, 172, 0.06));
+  padding: 14px;
+}
+
+.study-hero span,
+.study-metrics span,
+.topic-card span,
+.flashcard span,
+.timeline-item small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.study-hero h3 {
+  margin: 6px 0;
+  font-size: 22px;
+}
+
+.study-hero p,
+.topic-card p,
+.flashcard p {
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.study-hero > strong {
+  display: grid;
+  width: 76px;
+  height: 76px;
+  place-items: center;
+  border: 1px solid rgba(134, 239, 172, 0.35);
+  border-radius: 999px;
+  color: var(--green);
+  font-size: 22px;
+}
+
+.study-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.study-metrics article,
+.topic-card,
+.timeline-item,
+.flashcard {
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 8px;
+  background: rgba(2, 6, 23, 0.34);
+  padding: 12px;
+}
+
+.study-metrics strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 24px;
+}
+
+.timeline,
+.topic-grid,
+.flashcards {
+  display: grid;
+  gap: 10px;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 58px;
+  gap: 10px;
+  align-items: center;
+}
+
+.topic-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.topic-card strong,
+.flashcard h4 {
+  display: block;
+  margin: 6px 0;
+}
+
+.flashcard {
+  display: grid;
+  gap: 12px;
+}
+
+.flashcard.due {
+  border-color: rgba(34, 211, 238, 0.36);
+  box-shadow: inset 3px 0 0 rgba(34, 211, 238, 0.82);
+}
+
+.review-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.review-actions button {
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.review-list,
+.research-results,
+.research-links {
+  display: grid;
+  gap: 10px;
+}
+
+.queue-card,
+.research-card,
+.research-block {
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 8px;
+  background: rgba(2, 6, 23, 0.34);
+  padding: 12px;
+}
+
+.queue-card span,
+.research-card span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.queue-card strong,
+.research-card strong {
+  display: block;
+  margin: 7px 0;
+}
+
+.queue-card button {
+  margin-top: 10px;
+}
+
+.research-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.research-card {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.research-card:hover {
+  border-color: rgba(34, 211, 238, 0.38);
+  background: rgba(34, 211, 238, 0.08);
+}
+
+.research-card p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .insight-section h3 {
   margin: 0 0 8px;
   color: var(--muted);
@@ -418,7 +701,10 @@ button {
 
 @media (max-width: 1180px) {
   .app,
-  .grid {
+  .grid,
+  .dashboard-grid,
+  .detail-layout,
+  .library-list {
     grid-template-columns: 1fr;
   }
 
@@ -446,7 +732,12 @@ button {
   }
 
   .search,
-  .kpis {
+  .research-form,
+  .kpis,
+  .study-metrics,
+  .topic-grid,
+  .review-actions,
+  .timeline-item {
     grid-template-columns: 1fr;
   }
 }

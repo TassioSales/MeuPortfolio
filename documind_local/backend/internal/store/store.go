@@ -47,6 +47,19 @@ func (s *Store) Update(document domain.Document) error {
 	return nil
 }
 
+func (s *Store) Delete(id string) (domain.Document, bool, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for index, document := range s.documents {
+		if document.ID == id {
+			s.documents = append(s.documents[:index], s.documents[index+1:]...)
+			return document, true, s.saveLocked()
+		}
+	}
+	return domain.Document{}, false, nil
+}
+
 func (s *Store) All() []domain.Document {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -69,6 +82,18 @@ func (s *Store) Get(id string) (domain.Document, bool) {
 		}
 	}
 	return domain.Document{}, false
+}
+
+func (s *Store) HasStoredName(storedName string) bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	for _, document := range s.documents {
+		if document.StoredName == storedName {
+			return true
+		}
+	}
+	return false
 }
 
 func (s *Store) Search(query string) []domain.Document {
@@ -95,6 +120,9 @@ func (s *Store) Stats() domain.Stats {
 	for _, document := range s.All() {
 		stats.TotalDocuments++
 		stats.TotalBytes += document.Size
+		stats.TotalFlashcards += len(document.Study.Flashcards)
+		stats.DueReviews += document.Study.Progress.DueCards
+		stats.ReviewedCards += document.Study.Progress.ReviewedCards
 		stats.Risks[document.Insight.RiskLevel]++
 		for _, tag := range document.Insight.Tags {
 			stats.Tags[tag]++

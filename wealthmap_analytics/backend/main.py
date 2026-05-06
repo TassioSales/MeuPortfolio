@@ -119,6 +119,10 @@ def search_assets(q: str = Query(..., min_length=1)):
         print("Search error:", e)
         return []
 
+@app.get("/assets/search/")
+def search_assets_compat(q: str = Query(..., min_length=1)):
+    return search_assets(q)
+
 @app.get("/analytics/risk")
 def get_risk_analytics(db: Session = Depends(database.get_db)):
     assets = db.query(models.Asset).all()
@@ -129,9 +133,17 @@ def get_risk_analytics(db: Session = Depends(database.get_db)):
 def get_forecast(ticker: str, days: int = 15):
     return ml_services.forecast_price(ticker, days)
 
+@app.get("/analytics/forecast/{ticker}")
+def get_forecast_compat(ticker: str, days: int = 15):
+    return get_forecast(ticker, days)
+
 @app.get("/sentiment/{ticker}")
 def get_sentiment(ticker: str):
     return sentiment_service.get_asset_sentiment(ticker)
+
+@app.get("/ai/sentiment/{ticker}")
+def get_sentiment_compat(ticker: str):
+    return get_sentiment(ticker)
 
 @app.get("/analytics/macro")
 def get_macro_data():
@@ -168,6 +180,14 @@ async def websocket_ticker(websocket: WebSocket):
             data = await websocket.receive_text()
     except WebSocketDisconnect:
         ai_ws_services.manager.disconnect(websocket)
+
+@app.websocket("/ai/ws/ticker")
+async def websocket_ticker_compat(websocket: WebSocket):
+    await websocket_ticker(websocket)
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "service": "wealthmap-api"}
 
 @app.get("/")
 def read_root():

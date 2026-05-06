@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DocuMind Local</title>
-    <link rel="stylesheet" href="./src/styles.css?v=20260502-upload-fix" />
+    <title>DocuMind Study</title>
+    <link rel="stylesheet" href="./src/styles.css?v=20260502-study-tabs" />
   </head>
   <body>
     <main class="app">
@@ -12,17 +12,21 @@
         <div class="brand">
           <span>DM</span>
           <div>
-            <strong>DocuMind</strong>
-            <small>Local AI Vault</small>
+            <strong>DocuMind Study</strong>
+            <small>PDFs, flashcards e revisões</small>
           </div>
         </div>
+
         <nav>
-          <a class="active" href="#library" data-nav-link="library">Biblioteca</a>
-          <a href="#upload" data-nav-link="upload">Upload</a>
-          <a href="#insights" data-nav-link="insights">Insights</a>
+          <button class="active" type="button" data-tab-button="dashboard">Dashboard</button>
+          <button type="button" data-tab-button="library">Biblioteca</button>
+          <button type="button" data-tab-button="upload">Upload</button>
+          <button type="button" data-tab-button="review">Revisão</button>
+          <button type="button" data-tab-button="research">Pesquisa</button>
         </nav>
+
         <div class="model-card">
-          <span>Modelo</span>
+          <span>Modelo IA</span>
           <strong id="modelName">Mistral</strong>
         </div>
       </aside>
@@ -30,45 +34,69 @@
       <section class="workspace">
         <header class="hero">
           <div>
-            <p class="eyebrow">Document intelligence</p>
-            <h1>Organize, busque e entenda seus arquivos.</h1>
+            <p class="eyebrow">Planejador de estudos</p>
+            <h1>Transforme PDFs em plano, cards e agenda de revisão.</h1>
           </div>
           <form id="searchForm" class="search">
-            <input id="searchInput" placeholder="Buscar por texto, tag, entidade..." />
+            <input id="searchInput" placeholder="Buscar nos seus materiais..." />
             <button type="submit">Buscar</button>
           </form>
         </header>
 
         <section class="kpis">
-          <article>
-            <span>Documentos</span>
-            <strong id="totalDocuments">0</strong>
-          </article>
-          <article>
-            <span>Volume</span>
-            <strong id="totalBytes">0 KB</strong>
-          </article>
-          <article>
-            <span>Tags</span>
-            <strong id="tagCount">0</strong>
-          </article>
-          <article>
-            <span>Risco alto</span>
-            <strong id="highRisk">0</strong>
-          </article>
+          <article><span>Materiais</span><strong id="totalDocuments">0</strong></article>
+          <article><span>Flashcards</span><strong id="totalFlashcards">0</strong></article>
+          <article><span>Revisões hoje</span><strong id="dueReviews">0</strong></article>
+          <article><span>Progresso</span><strong id="studyProgress">0/0</strong></article>
         </section>
 
-        <section class="grid">
-          <section class="panel upload-panel" id="upload">
+        <section class="tab-view active" data-tab="dashboard">
+          <section class="dashboard-grid">
+            <article class="panel focus-panel">
+              <div class="panel-title">
+                <h2>Fila de hoje</h2>
+                <p id="reviewQueueCount">0 pendentes</p>
+              </div>
+              <div id="reviewQueue" class="review-list"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-title">
+                <h2>Materiais recentes</h2>
+                <p>PDFs e arquivos importados</p>
+              </div>
+              <div id="recentDocuments" class="documents"></div>
+            </article>
+          </section>
+        </section>
+
+        <section class="tab-view" data-tab="library">
+          <section class="panel">
             <div class="panel-title">
-              <h2>Upload</h2>
-              <p>TXT, MD, CSV, JSON, HTML, PDF, DOCX e XLSX</p>
+              <h2>Biblioteca</h2>
+              <p id="documentCount">0 materiais</p>
+            </div>
+            <div class="library-toolbar">
+              <button type="button" class="ghost-button" data-filter="all">Todos</button>
+              <button type="button" class="ghost-button" data-filter="pdf">PDFs</button>
+              <button type="button" class="ghost-button" data-filter="due">Com revisão</button>
+            </div>
+            <div id="documents" class="documents library-list"></div>
+          </section>
+        </section>
+
+        <section class="tab-view" data-tab="upload">
+          <section class="panel upload-shell">
+            <div class="panel-title">
+              <h2>Novo material</h2>
+              <p>PDF, TXT, MD, DOCX, XLSX, CSV e HTML</p>
             </div>
             <input
               id="fileInput"
               class="native-file-input"
               name="file"
               type="file"
+              title="Selecionar arquivo de estudo"
+              aria-label="Selecionar arquivo de estudo"
               accept=".txt,.md,.csv,.json,.html,.htm,.pdf,.docx,.xlsx,.log"
               onchange="window.__documindFileSelected && window.__documindFileSelected(this.files && this.files[0])"
             />
@@ -78,27 +106,42 @@
                 <span id="fileName">Nenhum arquivo escolhido</span>
                 <small>ou arraste o arquivo aqui</small>
               </button>
-              <button type="submit">Enviar e analisar</button>
+              <button type="submit">Criar plano de estudos</button>
             </form>
             <p id="uploadStatus" class="status"></p>
           </section>
+        </section>
 
-          <section class="panel library" id="library">
-            <div class="panel-title">
-              <h2>Biblioteca</h2>
-              <p id="documentCount">0 arquivos</p>
-            </div>
-            <div id="documents" class="documents"></div>
+        <section class="tab-view" data-tab="review">
+          <section class="detail-layout">
+            <aside class="panel">
+              <div class="panel-title">
+                <h2>Escolha o material</h2>
+                <p>Cards e revisões</p>
+              </div>
+              <div id="reviewDocuments" class="documents"></div>
+            </aside>
+            <article class="panel detail">
+              <div class="panel-title">
+                <h2>Plano e revisão</h2>
+                <p id="selectedName">Selecione um material</p>
+              </div>
+              <div id="detail" class="empty-state">Nenhum material selecionado.</div>
+            </article>
           </section>
+        </section>
 
-          <section class="panel detail" id="insights">
+        <section class="tab-view" data-tab="research">
+          <section class="panel research-panel">
             <div class="panel-title">
-              <h2>Insights</h2>
-              <p id="selectedName">Selecione um documento</p>
+              <h2>Pesquisa de temas e PDFs</h2>
+              <p>Encontre materiais antes de subir no app</p>
             </div>
-            <div id="detail" class="empty-state">
-              Nenhum documento selecionado.
-            </div>
+            <form id="researchForm" class="research-form">
+              <input id="researchInput" placeholder="Ex: matemática básica, anatomia, direito constitucional..." />
+              <button type="submit">Pesquisar</button>
+            </form>
+            <div id="researchResults" class="research-results"></div>
           </section>
         </section>
       </section>
@@ -113,6 +156,6 @@
         uploadStatus.textContent = file ? "Arquivo pronto para envio." : "";
       };
     </script>
-    <script type="module" src="./src/main.js?v=20260502-upload-fix"></script>
+    <script type="module" src="./src/main.js?v=20260502-study-tabs"></script>
   </body>
 </html>

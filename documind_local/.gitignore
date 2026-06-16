@@ -3,3 +3,6 @@ backend/documind-local.exe
 storage/uploads/*
 storage/db.json
 !storage/uploads/.gitkeep
+.env
+*.db
+*.sqlite3

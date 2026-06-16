@@ -32,7 +32,7 @@ def check_dependencies():
         import streamlit
         import sqlalchemy
         import plotly
-        import google.generativeai
+        from google import genai  # noqa: F401  (google-genai SDK)
         import pydantic
         logger.info("Todas as dependências estão instaladas")
         print("✅ Todas as dependências estão instaladas")

@@ -29,7 +29,9 @@ from .views_investments import (
     safe_haven_dashboard,
     search_ticker,
 )
-from .views_reports import export_csv, export_pdf, reports
+from .views_cashflow import cash_flow_forecast
+from .views_ofx import import_ofx
+from .views_reports import export_csv, export_pdf, export_xlsx, reports
 from .views_shared import fix_ssl, get_price_manual
 from .views_transactions import (
     TransactionCreateView,

@@ -35,6 +35,13 @@ urlpatterns = [
     path('reports/', views.reports, name='reports'),
     path('reports/export/', views.export_csv, name='export_csv'),
     path('reports/export/pdf/', views.export_pdf, name='export_pdf'),
+    path('reports/export/xlsx/', views.export_xlsx, name='export_xlsx'),
+
+    # Cash flow forecast
+    path('cash-flow/', views.cash_flow_forecast, name='cash_flow_forecast'),
+
+    # OFX import
+    path('transactions/import/ofx/', views.import_ofx, name='import_ofx'),
     # Investments
     path('investments/', views.investment_dashboard, name='investment_dashboard'),
     path('investments/safe/', views.safe_haven_dashboard, name='safe_haven_dashboard'),

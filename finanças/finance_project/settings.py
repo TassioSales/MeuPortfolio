@@ -14,21 +14,20 @@ import os
 import sys
 from pathlib import Path
 
+from decouple import Csv, config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = config(
+    "SECRET_KEY",
+    default="django-insecure-hux^5!#g^za0t)3c&kn^!ls%lq=le1yi3g%l2ig=r^ca-o&mr6",
+)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
+DEBUG = config("DEBUG", default=True, cast=bool)
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-hux^5!#g^za0t)3c&kn^!ls%lq=le1yi3g%l2ig=r^ca-o&mr6'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('django_debug', 'True').lower() == 'true'
-
-ALLOWED_HOSTS = ["*"]  # Liberado para acesso em rede local (celular/tablet)
+# Allow * for LAN access (tablet/phone on same network); restrict in production via .env
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*", cast=Csv())
 
 
 # Application definition
@@ -136,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -152,6 +151,14 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# In-memory cache for yfinance prices (5-minute TTL)
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "TIMEOUT": 300,
+    }
+}
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

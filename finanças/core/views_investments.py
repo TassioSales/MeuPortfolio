@@ -3,6 +3,7 @@ import json
 
 import yfinance as yf
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, JsonResponse
 from django.shortcuts import render
@@ -20,6 +21,43 @@ from .market_data import (
 )
 from .models import Investment
 from .views_shared import get_price_manual
+
+
+def _cached_ticker_fetch(symbol: str) -> dict:
+    """Fetch yfinance data with 5-minute in-memory cache to avoid rate limiting."""
+    key = f"yf_{symbol}"
+    cached = cache.get(key)
+    if cached is not None:
+        return cached
+
+    result = {"price": None, "currency": "BRL", "info": {}, "history": None}
+    try:
+        ticker = yf.Ticker(symbol)
+        try:
+            result["price"] = ticker.fast_info.last_price
+            result["currency"] = ticker.fast_info.currency
+        except Exception:
+            pass
+
+        if result["price"] is None:
+            hist = ticker.history(period="1d")
+            if not hist.empty:
+                result["price"] = hist["Close"].iloc[-1]
+
+        try:
+            result["info"] = ticker.info
+        except Exception:
+            pass
+
+        try:
+            result["history"] = ticker.history(period="6mo")
+        except Exception:
+            pass
+    except Exception:
+        pass
+
+    cache.set(key, result, timeout=300)
+    return result
 
 
 @login_required
@@ -66,45 +104,32 @@ def search_ticker(request):
                 "chart_data": [],
             })
 
-    try:
-        ticker = yf.Ticker(ticker_symbol)
+    fetched = _cached_ticker_fetch(ticker_symbol)
+    price = fetched["price"]
+    currency = fetched["currency"] or "BRL"
+    info = fetched["info"]
+    history_chart = fetched["history"]
 
+    name = info.get("longName") or info.get("shortName") or ticker_symbol
+    previous_close = info.get("previousClose")
+    day_high = info.get("dayHigh")
+    day_low = info.get("dayLow")
+    year_high = info.get("fiftyTwoWeekHigh")
+    year_low = info.get("fiftyTwoWeekLow")
+
+    if price is None and not info:
+        info_fallback = {}
         try:
-            price = ticker.fast_info.last_price
-            currency = ticker.fast_info.currency
+            info_fallback = yf.Ticker(ticker_symbol).info
         except Exception:
             pass
+        price = info_fallback.get("currentPrice") or info_fallback.get("regularMarketPrice")
+        currency = info_fallback.get("currency", "BRL")
 
-        if price is None:
-            history = ticker.history(period="1d")
-            if not history.empty:
-                price = history["Close"].iloc[-1]
-            else:
-                info = ticker.info
-                price = info.get("currentPrice") or info.get("regularMarketPrice")
-                currency = info.get("currency", "BRL")
-
-        try:
-            info = ticker.info
-            name = info.get("longName") or info.get("shortName") or ticker_symbol
-            previous_close = info.get("previousClose")
-            day_high = info.get("dayHigh")
-            day_low = info.get("dayLow")
-            year_high = info.get("fiftyTwoWeekHigh")
-            year_low = info.get("fiftyTwoWeekLow")
-        except Exception:
-            pass
-
-        try:
-            history_chart = ticker.history(period="6mo")
-            for date, row in history_chart.iterrows():
-                chart_labels.append(date.strftime("%d/%m/%Y"))
-                chart_data.append(row["Close"])
-        except Exception:
-            pass
-
-    except Exception:
-        pass
+    if history_chart is not None and not history_chart.empty:
+        for date, row in history_chart.iterrows():
+            chart_labels.append(date.strftime("%d/%m/%Y"))
+            chart_data.append(row["Close"])
 
     if price is None:
         price, currency_manual = get_price_manual(ticker_symbol)

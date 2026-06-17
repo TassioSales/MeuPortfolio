@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Configurações{% endblock %}
+
+{% block content %}
+<div class="animate-entrance">
+    <div class="row mb-5 align-items-end">
+        <div class="col">
+            <h1 class="display-5 fw-bold mb-1">Configurações</h1>
+            <p class="text-muted mb-0">Integrações e preferências do sistema.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Status Card -->
+        <div class="col-12">
+            <div class="glass-card p-4">
+                <div class="d-flex align-items-center gap-3 mb-1">
+                    <div class="brand-icon" style="width:44px;height:44px;border-radius:12px;background:{% if token_active %}rgba(16,185,129,.12){% else %}rgba(239,68,68,.10){% endif %};">
+                        <i class="bi {% if token_active %}bi-shield-check text-success{% else %}bi-shield-exclamation text-danger{% endif %}" style="font-size:1.3rem;"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold text-main">Status da Integração BRAPI</div>
+                        <small class="{% if token_active %}text-success{% else %}text-danger{% endif %} fw-semibold">
+                            {% if token_active %}
+                                Token configurado — cotações brasileiras via brapi.dev
+                            {% else %}
+                                Sem token — usando Yahoo Finance como fonte alternativa
+                            {% endif %}
+                        </small>
+                    </div>
+                    {% if token_active %}
+                    <span class="badge bg-success ms-auto">Ativo</span>
+                    {% else %}
+                    <span class="badge bg-danger ms-auto">Inativo</span>
+                    {% endif %}
+                </div>
+                {% if token_active %}
+                <div class="mt-3 p-3 rounded" style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);">
+                    <small class="text-muted d-block mb-1">Token atual</small>
+                    <code class="text-success fw-bold">{{ token_masked }}</code>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="col-lg-6">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-1">Token BRAPI</h5>
+                <p class="text-muted small mb-4">
+                    Cole aqui o token da sua conta gratuita no brapi.dev para obter cotações
+                    de FIIs e ações brasileiras com mais estabilidade e dados completos.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Chave de API</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-0 bg-light-soft text-muted">
+                                <i class="bi bi-key-fill"></i>
+                            </span>
+                            <input type="text" name="brapi_token" class="form-control border-0 bg-light-soft font-monospace"
+                                placeholder="Cole seu token aqui..."
+                                value="{{ current_token }}"
+                                autocomplete="off">
+                        </div>
+                        <div class="form-text">Deixe em branco para desativar o BRAPI e usar apenas Yahoo Finance.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-floppy-fill me-2"></i>Salvar Token
+                        </button>
+                        {% if token_active %}
+                        <button type="submit" name="brapi_token" value="" class="btn btn-outline-danger px-3">
+                            <i class="bi bi-trash3 me-1"></i>Remover
+                        </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Instructions Card -->
+        <div class="col-lg-6">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-4">
+                    <i class="bi bi-info-circle text-primary me-2"></i>Como obter seu token gratuito
+                </h5>
+
+                <ol class="list-unstyled mb-0">
+                    <li class="d-flex gap-3 mb-4">
+                        <div class="flex-shrink-0 d-flex align-items-center justify-content-center fw-bold text-white rounded-circle"
+                            style="width:32px;height:32px;background:var(--brand-primary);font-size:.85rem;">1</div>
+                        <div>
+                            <div class="fw-semibold text-main">Acesse o site do BRAPI</div>
+                            <small class="text-muted">
+                                Abra o navegador e vá em
+                                <strong>brapi.dev</strong>
+                            </small>
+                        </div>
+                    </li>
+                    <li class="d-flex gap-3 mb-4">
+                        <div class="flex-shrink-0 d-flex align-items-center justify-content-center fw-bold text-white rounded-circle"
+                            style="width:32px;height:32px;background:var(--brand-primary);font-size:.85rem;">2</div>
+                        <div>
+                            <div class="fw-semibold text-main">Crie uma conta gratuita</div>
+                            <small class="text-muted">Clique em <strong>"Começar Gratuitamente"</strong> e registre-se com seu e-mail.</small>
+                        </div>
+                    </li>
+                    <li class="d-flex gap-3 mb-4">
+                        <div class="flex-shrink-0 d-flex align-items-center justify-content-center fw-bold text-white rounded-circle"
+                            style="width:32px;height:32px;background:var(--brand-primary);font-size:.85rem;">3</div>
+                        <div>
+                            <div class="fw-semibold text-main">Copie seu token</div>
+                            <small class="text-muted">No painel, vá em <strong>"API Token"</strong>, copie o token gerado.</small>
+                        </div>
+                    </li>
+                    <li class="d-flex gap-3">
+                        <div class="flex-shrink-0 d-flex align-items-center justify-content-center fw-bold text-white rounded-circle"
+                            style="width:32px;height:32px;background:var(--brand-primary);font-size:.85rem;">4</div>
+                        <div>
+                            <div class="fw-semibold text-main">Cole aqui e salve</div>
+                            <small class="text-muted">Cole o token no campo ao lado e clique em <strong>Salvar Token</strong>. Ativo imediatamente, sem reiniciar.</small>
+                        </div>
+                    </li>
+                </ol>
+
+                <div class="mt-4 p-3 rounded" style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.2);">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <i class="bi bi-stars text-primary"></i>
+                        <span class="fw-semibold small text-main">Plano gratuito é suficiente</span>
+                    </div>
+                    <small class="text-muted">
+                        O plano free do brapi.dev cobre todas as funcionalidades usadas aqui:
+                        cotações em tempo real de FIIs, ações e histórico de 6 meses.
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Sources Info -->
+        <div class="col-12">
+            <div class="glass-card p-4">
+                <h6 class="fw-bold mb-3 text-uppercase small text-muted">Fontes de Dados Ativas</h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center gap-3 p-3 rounded" style="background:rgba(0,0,0,.03);">
+                            <i class="bi bi-graph-up-arrow fs-4 {% if token_active %}text-success{% else %}text-muted opacity-50{% endif %}"></i>
+                            <div>
+                                <div class="fw-semibold small text-main">brapi.dev</div>
+                                <small class="{% if token_active %}text-success{% else %}text-muted{% endif %}">
+                                    {% if token_active %}Ativo — FIIs e ações BR{% else %}Inativo (sem token){% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center gap-3 p-3 rounded" style="background:rgba(0,0,0,.03);">
+                            <i class="bi bi-globe2 fs-4 text-success"></i>
+                            <div>
+                                <div class="fw-semibold small text-main">Yahoo Finance</div>
+                                <small class="text-success">Ativo — todos os tickers</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center gap-3 p-3 rounded" style="background:rgba(0,0,0,.03);">
+                            <i class="bi bi-bank2 fs-4 text-success"></i>
+                            <div>
+                                <div class="fw-semibold small text-main">Banco Central (BCB)</div>
+                                <small class="text-success">Ativo — SELIC, CDI, IPCA</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

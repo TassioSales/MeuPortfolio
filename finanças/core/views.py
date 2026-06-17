@@ -49,6 +49,7 @@ from .views_loans import (
 )
 from .views_ofx import import_ofx
 from .views_reports import export_csv, export_json, export_pdf, export_xlsx, reports
+from .views_settings import settings_view
 from .views_shared import fix_ssl, get_price_manual
 from .views_transactions import (
     TransactionCreateView,

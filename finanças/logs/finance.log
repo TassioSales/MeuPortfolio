@@ -101159,3 +101159,4 @@ django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '
 2026-06-17 12:55:22.506 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/EUR-BRL HTTP/1.1" 200 None
 2026-06-17 12:55:22.509 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): api.bcb.gov.br:443
 2026-06-17 12:55:22.881 | DEBUG    | logging:callHandlers:1737 - https://api.bcb.gov.br:443 "GET /dados/serie/bcdata.sgs.432/dados?formato=json&dataInicial=18/04/2026 HTTP/1.1" 200 2319
+2026-06-17 13:28:30.305 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080

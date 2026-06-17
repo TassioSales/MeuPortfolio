@@ -154,6 +154,40 @@
             </div>
         </div>
     </div>
+
+    <!-- Goals Progress -->
+    {% if goals %}
+    <div class="row g-4 mt-2">
+        <div class="col-12">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">Progresso das Metas</h5>
+                    <a href="{% url 'goal_list' %}" class="small fw-bold text-primary">Ver Tudo</a>
+                </div>
+                <div class="row g-3">
+                    {% for goal in goals %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="p-3 rounded-4 bg-light-soft">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-semibold small text-main text-truncate">{{ goal.name }}</span>
+                                <span class="badge bg-primary ms-2">{{ goal.progress_percentage }}%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar {% if goal.progress_percentage >= 100 %}bg-success{% elif goal.progress_percentage >= 50 %}bg-primary{% else %}bg-warning{% endif %}"
+                                    style="width: {{ goal.progress_percentage }}%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <small class="text-muted">R$ {{ goal.current_amount|floatformat:0 }}</small>
+                                <small class="text-muted">R$ {{ goal.target_amount|floatformat:0 }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 <style>

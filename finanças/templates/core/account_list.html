@@ -1,32 +1,102 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="row mb-3">
-    <div class="col-md-8">
-        <h2>Minhas Contas</h2>
-    </div>
-    <div class="col-md-4 text-end">
-        <a href="{% url 'account_add' %}" class="btn btn-success">Nova Conta</a>
-    </div>
-</div>
-
-<div class="row">
-    {% for account in accounts %}
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{{ account.name }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{ account.get_type_account_display }}</h6>
-                <p class="card-text display-6">R$ {{ account.current_balance }}</p>
-                <a href="{% url 'account_edit' account.pk %}" class="card-link">Editar</a>
-                <a href="{% url 'account_delete' account.pk %}" class="card-link text-danger">Excluir</a>
-            </div>
+<div class="animate-entrance">
+    <div class="row mb-4 align-items-end">
+        <div class="col-md-7">
+            <h1 class="display-5 fw-bold mb-2">Contas Bancárias</h1>
+            <p class="text-muted">Gerencie suas contas e veja o saldo total consolidado.</p>
+        </div>
+        <div class="col-md-5 text-end d-flex justify-content-end gap-2">
+            <a href="{% url 'transfer_create' %}" class="btn btn-outline-primary px-4">
+                <i class="bi bi-arrow-left-right me-2"></i>Transferir
+            </a>
+            <a href="{% url 'account_add' %}" class="btn-premium px-4">
+                <i class="bi bi-plus-lg me-2"></i>Nova Conta
+            </a>
         </div>
     </div>
-    {% empty %}
-    <div class="col-12">
-        <p>Nenhuma conta cadastrada.</p>
+
+    <!-- Total Balance KPI -->
+    <div class="glass-card p-4 mb-4 d-inline-flex align-items-center gap-3">
+        <div class="brand-icon" style="background: var(--brand-gradient); color: white; box-shadow: none;">
+            <i class="bi bi-wallet2"></i>
+        </div>
+        <div>
+            <div class="text-muted small">Saldo Total Consolidado</div>
+            <div class="fs-3 fw-bold text-main">R$ {{ total_balance|floatformat:2 }}</div>
+        </div>
     </div>
-    {% endfor %}
+
+    <div class="row g-4 mb-4">
+        {% for account in accounts %}
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h6 class="fw-bold mb-0 text-main">{{ account.name }}</h6>
+                        <small class="text-muted">{{ account.get_account_type_display }}{% if account.bank_name %} · {{ account.bank_name }}{% endif %}</small>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm glass-card border rounded-circle" style="width:32px;height:32px;padding:0" data-bs-toggle="dropdown">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'account_edit' account.pk %}"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'account_delete' account.pk %}"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="fs-4 fw-bold {% if account.balance >= 0 %}text-success{% else %}text-danger{% endif %}">
+                    R$ {{ account.balance|floatformat:2 }}
+                </div>
+                {% if not account.is_active %}
+                <span class="badge bg-secondary mt-2">Inativa</span>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="glass-card p-5 text-center text-muted">
+                <i class="bi bi-bank fs-1 d-block mb-3 opacity-50"></i>
+                <p class="fw-bold">Nenhuma conta cadastrada</p>
+                <a href="{% url 'account_add' %}" class="btn-premium px-4 mt-2">Adicionar Conta</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if transfers %}
+    <div class="glass-card p-4">
+        <h5 class="fw-bold mb-3">Transferências Recentes</h5>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Data</th>
+                        <th>Origem</th>
+                        <th>Destino</th>
+                        <th class="text-end">Valor</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transfers %}
+                    <tr>
+                        <td>{{ t.date|date:"d/m/Y" }}</td>
+                        <td>{{ t.from_account.name }}</td>
+                        <td>{{ t.to_account.name }}</td>
+                        <td class="text-end fw-semibold text-primary">R$ {{ t.amount|floatformat:2 }}</td>
+                        <td class="text-muted small">{{ t.description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-2 text-end">
+            <a href="{% url 'transfer_create' %}" class="btn btn-outline-primary btn-sm">Nova Transferência</a>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

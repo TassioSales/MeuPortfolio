@@ -535,6 +535,7 @@ def dashboard(request):
         'selected_month': month,
         'selected_year': year,
         'alerts': alerts,
+        'goals': Goal.objects.filter(user=request.user).order_by('deadline')[:6],
     }
     return render(request, 'core/dashboard.html', context)
 
@@ -681,9 +682,37 @@ class TransactionListView(LoginRequiredMixin, ListView):
     model = Transaction
     template_name = 'core/transaction_list.html'
     context_object_name = 'transactions'
+    paginate_by = 20
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user).order_by('-date')
+        qs = Transaction.objects.filter(user=self.request.user).order_by("-date")
+        search = self.request.GET.get("search", "").strip()
+        start_date = self.request.GET.get("start_date", "")
+        end_date = self.request.GET.get("end_date", "")
+        tx_type = self.request.GET.get("type", "")
+        category_id = self.request.GET.get("category", "")
+
+        if search:
+            qs = qs.filter(description__icontains=search)
+        if start_date:
+            qs = qs.filter(date__gte=start_date)
+        if end_date:
+            qs = qs.filter(date__lte=end_date)
+        if tx_type:
+            qs = qs.filter(type=tx_type)
+        if category_id:
+            qs = qs.filter(category_id=category_id)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.filter(user=self.request.user)
+        context["filter_search"] = self.request.GET.get("search", "")
+        context["filter_start_date"] = self.request.GET.get("start_date", "")
+        context["filter_end_date"] = self.request.GET.get("end_date", "")
+        context["filter_type"] = self.request.GET.get("type", "")
+        context["filter_category"] = self.request.GET.get("category", "")
+        return context
 
 class TransactionCreateView(LoginRequiredMixin, CreateView):
     model = Transaction
@@ -1044,6 +1073,300 @@ def export_pdf(request):
         return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response
 
+
+@login_required
+def export_json(request):
+    import json as json_module
+    transactions = Transaction.objects.filter(user=request.user).order_by("-date").values(
+        "id", "date", "type", "amount", "description", "payment_method",
+        "category__name"
+    )
+    data = []
+    for t in transactions:
+        row = dict(t)
+        row["date"] = str(row["date"])
+        row["amount"] = str(row["amount"])
+        data.append(row)
+    content = json_module.dumps(data, ensure_ascii=False, indent=2)
+    response = HttpResponse(content, content_type="application/json")
+    response["Content-Disposition"] = 'attachment; filename="transacoes.json"'
+    return response
+
+
+@login_required
+def export_xlsx(request):
+    import io
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from openpyxl.utils import get_column_letter
+
+    wb = openpyxl.Workbook()
+
+    # Sheet 1: Transactions
+    ws1 = wb.active
+    ws1.title = "Transações"
+    headers = ["ID", "Data", "Tipo", "Valor", "Descrição", "Categoria", "Método"]
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill("solid", fgColor="4F46E5")
+    for col, h in enumerate(headers, 1):
+        cell = ws1.cell(row=1, column=col, value=h)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = Alignment(horizontal="center")
+
+    txs = Transaction.objects.filter(user=request.user).order_by("-date").select_related("category")
+    for row_idx, tx in enumerate(txs, 2):
+        ws1.cell(row=row_idx, column=1, value=tx.pk)
+        ws1.cell(row=row_idx, column=2, value=str(tx.date))
+        ws1.cell(row=row_idx, column=3, value=tx.get_type_display())
+        ws1.cell(row=row_idx, column=4, value=float(tx.amount))
+        ws1.cell(row=row_idx, column=5, value=tx.description)
+        ws1.cell(row=row_idx, column=6, value=tx.category.name if tx.category else "")
+        ws1.cell(row=row_idx, column=7, value=tx.get_payment_method_display())
+        if tx.type == "RECEITA":
+            ws1.cell(row=row_idx, column=4).fill = PatternFill("solid", fgColor="D1FAE5")
+        else:
+            ws1.cell(row=row_idx, column=4).fill = PatternFill("solid", fgColor="FEE2E2")
+    for col in range(1, len(headers) + 1):
+        ws1.column_dimensions[get_column_letter(col)].auto_size = True
+
+    # Sheet 2: Monthly Summary
+    ws2 = wb.create_sheet("Resumo Mensal")
+    ws2.append(["Mês", "Receitas", "Despesas", "Saldo"])
+    from django.db.models.functions import TruncMonth as _TruncMonth
+    monthly = (
+        Transaction.objects.filter(user=request.user)
+        .annotate(month=_TruncMonth("date"))
+        .values("month", "type")
+        .annotate(total=Sum("amount"))
+        .order_by("month")
+    )
+    monthly_data = {}
+    for row in monthly:
+        key = str(row["month"])[:7]
+        if key not in monthly_data:
+            monthly_data[key] = {"RECEITA": 0, "DESPESA": 0}
+        monthly_data[key][row["type"]] = float(row["total"])
+    for key in sorted(monthly_data.keys()):
+        inc = monthly_data[key]["RECEITA"]
+        exp = monthly_data[key]["DESPESA"]
+        ws2.append([key, inc, exp, inc - exp])
+
+    # Sheet 3: By Category
+    ws3 = wb.create_sheet("Por Categoria")
+    ws3.append(["Categoria", "Tipo", "Total"])
+    cat_totals = (
+        Transaction.objects.filter(user=request.user)
+        .values("category__name", "type")
+        .annotate(total=Sum("amount"))
+        .order_by("category__name")
+    )
+    for row in cat_totals:
+        ws3.append([row["category__name"] or "Sem Categoria", row["type"], float(row["total"])])
+
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+    response = HttpResponse(buf.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response["Content-Disposition"] = 'attachment; filename="financas.xlsx"'
+    return response
+
+
+@login_required
+def cash_flow_forecast(request):
+    from decimal import Decimal as _Decimal
+    from datetime import date as _date, timedelta as _timedelta
+    from django.db.models.functions import TruncMonth as _TrunchMonth
+    from django.utils import timezone as _tz
+
+    horizon_months = int(request.GET.get("months", 3))
+    horizon_months = max(1, min(horizon_months, 6))
+
+    # Historical averages (last 6 months)
+    cutoff = _tz.now().date().replace(day=1) - _timedelta(days=180)
+    qs = (
+        Transaction.objects.filter(user=request.user, date__gte=cutoff)
+        .annotate(month=_TrunchMonth("date"))
+        .values("month", "type")
+        .annotate(total=Sum("amount"))
+    )
+    monthly_hist = {}
+    for row in qs:
+        key = row["month"].strftime("%Y-%m")
+        if key not in monthly_hist:
+            monthly_hist[key] = {"RECEITA": 0.0, "DESPESA": 0.0}
+        monthly_hist[key][row["type"]] = float(row["total"])
+
+    avg_income = sum(m["RECEITA"] for m in monthly_hist.values()) / max(len(monthly_hist), 1)
+    avg_expense = sum(m["DESPESA"] for m in monthly_hist.values()) / max(len(monthly_hist), 1)
+
+    # Recurring monthly totals
+    recurring_income = 0.0
+    recurring_expense = 0.0
+    freq_mult = {"DIARIO": 30, "SEMANAL": 4, "QUINZENAL": 2, "MENSAL": 1, "ANUAL": 1/12}
+    for rt in RecurringTransaction.objects.filter(user=request.user, active=True):
+        val = float(rt.amount) * freq_mult.get(rt.frequency, 1)
+        if rt.type == "RECEITA":
+            recurring_income += val
+        else:
+            recurring_expense += val
+
+    proj_income = max(avg_income, recurring_income)
+    proj_expense = max(avg_expense, recurring_expense)
+
+    total_income = float(Transaction.objects.filter(user=request.user, type="RECEITA").aggregate(Sum("amount"))["amount__sum"] or 0)
+    total_expense = float(Transaction.objects.filter(user=request.user, type="DESPESA").aggregate(Sum("amount"))["amount__sum"] or 0)
+    current_balance = total_income - total_expense
+
+    today = _tz.now().date()
+    month_names_pt = {1:"Jan",2:"Fev",3:"Mar",4:"Abr",5:"Mai",6:"Jun",7:"Jul",8:"Ago",9:"Set",10:"Out",11:"Nov",12:"Dez"}
+
+    months_list = []
+    balance = current_balance
+    for i in range(1, horizon_months + 1):
+        proj_date = (today.replace(day=1) + _timedelta(days=32 * i)).replace(day=1)
+        balance += proj_income - proj_expense
+        months_list.append({
+            "label": f"{month_names_pt[proj_date.month]}/{proj_date.year}",
+            "income": round(proj_income, 2),
+            "expense": round(proj_expense, 2),
+            "balance": round(balance, 2),
+        })
+
+    # Historical for chart
+    hist_qs = (
+        Transaction.objects.filter(user=request.user)
+        .annotate(month=_TrunchMonth("date"))
+        .values("month", "type")
+        .annotate(total=Sum("amount"))
+        .order_by("month")
+    )
+    hist_monthly = {}
+    for row in hist_qs:
+        key = row["month"].strftime("%Y-%m")
+        if key not in hist_monthly:
+            hist_monthly[key] = {"RECEITA": 0.0, "DESPESA": 0.0}
+        hist_monthly[key][row["type"]] = float(row["total"])
+
+    hist_labels, hist_balances = [], []
+    running_bal = 0.0
+    for key in sorted(hist_monthly.keys()):
+        running_bal += hist_monthly[key]["RECEITA"] - hist_monthly[key]["DESPESA"]
+        dt = datetime.date.fromisoformat(key + "-01")
+        hist_labels.append(f"{month_names_pt[dt.month]}/{dt.year}")
+        hist_balances.append(round(running_bal, 2))
+
+    all_labels = hist_labels + [m["label"] for m in months_list]
+    all_balances = hist_balances + [m["balance"] for m in months_list]
+
+    context = {
+        "months": months_list,
+        "horizon_months": horizon_months,
+        "current_balance": round(current_balance, 2),
+        "proj_income": round(proj_income, 2),
+        "proj_expense": round(proj_expense, 2),
+        "recurring_income": round(recurring_income, 2),
+        "recurring_expense": round(recurring_expense, 2),
+        "chart_labels": json.dumps(all_labels),
+        "chart_balances": json.dumps(all_balances),
+        "chart_split": len(hist_labels),
+        "proj_income_list": json.dumps([m["income"] for m in months_list]),
+        "proj_expense_list": json.dumps([m["expense"] for m in months_list]),
+        "proj_labels": json.dumps([m["label"] for m in months_list]),
+    }
+    return render(request, "core/cash_flow.html", context)
+
+
+@login_required
+def import_ofx(request):
+    from decimal import Decimal as _Decimal
+
+    def _parse_ofx_simple(content: bytes):
+        """Minimal OFX parser without external dependencies."""
+        import re
+        text = content.decode("latin-1", errors="ignore")
+        transactions = []
+        for stmttrn in re.findall(r"<STMTTRN>(.*?)</STMTTRN>", text, re.DOTALL | re.IGNORECASE):
+            def _get(tag):
+                m = re.search(rf"<{tag}>(.*?)(?:<|$)", stmttrn, re.IGNORECASE | re.DOTALL)
+                return m.group(1).strip() if m else ""
+            date_raw = _get("DTPOSTED")[:8]
+            try:
+                tx_date = datetime.date(int(date_raw[:4]), int(date_raw[4:6]), int(date_raw[6:8]))
+            except Exception:
+                continue
+            amount_raw = _get("TRNAMT").replace(",", ".")
+            try:
+                amount = _Decimal(amount_raw)
+            except Exception:
+                continue
+            memo = _get("MEMO") or _get("NAME") or "Importado"
+            tx_type = "RECEITA" if amount > 0 else "DESPESA"
+            transactions.append({
+                "date": tx_date,
+                "amount": abs(amount),
+                "description": memo[:255],
+                "type": tx_type,
+            })
+        return transactions
+
+    if request.method == "POST":
+        if "confirm" in request.POST:
+            # Confirmation step — re-parse the uploaded file
+            raw_name = request.POST.get("ofx_file", "")
+            import tempfile, os
+            tmp_path = os.path.join(tempfile.gettempdir(), raw_name)
+            if not os.path.exists(tmp_path):
+                messages.error(request, "Sessão expirada. Por favor, envie o arquivo novamente.")
+                return redirect("import_ofx")
+            with open(tmp_path, "rb") as f:
+                file_bytes = f.read()
+            parsed = _parse_ofx_simple(file_bytes)
+            category, _ = Category.objects.get_or_create(
+                user=request.user, name="Extrato Importado",
+                defaults={"type": "DESPESA"}
+            )
+            count = 0
+            for t in parsed:
+                exists = Transaction.objects.filter(
+                    user=request.user, date=t["date"],
+                    amount=t["amount"], description=t["description"], type=t["type"]
+                ).exists()
+                if not exists:
+                    Transaction.objects.create(
+                        user=request.user, category=category,
+                        type=t["type"], amount=t["amount"],
+                        date=t["date"], description=t["description"],
+                    )
+                    count += 1
+            messages.success(request, f"{count} transações importadas com sucesso!")
+            return redirect("transaction_list")
+        else:
+            # Upload step
+            ofx_file = request.FILES.get("ofx_file")
+            if not ofx_file:
+                messages.error(request, "Nenhum arquivo enviado.")
+                return redirect("import_ofx")
+            file_bytes = ofx_file.read()
+            parsed = _parse_ofx_simple(file_bytes)
+            if not parsed:
+                messages.error(request, "Nenhuma transação encontrada no arquivo.")
+                return redirect("import_ofx")
+            # Save temp file for confirmation step
+            import tempfile, os
+            raw_name = f"ofx_{request.user.id}_{ofx_file.name}"
+            tmp_path = os.path.join(tempfile.gettempdir(), raw_name)
+            with open(tmp_path, "wb") as f:
+                f.write(file_bytes)
+            preview = [
+                {**t, "date": t["date"].strftime("%d/%m/%Y"), "amount": f"R$ {t['amount']:.2f}"}
+                for t in parsed
+            ]
+            return render(request, "core/import_ofx.html", {"preview": preview, "raw_name": raw_name})
+
+    return render(request, "core/import_ofx.html", {})
+
+
 # Investment CRUD
 class InvestmentListView(LoginRequiredMixin, ListView):
     model = Investment
@@ -1269,3 +1592,13 @@ def safe_haven_dashboard(request):
         'total_fixed_current': total_fixed_current,
     }
     return render(request, 'core/safe_haven_dashboard.html', context)
+
+
+from .views_accounts import (
+    BankAccountCreateView,
+    BankAccountDeleteView,
+    BankAccountListView,
+    BankAccountUpdateView,
+    transfer_create,
+)
+from .views_audit import AuditLogListView

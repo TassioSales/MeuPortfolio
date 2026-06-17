@@ -223,28 +223,17 @@ def investment_dashboard(request):
             current_price = avg_price
         else:
             try:
-                ticker = yf.Ticker(symbol)
-                try:
-                    current_price = ticker.fast_info.last_price
-                except Exception:
-                    pass
-
-                if current_price is None:
-                    history = ticker.history(period="1d")
-                    if not history.empty:
-                        current_price = history["Close"].iloc[-1]
+                fetched = _cached_ticker_fetch(symbol)
+                current_price = fetched["price"]
+                ticker_currency = fetched["currency"] or "BRL"
 
                 if current_price is None:
                     current_price, _ = get_price_manual(symbol)
 
-                if current_price is not None:
-                    try:
-                        if ticker.fast_info.currency == "USD":
-                            current_price *= usd_brl_rate
-                    except Exception:
-                        if not symbol.endswith(".SA"):
-                            current_price *= usd_brl_rate
-                else:
+                if current_price is not None and ticker_currency == "USD":
+                    current_price *= usd_brl_rate
+
+                if current_price is None:
                     current_price = avg_price
             except Exception:
                 current_price = avg_price
@@ -392,21 +381,28 @@ class InvestmentDetailView(LoginRequiredMixin, TemplateView):
         }
 
         try:
-            ticker = yf.Ticker(symbol)
-            history = ticker.history(period="6mo")
+            fetched = _cached_ticker_fetch(symbol)
+            history = fetched["history"]
+            info = fetched["info"]
 
-            dates = [d.strftime("%d/%m/%Y") for d, _ in history.iterrows()]
-            prices = [row["Close"] for _, row in history.iterrows()]
+            if history is not None and not history.empty:
+                dates = [d.strftime("%d/%m/%Y") for d, _ in history.iterrows()]
+                prices = [row["Close"] for _, row in history.iterrows()]
+                context["chart_labels"] = json.dumps(dates)
+                context["chart_data"] = json.dumps(prices)
+            else:
+                context["chart_labels"] = json.dumps([])
+                context["chart_data"] = json.dumps([])
 
-            context["chart_labels"] = json.dumps(dates)
-            context["chart_data"] = json.dumps(prices)
-
-            try:
-                current_price = ticker.fast_info.last_price
-                previous_close = ticker.fast_info.previous_close
+            current_price = fetched["price"]
+            previous_close = info.get("previousClose") if info else None
+            if current_price and previous_close:
                 day_change = ((current_price - previous_close) / previous_close) * 100
-            except Exception:
-                current_price = history["Close"].iloc[-1] if not history.empty else 0
+            elif history is not None and not history.empty:
+                current_price = current_price or history["Close"].iloc[-1]
+                day_change = 0
+            else:
+                current_price = current_price or 0
                 day_change = 0
 
             context["current_price"] = current_price

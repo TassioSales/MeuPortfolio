@@ -64,16 +64,6 @@ Gerenciador local de documentos com upload, extração de texto, busca e anális
 
 ---
 
-### 🎨 CollabCanvas
-
-**Tecnologias:** Go, WebSockets, Next.js, TailwindCSS
-
-Mural multiplayer em tempo real de pixel art onde múltiplos usuários desenham simultaneamente.
-
-[Ver Projeto](/collab_canvas)
-
----
-
 ### 🗺️ Gerador de Roteiros de Viagem com IA
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://jiqucdwsimgpjhzzhmn3f2.streamlit.app/)
@@ -98,16 +88,6 @@ Consultora de e-commerce inteligente com alertas proativos e análises de preço
 
 ---
 
-### 📰 News Sentiment Radar
-
-**Tecnologias:** Go, IA, Vanilla JS
-
-Dashboard de análise de sentimento de notícias coletadas via RSS com classificação setorial automática.
-
-[Ver Projeto](/news_sentiment_radar)
-
----
-
 ### 🎟️ Plataforma de Rifas PRO
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://plataforma-rifas-pro.streamlit.app)
@@ -120,16 +100,6 @@ Sistema completo para gerenciamento de rifas online com analytics avançado e ge
 
 ---
 
-### 🎲 Sorteador de Rifa PRO
-
-**Tecnologias:** Python, Streamlit, Pandas
-
-Sorteios justos e transparentes com suporte a múltiplos formatos e geração de resultados.
-
-[Ver Projeto](/sorteador_rifa_app)
-
----
-
 ### 🕹️ Arcade Neon (Drift & Snake)
 
 **Tecnologias:** HTML5 Canvas, JS, Go
@@ -137,6 +107,36 @@ Sorteios justos e transparentes com suporte a múltiplos formatos e geração de
 Jogos arcade single-player com backend Go para configuração e placar de líderes global.
 
 [Neon Drift](/neon_drift) | [Neon Snake](/neon_snake)
+
+---
+
+### 📊 DevMetrics
+
+**Tecnologias:** Go, Next.js, TypeScript, Mistral AI
+
+Dashboard de métricas de perfil GitHub com IA, análise de repositórios e insights automatizados.
+
+[Ver Projeto](/devmetrics)
+
+---
+
+### 🔗 Encurtador URL
+
+**Tecnologias:** Go, Next.js, SQLite, TypeScript
+
+Encurtador de URLs com analytics de cliques, rastreamento de acessos e painel de estatísticas.
+
+[Ver Projeto](/encurtador_url)
+
+---
+
+### 🤖 Bot Telegram
+
+**Tecnologias:** Python, Mistral AI, Telegram API, SQLite
+
+Bot de produtividade pessoal com IA, gerenciamento de tarefas, lembretes e respostas inteligentes.
+
+[Ver Projeto](/bot_telegram)
 
 </div>
 

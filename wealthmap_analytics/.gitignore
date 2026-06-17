@@ -5,5 +5,7 @@ backend/app/**/__pycache__/
 backend/logs/
 backend/.env
 .env
+*.db
+*.sqlite3
 frontend/.next/
 frontend/node_modules/

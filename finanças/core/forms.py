@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Transaction, Budget, Investment, RecurringTransaction, Goal, BankAccount, Transfer, Loan, LoanPayment
+from .models import Category, Transaction, Budget, Investment, RecurringTransaction, Goal, BankAccount, Transfer, Loan, LoanPayment, LoanDisbursement
 from decimal import Decimal
 
 def clean_currency_value(value):
@@ -240,9 +240,24 @@ class LoanForm(forms.ModelForm):
     current_balance = forms.CharField(label="Saldo Devedor Atual (R$)", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}), required=False, help_text="Deixe vazio se for um novo empréstimo (usa o valor original)")
     interest_rate = forms.CharField(label="Taxa de Juros (%)", widget=forms.TextInput(attrs={'placeholder': 'Ex: 1.0 para 1%/mês'}))
 
+    iof_rate = forms.CharField(
+        label='IOF (%)', required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Ex: 3.0  (0 = sem IOF)'}),
+        help_text='Percentual sobre o principal. Deixe vazio para empréstimos informais.'
+    )
+    insurance_monthly = forms.CharField(
+        label='Seguro Mensal (R$)', required=False,
+        widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}),
+        help_text='Seguro prestamista fixo por mês. Deixe vazio se não houver.'
+    )
+
     class Meta:
         model = Loan
-        fields = ['name', 'lender', 'loan_type', 'principal', 'current_balance', 'interest_rate', 'interest_period', 'start_date', 'due_day', 'num_installments', 'notes', 'is_active']
+        fields = [
+            'name', 'lender', 'loan_type', 'principal', 'current_balance',
+            'interest_rate', 'interest_period', 'iof_rate', 'insurance_monthly',
+            'start_date', 'due_day', 'num_installments', 'notes', 'is_active',
+        ]
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'loan_type': forms.Select(attrs={'onchange': 'toggleLoanFields(this)'}),
@@ -264,6 +279,21 @@ class LoanForm(forms.ModelForm):
             return Decimal(val)
         except Exception:
             raise forms.ValidationError("Informe uma taxa válida (ex: 1.0)")
+
+    def clean_iof_rate(self):
+        val = self.data.get('iof_rate', '').strip().replace(',', '.')
+        if not val:
+            return Decimal('0')
+        try:
+            return Decimal(val)
+        except Exception:
+            raise forms.ValidationError("Informe uma taxa válida (ex: 3.0)")
+
+    def clean_insurance_monthly(self):
+        val = self.data.get('insurance_monthly', '').strip()
+        if not val:
+            return Decimal('0')
+        return clean_currency_value(val)
 
     def clean(self):
         cleaned = super().clean()
@@ -290,3 +320,22 @@ class LoanPaymentForm(forms.ModelForm):
 
     def clean_amount_paid(self):
         return clean_currency_value(self.data.get('amount_paid'))
+
+
+class LoanAddFundsForm(forms.Form):
+    """Form for adding more money to an existing loan (same lender, same terms)."""
+    amount = forms.CharField(
+        label='Valor Adicional (R$)',
+        widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'})
+    )
+    date = forms.DateField(
+        label='Data do Novo Desembolso',
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    note = forms.CharField(
+        label='Motivo / Observação', max_length=255, required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Ex: Necessidade extra, reforma...'})
+    )
+
+    def clean_amount(self):
+        return clean_currency_value(self.data.get('amount'))

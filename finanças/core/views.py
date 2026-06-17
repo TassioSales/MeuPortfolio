@@ -1609,6 +1609,7 @@ from .views_loans import (
     LoanDeleteView,
     LoanListView,
     LoanUpdateView,
+    loan_add_funds,
     loan_detail,
     loan_make_payment,
 )

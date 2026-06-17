@@ -100,6 +100,16 @@ Sistema completo para gerenciamento de rifas online com analytics avançado e ge
 
 ---
 
+### 📈 WealthMap Analytics PRO
+
+**Tecnologias:** Python, FastAPI, Next.js, SQLite, Mistral AI, scikit-learn
+
+Sistema de gestão de ativos financeiros com previsão ML para os próximos 30 dias, análise de risco (Sharpe & Volatilidade), matriz de correlação em tempo real e assistente de IA para rebalanceamento de carteira.
+
+[Ver Projeto](/wealthmap_analytics)
+
+---
+
 ### 🕹️ Arcade Neon (Drift & Snake)
 
 **Tecnologias:** HTML5 Canvas, JS, Go

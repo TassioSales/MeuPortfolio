@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/go-chi/chi/v5"
@@ -48,16 +49,23 @@ func (h *Handlers) Shorten(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url, err := h.svc.Shorten(body.URL)
+	// Validate URL: must be a well-formed http or https URL.
+	parsed, err := url.ParseRequestURI(body.URL)
+	if err != nil || (parsed.Scheme != "http" && parsed.Scheme != "https") || parsed.Host == "" {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "URL must be a valid http:// or https:// address"})
+		return
+	}
+
+	result, err := h.svc.Shorten(body.URL)
 	if err != nil {
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
 	}
 
 	writeJSON(w, http.StatusCreated, map[string]string{
-		"short_code":   url.ShortCode,
-		"short_url":    baseURL() + "/r/" + url.ShortCode,
-		"original_url": url.OriginalURL,
+		"short_code":   result.ShortCode,
+		"short_url":    baseURL() + "/r/" + result.ShortCode,
+		"original_url": result.OriginalURL,
 	})
 }
 

@@ -8768,3 +8768,5 @@ WARNING 2026-06-17 13:46:13,749 market_data 20212 15176 BRAPI returned 401 for V
 WARNING 2026-06-17 13:46:37,108 market_data 20212 23004 BRAPI returned 401 for MXRF11.SA
 WARNING 2026-06-17 13:56:49,460 market_data 8316 14664 BRAPI returned 401 for VGHF11.SA
 WARNING 2026-06-17 14:05:08,096 market_data 20668 5372 BRAPI returned 401 for GARE11.SA
+INFO 2026-06-17 14:15:23,319 views_reports 3320 3216 Generating reports for user TassioSales
+INFO 2026-06-17 14:17:36,069 views_reports 3320 24684 Generating reports for user TassioSales

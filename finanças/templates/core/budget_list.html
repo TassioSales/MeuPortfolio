@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load core_extras %}
 
 {% block content %}
 <div class="row mb-4 align-items-center">
@@ -63,12 +64,12 @@
                     <div>
                         <small class="text-muted d-block text-uppercase"
                             style="font-size: 0.7rem; letter-spacing: 0.5px;">Gasto</small>
-                        <span class="fw-bold text-dark">R$ {{ budget.spent|floatformat:2 }}</span>
+                        <span class="fw-bold text-dark currency-value">{{ budget.spent|brl }}</span>
                     </div>
                     <div class="text-end">
                         <small class="text-muted d-block text-uppercase"
                             style="font-size: 0.7rem; letter-spacing: 0.5px;">Limite</small>
-                        <span class="fw-bold text-primary">R$ {{ budget.limit|floatformat:2 }}</span>
+                        <span class="fw-bold text-primary currency-value">{{ budget.limit|brl }}</span>
                     </div>
                 </div>
             </div>

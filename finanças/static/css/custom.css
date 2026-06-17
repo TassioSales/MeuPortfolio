@@ -441,3 +441,89 @@ h6 {
         transform: translateX(0);
     }
 }
+
+/* ==========================================================================
+   Enhanced UI Components — v3
+   ========================================================================== */
+
+/* Currency value typography */
+.currency-value {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+/* Stat card decorative circle */
+.stat-card { position: relative; overflow: hidden; }
+.stat-card::after {
+    content: '';
+    position: absolute;
+    top: -24px; right: -24px;
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    opacity: 0.07;
+    pointer-events: none;
+}
+.stat-income::after  { background: #10b981; }
+.stat-expense::after { background: #ef4444; }
+.stat-warning::after { background: #f59e0b; }
+.stat-primary::after { background: #6366f1; }
+
+/* Glass card — only lift on explicitly hoverable cards */
+.glass-card { transition: box-shadow 0.25s ease, border-color 0.25s ease; }
+.glass-card:hover { transform: none; box-shadow: 0 12px 32px -4px rgba(0,0,0,0.08); border-color: rgba(99,102,241,0.25); }
+.glass-card.hoverable:hover { transform: translateY(-4px); }
+
+/* Colored transaction badges */
+.badge-income  { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.25); padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+.badge-expense { background: rgba(239,68,68,0.15);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25);  padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+.badge-neutral { background: rgba(148,163,184,0.15); color: #64748b; border: 1px solid rgba(148,163,184,0.25); padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 3.5rem 2rem; color: var(--text-muted); }
+.empty-state i { font-size: 2.75rem; opacity: 0.25; display: block; margin-bottom: 1rem; }
+.empty-state h5 { font-weight: 700; margin-bottom: 0.4rem; opacity: 0.7; }
+.empty-state p { font-size: 0.875rem; opacity: 0.55; }
+
+/* Better table header */
+.table thead th {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    font-weight: 700;
+    border-bottom-width: 1px;
+    padding-top: 0.875rem;
+    padding-bottom: 0.875rem;
+}
+.table tbody tr { transition: background 0.15s ease; }
+.table-hover tbody tr:hover td { background: rgba(99,102,241,0.04); }
+
+/* Better form controls */
+.form-control:focus, .form-select:focus {
+    border-color: rgba(99,102,241,0.5);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+    outline: none;
+}
+
+/* Page header separator */
+.page-header {
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Slim scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.25); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.5); }
+
+/* Better progress bars */
+.progress { background: rgba(0,0,0,0.06); border-radius: 999px; overflow: hidden; }
+[data-theme="dark"] .progress { background: rgba(255,255,255,0.06); }
+
+/* Sidebar nav overflow scroll on short screens */
+.sidebar-nav-scroll { overflow-y: auto; overflow-x: hidden; flex: 1; }
+
+/* KPI number size */
+.kpi-value { font-size: 1.75rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; }

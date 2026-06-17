@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load core_extras %}
 
 {% block content %}
 <div class="animate-entrance">
@@ -47,8 +48,8 @@
                 <label class="form-label small fw-bold text-muted text-uppercase mb-2">Tipo</label>
                 <select class="form-select border-0 bg-light-soft rounded-3" name="type">
                     <option value="">Todos</option>
-                    <option value="RECEITA" {% if filter_type == 'RECEITA' %}selected{% endif %}>Receitas</option>
-                    <option value="DESPESA" {% if filter_type == 'DESPESA' %}selected{% endif %}>Despesas</option>
+                    <option value="RECEITA" {% if filter_type=='RECEITA' %}selected{% endif %}>Receitas</option>
+                    <option value="DESPESA" {% if filter_type=='DESPESA' %}selected{% endif %}>Despesas</option>
                 </select>
             </div>
 
@@ -57,7 +58,7 @@
                 <select class="form-select border-0 bg-light-soft rounded-3" name="category">
                     <option value="">Todas</option>
                     {% for cat in categories %}
-                    <option value="{{ cat.id }}" {% if filter_category == cat.id|stringformat:"s" %}selected{% endif %}>{{
+                    <option value="{{ cat.id }}" {% if filter_category==cat.id|stringformat:"s" %}selected{% endif %}>{{
                         cat.name }}</option>
                     {% endfor %}
                 </select>
@@ -119,8 +120,8 @@
                     </td>
                     <td>
                         <div
-                            class="fw-bold fs-5 {% if transaction.type == 'RECEITA' %}text-success{% else %}text-danger{% endif %}">
-                            {% if transaction.type == 'DESPESA' %}-{% endif %}R$ {{ transaction.amount|floatformat:2 }}
+                            class="fw-bold fs-5 currency-value {% if transaction.type == 'RECEITA' %}text-success{% else %}text-danger{% endif %}">
+                            {% if transaction.type == 'DESPESA' %}-{% endif %}{{ transaction.amount|brl }}
                         </div>
                     </td>
                     <td class="pe-4 text-end" data-label="Ações">
@@ -156,36 +157,6 @@
             </tbody>
         </table>
     </div>
-
-    {% if is_paginated %}
-    <nav class="mt-4 d-flex justify-content-center">
-        <ul class="pagination">
-            {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if filter_search %}&search={{ filter_search }}{% endif %}{% if filter_type %}&type={{ filter_type }}{% endif %}{% if filter_category %}&category={{ filter_category }}{% endif %}{% if filter_start_date %}&start_date={{ filter_start_date }}{% endif %}{% if filter_end_date %}&end_date={{ filter_end_date }}{% endif %}">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
-            </li>
-            {% endif %}
-            {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ num }}{% if filter_search %}&search={{ filter_search }}{% endif %}{% if filter_type %}&type={{ filter_type }}{% endif %}{% if filter_category %}&category={{ filter_category }}{% endif %}{% if filter_start_date %}&start_date={{ filter_start_date }}{% endif %}{% if filter_end_date %}&end_date={{ filter_end_date }}{% endif %}">{{ num }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-            {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if filter_search %}&search={{ filter_search }}{% endif %}{% if filter_type %}&type={{ filter_type }}{% endif %}{% if filter_category %}&category={{ filter_category }}{% endif %}{% if filter_start_date %}&start_date={{ filter_start_date }}{% endif %}{% if filter_end_date %}&end_date={{ filter_end_date }}{% endif %}">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
-    {% endif %}
 </div>
 
 <style>

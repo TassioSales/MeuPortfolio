@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load core_extras %}
 {% block content %}
 <div class="animate-entrance">
     <div class="row mb-4 align-items-end">
@@ -16,28 +17,28 @@
     <!-- KPI Cards -->
     <div class="row g-3 mb-4">
         <div class="col-sm-6 col-lg-3">
-            <div class="glass-card p-4 h-100">
+            <div class="glass-card stat-card stat-expense p-4 h-100">
                 <h6 class="text-muted small text-uppercase mb-2">Dívida Total</h6>
-                <div class="fs-3 fw-bold text-danger">R$ {{ total_debt|floatformat:2 }}</div>
+                <div class="fs-3 fw-bold text-danger currency-value">{{ total_debt|brl }}</div>
                 <small class="text-muted">{{ active_count }} empréstimo(s) ativo(s)</small>
             </div>
         </div>
         <div class="col-sm-6 col-lg-3">
-            <div class="glass-card p-4 h-100">
+            <div class="glass-card stat-card stat-warning p-4 h-100">
                 <h6 class="text-muted small text-uppercase mb-2">Mínimo Próx. Mês</h6>
-                <div class="fs-3 fw-bold text-warning">R$ {{ total_min_next|floatformat:2 }}</div>
+                <div class="fs-3 fw-bold text-warning currency-value">{{ total_min_next|brl }}</div>
                 <small class="text-muted">Apenas para não crescer a dívida</small>
             </div>
         </div>
         <div class="col-sm-6 col-lg-3">
-            <div class="glass-card p-4 h-100">
+            <div class="glass-card stat-card stat-income p-4 h-100">
                 <h6 class="text-muted small text-uppercase mb-2">Total Já Pago</h6>
-                <div class="fs-3 fw-bold text-success">R$ {{ total_paid|floatformat:2 }}</div>
+                <div class="fs-3 fw-bold text-success currency-value">{{ total_paid|brl }}</div>
                 <small class="text-muted">Todos os empréstimos</small>
             </div>
         </div>
         <div class="col-sm-6 col-lg-3">
-            <div class="glass-card p-4 h-100">
+            <div class="glass-card stat-card stat-primary p-4 h-100">
                 <h6 class="text-muted small text-uppercase mb-2">Empréstimos</h6>
                 <div class="fs-3 fw-bold text-main">{{ loans|length }}</div>
                 <small class="text-muted">{{ active_count }} ativo(s)</small>
@@ -84,13 +85,13 @@
                     <div class="col-6">
                         <div class="p-2 rounded-3 bg-light-soft">
                             <div class="small text-muted">Saldo Devedor</div>
-                            <div class="fw-bold text-danger">R$ {{ loan.current_balance|floatformat:2 }}</div>
+                            <div class="fw-bold text-danger currency-value">{{ loan.current_balance|brl }}</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="p-2 rounded-3 bg-light-soft">
                             <div class="small text-muted">Juros Próx. Mês</div>
-                            <div class="fw-bold text-warning">R$ {{ loan.next_interest_display|floatformat:2 }}</div>
+                            <div class="fw-bold text-warning currency-value">{{ loan.next_interest_display|brl }}</div>
                         </div>
                     </div>
                     <div class="col-12">

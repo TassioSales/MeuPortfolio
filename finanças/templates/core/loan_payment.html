@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load core_extras %}
 {% block content %}
 <div class="container-fluid py-4" style="max-width:560px">
     <div class="d-flex align-items-center mb-4 gap-3">
@@ -14,15 +15,15 @@
         <div class="row g-3 text-center">
             <div class="col-4">
                 <div class="small text-muted">Saldo Devedor</div>
-                <div class="fw-bold text-danger fs-5">R$ {{ loan.current_balance|floatformat:2 }}</div>
+                <div class="fw-bold text-danger fs-5 currency-value">{{ loan.current_balance|brl }}</div>
             </div>
             <div class="col-4">
                 <div class="small text-muted">Juros do Mês</div>
-                <div class="fw-bold text-warning fs-5">R$ {{ loan.next_interest|floatformat:2 }}</div>
+                <div class="fw-bold text-warning fs-5 currency-value">{{ loan.next_interest|brl }}</div>
             </div>
             <div class="col-4">
                 <div class="small text-muted">Mínimo Sugerido</div>
-                <div class="fw-bold text-primary fs-5">R$ {{ suggested_min|floatformat:2 }}</div>
+                <div class="fw-bold text-primary fs-5 currency-value">{{ suggested_min|brl }}</div>
             </div>
         </div>
     </div>
@@ -31,7 +32,7 @@
         <div class="alert alert-info small mb-4 d-flex align-items-start gap-2">
             <i class="bi bi-info-circle-fill mt-1"></i>
             <div>
-                Qualquer valor <strong>acima de R$ {{ loan.next_interest|floatformat:2 }}</strong> (os juros do mês)
+                Qualquer valor <strong>acima de <span class="currency-value">{{ loan.next_interest|brl }}</span></strong> (os juros do mês)
                 vai reduzir a dívida principal, diminuindo os juros do próximo mês automaticamente.
             </div>
         </div>
@@ -49,10 +50,10 @@
             <div class="d-flex gap-2 flex-wrap mb-4">
                 <button type="button" class="btn btn-outline-secondary btn-sm"
                     onclick="document.querySelector('[name=amount_paid]').value='{{ loan.next_interest|floatformat:2 }}'.replace('.',',')">
-                    Só juros (R$ {{ loan.next_interest|floatformat:2 }})
+                    Só juros ({{ loan.next_interest|brl }})
                 </button>
                 <button type="button" class="btn btn-outline-primary btn-sm" id="btn-double">
-                    2× juros (R$ {{ loan.next_interest|floatformat:2 }})
+                    2× juros ({{ loan.next_interest|brl }})
                 </button>
             </div>
 

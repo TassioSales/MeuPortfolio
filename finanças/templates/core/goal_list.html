@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load core_extras %}
 
 {% block content %}
 <div class="row mb-4">
@@ -34,8 +35,8 @@
                 <p class="text-muted small mb-3">{{ goal.description|truncatechars:100 }}</p>
 
                 <div class="d-flex justify-content-between mb-1">
-                    <span class="fw-bold text-success">R$ {{ goal.current_amount }}</span>
-                    <span class="text-muted">de R$ {{ goal.target_amount }}</span>
+                    <span class="fw-bold text-success currency-value">{{ goal.current_amount|brl }}</span>
+                    <span class="text-muted currency-value">de {{ goal.target_amount|brl }}</span>
                 </div>
 
                 <div class="progress mb-3" style="height: 10px;">

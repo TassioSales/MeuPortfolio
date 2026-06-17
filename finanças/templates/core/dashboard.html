@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load core_extras %}
 
 {% block content %}
 <div class="animate-entrance">
@@ -38,7 +39,7 @@
     <!-- Main KPIs Row -->
     <div class="row g-4 mb-5">
         <div class="col-xl-3 col-md-6">
-            <div class="glass-card p-4 h-100">
+            <div class="glass-card stat-card stat-income p-4 h-100">
                 <div class="d-flex justify-content-between mb-3">
                     <div class="brand-icon"
                         style="background: rgba(16, 185, 129, 0.1); color: var(--success); box-shadow: none;">
@@ -51,11 +52,11 @@
                     {% endif %}
                 </div>
                 <h6 class="text-muted fw-bold small text-uppercase mb-1">Receitas</h6>
-                <h2 class="fw-bold mb-0">R$ {{ monthly_income|floatformat:2 }}</h2>
+                <h2 class="fw-bold mb-0 currency-value">{{ monthly_income|brl }}</h2>
             </div>
         </div>
         <div class="col-xl-3 col-md-6">
-            <div class="glass-card p-4 h-100">
+            <div class="glass-card stat-card stat-expense p-4 h-100">
                 <div class="d-flex justify-content-between mb-3">
                     <div class="brand-icon"
                         style="background: rgba(239, 68, 68, 0.1); color: var(--danger); box-shadow: none;">
@@ -68,11 +69,11 @@
                     {% endif %}
                 </div>
                 <h6 class="text-muted fw-bold small text-uppercase mb-1">Despesas</h6>
-                <h2 class="fw-bold mb-0">R$ {{ monthly_expense|floatformat:2 }}</h2>
+                <h2 class="fw-bold mb-0 currency-value">{{ monthly_expense|brl }}</h2>
             </div>
         </div>
         <div class="col-xl-3 col-md-6">
-            <div class="glass-card p-4 h-100">
+            <div class="glass-card stat-card stat-primary p-4 h-100">
                 <div class="d-flex justify-content-between mb-3">
                     <div class="brand-icon"
                         style="background: rgba(59, 130, 246, 0.1); color: var(--info); box-shadow: none;">
@@ -80,29 +81,58 @@
                     </div>
                 </div>
                 <h6 class="text-muted fw-bold small text-uppercase mb-1">Saldo Anterior</h6>
-                <h2 class="fw-bold mb-0">R$ {{ accumulated_balance|floatformat:2 }}</h2>
+                <h2 class="fw-bold mb-0 currency-value">{{ accumulated_balance|brl }}</h2>
             </div>
         </div>
         <div class="col-xl-3 col-md-6">
-            <div class="glass-card p-4 h-100" style="background: var(--brand-gradient);">
+            <div class="glass-card stat-card stat-primary p-4 h-100" style="background: var(--brand-gradient);">
                 <div class="d-flex justify-content-between mb-3">
                     <div class="brand-icon" style="background: rgba(255,255,255,0.2); color: white; box-shadow: none;">
                         <i class="bi bi-wallet2"></i>
                     </div>
                 </div>
                 <h6 class="text-white opacity-75 fw-bold small text-uppercase mb-1">Saldo Total</h6>
-                <h2 class="text-white fw-bold mb-0">R$ {{ total_balance|floatformat:2 }}</h2>
+                <h2 class="text-white fw-bold mb-0 currency-value">{{ total_balance|brl }}</h2>
             </div>
         </div>
     </div>
 
+    <!-- Loan Summary (only when user has active loans) -->
     {% if active_loans %}
-    <div class="alert d-flex align-items-center gap-3 mb-4 shadow-sm border-0" style="background: rgba(245,158,11,0.1); border-left: 4px solid #f59e0b!important; border-radius: 12px;">
-        <i class="bi bi-currency-dollar fs-3 text-warning"></i>
-        <div>
-            Você tem <strong>{{ active_loans }} empréstimo(s) ativo(s)</strong>.
-            Pagamento mínimo próximo mês: <strong class="text-warning">R$ {{ loan_min_total|floatformat:2 }}</strong>.
-            <a href="{% url 'loan_list' %}" class="fw-bold ms-2 text-decoration-none">Ver detalhes →</a>
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 d-flex align-items-center gap-3" style="border-left: 4px solid #f59e0b;">
+                <div class="brand-icon" style="background: rgba(245,158,11,0.12); color: #f59e0b; box-shadow: none; flex-shrink:0;">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small text-uppercase mb-1">Empréstimos Ativos</h6>
+                    <div class="fs-4 fw-bold text-main">{{ active_loans }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 d-flex align-items-center gap-3" style="border-left: 4px solid #ef4444;">
+                <div class="brand-icon" style="background: rgba(239,68,68,0.1); color: #ef4444; box-shadow: none; flex-shrink:0;">
+                    <i class="bi bi-bank2"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small text-uppercase mb-1">Dívida Total</h6>
+                    <div class="fs-4 fw-bold text-danger currency-value">{{ total_loan_debt|brl }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 d-flex align-items-center gap-3" style="border-left: 4px solid #6366f1;">
+                <div class="brand-icon" style="background: rgba(99,102,241,0.1); color: #6366f1; box-shadow: none; flex-shrink:0;">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small text-uppercase mb-1">Mínimo Próx. Mês</h6>
+                    <div class="fs-4 fw-bold currency-value" style="color:#6366f1;">{{ loan_min_total|brl }}</div>
+                    <a href="{% url 'loan_list' %}" class="small fw-bold text-primary text-decoration-none">Ver empréstimos →</a>
+                </div>
+            </div>
         </div>
     </div>
     {% endif %}
@@ -149,9 +179,8 @@
                         </div>
                         <div class="text-end">
                             <div
-                                class="fw-bold {% if transaction.type == 'RECEITA' %}text-success{% else %}text-danger{% endif %}">
-                                {% if transaction.type == 'DESPESA' %}-{% endif %}R${{ transaction.amount|floatformat:0
-                                }}
+                                class="fw-bold currency-value {% if transaction.type == 'RECEITA' %}text-success{% else %}text-danger{% endif %}">
+                                {% if transaction.type == 'DESPESA' %}-{% endif %}{{ transaction.amount|brl }}
                             </div>
                         </div>
                     </div>
@@ -165,40 +194,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Goals Progress -->
-    {% if goals %}
-    <div class="row g-4 mt-2">
-        <div class="col-12">
-            <div class="glass-card p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold mb-0">Progresso das Metas</h5>
-                    <a href="{% url 'goal_list' %}" class="small fw-bold text-primary">Ver Tudo</a>
-                </div>
-                <div class="row g-3">
-                    {% for goal in goals %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="p-3 rounded-4 bg-light-soft">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="fw-semibold small text-main text-truncate">{{ goal.name }}</span>
-                                <span class="badge bg-primary ms-2">{{ goal.progress_percentage }}%</span>
-                            </div>
-                            <div class="progress" style="height: 8px;">
-                                <div class="progress-bar {% if goal.progress_percentage >= 100 %}bg-success{% elif goal.progress_percentage >= 50 %}bg-primary{% else %}bg-warning{% endif %}"
-                                    style="width: {{ goal.progress_percentage }}%"></div>
-                            </div>
-                            <div class="d-flex justify-content-between mt-2">
-                                <small class="text-muted">R$ {{ goal.current_amount|floatformat:0 }}</small>
-                                <small class="text-muted">R$ {{ goal.target_amount|floatformat:0 }}</small>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <style>

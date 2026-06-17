@@ -1,10 +1,13 @@
 import logging
+import os
 import requests
 import yfinance as yf
 from datetime import datetime, timedelta
 from functools import lru_cache
 
 logger = logging.getLogger('core')
+
+_BRAPI_TOKEN = os.environ.get("BRAPI_TOKEN", "")
 
 # BCB Series Codes
 SERIES_CDI_MENSAL = 4391  # % a.m.
@@ -112,57 +115,94 @@ def get_real_time_currency(symbol_pair="USD"):
     return None
 
 
+def _parse_yahoo_chart(data: dict) -> dict:
+    """Extract quote fields from a Yahoo Finance v8 chart API response dict."""
+    results = data.get("chart", {}).get("result", [])
+    if not results:
+        return {}
+    r = results[0]
+    meta = r.get("meta", {})
+    timestamps = r.get("timestamp", [])
+    quotes = r.get("indicators", {}).get("quote", [{}])
+    closes = quotes[0].get("close", []) if quotes else []
+
+    chart_dates, chart_prices = [], []
+    for ts, close_price in zip(timestamps, closes):
+        if close_price is not None:
+            chart_dates.append(datetime.fromtimestamp(ts).strftime("%d/%m/%Y"))
+            chart_prices.append(round(float(close_price), 4))
+
+    return {
+        "price": meta.get("regularMarketPrice"),
+        "previous_close": meta.get("previousClose") or meta.get("chartPreviousClose"),
+        "day_high": meta.get("regularMarketDayHigh"),
+        "day_low": meta.get("regularMarketDayLow"),
+        "year_high": meta.get("fiftyTwoWeekHigh"),
+        "year_low": meta.get("fiftyTwoWeekLow"),
+        "currency": meta.get("currency", "BRL"),
+        "long_name": meta.get("longName") or meta.get("shortName"),
+        "chart_dates": chart_dates,
+        "chart_prices": chart_prices,
+    }
+
+
 def get_brapi_quote(symbol: str) -> dict:
     """
-    Fetch quote + 6-month history from Yahoo Finance v8 chart API directly.
-    Works without API keys. Same endpoint used by get_price_manual() which
-    is already proven to work for Brazilian FIIs (.SA).
+    Fetch quote + 6-month history for a ticker.
+
+    Priority:
+    1. brapi.dev (if BRAPI_TOKEN is set) — best data for Brazilian stocks
+    2. Yahoo Finance v8 chart API (no token needed, same source as get_price_manual)
     """
+    # ── 1. brapi.dev with token ───────────────────────────────────────────────
+    if _BRAPI_TOKEN and symbol.endswith(".SA"):
+        try:
+            ticker = symbol[:-3]
+            url = f"https://brapi.dev/api/quote/{ticker}?range=6mo&interval=1d&token={_BRAPI_TOKEN}"
+            resp = requests.get(url, timeout=10)
+            if resp.status_code == 200:
+                data = resp.json()
+                results = data.get("results", [])
+                if results:
+                    r = results[0]
+                    chart_dates, chart_prices = [], []
+                    for h in r.get("historicalDataPrice", []):
+                        try:
+                            chart_dates.append(datetime.fromtimestamp(h["date"]).strftime("%d/%m/%Y"))
+                            chart_prices.append(round(float(h["close"]), 4))
+                        except Exception:
+                            pass
+                    return {
+                        "price": r.get("regularMarketPrice"),
+                        "previous_close": r.get("regularMarketPreviousClose"),
+                        "day_high": r.get("regularMarketDayHigh"),
+                        "day_low": r.get("regularMarketDayLow"),
+                        "year_high": r.get("fiftyTwoWeekHigh"),
+                        "year_low": r.get("fiftyTwoWeekLow"),
+                        "currency": "BRL",
+                        "long_name": r.get("longName") or r.get("shortName"),
+                        "chart_dates": chart_dates,
+                        "chart_prices": chart_prices,
+                    }
+            else:
+                logger.warning(f"BRAPI returned {resp.status_code} for {symbol}")
+        except Exception as e:
+            logger.warning(f"BRAPI failed for {symbol}: {e}")
+
+    # ── 2. Yahoo Finance v8 chart API (no auth needed) ────────────────────────
     try:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             "Accept": "application/json",
         }
-        url = f"https://query2.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=6mo"
-        resp = requests.get(url, headers=headers, timeout=10)
-        if resp.status_code != 200:
-            url = url.replace("query2", "query1")
+        for host in ("query2", "query1"):
+            url = f"https://{host}.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=6mo"
             resp = requests.get(url, headers=headers, timeout=10)
-        if resp.status_code != 200:
-            logger.warning(f"Yahoo chart API returned {resp.status_code} for {symbol}")
-            return {}
-
-        data = resp.json()
-        results = data.get("chart", {}).get("result", [])
-        if not results:
-            return {}
-
-        r = results[0]
-        meta = r.get("meta", {})
-        timestamps = r.get("timestamp", [])
-        quotes = r.get("indicators", {}).get("quote", [{}])
-        closes = quotes[0].get("close", []) if quotes else []
-
-        chart_dates = []
-        chart_prices = []
-        for ts, close_price in zip(timestamps, closes):
-            if close_price is not None:
-                dt = datetime.fromtimestamp(ts)
-                chart_dates.append(dt.strftime("%d/%m/%Y"))
-                chart_prices.append(round(float(close_price), 4))
-
-        return {
-            "price": meta.get("regularMarketPrice"),
-            "previous_close": meta.get("previousClose") or meta.get("chartPreviousClose"),
-            "day_high": meta.get("regularMarketDayHigh"),
-            "day_low": meta.get("regularMarketDayLow"),
-            "year_high": meta.get("fiftyTwoWeekHigh"),
-            "year_low": meta.get("fiftyTwoWeekLow"),
-            "currency": meta.get("currency", "BRL"),
-            "long_name": meta.get("longName") or meta.get("shortName"),
-            "chart_dates": chart_dates,
-            "chart_prices": chart_prices,
-        }
+            if resp.status_code == 200:
+                result = _parse_yahoo_chart(resp.json())
+                if result.get("price"):
+                    return result
     except Exception as e:
         logger.warning(f"Yahoo chart API failed for {symbol}: {e}")
-        return {}
+
+    return {}

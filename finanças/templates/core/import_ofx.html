@@ -23,6 +23,7 @@
   {% endif %}
 
   {% if preview %}
+    {# ── Confirmation step ─────────────────────────────────────────── #}
     <div class="card shadow-sm mb-4">
       <div class="card-header bg-warning text-dark fw-bold">
         <i class="bi bi-eye me-2"></i>Pré-visualização — {{ preview|length }} transação(ões) encontrada(s)
@@ -77,6 +78,7 @@
     </form>
 
   {% else %}
+    {# ── Upload step ────────────────────────────────────────────────── #}
     <div class="row g-4">
       <div class="col-lg-6">
         <div class="card shadow-sm h-100">
@@ -108,23 +110,23 @@
           <div class="card-body">
             <ul class="list-unstyled mb-0">
               <li class="mb-3">
-                <strong>Itaú</strong><br>
+                <strong><i class="bi bi-dot"></i> Itaú</strong><br>
                 <small class="text-muted">Internet Banking → Extrato → Exportar → Formato OFX</small>
               </li>
               <li class="mb-3">
-                <strong>Bradesco</strong><br>
+                <strong><i class="bi bi-dot"></i> Bradesco</strong><br>
                 <small class="text-muted">Internet Banking → Extrato → Exportar dados → OFX</small>
               </li>
               <li class="mb-3">
-                <strong>Banco do Brasil</strong><br>
+                <strong><i class="bi bi-dot"></i> Banco do Brasil</strong><br>
                 <small class="text-muted">Internet Banking → Extrato → Exportar → OFX</small>
               </li>
               <li class="mb-3">
-                <strong>Nubank</strong><br>
+                <strong><i class="bi bi-dot"></i> Nubank</strong><br>
                 <small class="text-muted">App → Perfil → Exportar dados → OFX</small>
               </li>
               <li>
-                <strong>C6 Bank / Inter</strong><br>
+                <strong><i class="bi bi-dot"></i> C6 Bank / Inter</strong><br>
                 <small class="text-muted">App → Configurações → Exportar extrato → OFX</small>
               </li>
             </ul>

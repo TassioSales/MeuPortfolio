@@ -2,10 +2,17 @@ package github
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
 )
+
+// ErrNotFound is returned when the requested GitHub resource does not exist.
+var ErrNotFound = errors.New("not found")
+
+// ErrRateLimit is returned when the GitHub API rate limit is exceeded.
+var ErrRateLimit = errors.New("github API rate limit exceeded — set GITHUB_TOKEN to increase limits")
 
 type User struct {
 	Login       string `json:"login"`
@@ -62,6 +69,19 @@ func (c *Client) doRequest(url string) (*http.Response, error) {
 	return c.httpClient.Do(req)
 }
 
+func (c *Client) checkStatus(resp *http.Response, context string) error {
+	switch resp.StatusCode {
+	case http.StatusOK:
+		return nil
+	case http.StatusNotFound:
+		return fmt.Errorf("%w: %s", ErrNotFound, context)
+	case http.StatusForbidden, http.StatusTooManyRequests:
+		return fmt.Errorf("%w (status %d): %s", ErrRateLimit, resp.StatusCode, context)
+	default:
+		return fmt.Errorf("github API status %d: %s", resp.StatusCode, context)
+	}
+}
+
 func (c *Client) GetUser(username string) (*User, error) {
 	url := fmt.Sprintf("%s/users/%s", c.baseURL, username)
 	resp, err := c.doRequest(url)
@@ -69,8 +89,8 @@ func (c *Client) GetUser(username string) (*User, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("github API returned status %d for user %s", resp.StatusCode, username)
+	if err := c.checkStatus(resp, "user "+username); err != nil {
+		return nil, err
 	}
 	var user User
 	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
@@ -89,8 +109,8 @@ func (c *Client) GetRepos(username string) ([]Repository, error) {
 			return nil, err
 		}
 		defer resp.Body.Close()
-		if resp.StatusCode != http.StatusOK {
-			return nil, fmt.Errorf("github API returned status %d for repos", resp.StatusCode)
+		if err := c.checkStatus(resp, "repos for "+username); err != nil {
+			return nil, err
 		}
 		var repos []Repository
 		if err := json.NewDecoder(resp.Body).Decode(&repos); err != nil {
@@ -115,8 +135,8 @@ func (c *Client) GetRepoLanguages(owner, repo string) (map[string]int, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("github API returned status %d for languages", resp.StatusCode)
+	if err := c.checkStatus(resp, fmt.Sprintf("languages for %s/%s", owner, repo)); err != nil {
+		return nil, err
 	}
 	var languages map[string]int
 	if err := json.NewDecoder(resp.Body).Decode(&languages); err != nil {

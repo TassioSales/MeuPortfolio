@@ -1,0 +1,18 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - db_data:/app/db_data
+      - ./logs:/app/logs
+      - ./media:/app/media
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-docker-change-me}
+      - DEBUG=${DEBUG:-False}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      - SQLITE_DB_PATH=/app/db_data/db.sqlite3
+    restart: unless-stopped
+
+volumes:
+  db_data:

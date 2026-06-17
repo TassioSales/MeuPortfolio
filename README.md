@@ -148,6 +148,26 @@ Bot de produtividade pessoal com IA, gerenciamento de tarefas, lembretes e respo
 
 [Ver Projeto](/bot_telegram)
 
+---
+
+### 💎 WealthMap Analytics
+
+**Tecnologias:** Python, FastAPI, Next.js, WebSocket, Mistral AI
+
+Plataforma de análise de patrimônio em tempo real com dashboard interativo, WebSocket e IA.
+
+[Ver Projeto](/wealthmap_analytics)
+
+---
+
+### 📚 ENEM Insights
+
+**Tecnologias:** Python, Streamlit, Pandas, Scikit-learn, Plotly
+
+Dashboard interativo de análise do ENEM com ML preditivo: impacto de renda, escola, região e raça nas notas.
+
+[Ver Projeto](/enem_insights)
+
 </div>
 
 ## 🛠️ Habilidades Técnicas

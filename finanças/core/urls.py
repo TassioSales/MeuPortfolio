@@ -42,7 +42,6 @@ urlpatterns = [
 
     # OFX import
     path('transactions/import/ofx/', views.import_ofx, name='import_ofx'),
-
     # Investments
     path('investments/', views.investment_dashboard, name='investment_dashboard'),
     path('investments/safe/', views.safe_haven_dashboard, name='safe_haven_dashboard'),

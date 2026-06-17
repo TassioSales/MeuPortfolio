@@ -1,158 +1,236 @@
 {% extends 'base.html' %}
+{% load core_extras %}
 
 {% block content %}
 <div class="row mb-4 align-items-center">
-    <div class="col-md-8">
-        <h2 class="fw-bold text-dark">
-            <a href="{% url 'investment_dashboard' %}" class="text-decoration-none text-dark">
-                <i class="bi bi-arrow-left me-2 text-primary"></i>
-            </a>
-            {{ investment.symbol }} <small class="text-muted fs-5 ms-2">{{ investment.name }}</small>
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'investment_dashboard' %}">Investimentos</a></li>
+                <li class="breadcrumb-item active">{{ investment.symbol }}</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold mb-0">
+            {{ investment.symbol }}
+            {% if ticker_name and ticker_name != investment.symbol %}
+            <small class="text-muted fs-5 fw-normal ms-2">{{ ticker_name }}</small>
+            {% endif %}
         </h2>
     </div>
-    <div class="col-md-4 text-end">
-        <a href="{% url 'investment_edit' investment.pk %}" class="btn btn-outline-primary me-2">
+    <div class="col-auto d-flex gap-2">
+        <a href="{% url 'investment_edit' investment.pk %}" class="btn btn-outline-primary btn-sm">
             <i class="bi bi-pencil me-1"></i>Editar
         </a>
-        <a href="{% url 'investment_delete' investment.pk %}" class="btn btn-outline-danger">
+        <a href="{% url 'investment_delete' investment.pk %}" class="btn btn-outline-danger btn-sm">
             <i class="bi bi-trash me-1"></i>Excluir
         </a>
     </div>
 </div>
 
-<!-- Summary Cards -->
-<div class="row mb-4 g-3">
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-muted text-uppercase small fw-bold mb-2">Preço Atual</h6>
-                <h3 class="fw-bold text-dark mb-0">R$ {{ current_price|floatformat:2 }}</h3>
-                <small class="{% if day_change >= 0 %}text-success{% else %}text-danger{% endif %} fw-bold">
-                    {% if day_change >= 0 %}+{% endif %}{{ day_change|floatformat:2 }}% (Hoje)
-                </small>
+{% if error %}
+<div class="alert alert-warning d-flex align-items-center gap-2 mb-4" role="alert">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span>Não foi possível obter cotação em tempo real. Exibindo dados do cadastro.</span>
+</div>
+{% endif %}
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="glass-card p-3 h-100">
+            <div class="text-muted small text-uppercase fw-semibold mb-1">Preço Atual</div>
+            <div class="fs-4 fw-bold text-main currency-value">
+                {% if current_price %}{{ current_price|brl }}{% else %}<span class="text-muted">N/D</span>{% endif %}
+            </div>
+            {% if day_change is not None %}
+            <div class="small fw-semibold mt-1 {% if day_change >= 0 %}text-success{% else %}text-danger{% endif %}">
+                {% if day_change >= 0 %}<i class="bi bi-arrow-up-short"></i>+{% else %}<i class="bi bi-arrow-down-short"></i>{% endif %}{{ day_change|floatformat:2 }}% hoje
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="glass-card p-3 h-100">
+            <div class="text-muted small text-uppercase fw-semibold mb-1">Total Investido</div>
+            <div class="fs-4 fw-bold text-main currency-value">{{ investment.total_cost|brl }}</div>
+            <div class="small text-muted mt-1">
+                {{ investment.quantity|floatformat:"-4" }} cotas × {{ investment.purchase_price|brl }}
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-muted text-uppercase small fw-bold mb-2">Total Investido</h6>
-                <h3 class="fw-bold text-dark mb-0">R$ {{ investment.total_cost|floatformat:2 }}</h3>
-                <small class="text-muted">{{ investment.quantity|floatformat:"-4" }} cotas @ R$ {{
-                    investment.purchase_price|floatformat:2 }}</small>
+    <div class="col-6 col-md-3">
+        <div class="glass-card p-3 h-100">
+            <div class="text-muted small text-uppercase fw-semibold mb-1">Valor Atual</div>
+            <div class="fs-4 fw-bold currency-value" style="color: var(--accent-primary);">
+                {% if current_value %}{{ current_value|brl }}{% else %}<span class="text-muted">N/D</span>{% endif %}
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-muted text-uppercase small fw-bold mb-2">Valor Atual</h6>
-                <h3 class="fw-bold text-primary mb-0">R$ {{ current_value|floatformat:2 }}</h3>
+    <div class="col-6 col-md-3">
+        <div class="glass-card p-3 h-100">
+            <div class="text-muted small text-uppercase fw-semibold mb-1">Resultado</div>
+            <div class="fs-4 fw-bold currency-value {% if profit_loss >= 0 %}text-success{% else %}text-danger{% endif %}">
+                {% if profit_loss >= 0 %}+{% endif %}{{ profit_loss|brl }}
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-muted text-uppercase small fw-bold mb-2">Lucro/Prejuízo</h6>
-                <h3 class="fw-bold {% if profit_loss >= 0 %}text-success{% else %}text-danger{% endif %} mb-0">
-                    {% if profit_loss >= 0 %}+{% endif %}R$ {{ profit_loss|floatformat:2 }}
-                </h3>
-                <small class="{% if profit_loss_pct >= 0 %}text-success{% else %}text-danger{% endif %} fw-bold">
-                    {% if profit_loss_pct >= 0 %}+{% endif %}{{ profit_loss_pct|floatformat:2 }}%
-                </small>
+            <div class="small fw-semibold {% if profit_loss_pct >= 0 %}text-success{% else %}text-danger{% endif %}">
+                {% if profit_loss_pct >= 0 %}+{% endif %}{{ profit_loss_pct|floatformat:2 }}%
             </div>
         </div>
     </div>
 </div>
 
-<!-- Historical Chart -->
-<div class="row">
-    <div class="col-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white py-3">
-                <h5 class="card-title mb-0 fw-bold">Histórico de Preços (6 Meses)</h5>
+<!-- Market Details + Chart -->
+<div class="row g-3 mb-4">
+    <!-- Market stats -->
+    <div class="col-md-4 col-lg-3">
+        <div class="glass-card p-3 h-100">
+            <h6 class="fw-bold mb-3 text-uppercase small text-muted">Detalhes Específicos</h6>
+
+            <div class="mb-3">
+                <div class="small text-muted mb-1">Referência de Mercado</div>
+                <div class="fs-5 fw-bold text-main">
+                    {% if current_price %}{{ current_price|brl }}{% else %}<span class="text-muted">—</span>{% endif %}
+                    {% if day_change is not None %}
+                    <span class="badge {% if day_change >= 0 %}bg-success{% else %}bg-danger{% endif %} ms-1 fs-6 fw-normal">
+                        {% if day_change >= 0 %}+{% endif %}{{ day_change|floatformat:2 }}%
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="small text-muted">{{ investment.symbol }}</div>
             </div>
-            <div class="card-body">
-                <div style="position: relative; height: 400px; width: 100%;">
-                    <canvas id="historyChart"></canvas>
+
+            <hr class="my-2">
+
+            <div class="row g-2 text-center mb-2">
+                <div class="col-6">
+                    <div class="small text-muted">Min. Dia</div>
+                    <div class="fw-semibold small">
+                        {% if day_low %}{{ day_low|brl }}{% else %}--{% endif %}
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="small text-muted">Máx. Dia</div>
+                    <div class="fw-semibold small">
+                        {% if day_high %}{{ day_high|brl }}{% else %}--{% endif %}
+                    </div>
                 </div>
             </div>
+
+            <hr class="my-2">
+
+            <div class="row g-2 text-center mb-2">
+                <div class="col-6">
+                    <div class="small text-muted">Mín. 52s</div>
+                    <div class="fw-semibold small">
+                        {% if year_low %}{{ year_low|brl }}{% else %}--{% endif %}
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="small text-muted">Máx. 52s</div>
+                    <div class="fw-semibold small">
+                        {% if year_high %}{{ year_high|brl }}{% else %}--{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if year_high and year_low and current_price %}
+            <hr class="my-2">
+            <div class="small text-muted mb-1">Posição nas 52 semanas</div>
+            {% with range_52=year_high|add:0 %}
+            {% widthratio current_price year_low 100 as pct_low %}
+            {% endwith %}
+            <div class="progress" style="height: 6px;">
+                {% if year_high and year_low %}
+                <div class="progress-bar bg-primary" role="progressbar"
+                     style="width: {% widthratio current_price|floatformat:4 year_high|floatformat:4 100 %}%">
+                </div>
+                {% endif %}
+            </div>
+            <div class="d-flex justify-content-between small text-muted mt-1">
+                <span>{{ year_low|brl }}</span>
+                <span>{{ year_high|brl }}</span>
+            </div>
+            {% endif %}
+
+            <hr class="my-2">
+
+            <div class="small text-muted mb-1">Fechamento Anterior</div>
+            <div class="fw-semibold small">
+                {% if fetched_previous_close %}{{ fetched_previous_close|brl }}{% else %}--{% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="col-md-8 col-lg-9">
+        <div class="glass-card p-3 h-100">
+            <h6 class="fw-bold mb-3 text-uppercase small text-muted">Histórico de Preços — 6 Meses</h6>
+            {% if chart_labels != "[]" %}
+            <div style="position: relative; height: 320px;">
+                <canvas id="historyChart"></canvas>
+            </div>
+            {% else %}
+            <div class="d-flex flex-column align-items-center justify-content-center" style="height:320px;">
+                <i class="bi bi-graph-up text-muted" style="font-size:2.5rem; opacity:.3;"></i>
+                <div class="text-muted mt-2 small">Histórico indisponível para este ativo</div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
 
+{% if chart_labels != "[]" %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+(function () {
     const ctx = document.getElementById('historyChart').getContext('2d');
     const labels = JSON.parse('{{ chart_labels|safe }}');
-    const data = JSON.parse('{{ chart_data|safe }}');
-
-    // Create gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(13, 110, 253, 0.5)');
-    gradient.addColorStop(1, 'rgba(13, 110, 253, 0.0)');
+    const data   = JSON.parse('{{ chart_data|safe }}');
+    const grad = ctx.createLinearGradient(0, 0, 0, 320);
+    grad.addColorStop(0, 'rgba(99,102,241,0.35)');
+    grad.addColorStop(1, 'rgba(99,102,241,0.0)');
 
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels,
+            labels,
             datasets: [{
-                label: 'Preço de Fechamento (R$)',
-                data: data,
-                borderColor: '#0d6efd',
-                backgroundColor: gradient,
+                label: 'Preço (R$)',
+                data,
+                borderColor: '#6366f1',
+                backgroundColor: grad,
                 borderWidth: 2,
                 fill: true,
-                tension: 0.4,
+                tension: 0.35,
                 pointRadius: 0,
-                pointHoverRadius: 6
+                pointHoverRadius: 5,
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false,
-            },
+            interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: {
-                    display: false
-                },
+                legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: function (context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed.y !== null) {
-                                label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
-                            }
-                            return label;
-                        }
+                        label: ctx => 'R$ ' + ctx.parsed.y.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})
                     }
                 }
             },
             scales: {
-                x: {
-                    grid: {
-                        display: false
-                    }
-                },
+                x: { grid: { display: false }, ticks: { maxTicksLimit: 8, font: { size: 11 } } },
                 y: {
-                    grid: {
-                        color: '#f0f0f0'
-                    },
+                    grid: { color: 'rgba(0,0,0,.05)' },
                     ticks: {
-                        callback: function (value, index, values) {
-                            return 'R$ ' + value.toFixed(2);
-                        }
+                        font: { size: 11 },
+                        callback: v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})
                     }
                 }
             }
         }
     });
+})();
 </script>
+{% endif %}
 {% endblock %}

@@ -50,10 +50,9 @@ def _cached_ticker_fetch(symbol: str) -> dict:
         "history": None, # kept for backwards compat
     }
 
-    # brapi.dev for Brazilian stocks — free, no rate limits, includes history
-    if symbol.endswith(".SA"):
-        brapi = get_brapi_quote(symbol)
-        if brapi.get("price"):
+    # Yahoo Finance chart API — works for all tickers, returns price + history + stats
+    brapi = get_brapi_quote(symbol)
+    if brapi.get("price"):
             result.update({
                 "price": brapi["price"],
                 "currency": "BRL",

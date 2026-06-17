@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Importar Extrato OFX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4">
+    <a href="{% url 'transaction_list' %}" class="btn btn-outline-secondary me-3">
+      <i class="bi bi-arrow-left"></i>
+    </a>
+    <div>
+      <h2 class="mb-0 fw-bold">Importar Extrato Bancário</h2>
+      <small class="text-muted">Formatos suportados: OFX, OFC (padrão dos bancos brasileiros)</small>
+    </div>
+  </div>
+
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="alert alert-{{ msg.tags }} alert-dismissible fade show" role="alert">
+        {{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% if preview %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-warning text-dark fw-bold">
+        <i class="bi bi-eye me-2"></i>Pré-visualização — {{ preview|length }} transação(ões) encontrada(s)
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive" style="max-height: 450px; overflow-y: auto;">
+          <table class="table table-sm table-hover mb-0">
+            <thead class="table-dark sticky-top">
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+                <th class="text-end">Valor (R$)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for t in preview %}
+              <tr class="{% if t.type == 'RECEITA' %}table-success{% else %}table-danger{% endif %}">
+                <td>{{ t.date }}</td>
+                <td>
+                  <span class="badge {% if t.type == 'RECEITA' %}bg-success{% else %}bg-danger{% endif %}">
+                    {{ t.type }}
+                  </span>
+                </td>
+                <td>{{ t.description }}</td>
+                <td class="text-end fw-semibold">{{ t.amount }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <i class="bi bi-info-circle me-2"></i>
+      As transações serão importadas na categoria <strong>"Extrato Importado"</strong>.
+      Você pode reclassificá-las depois na lista de transações.
+      <br>Duplicatas (mesma data + valor + descrição) serão ignoradas automaticamente.
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="confirm" value="1">
+      <input type="hidden" name="ofx_file" value="{{ raw_name }}">
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success btn-lg">
+          <i class="bi bi-check2-circle me-2"></i>Confirmar Importação
+        </button>
+        <a href="{% url 'import_ofx' %}" class="btn btn-outline-secondary btn-lg">Cancelar</a>
+      </div>
+    </form>
+
+  {% else %}
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-header fw-bold">
+            <i class="bi bi-upload me-2"></i>Enviar arquivo OFX
+          </div>
+          <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Selecione o arquivo do extrato</label>
+                <input type="file" name="ofx_file" accept=".ofx,.ofc,.qfx"
+                       class="form-control form-control-lg" required>
+                <div class="form-text">Arquivos .ofx ou .ofc exportados pelo seu banco</div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg w-100">
+                <i class="bi bi-search me-2"></i>Analisar Extrato
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card shadow-sm h-100 border-info">
+          <div class="card-header bg-info text-white fw-bold">
+            <i class="bi bi-bank me-2"></i>Como exportar o extrato do seu banco
+          </div>
+          <div class="card-body">
+            <ul class="list-unstyled mb-0">
+              <li class="mb-3">
+                <strong>Itaú</strong><br>
+                <small class="text-muted">Internet Banking → Extrato → Exportar → Formato OFX</small>
+              </li>
+              <li class="mb-3">
+                <strong>Bradesco</strong><br>
+                <small class="text-muted">Internet Banking → Extrato → Exportar dados → OFX</small>
+              </li>
+              <li class="mb-3">
+                <strong>Banco do Brasil</strong><br>
+                <small class="text-muted">Internet Banking → Extrato → Exportar → OFX</small>
+              </li>
+              <li class="mb-3">
+                <strong>Nubank</strong><br>
+                <small class="text-muted">App → Perfil → Exportar dados → OFX</small>
+              </li>
+              <li>
+                <strong>C6 Bank / Inter</strong><br>
+                <small class="text-muted">App → Configurações → Exportar extrato → OFX</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 text-center">
+      <a href="{% url 'transaction_import' %}" class="text-muted small">
+        <i class="bi bi-filetype-csv me-1"></i>Prefere importar por CSV? Clique aqui
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

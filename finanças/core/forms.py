@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Transaction, Budget, Investment, RecurringTransaction, Goal
+from .models import Category, Transaction, Budget, Investment, RecurringTransaction, Goal, BankAccount, Transfer
 from decimal import Decimal
 
 def clean_currency_value(value):
@@ -197,3 +197,39 @@ class GoalForm(forms.ModelForm):
 
     def clean_current_amount(self):
         return clean_currency_value(self.data.get('current_amount'))
+
+
+class BankAccountForm(forms.ModelForm):
+    balance = forms.CharField(label="Saldo Inicial", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}))
+
+    class Meta:
+        model = BankAccount
+        fields = ['name', 'account_type', 'balance', 'bank_name', 'is_active']
+
+    def clean_balance(self):
+        return clean_currency_value(self.data.get('balance'))
+
+
+class TransferForm(forms.ModelForm):
+    amount = forms.CharField(label="Valor", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}))
+
+    class Meta:
+        model = Transfer
+        fields = ['from_account', 'to_account', 'amount', 'date', 'description']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['from_account'].queryset = BankAccount.objects.filter(user=user, is_active=True)
+        self.fields['to_account'].queryset = BankAccount.objects.filter(user=user, is_active=True)
+
+    def clean_amount(self):
+        return clean_currency_value(self.data.get('amount'))
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get('from_account') == cleaned.get('to_account'):
+            raise forms.ValidationError("Conta de origem e destino não podem ser iguais.")
+        return cleaned

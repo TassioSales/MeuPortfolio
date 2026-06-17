@@ -44,6 +44,7 @@ class Transaction(models.Model):
     date = models.DateField(default=timezone.now, verbose_name='Data')
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS, default='DINHEIRO', verbose_name='Método de Pagamento')
     description = models.CharField(max_length=255, blank=True, verbose_name='Descrição')
+    account = models.ForeignKey('BankAccount', on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions', verbose_name='Conta')
 
     class Meta:
         verbose_name = 'Transação'
@@ -89,6 +90,7 @@ class Budget(models.Model):
     limit = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Limite')
     period = models.CharField(max_length=10, choices=PERIOD_CHOICES, default='MENSAL', verbose_name='Período')
     start_date = models.DateField(default=timezone.now, verbose_name='Data de Início')
+    rollover = models.BooleanField(default=False, verbose_name='Acumular saldo não gasto?')
 
     class Meta:
         verbose_name = 'Orçamento'
@@ -194,3 +196,68 @@ class Goal(models.Model):
         if self.target_amount > 0:
             return min(int((self.current_amount / self.target_amount) * 100), 100)
         return 0
+
+
+class BankAccount(models.Model):
+    ACCOUNT_TYPES = [
+        ('CORRENTE', 'Conta Corrente'),
+        ('POUPANCA', 'Poupança'),
+        ('INVESTIMENTO', 'Investimento'),
+        ('CARTEIRA', 'Carteira'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bank_accounts')
+    name = models.CharField(max_length=100)
+    account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPES, default='CORRENTE')
+    balance = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    bank_name = models.CharField(max_length=100, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'Conta Bancária'
+        verbose_name_plural = 'Contas Bancárias'
+
+    def __str__(self):
+        return f"{self.name} ({self.get_account_type_display()})"
+
+
+class Transfer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transfers')
+    from_account = models.ForeignKey(BankAccount, on_delete=models.CASCADE, related_name='transfers_out')
+    to_account = models.ForeignKey(BankAccount, on_delete=models.CASCADE, related_name='transfers_in')
+    amount = models.DecimalField(max_digits=15, decimal_places=2)
+    date = models.DateField(default=timezone.now)
+    description = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Transferência'
+        verbose_name_plural = 'Transferências'
+        ordering = ['-date']
+
+    def __str__(self):
+        return f"{self.from_account} → {self.to_account}: R$ {self.amount}"
+
+
+class AuditLog(models.Model):
+    ACTION_CHOICES = [
+        ('CREATE', 'Criação'),
+        ('UPDATE', 'Atualização'),
+        ('DELETE', 'Exclusão'),
+        ('LOGIN', 'Login'),
+        ('IMPORT', 'Importação'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='audit_logs')
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    model_name = models.CharField(max_length=50, blank=True)
+    object_id = models.IntegerField(null=True, blank=True)
+    description = models.TextField(blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Log de Auditoria'
+        verbose_name_plural = 'Logs de Auditoria'
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.user} — {self.action} — {self.timestamp:%Y-%m-%d %H:%M}"

@@ -35,6 +35,14 @@ urlpatterns = [
     path('reports/', views.reports, name='reports'),
     path('reports/export/', views.export_csv, name='export_csv'),
     path('reports/export/pdf/', views.export_pdf, name='export_pdf'),
+    path('reports/export/xlsx/', views.export_xlsx, name='export_xlsx'),
+
+    # Cash flow forecast
+    path('cash-flow/', views.cash_flow_forecast, name='cash_flow_forecast'),
+
+    # OFX import
+    path('transactions/import/ofx/', views.import_ofx, name='import_ofx'),
+
     # Investments
     path('investments/', views.investment_dashboard, name='investment_dashboard'),
     path('investments/safe/', views.safe_haven_dashboard, name='safe_haven_dashboard'),
@@ -50,5 +58,18 @@ urlpatterns = [
     path('goals/add/', views.GoalCreateView.as_view(), name='goal_add'),
     path('goals/<int:pk>/edit/', views.GoalUpdateView.as_view(), name='goal_edit'),
     path('goals/<int:pk>/delete/', views.GoalDeleteView.as_view(), name='goal_delete'),
+
+    # Bank Accounts
+    path('accounts/', views.BankAccountListView.as_view(), name='account_list'),
+    path('accounts/add/', views.BankAccountCreateView.as_view(), name='account_add'),
+    path('accounts/<int:pk>/edit/', views.BankAccountUpdateView.as_view(), name='account_edit'),
+    path('accounts/<int:pk>/delete/', views.BankAccountDeleteView.as_view(), name='account_delete'),
+    path('accounts/transfer/', views.transfer_create, name='transfer_create'),
+
+    # Audit Log
+    path('audit/', views.AuditLogListView.as_view(), name='audit_log'),
+
+    # JSON Export
+    path('reports/export/json/', views.export_json, name='export_json'),
 ]
 # Force reload

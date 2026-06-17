@@ -101146,3 +101146,7 @@ Traceback (most recent call last):
 
 django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '=='RECEITA'' from 'filter_type=='RECEITA''
 2026-06-17 12:30:43.442 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080
+2026-06-17 12:34:43.243 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080
+2026-06-17 12:36:20.200 | INFO     | logging:callHandlers:1737 - Generating reports for user TassioSales
+2026-06-17 12:42:04.271 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080
+2026-06-17 12:43:19.039 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080

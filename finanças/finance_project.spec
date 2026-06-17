@@ -3,7 +3,7 @@
 PyInstaller spec for Patrimônio — Personal Finance ERP
 Build: pyinstaller finance_project.spec --noconfirm
 """
-from PyInstaller.utils.hooks import collect_submodules, collect_data_files
+from PyInstaller.utils.hooks import collect_submodules, collect_data_files, collect_all
 
 block_cipher = None
 
@@ -81,6 +81,12 @@ hidden_imports += collect_submodules("waitress")
 hidden_imports += collect_submodules("crispy_forms")
 hidden_imports += collect_submodules("crispy_bootstrap5")
 
+# numpy and pandas require collect_all to include compiled C extensions (.pyd binaries)
+_numpy_datas, _numpy_binaries, _numpy_hidden = collect_all("numpy")
+_pandas_datas, _pandas_binaries, _pandas_hidden = collect_all("pandas")
+hidden_imports += _numpy_hidden
+hidden_imports += _pandas_hidden
+
 # ── Data files ─────────────────────────────────────────────────────────────────
 # Format: (source_path, dest_inside_bundle)
 # Note: staticfiles/ must be collected BEFORE build with: manage.py collectstatic
@@ -94,12 +100,14 @@ datas += collect_data_files("reportlab")
 datas += collect_data_files("xhtml2pdf")
 datas += collect_data_files("crispy_bootstrap5")
 datas += collect_data_files("loguru")
+datas += _numpy_datas
+datas += _pandas_datas
 
 # ── Analysis ───────────────────────────────────────────────────────────────────
 a = Analysis(
     ["run_app.py"],
     pathex=[],
-    binaries=[],
+    binaries=_numpy_binaries + _pandas_binaries,
     datas=datas,
     hiddenimports=hidden_imports,
     hookspath=[],

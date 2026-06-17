@@ -60,6 +60,7 @@ npm run dev
 - O banco analitico local e `data-lake/warehouse/fuel_analytics.duckdb`.
 - Snapshots consumidos pela API ficam em `models/overview.json`, `models/history.json`, `models/forecasts.json` e `models/market_signals.json`.
 - O projeto nao usa mais dados amostrais no fluxo operacional.
+- O forecast atual e diario para os proximos `15 dias` e comeca sempre em `amanha`.
 
 ## Banco local
 
@@ -71,3 +72,7 @@ npm run dev
 - A chave da Mistral nao foi embutida no codigo.
 - Configure `MISTRAL_API_KEY` no ambiente antes de habilitar os insights por IA.
 - Como a chave foi compartilhada na conversa, a acao prudente e rotaciona-la no painel da Mistral antes de usar em producao.
+
+## Operacao
+
+- Guia de operacao local: [docs/operacao.md](D:/GithubGit/MeuPortfolio/analise_de_combustiveis/docs/operacao.md)

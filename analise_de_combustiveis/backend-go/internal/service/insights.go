@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sort"
 	"strings"
 	"time"
 
@@ -72,17 +73,18 @@ func (s *InsightsService) Build(ctx context.Context, input InsightContext) (doma
 	}
 
 	promptData, _ := json.Marshal(map[string]any{
-		"view":        input.View,
-		"fuel":        input.Fuel,
-		"state":       input.State,
-		"city":        input.City,
+		"view":         input.View,
+		"fuel":         input.Fuel,
+		"state":        input.State,
+		"city":         input.City,
 		"compare_with": input.CompareWith,
-		"overview":    trimSlice(input.Overview, 8),
-		"history":     trimSlice(input.History, 16),
-		"forecast":    trimSlice(input.Forecast, 12),
-		"comparison":  trimSlice(input.Comparison, 12),
-		"market":      trimSlice(input.Market, 12),
+		"overview":     trimSlice(input.Overview, 8),
+		"history":      trimSlice(input.History, 16),
+		"forecast":     trimSlice(input.Forecast, 18),
+		"comparison":   trimSlice(input.Comparison, 12),
+		"market":       trimSlice(input.Market, 12),
 	})
+	forecastRange := describeForecastRange(input.Forecast)
 	requestBody := mistralRequest{
 		Model: s.model,
 		ResponseFormat: map[string]any{
@@ -91,11 +93,11 @@ func (s *InsightsService) Build(ctx context.Context, input InsightContext) (doma
 		Messages: []map[string]string{
 			{
 				"role": "system",
-				"content": "Voce e um analista de energia e combustiveis. Responda apenas em JSON com os campos title, summary e bullets. bullets deve ser uma lista de no maximo 4 strings, com observacoes acionaveis e sem repetir o summary.",
+				"content": "Voce e um analista de energia e combustiveis. Responda apenas em JSON com os campos title, summary e bullets. bullets deve ser uma lista de no maximo 4 strings, com observacoes acionaveis e sem repetir o summary. Quando houver forecast, trate-o como projecao diaria para datas futuras reais; nao descreva como media semanal e nao inclua datas passadas como horizonte previsto.",
 			},
 			{
 				"role": "user",
-				"content": fmt.Sprintf("Gere um briefing para a view=%s com combustivel=%s estado=%s cidade=%s compare_with=%s dados=%s. Ajuste o foco conforme a tela: dashboard=panorama, historico=ritmo e mudancas, previsoes=cenario e risco, comparacoes=escolha entre alternativas, combustivel=dossie dedicado.", input.View, input.Fuel, input.State, input.City, input.CompareWith, string(promptData)),
+				"content": fmt.Sprintf("Gere um briefing para a view=%s com combustivel=%s estado=%s cidade=%s compare_with=%s forecast_range=%s dados=%s. Ajuste o foco conforme a tela: dashboard=panorama, historico=ritmo e mudancas, previsoes=cenario e risco de curto prazo, comparacoes=escolha entre alternativas, combustivel=dossie dedicado.", input.View, input.Fuel, input.State, input.City, input.CompareWith, forecastRange, string(promptData)),
 			},
 		},
 		Temperature: 0.3,
@@ -159,7 +161,7 @@ func (s *InsightsService) fallbackInsight(input InsightContext) domain.InsightPa
 	}
 	if len(input.Forecast) > 0 {
 		latestForecast := input.Forecast[len(input.Forecast)-1]
-		bullets = append(bullets, fmt.Sprintf("Ultima projecao: R$ %.2f", latestForecast.Predicted))
+		bullets = append(bullets, fmt.Sprintf("Projecao final do horizonte em %s: R$ %.2f", latestForecast.Week, latestForecast.Predicted))
 	}
 
 	return domain.InsightPayload{
@@ -168,6 +170,17 @@ func (s *InsightsService) fallbackInsight(input InsightContext) domain.InsightPa
 		Bullets: bullets,
 		Source: "rule-based",
 	}
+}
+
+func describeForecastRange(items []domain.ForecastPoint) string {
+	if len(items) == 0 {
+		return "sem horizonte previsto"
+	}
+	points := append([]domain.ForecastPoint(nil), items...)
+	sort.Slice(points, func(i, j int) bool {
+		return points[i].Week < points[j].Week
+	})
+	return fmt.Sprintf("%s ate %s", points[0].Week, points[len(points)-1].Week)
 }
 
 func trimSlice[T any](items []T, limit int) []T {

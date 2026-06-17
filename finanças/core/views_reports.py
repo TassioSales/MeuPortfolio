@@ -1,5 +1,6 @@
-"""Reports, CSV export, and PDF export views."""
+"""Reports, CSV export, PDF export, and Excel export views."""
 import csv
+import io
 import json
 import logging
 from datetime import timedelta
@@ -7,6 +8,10 @@ from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
 from django.db.models.functions import TruncDay, TruncMonth
+import openpyxl
+from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.utils import get_column_letter
+
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import get_template
@@ -194,4 +199,134 @@ def export_pdf(request):
 
     if pisa_status.err:
         return HttpResponse("We had some errors <pre>" + html + "</pre>")
+    return response
+
+
+@login_required
+def export_xlsx(request):
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+    category_id = request.GET.get("category")
+
+    transactions = _filter_transactions(request, start_date, end_date, category_id)
+
+    wb = openpyxl.Workbook()
+
+    # ── Sheet 1: Transactions ──────────────────────────────────────────────────
+    ws = wb.active
+    ws.title = "Transações"
+
+    header_fill = PatternFill("solid", fgColor="1a73e8")
+    header_font = Font(bold=True, color="FFFFFF")
+    income_fill = PatternFill("solid", fgColor="d4edda")
+    expense_fill = PatternFill("solid", fgColor="f8d7da")
+
+    headers = ["Data", "Tipo", "Categoria", "Valor (R$)", "Descrição", "Método de Pagamento"]
+    for col, h in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col, value=h)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center")
+
+    col_widths = [12, 10, 20, 14, 40, 18]
+    for i, w in enumerate(col_widths, 1):
+        ws.column_dimensions[get_column_letter(i)].width = w
+
+    for row_idx, t in enumerate(transactions, 2):
+        row_fill = income_fill if t.type == "RECEITA" else expense_fill
+        values = [
+            t.date,
+            t.get_type_display(),
+            t.category.name if t.category else "-",
+            float(t.amount),
+            t.description,
+            t.get_payment_method_display() if hasattr(t, "get_payment_method_display") else "-",
+        ]
+        for col, val in enumerate(values, 1):
+            cell = ws.cell(row=row_idx, column=col, value=val)
+            cell.fill = row_fill
+            if col == 4:
+                cell.number_format = '#,##0.00'
+
+    # Totals row
+    total_row = len(list(transactions)) + 2
+    total_income = transactions.filter(type="RECEITA").aggregate(Sum("amount"))["amount__sum"] or 0
+    total_expense = transactions.filter(type="DESPESA").aggregate(Sum("amount"))["amount__sum"] or 0
+
+    ws.cell(row=total_row, column=3, value="TOTAL RECEITAS").font = Font(bold=True)
+    ws.cell(row=total_row, column=4, value=float(total_income)).number_format = '#,##0.00'
+    ws.cell(row=total_row + 1, column=3, value="TOTAL DESPESAS").font = Font(bold=True)
+    ws.cell(row=total_row + 1, column=4, value=float(total_expense)).number_format = '#,##0.00'
+    ws.cell(row=total_row + 2, column=3, value="SALDO LÍQUIDO").font = Font(bold=True)
+    ws.cell(row=total_row + 2, column=4, value=float(total_income - total_expense)).number_format = '#,##0.00'
+
+    # ── Sheet 2: Resumo Mensal ─────────────────────────────────────────────────
+    ws2 = wb.create_sheet("Resumo Mensal")
+    ws2.append(["Mês", "Receitas (R$)", "Despesas (R$)", "Saldo (R$)"])
+    for col in range(1, 5):
+        cell = ws2.cell(row=1, column=col)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center")
+
+    from django.db.models.functions import TruncMonth as TM
+    monthly = (
+        transactions.annotate(mes=TM("date"))
+        .values("mes")
+        .annotate(
+            receitas=Sum("amount", filter=Q(type="RECEITA")),
+            despesas=Sum("amount", filter=Q(type="DESPESA")),
+        )
+        .order_by("mes")
+    )
+    for r, m in enumerate(monthly, 2):
+        rec = float(m["receitas"] or 0)
+        desp = float(m["despesas"] or 0)
+        ws2.append([
+            m["mes"].strftime("%b/%Y") if m["mes"] else "-",
+            rec,
+            desp,
+            rec - desp,
+        ])
+        for col in [2, 3, 4]:
+            ws2.cell(row=r, column=col).number_format = '#,##0.00'
+
+    for col_w, width in zip(["A", "B", "C", "D"], [12, 16, 16, 14]):
+        ws2.column_dimensions[col_w].width = width
+
+    # ── Sheet 3: Por Categoria ─────────────────────────────────────────────────
+    ws3 = wb.create_sheet("Por Categoria")
+    ws3.append(["Categoria", "Total Despesas (R$)", "% do Total"])
+    for col in range(1, 4):
+        cell = ws3.cell(row=1, column=col)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center")
+
+    cat_data = (
+        transactions.filter(type="DESPESA")
+        .values("category__name")
+        .annotate(total=Sum("amount"))
+        .order_by("-total")
+    )
+    for r, c in enumerate(cat_data, 2):
+        pct = float(c["total"] / total_expense * 100) if total_expense else 0
+        ws3.append([c["category__name"] or "Sem categoria", float(c["total"]), pct])
+        ws3.cell(row=r, column=2).number_format = '#,##0.00'
+        ws3.cell(row=r, column=3).number_format = '0.0"%"'
+
+    ws3.column_dimensions["A"].width = 25
+    ws3.column_dimensions["B"].width = 20
+    ws3.column_dimensions["C"].width = 14
+
+    # ── Response ───────────────────────────────────────────────────────────────
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    response = HttpResponse(
+        output.read(),
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+    response["Content-Disposition"] = 'attachment; filename="relatorio_financeiro.xlsx"'
     return response

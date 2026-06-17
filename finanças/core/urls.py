@@ -52,6 +52,9 @@ urlpatterns = [
     path('investments/<int:pk>/edit/', views.InvestmentUpdateView.as_view(), name='investment_edit'),
     path('investments/<int:pk>/delete/', views.InvestmentDeleteView.as_view(), name='investment_delete'),
     
+    # Settings
+    path('settings/', views.settings_view, name='settings'),
+
     # Goals
     path('goals/', views.GoalListView.as_view(), name='goal_list'),
     path('goals/add/', views.GoalCreateView.as_view(), name='goal_add'),

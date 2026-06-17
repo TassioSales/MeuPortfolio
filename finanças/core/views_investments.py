@@ -16,6 +16,7 @@ from .market_data import (
     SERIES_SELIC_META,
     calculate_cdi_correction,
     calculate_pre_fixado,
+    get_brapi_quote,
     get_latest_indicator,
     get_real_time_currency,
 )
@@ -24,39 +25,87 @@ from .views_shared import get_price_manual
 
 
 def _cached_ticker_fetch(symbol: str) -> dict:
-    """Fetch yfinance data with 5-minute in-memory cache to avoid rate limiting."""
+    """
+    Fetch market data with 5-minute cache.
+    Priority: brapi.dev (for .SA) → yfinance fast_info → get_price_manual.
+    Never calls ticker.info to avoid Yahoo Finance 429 rate limiting.
+    """
     key = f"yf_{symbol}"
     cached = cache.get(key)
     if cached is not None:
         return cached
 
-    result = {"price": None, "currency": "BRL", "info": {}, "history": None}
+    result = {
+        "price": None,
+        "currency": "BRL",
+        "day_high": None,
+        "day_low": None,
+        "previous_close": None,
+        "year_high": None,
+        "year_low": None,
+        "long_name": None,
+        "chart_dates": [],
+        "chart_prices": [],
+        "info": {},      # kept for backwards compat
+        "history": None, # kept for backwards compat
+    }
+
+    # brapi.dev for Brazilian stocks — free, no rate limits, includes history
+    if symbol.endswith(".SA"):
+        brapi = get_brapi_quote(symbol)
+        if brapi.get("price"):
+            result.update({
+                "price": brapi["price"],
+                "currency": "BRL",
+                "day_high": brapi.get("day_high"),
+                "day_low": brapi.get("day_low"),
+                "previous_close": brapi.get("previous_close"),
+                "year_high": brapi.get("year_high"),
+                "year_low": brapi.get("year_low"),
+                "long_name": brapi.get("long_name"),
+                "chart_dates": brapi.get("chart_dates", []),
+                "chart_prices": brapi.get("chart_prices", []),
+            })
+            cache.set(key, result, timeout=300)
+            return result
+
+    # yfinance fast_info — single lightweight request, no /quoteSummary/ call
     try:
         ticker = yf.Ticker(symbol)
-        try:
-            result["price"] = ticker.fast_info.last_price
-            result["currency"] = ticker.fast_info.currency
-        except Exception:
-            pass
-
-        if result["price"] is None:
-            hist = ticker.history(period="1d")
-            if not hist.empty:
-                result["price"] = hist["Close"].iloc[-1]
-
-        try:
-            result["info"] = ticker.info
-        except Exception:
-            pass
-
-        try:
-            result["history"] = ticker.history(period="6mo")
-        except Exception:
-            pass
+        fi = ticker.fast_info
+        result["price"] = getattr(fi, "last_price", None)
+        result["currency"] = getattr(fi, "currency", "BRL") or "BRL"
+        result["previous_close"] = getattr(fi, "previous_close", None)
+        result["day_high"] = getattr(fi, "day_high", None)
+        result["day_low"] = getattr(fi, "day_low", None)
+        result["year_high"] = getattr(fi, "year_high", None)
+        result["year_low"] = getattr(fi, "year_low", None)
     except Exception:
         pass
 
-    cache.set(key, result, timeout=300)
+    if result["price"] is None:
+        try:
+            hist1d = ticker.history(period="1d")
+            if not hist1d.empty:
+                result["price"] = float(hist1d["Close"].iloc[-1])
+        except Exception:
+            pass
+
+    try:
+        hist = ticker.history(period="6mo")
+        if not hist.empty:
+            result["history"] = hist
+            result["chart_dates"] = [d.strftime("%d/%m/%Y") for d in hist.index]
+            result["chart_prices"] = [round(float(v), 4) for v in hist["Close"]]
+    except Exception:
+        pass
+
+    # Last resort
+    if result["price"] is None:
+        price, _ = get_price_manual(symbol)
+        result["price"] = price
+
+    cache.set(key, result, timeout=300 if result["price"] is not None else 60)
     return result
 
 
@@ -107,29 +156,14 @@ def search_ticker(request):
     fetched = _cached_ticker_fetch(ticker_symbol)
     price = fetched["price"]
     currency = fetched["currency"] or "BRL"
-    info = fetched["info"]
-    history_chart = fetched["history"]
-
-    name = info.get("longName") or info.get("shortName") or ticker_symbol
-    previous_close = info.get("previousClose")
-    day_high = info.get("dayHigh")
-    day_low = info.get("dayLow")
-    year_high = info.get("fiftyTwoWeekHigh")
-    year_low = info.get("fiftyTwoWeekLow")
-
-    if price is None and not info:
-        info_fallback = {}
-        try:
-            info_fallback = yf.Ticker(ticker_symbol).info
-        except Exception:
-            pass
-        price = info_fallback.get("currentPrice") or info_fallback.get("regularMarketPrice")
-        currency = info_fallback.get("currency", "BRL")
-
-    if history_chart is not None and not history_chart.empty:
-        for date, row in history_chart.iterrows():
-            chart_labels.append(date.strftime("%d/%m/%Y"))
-            chart_data.append(row["Close"])
+    name = fetched.get("long_name") or ticker_symbol
+    previous_close = fetched.get("previous_close")
+    day_high = fetched.get("day_high")
+    day_low = fetched.get("day_low")
+    year_high = fetched.get("year_high")
+    year_low = fetched.get("year_low")
+    chart_labels = fetched.get("chart_dates", [])
+    chart_data = fetched.get("chart_prices", [])
 
     if price is None:
         price, currency_manual = get_price_manual(ticker_symbol)
@@ -382,39 +416,35 @@ class InvestmentDetailView(LoginRequiredMixin, TemplateView):
 
         try:
             fetched = _cached_ticker_fetch(symbol)
-            history = fetched["history"]
-            info = fetched["info"]
 
-            if history is not None and not history.empty:
-                dates = [d.strftime("%d/%m/%Y") for d, _ in history.iterrows()]
-                prices = [row["Close"] for _, row in history.iterrows()]
-                context["chart_labels"] = json.dumps(dates)
-                context["chart_data"] = json.dumps(prices)
-            else:
-                context["chart_labels"] = json.dumps([])
-                context["chart_data"] = json.dumps([])
+            context["chart_labels"] = json.dumps(fetched.get("chart_dates", []))
+            context["chart_data"] = json.dumps(fetched.get("chart_prices", []))
 
-            current_price = fetched["price"]
-            previous_close = info.get("previousClose") if info else None
+            current_price = fetched.get("price") or 0
+            previous_close = fetched.get("previous_close")
+            day_change = 0
             if current_price and previous_close:
                 day_change = ((current_price - previous_close) / previous_close) * 100
-            elif history is not None and not history.empty:
-                current_price = current_price or history["Close"].iloc[-1]
-                day_change = 0
-            else:
-                current_price = current_price or 0
-                day_change = 0
-
-            context["current_price"] = current_price
-            context["day_change"] = day_change
 
             current_value = float(total_quantity) * float(current_price)
             invested_value = float(total_invested)
-            context["current_value"] = current_value
-            context["profit_loss"] = current_value - invested_value
-            context["profit_loss_pct"] = (
-                (context["profit_loss"] / invested_value) * 100 if invested_value > 0 else 0
-            )
+
+            context.update({
+                "current_price": current_price,
+                "day_change": day_change,
+                "day_high": fetched.get("day_high"),
+                "day_low": fetched.get("day_low"),
+                "year_high": fetched.get("year_high"),
+                "year_low": fetched.get("year_low"),
+                "fetched_previous_close": fetched.get("previous_close"),
+                "ticker_name": fetched.get("long_name") or symbol,
+                "current_value": current_value,
+                "profit_loss": current_value - invested_value,
+                "profit_loss_pct": (
+                    (current_value - invested_value) / invested_value * 100
+                    if invested_value > 0 else 0
+                ),
+            })
         except Exception as e:
             context["error"] = str(e)
 

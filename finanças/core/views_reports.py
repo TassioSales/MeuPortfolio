@@ -330,3 +330,22 @@ def export_xlsx(request):
     )
     response["Content-Disposition"] = 'attachment; filename="relatorio_financeiro.xlsx"'
     return response
+
+
+@login_required
+def export_json(request):
+    from .models import Transaction
+    transactions = Transaction.objects.filter(user=request.user).order_by("-date").values(
+        "id", "date", "type", "amount", "description", "payment_method", "category__name"
+    )
+    data = []
+    for t in transactions:
+        row = dict(t)
+        row["date"] = str(row["date"])
+        row["amount"] = str(row["amount"])
+        data.append(row)
+    content = json.dumps(data, ensure_ascii=False, indent=2)
+    from django.http import HttpResponse
+    response = HttpResponse(content, content_type="application/json")
+    response["Content-Disposition"] = 'attachment; filename="transacoes.json"'
+    return response

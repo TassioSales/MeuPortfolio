@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid py-4" style="max-width:760px">
+    <div class="d-flex align-items-center mb-4 gap-3">
+        <a href="{% url 'loan_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i></a>
+        <div>
+            <h2 class="mb-0 fw-bold">{% if form.instance.pk %}Editar Empréstimo{% else %}Novo Empréstimo{% endif %}</h2>
+            <small class="text-muted">Configure a modalidade e os termos do empréstimo.</small>
+        </div>
+    </div>
+
+    <div class="glass-card p-4">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="row g-3">
+                <!-- Descrição + Credor -->
+                <div class="col-md-8">
+                    <label class="form-label fw-semibold">Descrição *</label>
+                    <input type="text" name="name" value="{{ form.name.value|default:'' }}" class="form-control" placeholder="Ex: Empréstimo sogro, Financiamento carro..." required>
+                    {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Credor</label>
+                    <input type="text" name="lender" value="{{ form.lender.value|default:'' }}" class="form-control" placeholder="Quem emprestou?">
+                </div>
+
+                <!-- Modalidade -->
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Modalidade *</label>
+                    <select name="loan_type" class="form-select" onchange="toggleLoanFields(this)" required>
+                        {% for val, label in form.fields.loan_type.choices %}
+                        <option value="{{ val }}" {% if form.loan_type.value == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="mt-2 p-3 rounded-3 bg-light-soft small text-muted" id="loan-type-hint"></div>
+                </div>
+
+                <!-- Principal + Saldo atual -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Valor Original (R$) *</label>
+                    <input type="text" name="principal" value="{{ form.principal.value|default:'' }}" class="form-control money-mask" placeholder="R$ 0,00" required>
+                    {% if form.principal.errors %}<div class="text-danger small">{{ form.principal.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Saldo Devedor Atual (R$)</label>
+                    <input type="text" name="current_balance" value="{{ form.current_balance.value|default:'' }}" class="form-control money-mask" placeholder="Deixe vazio se for novo">
+                    <div class="form-text">Preencha apenas se o empréstimo já está em andamento.</div>
+                </div>
+
+                <!-- Taxa + Período + Parcelas -->
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Taxa de Juros (%) *</label>
+                    <input type="text" name="interest_rate" value="{{ form.interest_rate.value|default:'' }}" class="form-control" placeholder="Ex: 1.79">
+                    {% if form.interest_rate.errors %}<div class="text-danger small">{{ form.interest_rate.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Período da Taxa *</label>
+                    <select name="interest_period" class="form-select">
+                        {% for val, label in form.fields.interest_period.choices %}
+                        <option value="{{ val }}" {% if form.interest_period.value == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4" id="field-installments">
+                    <label class="form-label fw-semibold">Nº de Parcelas</label>
+                    <input type="number" name="num_installments" value="{{ form.num_installments.value|default:'' }}" class="form-control" placeholder="Ex: 48" min="1">
+                    {% if form.num_installments.errors %}<div class="text-danger small">{{ form.num_installments.errors.0 }}</div>{% endif %}
+                </div>
+
+                <!-- Separador visual: taxas bancárias -->
+                <div class="col-12 mt-2">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="fw-semibold small text-uppercase text-muted" style="white-space:nowrap">Encargos Opcionais</span>
+                        <div class="flex-grow-1 border-top"></div>
+                        <span class="badge bg-secondary fw-normal" style="font-size:0.7rem">deixe 0 para empréstimos informais</span>
+                    </div>
+                </div>
+
+                <!-- IOF + Seguro -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">IOF (%)</label>
+                    <div class="input-group">
+                        <input type="text" name="iof_rate" value="{{ form.iof_rate.value|default:'0' }}" class="form-control" placeholder="0">
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <div class="form-text">{{ form.iof_rate.help_text }}</div>
+                    {% if form.iof_rate.errors %}<div class="text-danger small">{{ form.iof_rate.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Seguro Mensal (R$)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">R$</span>
+                        <input type="text" name="insurance_monthly" value="{{ form.insurance_monthly.value|default:'0' }}" class="form-control money-mask" placeholder="0,00">
+                    </div>
+                    <div class="form-text">{{ form.insurance_monthly.help_text }}</div>
+                    {% if form.insurance_monthly.errors %}<div class="text-danger small">{{ form.insurance_monthly.errors.0 }}</div>{% endif %}
+                </div>
+
+                <!-- Datas -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Data do Empréstimo *</label>
+                    <input type="date" name="start_date" value="{{ form.start_date.value|default:'' }}" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Dia de Vencimento</label>
+                    <input type="number" name="due_day" value="{{ form.due_day.value|default:'10' }}" class="form-control" min="1" max="31">
+                </div>
+
+                <!-- Observações -->
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Observações</label>
+                    <textarea name="notes" class="form-control" rows="3" placeholder="Detalhes, condições especiais...">{{ form.notes.value|default:'' }}</textarea>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-check">
+                        <input type="checkbox" name="is_active" id="is_active" class="form-check-input" {% if form.is_active.value %}checked{% endif %} value="True">
+                        <label class="form-check-label" for="is_active">Empréstimo Ativo</label>
+                    </div>
+                </div>
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger mt-3">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary px-5">
+                    <i class="bi bi-save me-2"></i>Salvar
+                </button>
+                <a href="{% url 'loan_list' %}" class="btn btn-outline-secondary px-4">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.bg-light-soft { background: rgba(0,0,0,0.03); }
+[data-theme="dark"] .bg-light-soft { background: rgba(255,255,255,0.04); }
+</style>
+
+{% block scripts %}
+<script>
+const hints = {
+  'REDUCAO_SALDO': '<strong>Juros sobre Saldo Devedor:</strong> Juros só sobre o que ainda deve. Qualquer valor acima dos juros reduz a dívida. Ideal para empréstimos informais — sem nº fixo de parcelas.',
+  'PRICE': '<strong>Tabela Price (Parcela Fixa):</strong> Parcela idêntica todo mês. No início vai mais para juros; com o tempo, mais para amortização. Exige nº de parcelas.',
+  'SAC': '<strong>SAC (Amortização Constante):</strong> Amortização fixa todo mês, juros decrescentes → parcela começa maior e vai diminuindo. Paga menos juros no total vs Price. Exige nº de parcelas.',
+  'SIMPLES': '<strong>Juros Simples:</strong> Paga só os juros mensalmente e quita o principal todo no final. Para acordos com prazo definido.',
+};
+function toggleLoanFields(sel) {
+  const val = sel.value;
+  document.getElementById('loan-type-hint').innerHTML = hints[val] || '';
+  const needInstallments = ['PRICE','SAC','SIMPLES'].includes(val);
+  const fi = document.getElementById('field-installments');
+  const inp = fi.querySelector('input');
+  inp.required = needInstallments;
+  fi.querySelector('label').textContent = needInstallments ? 'Nº de Parcelas *' : 'Nº de Parcelas';
+}
+toggleLoanFields(document.querySelector('[name=loan_type]'));
+</script>
+{% endblock %}
+{% endblock %}

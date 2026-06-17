@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="animate-entrance">
+    <div class="row mb-4 align-items-end">
+        <div class="col-md-7">
+            <h1 class="display-5 fw-bold mb-2">Empréstimos</h1>
+            <p class="text-muted">Acompanhe e simule todos os seus empréstimos em um só lugar.</p>
+        </div>
+        <div class="col-md-5 text-end">
+            <a href="{% url 'loan_add' %}" class="btn-premium px-4">
+                <i class="bi bi-plus-lg me-2"></i>Novo Empréstimo
+            </a>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="glass-card p-4 h-100">
+                <h6 class="text-muted small text-uppercase mb-2">Dívida Total</h6>
+                <div class="fs-3 fw-bold text-danger">R$ {{ total_debt|floatformat:2 }}</div>
+                <small class="text-muted">{{ active_count }} empréstimo(s) ativo(s)</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="glass-card p-4 h-100">
+                <h6 class="text-muted small text-uppercase mb-2">Mínimo Próx. Mês</h6>
+                <div class="fs-3 fw-bold text-warning">R$ {{ total_min_next|floatformat:2 }}</div>
+                <small class="text-muted">Apenas para não crescer a dívida</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="glass-card p-4 h-100">
+                <h6 class="text-muted small text-uppercase mb-2">Total Já Pago</h6>
+                <div class="fs-3 fw-bold text-success">R$ {{ total_paid|floatformat:2 }}</div>
+                <small class="text-muted">Todos os empréstimos</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="glass-card p-4 h-100">
+                <h6 class="text-muted small text-uppercase mb-2">Empréstimos</h6>
+                <div class="fs-3 fw-bold text-main">{{ loans|length }}</div>
+                <small class="text-muted">{{ active_count }} ativo(s)</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Cards -->
+    <div class="row g-4">
+        {% for loan in loans %}
+        <div class="col-md-6 col-xl-4">
+            <div class="glass-card p-4 h-100 {% if not loan.is_active %}opacity-60{% endif %}">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-0 text-main">{{ loan.name }}</h5>
+                        <small class="text-muted">{{ loan.lender }} · {{ loan.get_loan_type_display }}</small>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm glass-card border rounded-circle" style="width:32px;height:32px;padding:0" data-bs-toggle="dropdown">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'loan_detail' loan.pk %}"><i class="bi bi-bar-chart me-2"></i>Detalhes</a></li>
+                            <li><a class="dropdown-item text-success" href="{% url 'loan_pay' loan.pk %}"><i class="bi bi-cash-coin me-2"></i>Registrar Pagamento</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'loan_edit' loan.pk %}"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'loan_delete' loan.pk %}"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Progress bar -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="text-muted">Amortizado</span>
+                        <span class="fw-semibold">{{ loan.pct_paid }}%</span>
+                    </div>
+                    <div class="progress" style="height:8px">
+                        <div class="progress-bar bg-success" style="width:{{ loan.pct_paid }}%"></div>
+                    </div>
+                </div>
+
+                <div class="row g-2 text-center">
+                    <div class="col-6">
+                        <div class="p-2 rounded-3 bg-light-soft">
+                            <div class="small text-muted">Saldo Devedor</div>
+                            <div class="fw-bold text-danger">R$ {{ loan.current_balance|floatformat:2 }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2 rounded-3 bg-light-soft">
+                            <div class="small text-muted">Juros Próx. Mês</div>
+                            <div class="fw-bold text-warning">R$ {{ loan.next_interest_display|floatformat:2 }}</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="p-2 rounded-3 bg-light-soft">
+                            <div class="small text-muted">Taxa · Venc. dia {{ loan.due_day }}</div>
+                            <div class="fw-semibold">{{ loan.interest_rate }}% {{ loan.get_interest_period_display }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if loan.is_active and loan.current_balance > 0 %}
+                <a href="{% url 'loan_pay' loan.pk %}" class="btn btn-success w-100 mt-3">
+                    <i class="bi bi-cash-coin me-2"></i>Registrar Pagamento
+                </a>
+                {% else %}
+                <div class="text-center mt-3">
+                    <span class="badge bg-success fs-6 py-2 px-4"><i class="bi bi-check-circle me-2"></i>Quitado</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="glass-card p-5 text-center text-muted">
+                <i class="bi bi-currency-dollar fs-1 d-block mb-3 opacity-50"></i>
+                <p class="fw-bold fs-5">Nenhum empréstimo cadastrado</p>
+                <p class="small">Registre um empréstimo para acompanhar o saldo, os juros e simular pagamentos.</p>
+                <a href="{% url 'loan_add' %}" class="btn-premium px-5 mt-2">Cadastrar Primeiro Empréstimo</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.bg-light-soft { background: rgba(0,0,0,0.03); }
+[data-theme="dark"] .bg-light-soft { background: rgba(255,255,255,0.04); }
+.opacity-60 { opacity: 0.6; }
+</style>
+{% endblock %}

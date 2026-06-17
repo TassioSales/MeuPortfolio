@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="animate-entrance">
+    <div class="d-flex align-items-center mb-4 gap-3 flex-wrap">
+        <a href="{% url 'loan_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i></a>
+        <div class="flex-grow-1">
+            <h2 class="mb-0 fw-bold">{{ loan.name }}</h2>
+            <small class="text-muted">{{ loan.lender }} · {{ loan.get_loan_type_display }} · {{ loan.interest_rate }}% {{ loan.get_interest_period_display }}</small>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'loan_pay' loan.pk %}" class="btn btn-success"><i class="bi bi-cash-coin me-2"></i>Pagar</a>
+            <a href="{% url 'loan_edit' loan.pk %}" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+        </div>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-4 text-center">
+                <div class="text-muted small mb-1">Saldo Devedor</div>
+                <div class="fs-3 fw-bold text-danger">R$ {{ loan.current_balance|floatformat:2 }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-4 text-center">
+                <div class="text-muted small mb-1">Juros Próx. Mês</div>
+                <div class="fs-3 fw-bold text-warning">R$ {{ loan.next_interest|floatformat:2 }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-4 text-center">
+                <div class="text-muted small mb-1">Valor Original</div>
+                <div class="fs-3 fw-bold text-main">R$ {{ loan.principal|floatformat:2 }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-4 text-center">
+                <div class="text-muted small mb-1">Juros Futuros*</div>
+                <div class="fs-3 fw-bold text-muted">R$ {{ total_future_interest|floatformat:2 }}</div>
+                <small class="text-muted d-block" style="font-size:0.65rem">*pagando o mínimo</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left: Chart + Schedule -->
+        <div class="col-lg-8">
+            <div class="glass-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <h5 class="fw-bold mb-0">Evolução do Saldo</h5>
+                    {% if payoff_months_min %}
+                    <span class="badge bg-success">Quitação em {{ payoff_months_min }} meses (mínimo)</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">Pague mais do que os juros para quitar</span>
+                    {% endif %}
+                </div>
+                <canvas id="loanChart" style="max-height:260px"></canvas>
+            </div>
+
+            <div class="glass-card p-4">
+                <h5 class="fw-bold mb-3">Cronograma — Próximos 12 Meses</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Parcela</th>
+                                <th class="text-end">Pagamento</th>
+                                <th class="text-end text-danger">Juros</th>
+                                <th class="text-end text-success">Amort.</th>
+                                <th class="text-end">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in schedule %}
+                            <tr {% if forloop.first %}class="table-warning fw-semibold"{% endif %}>
+                                <td>{{ row.month }}{% if forloop.first %} <span class="badge bg-primary ms-1">próxima</span>{% endif %}</td>
+                                <td class="text-end">R$ {{ row.payment|floatformat:2 }}</td>
+                                <td class="text-end text-danger">R$ {{ row.interest|floatformat:2 }}</td>
+                                <td class="text-end text-success">R$ {{ row.principal|floatformat:2 }}</td>
+                                <td class="text-end fw-semibold {% if row.balance <= 0 %}text-success{% endif %}">
+                                    {% if row.balance <= 0 %}Quitado{% else %}R$ {{ row.balance|floatformat:2 }}{% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted py-3">Empréstimo quitado.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Simulator + History -->
+        <div class="col-lg-4">
+            <div class="glass-card p-4 mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-calculator me-2 text-primary"></i>Simulador</h5>
+                <form method="get">
+                    <label class="form-label small fw-semibold">Se eu pagar por mês...</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">R$</span>
+                        <input type="number" name="sim" value="{{ sim_payment|default:'' }}" class="form-control" placeholder="Ex: 1000" step="0.01" min="0">
+                        <button type="submit" class="btn btn-primary">Simular</button>
+                    </div>
+                </form>
+
+                {% if sim_payment %}
+                <div class="alert alert-info p-3 mb-0">
+                    <div class="fw-semibold mb-2">Pagando R$ {{ sim_payment|floatformat:2 }}/mês:</div>
+                    {% if payoff_months_sim %}
+                    <div>Quitação em <strong>{{ payoff_months_sim }} meses</strong></div>
+                    {% else %}
+                    <div class="text-danger fw-semibold">Valor insuficiente para quitar</div>
+                    {% endif %}
+                    {% if total_future_interest_sim %}
+                    <div>Total em juros: <strong>R$ {{ total_future_interest_sim|floatformat:2 }}</strong></div>
+                    <div class="text-success small mt-1">
+                        Economia vs mínimo: R$ {{ total_future_interest|floatformat:2 }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="text-muted small p-2 bg-light-soft rounded-3">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Mínimo (só juros): <strong>R$ {{ loan.next_interest|floatformat:2 }}/mês</strong>
+                    {% if payoff_months_min %}
+                    — quitação em {{ payoff_months_min }} meses.
+                    {% else %}
+                    — dívida nunca quitada pagando só juros.
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="glass-card p-4">
+                <h5 class="fw-bold mb-3">Histórico de Pagamentos</h5>
+                {% if payments %}
+                <div class="d-flex flex-column gap-2" style="max-height:400px;overflow-y:auto">
+                    {% for p in payments %}
+                    <div class="p-3 rounded-3 bg-light-soft">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-semibold text-main">R$ {{ p.amount_paid|floatformat:2 }}</span>
+                            <small class="text-muted">{{ p.payment_date|date:"d/m/Y" }}</small>
+                        </div>
+                        <div class="d-flex gap-3 mt-1 flex-wrap">
+                            <small class="text-danger"><i class="bi bi-arrow-up-right"></i> Juros R$ {{ p.interest_paid|floatformat:2 }}</small>
+                            <small class="text-success"><i class="bi bi-arrow-down-right"></i> Amort. R$ {{ p.principal_paid|floatformat:2 }}</small>
+                        </div>
+                        <small class="text-muted d-block mt-1">Saldo após: R$ {{ p.balance_after|floatformat:2 }}</small>
+                        {% if p.notes %}<small class="text-muted fst-italic">{{ p.notes }}</small>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-3">
+                    <i class="bi bi-clock-history fs-2 d-block mb-2 opacity-50"></i>
+                    Nenhum pagamento registrado ainda.
+                </div>
+                {% endif %}
+                <a href="{% url 'loan_pay' loan.pk %}" class="btn btn-success w-100 mt-3">
+                    <i class="bi bi-cash-coin me-2"></i>Registrar Pagamento
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-light-soft { background: rgba(0,0,0,0.03); }
+[data-theme="dark"] .bg-light-soft { background: rgba(255,255,255,0.04); }
+</style>
+
+{% block scripts %}
+<script>
+const labels = {{ chart_labels|safe }};
+const balances = {{ chart_balance|safe }};
+const simBalances = {{ chart_sim_balance|safe }};
+
+new Chart(document.getElementById('loanChart'), {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Saldo (mínimo)',
+                data: balances,
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(239,68,68,0.07)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 3,
+            },
+            ...(simBalances ? [{
+                label: 'Saldo (simulado)',
+                data: simBalances,
+                borderColor: '#10b981',
+                borderDash: [5,4],
+                backgroundColor: 'rgba(16,185,129,0.05)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 3,
+            }] : []),
+        ],
+    },
+    options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { position: 'top' } },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { callback: v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:0}) }
+            },
+        },
+    },
+});
+</script>
+{% endblock %}
+{% endblock %}

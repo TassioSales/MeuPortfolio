@@ -96,6 +96,17 @@
         </div>
     </div>
 
+    {% if active_loans %}
+    <div class="alert d-flex align-items-center gap-3 mb-4 shadow-sm border-0" style="background: rgba(245,158,11,0.1); border-left: 4px solid #f59e0b!important; border-radius: 12px;">
+        <i class="bi bi-currency-dollar fs-3 text-warning"></i>
+        <div>
+            Você tem <strong>{{ active_loans }} empréstimo(s) ativo(s)</strong>.
+            Pagamento mínimo próximo mês: <strong class="text-warning">R$ {{ loan_min_total|floatformat:2 }}</strong>.
+            <a href="{% url 'loan_list' %}" class="fw-bold ms-2 text-decoration-none">Ver detalhes →</a>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Charts & Activity Group -->
     <div class="row g-4">
         <div class="col-lg-8">

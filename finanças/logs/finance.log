@@ -101150,3 +101150,12 @@ django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '
 2026-06-17 12:36:20.200 | INFO     | logging:callHandlers:1737 - Generating reports for user TassioSales
 2026-06-17 12:42:04.271 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080
 2026-06-17 12:43:19.039 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080
+2026-06-17 12:53:59.074 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080
+2026-06-17 12:55:19.859 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
+2026-06-17 12:55:20.232 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/USD-BRL HTTP/1.1" 200 None
+2026-06-17 12:55:21.803 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
+2026-06-17 12:55:22.179 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/USD-BRL HTTP/1.1" 200 None
+2026-06-17 12:55:22.182 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
+2026-06-17 12:55:22.506 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/EUR-BRL HTTP/1.1" 200 None
+2026-06-17 12:55:22.509 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): api.bcb.gov.br:443
+2026-06-17 12:55:22.881 | DEBUG    | logging:callHandlers:1737 - https://api.bcb.gov.br:443 "GET /dados/serie/bcdata.sgs.432/dados?formato=json&dataInicial=18/04/2026 HTTP/1.1" 200 2319

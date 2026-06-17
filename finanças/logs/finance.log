@@ -102284,3 +102284,4 @@ django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '
 2026-06-17 14:16:04.728 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
 2026-06-17 14:16:05.129 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/USD-BRL HTTP/1.1" 200 None
 2026-06-17 14:17:36.070 | INFO     | logging:callHandlers:1737 - Generating reports for user TassioSales
+2026-06-17 14:28:26.123 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080

@@ -48,8 +48,8 @@
                 <label class="form-label small fw-bold text-muted text-uppercase mb-2">Tipo</label>
                 <select class="form-select border-0 bg-light-soft rounded-3" name="type">
                     <option value="">Todos</option>
-                    <option value="RECEITA" {% if filter_type=='RECEITA' %}selected{% endif %}>Receitas</option>
-                    <option value="DESPESA" {% if filter_type=='DESPESA' %}selected{% endif %}>Despesas</option>
+                    <option value="RECEITA" {% if filter_type == 'RECEITA' %}selected{% endif %}>Receitas</option>
+                    <option value="DESPESA" {% if filter_type == 'DESPESA' %}selected{% endif %}>Despesas</option>
                 </select>
             </div>
 
@@ -58,7 +58,7 @@
                 <select class="form-select border-0 bg-light-soft rounded-3" name="category">
                     <option value="">Todas</option>
                     {% for cat in categories %}
-                    <option value="{{ cat.id }}" {% if filter_category==cat.id|stringformat:"s" %}selected{% endif %}>{{
+                    <option value="{{ cat.id }}" {% if filter_category == cat.id|stringformat:"s" %}selected{% endif %}>{{
                         cat.name }}</option>
                     {% endfor %}
                 </select>

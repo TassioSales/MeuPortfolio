@@ -111,15 +111,13 @@
                                 </div>
                                 <div>
                                     <div class="fw-bold text-main">{{ item.investment.symbol }}</div>
-                                    <small class="text-muted">{{
-                                        item.investment.name|default:item.investment.symbol|truncatechars:20 }}</small>
+                                    <small class="text-muted">{{ item.investment.name|default:item.investment.symbol|truncatechars:20 }}</small>
                                 </div>
                             </div>
                         </td>
                         <td class="fw-medium" data-label="Quantidade">{{ item.investment.quantity|floatformat:"-4" }}
                         </td>
-                        <td class="text-muted" data-label="Preço Médio">R$ {{
-                            item.investment.purchase_price|floatformat:2 }}</td>
+                        <td class="text-muted" data-label="Preço Médio">R$ {{ item.investment.purchase_price|floatformat:2 }}</td>
                         <td data-label="Valor Atual">
                             <div class="fw-bold">R$ {{ item.current_value|floatformat:2 }}</div>
                             <small class="text-muted">Cotação: R$ {{ item.current_price|floatformat:2 }}</small>

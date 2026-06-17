@@ -1,0 +1,17 @@
+# Go
+backend/encurtador.db
+backend/encurtador_url
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db

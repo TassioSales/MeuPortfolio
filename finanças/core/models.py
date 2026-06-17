@@ -261,3 +261,80 @@ class AuditLog(models.Model):
 
     def __str__(self):
         return f"{self.user} — {self.action} — {self.timestamp:%Y-%m-%d %H:%M}"
+
+
+class Loan(models.Model):
+    LOAN_TYPES = [
+        ('REDUCAO_SALDO', 'Juros sobre Saldo Devedor'),
+        ('PRICE', 'Tabela Price (Parcela Fixa)'),
+        ('SAC', 'SAC (Amortização Constante)'),
+        ('SIMPLES', 'Juros Simples (Pré-fixado)'),
+    ]
+    INTEREST_PERIOD = [
+        ('MENSAL', 'Mensal (% a.m.)'),
+        ('ANUAL', 'Anual (% a.a.)'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='loans')
+    name = models.CharField(max_length=150, verbose_name='Descrição')
+    lender = models.CharField(max_length=100, verbose_name='Credor/Instituição')
+    loan_type = models.CharField(max_length=20, choices=LOAN_TYPES, default='REDUCAO_SALDO', verbose_name='Modalidade')
+    principal = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Valor Original')
+    interest_rate = models.DecimalField(max_digits=7, decimal_places=4, verbose_name='Taxa de Juros (%)')
+    interest_period = models.CharField(max_length=10, choices=INTEREST_PERIOD, default='MENSAL', verbose_name='Período da Taxa')
+    start_date = models.DateField(verbose_name='Data do Empréstimo')
+    due_day = models.IntegerField(default=10, verbose_name='Dia de Vencimento')
+    num_installments = models.IntegerField(null=True, blank=True, verbose_name='Número de Parcelas', help_text='Obrigatório para Price e SAC. Deixe vazio para Saldo Devedor/Simples.')
+    current_balance = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Saldo Devedor Atual')
+    notes = models.TextField(blank=True, verbose_name='Observações')
+    is_active = models.BooleanField(default=True, verbose_name='Ativo')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Empréstimo'
+        verbose_name_plural = 'Empréstimos'
+        ordering = ['-start_date']
+
+    def __str__(self):
+        return f"{self.name} — R$ {self.current_balance:.2f}"
+
+    @property
+    def monthly_rate(self):
+        rate = float(self.interest_rate) / 100
+        if self.interest_period == 'ANUAL':
+            rate = (1 + rate) ** (1 / 12) - 1
+        return rate
+
+    @property
+    def next_interest(self):
+        return round(float(self.current_balance) * self.monthly_rate, 2)
+
+    @property
+    def min_next_payment(self):
+        """Minimum payment to at least cover interest (so debt doesn't grow)."""
+        return self.next_interest
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            if not self.current_balance:
+                self.current_balance = self.principal
+        super().save(*args, **kwargs)
+
+
+class LoanPayment(models.Model):
+    loan = models.ForeignKey(Loan, on_delete=models.CASCADE, related_name='payments')
+    payment_date = models.DateField(default=timezone.now, verbose_name='Data do Pagamento')
+    amount_paid = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Valor Pago')
+    interest_paid = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Juros')
+    principal_paid = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Amortização')
+    balance_after = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Saldo Após')
+    notes = models.CharField(max_length=255, blank=True, verbose_name='Observações')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Pagamento de Empréstimo'
+        verbose_name_plural = 'Pagamentos de Empréstimo'
+        ordering = ['-payment_date']
+
+    def __str__(self):
+        return f"Pagamento R$ {self.amount_paid} em {self.payment_date}"

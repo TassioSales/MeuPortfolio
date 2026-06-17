@@ -94,6 +94,12 @@
                     <span>Objetivos</span>
                 </a>
 
+                <a class="nav-link {% if 'loan' in request.resolver_match.url_name %}active{% endif %}"
+                    href="{% url 'loan_list' %}">
+                    <i class="bi bi-currency-dollar"></i>
+                    <span>Empréstimos</span>
+                </a>
+
                 <div class="nav-section-title text-uppercase small fw-bold mt-4 mb-3"
                     style="font-size: 0.65rem; opacity: 0.5;">Contas & Análise</div>
 

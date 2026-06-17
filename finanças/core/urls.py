@@ -71,5 +71,13 @@ urlpatterns = [
 
     # JSON Export
     path('reports/export/json/', views.export_json, name='export_json'),
+
+    # Loans
+    path('loans/', views.LoanListView.as_view(), name='loan_list'),
+    path('loans/add/', views.LoanCreateView.as_view(), name='loan_add'),
+    path('loans/<int:pk>/', views.loan_detail, name='loan_detail'),
+    path('loans/<int:pk>/edit/', views.LoanUpdateView.as_view(), name='loan_edit'),
+    path('loans/<int:pk>/delete/', views.LoanDeleteView.as_view(), name='loan_delete'),
+    path('loans/<int:pk>/pay/', views.loan_make_payment, name='loan_pay'),
 ]
 # Force reload

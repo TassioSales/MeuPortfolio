@@ -39,7 +39,7 @@ def get_price_manual(symbol):
         print(f"Manual fetch failed for {symbol}: {e}")
         return None, None
 
-from .models import Transaction, Category, Budget, Investment, RecurringTransaction, Goal
+from .models import Transaction, Category, Budget, Investment, RecurringTransaction, Goal, Loan
 from django.db.models.functions import TruncMonth, TruncDay
 from .forms import CategoryForm, TransactionForm, BudgetForm, InvestmentForm, ImportFileForm, GoalForm
 
@@ -536,6 +536,8 @@ def dashboard(request):
         'selected_year': year,
         'alerts': alerts,
         'goals': Goal.objects.filter(user=request.user).order_by('deadline')[:6],
+        'active_loans': Loan.objects.filter(user=request.user, is_active=True, current_balance__gt=0).count(),
+        'loan_min_total': round(sum(l.min_next_payment for l in Loan.objects.filter(user=request.user, is_active=True) if float(l.current_balance) > 0), 2),
     }
     return render(request, 'core/dashboard.html', context)
 
@@ -1602,3 +1604,11 @@ from .views_accounts import (
     transfer_create,
 )
 from .views_audit import AuditLogListView
+from .views_loans import (
+    LoanCreateView,
+    LoanDeleteView,
+    LoanListView,
+    LoanUpdateView,
+    loan_detail,
+    loan_make_payment,
+)

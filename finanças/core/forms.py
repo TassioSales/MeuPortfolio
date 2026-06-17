@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Transaction, Budget, Investment, RecurringTransaction, Goal, BankAccount, Transfer
+from .models import Category, Transaction, Budget, Investment, RecurringTransaction, Goal, BankAccount, Transfer, Loan, LoanPayment
 from decimal import Decimal
 
 def clean_currency_value(value):
@@ -233,3 +233,60 @@ class TransferForm(forms.ModelForm):
         if cleaned.get('from_account') == cleaned.get('to_account'):
             raise forms.ValidationError("Conta de origem e destino não podem ser iguais.")
         return cleaned
+
+
+class LoanForm(forms.ModelForm):
+    principal = forms.CharField(label="Valor Original (R$)", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}))
+    current_balance = forms.CharField(label="Saldo Devedor Atual (R$)", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}), required=False, help_text="Deixe vazio se for um novo empréstimo (usa o valor original)")
+    interest_rate = forms.CharField(label="Taxa de Juros (%)", widget=forms.TextInput(attrs={'placeholder': 'Ex: 1.0 para 1%/mês'}))
+
+    class Meta:
+        model = Loan
+        fields = ['name', 'lender', 'loan_type', 'principal', 'current_balance', 'interest_rate', 'interest_period', 'start_date', 'due_day', 'num_installments', 'notes', 'is_active']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'loan_type': forms.Select(attrs={'onchange': 'toggleLoanFields(this)'}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def clean_principal(self):
+        return clean_currency_value(self.data.get('principal'))
+
+    def clean_current_balance(self):
+        val = self.data.get('current_balance', '').strip()
+        if not val:
+            return None
+        return clean_currency_value(val)
+
+    def clean_interest_rate(self):
+        val = self.data.get('interest_rate', '').strip().replace(',', '.')
+        try:
+            return Decimal(val)
+        except Exception:
+            raise forms.ValidationError("Informe uma taxa válida (ex: 1.0)")
+
+    def clean(self):
+        cleaned = super().clean()
+        loan_type = cleaned.get('loan_type')
+        num_installments = cleaned.get('num_installments')
+        if loan_type in ('PRICE', 'SAC') and not num_installments:
+            self.add_error('num_installments', 'Número de parcelas obrigatório para esta modalidade.')
+        current_balance = cleaned.get('current_balance')
+        principal = cleaned.get('principal')
+        if not current_balance and principal:
+            cleaned['current_balance'] = principal
+        return cleaned
+
+
+class LoanPaymentForm(forms.ModelForm):
+    amount_paid = forms.CharField(label="Valor Pago (R$)", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}))
+
+    class Meta:
+        model = LoanPayment
+        fields = ['payment_date', 'amount_paid', 'notes']
+        widgets = {
+            'payment_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def clean_amount_paid(self):
+        return clean_currency_value(self.data.get('amount_paid'))

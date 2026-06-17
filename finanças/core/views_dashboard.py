@@ -11,7 +11,7 @@ from django.db.models.functions import TruncMonth
 from django.shortcuts import redirect, render
 from django.utils import timezone
 
-from .models import Budget, Transaction
+from .models import Budget, Goal, Loan, Transaction
 from .services import process_recurring_transactions
 import datetime
 
@@ -180,6 +180,15 @@ def dashboard(request):
                     "level": "danger" if percent_used >= 100 else "warning",
                 })
 
+    # Loans summary
+    active_loan_qs = Loan.objects.filter(user=request.user, is_active=True, current_balance__gt=0)
+    active_loans_count = active_loan_qs.count()
+    loan_min_total = round(sum(l.min_next_payment for l in active_loan_qs), 2)
+    total_loan_debt = round(sum(float(l.current_balance) for l in active_loan_qs), 2)
+
+    # Goals summary
+    goals = Goal.objects.filter(user=request.user).order_by('deadline')[:6]
+
     context = {
         "recent_transactions": recent_transactions,
         "monthly_income": monthly_income,
@@ -198,6 +207,10 @@ def dashboard(request):
         "selected_month": month,
         "selected_year": year,
         "alerts": alerts,
+        "active_loans": active_loans_count,
+        "loan_min_total": loan_min_total,
+        "total_loan_debt": total_loan_debt,
+        "goals": goals,
     }
     return render(request, "core/dashboard.html", context)
 

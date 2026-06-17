@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"sync"
@@ -96,6 +97,16 @@ type userMetricsResponse struct {
 	Metrics *metrics.Metrics   `json:"metrics"`
 }
 
+func (h *Handlers) githubErrStatus(err error) int {
+	if errors.Is(err, githubclient.ErrNotFound) {
+		return http.StatusNotFound
+	}
+	if errors.Is(err, githubclient.ErrRateLimit) {
+		return http.StatusTooManyRequests
+	}
+	return http.StatusBadGateway
+}
+
 func (h *Handlers) GetUserMetrics(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
 	if username == "" {
@@ -105,7 +116,7 @@ func (h *Handlers) GetUserMetrics(w http.ResponseWriter, r *http.Request) {
 
 	user, repos, langData, err := h.fetchUserData(username)
 	if err != nil {
-		writeError(w, http.StatusBadGateway, err.Error())
+		writeError(w, h.githubErrStatus(err), err.Error())
 		return
 	}
 
@@ -122,7 +133,7 @@ func (h *Handlers) GetLanguages(w http.ResponseWriter, r *http.Request) {
 
 	_, repos, langData, err := h.fetchUserData(username)
 	if err != nil {
-		writeError(w, http.StatusBadGateway, err.Error())
+		writeError(w, h.githubErrStatus(err), err.Error())
 		return
 	}
 
@@ -139,7 +150,7 @@ func (h *Handlers) GetInsights(w http.ResponseWriter, r *http.Request) {
 
 	_, repos, langData, err := h.fetchUserData(username)
 	if err != nil {
-		writeError(w, http.StatusBadGateway, err.Error())
+		writeError(w, h.githubErrStatus(err), err.Error())
 		return
 	}
 

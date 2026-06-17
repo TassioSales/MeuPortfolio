@@ -20,8 +20,18 @@ func New(db *storage.DB) *Service {
 	return &Service{db: db}
 }
 
-// Shorten creates a unique 6-character short code for the given URL.
+// Shorten returns the existing short URL for originalURL if already stored,
+// or creates a new one. This prevents duplicate entries for the same URL.
 func (s *Service) Shorten(originalURL string) (*storage.URL, error) {
+	// Deduplication: return existing short code if URL was already shortened.
+	existing, err := s.db.GetByOriginalURL(originalURL)
+	if err != nil {
+		return nil, fmt.Errorf("check duplicate: %w", err)
+	}
+	if existing != nil {
+		return existing, nil
+	}
+
 	for attempt := 0; attempt < 10; attempt++ {
 		code := generateCode(originalURL, attempt)
 		exists, err := s.db.CodeExists(code)

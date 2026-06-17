@@ -8763,3 +8763,4 @@ Traceback (most recent call last):
     ...<2 lines>...
     )
 django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '=='RECEITA'' from 'filter_type=='RECEITA''
+INFO 2026-06-17 12:36:20,198 views_reports 11712 24452 Generating reports for user TassioSales

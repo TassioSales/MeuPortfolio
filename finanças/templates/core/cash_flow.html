@@ -18,6 +18,8 @@
     </form>
   </div>
 
+
+  {# ── KPI Cards ─────────────────────────────────────────────────────────── #}
   <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
       <div class="card shadow-sm border-0 h-100">
@@ -49,14 +51,22 @@
       <div class="card shadow-sm border-0 h-100">
         <div class="card-body text-center">
           <div class="text-muted small">Economia Mensal Estimada</div>
+
           <div class="fs-4 fw-bold {% if proj_income > proj_expense %}text-success{% else %}text-danger{% endif %}">
             R$ {{ proj_income|floatformat:2 }}
           </div>
+          {% with saving=proj_income|add:proj_expense %}
+          <div class="fs-4 fw-bold {% if proj_income > proj_expense %}text-success{% else %}text-danger{% endif %}">
+            R$ {{ proj_income|floatformat:2 }}
+          </div>
+          {% endwith %}
         </div>
       </div>
     </div>
   </div>
 
+
+  {# ── Main Chart ────────────────────────────────────────────────────────── #}
   <div class="card shadow-sm mb-4">
     <div class="card-header fw-bold d-flex align-items-center gap-2">
       <span>Evolução do Saldo</span>
@@ -68,6 +78,8 @@
   </div>
 
   <div class="row g-4 mb-4">
+
+    {# ── Bar chart: income vs expense projection ──── #}
     <div class="col-lg-6">
       <div class="card shadow-sm h-100">
         <div class="card-header fw-bold">Receitas vs Despesas Projetadas</div>
@@ -77,6 +89,8 @@
       </div>
     </div>
 
+
+    {# ── Monthly table ──────────────────────────── #}
     <div class="col-lg-6">
       <div class="card shadow-sm h-100">
         <div class="card-header fw-bold">Detalhe por Mês</div>
@@ -111,14 +125,20 @@
   <div class="alert alert-light border small text-muted">
     <i class="bi bi-info-circle me-1"></i>
     A projeção usa a <strong>média histórica</strong> dos últimos 6 meses somada às suas
+
     <strong>transações recorrentes ativas</strong>. Valores são estimativas.
+    <strong>transações recorrentes ativas</strong>. Valores são estimativas — receitas e despesas
+    extraordinárias não são consideradas.
     Recorrentes cadastradas: receita <strong>R$ {{ recurring_income|floatformat:2 }}</strong> /
     despesa <strong>R$ {{ recurring_expense|floatformat:2 }}</strong> (equiv. mensal).
   </div>
 </div>
 {% endblock %}
 
+
 {% block scripts %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 const allLabels   = {{ chart_labels|safe }};
 const allBalances = {{ chart_balances|safe }};
@@ -127,6 +147,8 @@ const projLabels  = {{ proj_labels|safe }};
 const projIncome  = {{ proj_income_list|safe }};
 const projExpense = {{ proj_expense_list|safe }};
 
+
+// ── Balance line chart ────────────────────────────────────────────────────
 new Chart(document.getElementById('balanceChart'), {
   type: 'line',
   data: {
@@ -166,6 +188,8 @@ new Chart(document.getElementById('balanceChart'), {
   },
 });
 
+
+// ── Bar chart: income vs expense ──────────────────────────────────────────
 new Chart(document.getElementById('projChart'), {
   type: 'bar',
   data: {

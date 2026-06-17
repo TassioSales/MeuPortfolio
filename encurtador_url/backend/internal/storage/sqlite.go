@@ -109,6 +109,22 @@ func (db *DB) CodeExists(shortCode string) (bool, error) {
 	return count > 0, err
 }
 
+// GetByOriginalURL returns an existing URL row for the given original URL, or nil if not found.
+func (db *DB) GetByOriginalURL(originalURL string) (*URL, error) {
+	query := `SELECT id, short_code, original_url, created_at FROM urls WHERE original_url = ? LIMIT 1`
+	row := db.conn.QueryRow(query, originalURL)
+	u := &URL{}
+	var createdAt string
+	if err := row.Scan(&u.ID, &u.ShortCode, &u.OriginalURL, &createdAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	u.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+	return u, nil
+}
+
 // ListURLs returns all URLs with their click counts.
 func (db *DB) ListURLs() ([]URL, error) {
 	rows, err := db.conn.Query(`

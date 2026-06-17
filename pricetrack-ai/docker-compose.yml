@@ -1,0 +1,16 @@
+services:
+  pricetrack-ai:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PTAI_LOG_LEVEL=${PTAI_LOG_LEVEL:-INFO}
+    volumes:
+      - pricetrack_data:/app/data
+      - pricetrack_logs:/app/logs
+    restart: unless-stopped
+
+volumes:
+  pricetrack_data:
+  pricetrack_logs:

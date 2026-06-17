@@ -1,3 +1,7 @@
+# DEPRECATED: Este arquivo é a versão legada do entry point.
+# O entry point ativo é app/main.py (uvicorn app.main:app).
+# Mantido apenas para referência histórica — não usar em produção.
+
 from fastapi import FastAPI, Depends, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session

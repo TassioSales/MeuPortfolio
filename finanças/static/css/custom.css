@@ -145,6 +145,12 @@ h6 {
     box-shadow: var(--brand-glow);
 }
 
+.brand-icon-logo {
+    background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.45);
+    font-size: 1.25rem;
+}
+
 .brand-name {
     font-family: var(--font-heading);
     font-size: 1.5rem;

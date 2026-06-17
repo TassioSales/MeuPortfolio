@@ -102267,3 +102267,20 @@ django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '
 2026-06-17 14:06:44.128 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/USD-BRL HTTP/1.1" 200 None
 2026-06-17 14:07:29.470 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): query2.finance.yahoo.com:443
 2026-06-17 14:07:30.006 | DEBUG    | logging:callHandlers:1737 - https://query2.finance.yahoo.com:443 "GET /v8/finance/chart/KISU11.SA?interval=1d&range=6mo HTTP/1.1" 200 None
+2026-06-17 14:14:34.470 | INFO     | logging:callHandlers:1737 - Serving on http://0.0.0.0:8080
+2026-06-17 14:14:48.962 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
+2026-06-17 14:14:49.370 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/USD-BRL HTTP/1.1" 200 None
+2026-06-17 14:14:49.379 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): query2.finance.yahoo.com:443
+2026-06-17 14:14:49.867 | DEBUG    | logging:callHandlers:1737 - https://query2.finance.yahoo.com:443 "GET /v8/finance/chart/VGHF11.SA?interval=1d&range=6mo HTTP/1.1" 200 None
+2026-06-17 14:15:23.320 | INFO     | logging:callHandlers:1737 - Generating reports for user TassioSales
+2026-06-17 14:15:57.884 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
+2026-06-17 14:15:58.216 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/USD-BRL HTTP/1.1" 200 None
+2026-06-17 14:16:01.353 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
+2026-06-17 14:16:01.683 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/USD-BRL HTTP/1.1" 200 None
+2026-06-17 14:16:01.686 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
+2026-06-17 14:16:01.971 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/EUR-BRL HTTP/1.1" 200 None
+2026-06-17 14:16:01.981 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): api.bcb.gov.br:443
+2026-06-17 14:16:03.115 | DEBUG    | logging:callHandlers:1737 - https://api.bcb.gov.br:443 "GET /dados/serie/bcdata.sgs.432/dados?formato=json&dataInicial=18/04/2026 HTTP/1.1" 200 2319
+2026-06-17 14:16:04.728 | DEBUG    | logging:callHandlers:1737 - Starting new HTTPS connection (1): economia.awesomeapi.com.br:443
+2026-06-17 14:16:05.129 | DEBUG    | logging:callHandlers:1737 - https://economia.awesomeapi.com.br:443 "GET /json/last/USD-BRL HTTP/1.1" 200 None
+2026-06-17 14:17:36.070 | INFO     | logging:callHandlers:1737 - Generating reports for user TassioSales

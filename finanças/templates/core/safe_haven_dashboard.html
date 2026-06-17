@@ -77,8 +77,7 @@
                                         {{ item.rate_display }}
                                     </span>
                                 </td>
-                                <td class="text-muted" data-label="Investido">R$ {{
-                                    item.investment.total_cost|floatformat:2 }}</td>
+                                <td class="text-muted" data-label="Investido">R$ {{ item.investment.total_cost|floatformat:2 }}</td>
                                 <td class="fw-bold" data-label="Saldo Estimado">R$ {{ item.current_value|floatformat:2
                                     }}</td>
                                 <td class="pe-4 text-end" data-label="Ganho Absoluto">
@@ -135,11 +134,9 @@
                                     </div>
                                 </td>
                                 <td class="fw-medium" data-label="Quantidade">{{ item.investment.quantity }}</td>
-                                <td class="text-muted" data-label="Preço Médio">R$ {{
-                                    item.investment.purchase_price|floatformat:2 }}</td>
+                                <td class="text-muted" data-label="Preço Médio">R$ {{ item.investment.purchase_price|floatformat:2 }}</td>
                                 <td data-label="Cotação">R$ {{ item.current_price|floatformat:2 }}</td>
-                                <td class="pe-4 text-end fw-bold" data-label="Valor em BRL">R$ {{
-                                    item.current_value|floatformat:2 }}</td>
+                                <td class="pe-4 text-end fw-bold" data-label="Valor em BRL">R$ {{ item.current_value|floatformat:2 }}</td>
                             </tr>
                             {% empty %}
                             <tr>

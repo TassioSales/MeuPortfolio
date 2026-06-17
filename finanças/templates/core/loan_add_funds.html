@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid py-4" style="max-width:560px">
+    <div class="d-flex align-items-center mb-4 gap-3">
+        <a href="{% url 'loan_detail' loan.pk %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i></a>
+        <div>
+            <h2 class="mb-0 fw-bold">Tomar Mais Dinheiro</h2>
+            <small class="text-muted">{{ loan.name }} · Saldo atual: R$ {{ loan.current_balance|floatformat:2 }}</small>
+        </div>
+    </div>
+
+    <div class="alert d-flex gap-3 align-items-start mb-4 border-0 shadow-sm"
+         style="background:rgba(245,158,11,0.1);border-left:4px solid #f59e0b!important;border-radius:12px">
+        <i class="bi bi-info-circle-fill text-warning fs-5 mt-1"></i>
+        <div class="small">
+            <strong>Como funciona:</strong> O valor adicional é somado ao saldo devedor atual.
+            Os juros do próximo mês serão calculados sobre o novo saldo maior.
+            <strong>O histórico de pagamentos anteriores não é alterado.</strong>
+        </div>
+    </div>
+
+    <div class="glass-card p-4">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Valor Adicional (R$) *</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text">R$</span>
+                        <input type="text" name="amount" class="form-control money-mask" placeholder="0,00" required>
+                    </div>
+                    {% if form.amount.errors %}<div class="text-danger small mt-1">{{ form.amount.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Data do Novo Desembolso *</label>
+                    <input type="date" name="date" value="{{ form.date.value|default:'' }}" class="form-control" required>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Motivo / Observação</label>
+                    <input type="text" name="note" value="{{ form.note.value|default:'' }}" class="form-control" placeholder="Ex: Emergência, reforma, necessidade extra...">
+                </div>
+
+                <!-- Preview -->
+                <div class="col-12">
+                    <div class="p-3 rounded-3 bg-light-soft">
+                        <div class="small text-muted mb-2 fw-semibold text-uppercase">Impacto no Empréstimo</div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Saldo atual</span>
+                            <span class="fw-semibold">R$ {{ loan.current_balance|floatformat:2 }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Valor adicional</span>
+                            <span class="fw-semibold text-warning" id="preview-amount">R$ —</span>
+                        </div>
+                        <div class="border-top my-2"></div>
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold small">Novo saldo devedor</span>
+                            <span class="fw-bold text-danger" id="preview-total">R$ —</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-1">
+                            <span class="text-muted small">Próximo juros (estimado)</span>
+                            <span class="fw-semibold text-muted small" id="preview-interest">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-warning text-dark px-5 fw-semibold">
+                    <i class="bi bi-plus-circle me-2"></i>Confirmar
+                </button>
+                <a href="{% url 'loan_detail' loan.pk %}" class="btn btn-outline-secondary px-4">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.bg-light-soft { background: rgba(0,0,0,0.03); }
+[data-theme="dark"] .bg-light-soft { background: rgba(255,255,255,0.04); }
+</style>
+
+{% block scripts %}
+<script>
+const currentBalance = {{ loan.current_balance }};
+const monthlyRate = {{ loan.monthly_rate }};
+
+function fmt(v) {
+    return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function parseMoney(s) {
+    return parseFloat(s.replace(/\./g,'').replace(',','.')) || 0;
+}
+
+document.querySelector('[name=amount]').addEventListener('input', function() {
+    const added = parseMoney(this.value);
+    const newBalance = currentBalance + added;
+    const nextInterest = newBalance * monthlyRate;
+    document.getElementById('preview-amount').textContent = fmt(added);
+    document.getElementById('preview-total').textContent = fmt(newBalance);
+    document.getElementById('preview-interest').textContent = fmt(nextInterest) + '/mês';
+});
+</script>
+{% endblock %}
+{% endblock %}

@@ -286,6 +286,16 @@ class Loan(models.Model):
     due_day = models.IntegerField(default=10, verbose_name='Dia de Vencimento')
     num_installments = models.IntegerField(null=True, blank=True, verbose_name='Número de Parcelas', help_text='Obrigatório para Price e SAC. Deixe vazio para Saldo Devedor/Simples.')
     current_balance = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Saldo Devedor Atual')
+    iof_rate = models.DecimalField(
+        max_digits=7, decimal_places=4, default=0, blank=True,
+        verbose_name='IOF (%)',
+        help_text='Percentual do IOF sobre o principal. Ex: 3.0 para 3%. Deixe 0 para empréstimos sem IOF.'
+    )
+    insurance_monthly = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0, blank=True,
+        verbose_name='Seguro Mensal (R$)',
+        help_text='Seguro prestamista mensal fixo. Deixe 0 se não houver.'
+    )
     notes = models.TextField(blank=True, verbose_name='Observações')
     is_active = models.BooleanField(default=True, verbose_name='Ativo')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -319,6 +329,22 @@ class Loan(models.Model):
             if not self.current_balance:
                 self.current_balance = self.principal
         super().save(*args, **kwargs)
+
+
+class LoanDisbursement(models.Model):
+    """Tracks additional draws on an existing loan (e.g. borrowing more from same lender)."""
+    loan = models.ForeignKey(Loan, on_delete=models.CASCADE, related_name='disbursements')
+    amount = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Valor Adicional (R$)')
+    date = models.DateField(default=timezone.now, verbose_name='Data')
+    note = models.CharField(max_length=255, blank=True, verbose_name='Observação')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Desembolso Adicional'
+        ordering = ['-date']
+
+    def __str__(self):
+        return f"+R$ {self.amount} em {self.date}"
 
 
 class LoanPayment(models.Model):

@@ -79,5 +79,6 @@ urlpatterns = [
     path('loans/<int:pk>/edit/', views.LoanUpdateView.as_view(), name='loan_edit'),
     path('loans/<int:pk>/delete/', views.LoanDeleteView.as_view(), name='loan_delete'),
     path('loans/<int:pk>/pay/', views.loan_make_payment, name='loan_pay'),
+    path('loans/<int:pk>/add-funds/', views.loan_add_funds, name='loan_add_funds'),
 ]
 # Force reload

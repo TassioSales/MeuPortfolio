@@ -7,8 +7,11 @@
             <h2 class="mb-0 fw-bold">{{ loan.name }}</h2>
             <small class="text-muted">{{ loan.lender }} · {{ loan.get_loan_type_display }} · {{ loan.interest_rate }}% {{ loan.get_interest_period_display }}</small>
         </div>
-        <div class="d-flex gap-2">
-            <a href="{% url 'loan_pay' loan.pk %}" class="btn btn-success"><i class="bi bi-cash-coin me-2"></i>Pagar</a>
+        <div class="d-flex gap-2 flex-wrap">
+            {% if loan.is_active and loan.current_balance > 0 %}
+            <a href="{% url 'loan_pay' loan.pk %}" class="btn btn-success"><i class="bi bi-cash-coin me-1"></i>Pagar</a>
+            <a href="{% url 'loan_add_funds' loan.pk %}" class="btn btn-warning text-dark"><i class="bi bi-plus-circle me-1"></i>Tomar Mais</a>
+            {% endif %}
             <a href="{% url 'loan_edit' loan.pk %}" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i></a>
         </div>
     </div>
@@ -23,24 +26,56 @@
         </div>
         <div class="col-6 col-lg-3">
             <div class="glass-card p-4 text-center">
-                <div class="text-muted small mb-1">Juros Próx. Mês</div>
-                <div class="fs-3 fw-bold text-warning">R$ {{ loan.next_interest|floatformat:2 }}</div>
-            </div>
-        </div>
-        <div class="col-6 col-lg-3">
-            <div class="glass-card p-4 text-center">
-                <div class="text-muted small mb-1">Valor Original</div>
-                <div class="fs-3 fw-bold text-main">R$ {{ loan.principal|floatformat:2 }}</div>
+                <div class="text-muted small mb-1">Próxima Parcela</div>
+                <div class="fs-3 fw-bold text-warning">
+                    R$ {{ loan.next_interest|floatformat:2 }}
+                    {% if loan.insurance_monthly > 0 %}
+                    <div class="small text-muted fw-normal" style="font-size:0.75rem">+ R$ {{ loan.insurance_monthly|floatformat:2 }} seguro</div>
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div class="col-6 col-lg-3">
             <div class="glass-card p-4 text-center">
                 <div class="text-muted small mb-1">Juros Futuros*</div>
                 <div class="fs-3 fw-bold text-muted">R$ {{ total_future_interest|floatformat:2 }}</div>
-                <small class="text-muted d-block" style="font-size:0.65rem">*pagando o mínimo</small>
+                <small class="text-muted" style="font-size:0.65rem">*pagando o mínimo</small>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-4 text-center">
+                <div class="text-muted small mb-1">CET
+                    <span class="badge bg-secondary fw-normal ms-1" style="font-size:0.6rem" title="Custo Efetivo Total — inclui IOF e seguro">?</span>
+                </div>
+                <div class="fs-3 fw-bold" style="color:var(--info)">{{ cet.monthly }}% a.m.</div>
+                <div class="small text-muted">{{ cet.annual }}% a.a.</div>
             </div>
         </div>
     </div>
+
+    <!-- IOF + Seguro info bar (only when set) -->
+    {% if loan.iof_rate > 0 or loan.insurance_monthly > 0 %}
+    <div class="d-flex flex-wrap gap-3 mb-4">
+        {% if loan.iof_rate > 0 %}
+        <div class="glass-card px-3 py-2 d-flex align-items-center gap-2">
+            <i class="bi bi-receipt text-warning"></i>
+            <div>
+                <div class="small fw-semibold">IOF {{ loan.iof_rate }}%</div>
+                <div class="text-muted small">R$ {{ cet.iof_value|floatformat:2 }} sobre o principal</div>
+            </div>
+        </div>
+        {% endif %}
+        {% if loan.insurance_monthly > 0 %}
+        <div class="glass-card px-3 py-2 d-flex align-items-center gap-2">
+            <i class="bi bi-shield-check text-success"></i>
+            <div>
+                <div class="small fw-semibold">Seguro R$ {{ loan.insurance_monthly|floatformat:2 }}/mês</div>
+                <div class="text-muted small">Total: R$ {{ total_future_insurance|floatformat:2 }}</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
 
     <div class="row g-4">
         <!-- Left: Chart + Schedule -->
@@ -51,7 +86,7 @@
                     {% if payoff_months_min %}
                     <span class="badge bg-success">Quitação em {{ payoff_months_min }} meses (mínimo)</span>
                     {% else %}
-                    <span class="badge bg-warning text-dark">Pague mais do que os juros para quitar</span>
+                    <span class="badge bg-warning text-dark">Pague mais que os juros para quitar</span>
                     {% endif %}
                 </div>
                 <canvas id="loanChart" style="max-height:260px"></canvas>
@@ -64,9 +99,11 @@
                         <thead class="table-light">
                             <tr>
                                 <th>Parcela</th>
-                                <th class="text-end">Pagamento</th>
+                                <th class="text-end">Amort. + Juros</th>
                                 <th class="text-end text-danger">Juros</th>
                                 <th class="text-end text-success">Amort.</th>
+                                {% if has_insurance %}<th class="text-end text-info">Seguro</th>
+                                <th class="text-end fw-bold">Total</th>{% endif %}
                                 <th class="text-end">Saldo</th>
                             </tr>
                         </thead>
@@ -77,12 +114,16 @@
                                 <td class="text-end">R$ {{ row.payment|floatformat:2 }}</td>
                                 <td class="text-end text-danger">R$ {{ row.interest|floatformat:2 }}</td>
                                 <td class="text-end text-success">R$ {{ row.principal|floatformat:2 }}</td>
+                                {% if has_insurance %}
+                                <td class="text-end text-info">R$ {{ row.insurance|floatformat:2 }}</td>
+                                <td class="text-end fw-bold">R$ {{ row.total|floatformat:2 }}</td>
+                                {% endif %}
                                 <td class="text-end fw-semibold {% if row.balance <= 0 %}text-success{% endif %}">
                                     {% if row.balance <= 0 %}Quitado{% else %}R$ {{ row.balance|floatformat:2 }}{% endif %}
                                 </td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="5" class="text-center text-muted py-3">Empréstimo quitado.</td></tr>
+                            <tr><td colspan="7" class="text-center text-muted py-3">Empréstimo quitado.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -90,7 +131,7 @@
             </div>
         </div>
 
-        <!-- Right: Simulator + History -->
+        <!-- Right: Simulator + History + Disbursements -->
         <div class="col-lg-4">
             <div class="glass-card p-4 mb-4">
                 <h5 class="fw-bold mb-3"><i class="bi bi-calculator me-2 text-primary"></i>Simulador</h5>
@@ -111,11 +152,13 @@
                     {% else %}
                     <div class="text-danger fw-semibold">Valor insuficiente para quitar</div>
                     {% endif %}
-                    {% if total_future_interest_sim %}
-                    <div>Total em juros: <strong>R$ {{ total_future_interest_sim|floatformat:2 }}</strong></div>
+                    {% if total_future_interest_sim is not None %}
+                    <div>Juros totais: <strong>R$ {{ total_future_interest_sim|floatformat:2 }}</strong></div>
+                    {% if total_future_interest_sim < total_future_interest %}
                     <div class="text-success small mt-1">
-                        Economia vs mínimo: R$ {{ total_future_interest|floatformat:2 }}
+                        <i class="bi bi-piggy-bank me-1"></i>Economia: R$ {{ total_future_interest|add:"-"|floatformat:2 }}
                     </div>
+                    {% endif %}
                     {% endif %}
                 </div>
                 {% else %}
@@ -131,10 +174,11 @@
                 {% endif %}
             </div>
 
-            <div class="glass-card p-4">
+            <!-- Payment history -->
+            <div class="glass-card p-4 mb-4">
                 <h5 class="fw-bold mb-3">Histórico de Pagamentos</h5>
                 {% if payments %}
-                <div class="d-flex flex-column gap-2" style="max-height:400px;overflow-y:auto">
+                <div class="d-flex flex-column gap-2" style="max-height:350px;overflow-y:auto">
                     {% for p in payments %}
                     <div class="p-3 rounded-3 bg-light-soft">
                         <div class="d-flex justify-content-between">
@@ -156,10 +200,30 @@
                     Nenhum pagamento registrado ainda.
                 </div>
                 {% endif %}
+                {% if loan.is_active and loan.current_balance > 0 %}
                 <a href="{% url 'loan_pay' loan.pk %}" class="btn btn-success w-100 mt-3">
                     <i class="bi bi-cash-coin me-2"></i>Registrar Pagamento
                 </a>
+                {% endif %}
             </div>
+
+            <!-- Disbursement history -->
+            {% if disbursements %}
+            <div class="glass-card p-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-plus-circle text-warning me-2"></i>Retiradas Adicionais</h5>
+                <div class="d-flex flex-column gap-2">
+                    {% for d in disbursements %}
+                    <div class="p-3 rounded-3 bg-light-soft">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-semibold text-warning">+ R$ {{ d.amount|floatformat:2 }}</span>
+                            <small class="text-muted">{{ d.date|date:"d/m/Y" }}</small>
+                        </div>
+                        {% if d.note %}<small class="text-muted fst-italic">{{ d.note }}</small>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -187,7 +251,7 @@ new Chart(document.getElementById('loanChart'), {
                 backgroundColor: 'rgba(239,68,68,0.07)',
                 fill: true,
                 tension: 0.3,
-                pointRadius: 3,
+                pointRadius: 2,
             },
             ...(simBalances ? [{
                 label: 'Saldo (simulado)',
@@ -197,7 +261,7 @@ new Chart(document.getElementById('loanChart'), {
                 backgroundColor: 'rgba(16,185,129,0.05)',
                 fill: true,
                 tension: 0.3,
-                pointRadius: 3,
+                pointRadius: 2,
             }] : []),
         ],
     },

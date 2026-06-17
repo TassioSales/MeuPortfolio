@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a portfolio of 11 independent full-stack projects, each self-contained with its own dependencies, tooling, and deployment. There is no shared root-level `package.json`, `requirements.txt`, or build system. All commands must be run from within the specific project directory.
+This is a portfolio of 12 independent full-stack projects, each self-contained with its own dependencies, tooling, and deployment. There is no shared root-level `package.json`, `requirements.txt`, or build system. All commands must be run from within the specific project directory.
 
 Projects use one of three primary stacks:
 - **Next.js + TypeScript + TailwindCSS** (frontend) + **Go** (backend API)
@@ -18,16 +18,16 @@ Projects use one of three primary stacks:
 | Directory | Description | Stack |
 |-----------|-------------|-------|
 | `analise_de_combustiveis/` | Fuel price analytics platform | Python pipeline + Go API + Next.js |
-| `collab_canvas/` | Real-time multiplayer pixel art | Go WebSocket + Next.js |
+| `bot_telegram/` | Telegram productivity bot | Python + Mistral AI + Telegram API + SQLite |
+| `devmetrics/` | GitHub analytics dashboard | Go + Next.js + Mistral AI |
 | `documind_local/` | Local document AI assistant | Go + Python + Mistral AI + Vanilla JS |
+| `encurtador_url/` | URL shortener + analytics | Go + Next.js + SQLite |
 | `finanças/` | Personal ERP (finance, POS, inventory) | Django + SQLite + Bootstrap 5 |
 | `gerador_roteiros/` | AI travel itinerary generator | Python + Streamlit + Mistral/Gemini |
 | `neon_drift/` | Game backend + frontend | Go + Frontend |
 | `neon_snake/` | Arcade game | Go + Frontend |
-| `news_sentiment_radar/` | News sentiment analysis dashboard | Go + Dashboard |
 | `plataforma_rifas/` | Raffle management system | Python + Streamlit + SQLite + Docker |
 | `pricetrack-ai/` | E-commerce price tracker with AI | Python + Streamlit + Gemini + SQLAlchemy |
-| `sorteador_rifa_app/` | Raffle draw app | Python + Streamlit + Docker |
 | `wealthmap_analytics/` | Wealth / portfolio management | Go + Next.js |
 
 ---
@@ -56,7 +56,7 @@ go test ./...                 # run all tests
 go test ./internal/...        # run tests in a specific package
 ```
 
-Go backends default to port `8080`. The fuel analytics API uses DuckDB (via `go-duckdb`). The collab_canvas backend uses `gorilla/websocket`.
+Go backends default to port `8080`. The fuel analytics API uses DuckDB (via `go-duckdb`).
 
 ### Python / Streamlit Projects
 
@@ -94,11 +94,6 @@ Three-tier pipeline:
 1. **Python data pipeline** — downloads ANP fuel data, processes with Polars/PyArrow, writes Parquet → DuckDB warehouse.
 2. **Go REST API** (`cmd/api/main.go`) — reads from DuckDB/JSON snapshots, calls Mistral AI for narrative insights, exposes endpoints consumed by the frontend.
 3. **Next.js dashboard** — SSR + client-side charts (Recharts), Zustand store for filters/state, server-side data fetching via `lib/api.ts`.
-
-### CollabCanvas (`collab_canvas/`)
-
-- **Go backend**: mutex-protected pixel matrix, WebSocket broadcast (new client gets full state snapshot, then receives/sends delta updates).
-- **Next.js frontend**: custom hook `useWebSocketBoard` manages state, HTML5 Canvas for rendering, color palette + cooldown UI on top.
 
 ### Streamlit Projects
 

@@ -18,6 +18,7 @@ Projects use one of three primary stacks:
 | Directory | Description | Stack |
 |-----------|-------------|-------|
 | `analise_de_combustiveis/` | Fuel price analytics platform | Python pipeline + Go API + Next.js |
+| `data_narrator/` | Automated EDA + AI narrative from CSV/Excel | Python + Streamlit + Mistral AI + Plotly |
 | `bot_telegram/` | Telegram productivity bot | Python + Mistral AI + Telegram API + SQLite |
 | `devmetrics/` | GitHub analytics dashboard | Go + Next.js + Mistral AI |
 | `documind_local/` | Local document AI assistant | Go + Python + Mistral AI + Vanilla JS |

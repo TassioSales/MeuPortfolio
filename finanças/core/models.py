@@ -179,6 +179,7 @@ class Goal(models.Model):
     name = models.CharField(max_length=100, verbose_name='Nome da Meta')
     target_amount = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Valor Alvo')
     current_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0, verbose_name='Valor Atual')
+    monthly_target = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True, verbose_name='Aporte Mensal Planejado')
     deadline = models.DateField(verbose_name='Data Limite')
     description = models.TextField(blank=True, verbose_name='Descrição')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
@@ -196,6 +197,40 @@ class Goal(models.Model):
         if self.target_amount > 0:
             return min(int((self.current_amount / self.target_amount) * 100), 100)
         return 0
+
+    @property
+    def remaining_amount(self):
+        return max(self.target_amount - self.current_amount, 0)
+
+    @property
+    def days_remaining(self):
+        from django.utils import timezone
+        delta = self.deadline - timezone.now().date()
+        return delta.days
+
+    @property
+    def months_remaining(self):
+        d = self.days_remaining
+        return max(round(d / 30), 1) if d > 0 else 0
+
+    @property
+    def monthly_needed(self):
+        """How much per month is needed to reach the goal by the deadline."""
+        months = self.months_remaining
+        if months > 0 and self.remaining_amount > 0:
+            return self.remaining_amount / months
+        return 0
+
+    @property
+    def status(self):
+        """'done', 'on_track', 'warning', 'overdue'"""
+        if self.progress_percentage >= 100:
+            return 'done'
+        if self.days_remaining < 0:
+            return 'overdue'
+        if self.days_remaining <= 30:
+            return 'warning'
+        return 'on_track'
 
 
 class BankAccount(models.Model):

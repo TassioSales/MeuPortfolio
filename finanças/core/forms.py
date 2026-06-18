@@ -178,15 +178,24 @@ class InvestmentForm(forms.ModelForm):
         return clean_currency_value(self.data.get('purchase_price'))
 
 class ImportFileForm(forms.Form):
-    file = forms.FileField(label="Arquivo de Extrato (CSV)")
+    file = forms.FileField(
+        label="Arquivo de Extrato",
+        help_text="Formatos aceitos: CSV ou XLSX",
+    )
 
 class GoalForm(forms.ModelForm):
     target_amount = forms.CharField(label="Valor Alvo", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}))
-    current_amount = forms.CharField(label="Valor Atual", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}))
+    current_amount = forms.CharField(label="Valor Já Guardado", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}))
+    monthly_target = forms.CharField(
+        label="Aporte Mensal Planejado",
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00 (opcional)'}),
+        help_text="Quanto você pretende guardar por mês para esta meta.",
+    )
 
     class Meta:
         model = Goal
-        fields = ['name', 'target_amount', 'current_amount', 'deadline', 'description']
+        fields = ['name', 'target_amount', 'current_amount', 'monthly_target', 'deadline', 'description']
         widgets = {
             'deadline': forms.DateInput(attrs={'type': 'date'}),
             'description': forms.Textarea(attrs={'rows': 3}),
@@ -197,6 +206,23 @@ class GoalForm(forms.ModelForm):
 
     def clean_current_amount(self):
         return clean_currency_value(self.data.get('current_amount'))
+
+    def clean_monthly_target(self):
+        val = self.data.get('monthly_target', '').strip()
+        if not val:
+            return None
+        return clean_currency_value(val)
+
+
+class GoalDepositForm(forms.Form):
+    amount = forms.CharField(
+        label="Valor do Aporte (R$)",
+        widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}),
+    )
+    note = forms.CharField(label="Observação", max_length=255, required=False)
+
+    def clean_amount(self):
+        return clean_currency_value(self.data.get('amount'))
 
 
 class BankAccountForm(forms.ModelForm):

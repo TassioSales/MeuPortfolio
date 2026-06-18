@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load core_extras %}
+
+{% block title %}Confirmar Importação{% endblock %}
+
+{% block content %}
+<div class="animate-entrance">
+    <div class="row mb-4 align-items-center">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a href="{% url 'transaction_import' %}">Importar</a></li>
+                    <li class="breadcrumb-item active">Confirmar</li>
+                </ol>
+            </nav>
+            <h2 class="fw-bold mb-0">Confirmar Importação</h2>
+            <p class="text-muted mb-0">Arquivo: <strong>{{ filename }}</strong></p>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="row g-3 mb-4">
+        <div class="col-auto">
+            <div class="glass-card px-4 py-3 d-flex align-items-center gap-3">
+                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                <div>
+                    <div class="fw-bold fs-5">{{ valid_rows|length }}</div>
+                    <div class="text-muted small">prontas para importar</div>
+                </div>
+            </div>
+        </div>
+        {% if error_rows %}
+        <div class="col-auto">
+            <div class="glass-card px-4 py-3 d-flex align-items-center gap-3">
+                <i class="bi bi-exclamation-triangle-fill text-danger fs-4"></i>
+                <div>
+                    <div class="fw-bold fs-5">{{ error_rows|length }}</div>
+                    <div class="text-muted small">linhas com erro (serão ignoradas)</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if error_rows %}
+    <div class="glass-card p-3 mb-4" style="border-left:4px solid #ef4444;">
+        <h6 class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-triangle me-2"></i>Linhas com Erro (ignoradas)</h6>
+        {% for r in error_rows %}
+        <div class="small text-muted">Linha {{ r.row }}: <span class="text-danger">{{ r.error }}</span></div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if valid_rows %}
+    <!-- Preview Table -->
+    <div class="glass-card p-0 overflow-hidden mb-4">
+        <div class="table-responsive">
+            <table class="premium-table mb-0">
+                <thead>
+                    <tr class="text-muted small text-uppercase fw-bold">
+                        <th class="ps-4">Data</th>
+                        <th>Descrição</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th class="pe-4">Categoria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in valid_rows %}
+                    <tr>
+                        <td class="ps-4 text-muted small">{{ r.date|date:"d/m/Y" }}</td>
+                        <td class="fw-medium">{{ r.description }}</td>
+                        <td>
+                            {% if r.amount >= 0 %}
+                            <span class="badge bg-success">Receita</span>
+                            {% else %}
+                            <span class="badge bg-danger">Despesa</span>
+                            {% endif %}
+                        </td>
+                        <td class="fw-bold {% if r.amount >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            {% if r.amount >= 0 %}+{% endif %}R$ {{ r.amount|floatformat:2 }}
+                        </td>
+                        <td class="pe-4 text-muted small">{{ r.category|default:"—" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Confirm / Cancel -->
+    <div class="d-flex gap-3">
+        <form method="post" action="{% url 'transaction_import' %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="confirm">
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-check-lg me-2"></i>Importar {{ valid_rows|length }} Transações
+            </button>
+        </form>
+        <a href="{% url 'transaction_import' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Voltar
+        </a>
+    </div>
+    {% else %}
+    <div class="glass-card p-4 text-center text-muted">
+        Nenhuma linha válida encontrada no arquivo.
+        <a href="{% url 'transaction_import' %}" class="d-block mt-2">Tentar novamente</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

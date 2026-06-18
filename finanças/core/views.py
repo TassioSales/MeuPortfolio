@@ -27,6 +27,7 @@ from .views_goals import (
     GoalDeleteView,
     GoalListView,
     GoalUpdateView,
+    goal_deposit,
 )
 from .views_investments import (
     InvestmentCreateView,

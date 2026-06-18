@@ -60,6 +60,7 @@ urlpatterns = [
     path('goals/add/', views.GoalCreateView.as_view(), name='goal_add'),
     path('goals/<int:pk>/edit/', views.GoalUpdateView.as_view(), name='goal_edit'),
     path('goals/<int:pk>/delete/', views.GoalDeleteView.as_view(), name='goal_delete'),
+    path('goals/<int:pk>/deposit/', views.goal_deposit, name='goal_deposit'),
 
     # Bank Accounts
     path('accounts/', views.BankAccountListView.as_view(), name='account_list'),

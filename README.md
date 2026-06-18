@@ -34,6 +34,16 @@
 
 <div align="center">
 
+### 📊 DataNarrator
+
+**Tecnologias:** Python, Streamlit, Mistral AI, Plotly, fpdf2
+
+Análise exploratória automatizada de datasets CSV/Excel com narrativa gerada por IA, visualizações interativas e exportação de relatório em PDF.
+
+[Ver Projeto](/data_narrator)
+
+---
+
 ### ⛽ Fuel Analytics Platform
 
 **Tecnologias:** Python, DuckDB, Go, Next.js, Mistral AI

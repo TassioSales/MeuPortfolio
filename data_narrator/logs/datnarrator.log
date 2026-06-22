@@ -233,3 +233,254 @@
 2026-06-22 13:52:56 | ERROR | Narrativa IA falhou: Todos os provedores falharam. Último erro: Error code: 401 - {'status': 401, 'title': 'Unauthorized', 'detail': 'Authentication failed'}
 2026-06-22 13:52:56 | ERROR | Narrativa IA falhou: Todos os provedores falharam. Último erro: Error code: 401 - {'status': 401, 'title': 'Unauthorized', 'detail': 'Authentication failed'}
 2026-06-22 13:52:56 | ERROR | Narrativa IA falhou: Todos os provedores falharam. Último erro: Error code: 401 - {'status': 401, 'title': 'Unauthorized', 'detail': 'Authentication failed'}
+2026-06-22 17:59:18 | INFO | Carregando: 03_clusters_fornecedores.csv (1,699,385 bytes)
+2026-06-22 17:59:18 | INFO | Carregando: 03_clusters_fornecedores.csv (1,699,385 bytes)
+2026-06-22 17:59:18 | INFO | CSV ok encoding=utf-8 sep=',' shape=(26903, 8)
+2026-06-22 17:59:18 | INFO | CSV ok encoding=utf-8 sep=',' shape=(26903, 8)
+2026-06-22 17:59:18 | INFO | Gerando perfil shape=(26903, 8)
+2026-06-22 17:59:18 | INFO | Gerando perfil shape=(26903, 8)
+2026-06-22 17:59:18 | INFO | Perfil: 7 num | 1 cat | 0 dup | Q=99.2
+2026-06-22 17:59:18 | INFO | Perfil: 7 num | 1 cat | 0 dup | Q=99.2
+2026-06-22 17:59:18 | INFO | Novo arquivo detectado (hash=a3073c574a5a), estado limpo.
+2026-06-22 17:59:18 | INFO | Novo arquivo detectado (hash=a3073c574a5a), estado limpo.
+2026-06-22 18:01:23 | INFO | Prompt: 3507 chars
+2026-06-22 18:01:23 | INFO | Prompt: 3507 chars
+2026-06-22 18:01:23 | INFO | Prompt: 3507 chars
+2026-06-22 18:01:23 | INFO | Prompt: 3507 chars
+2026-06-22 18:01:23 | INFO | Tentando provider=mistral model=mistral-small-latest
+2026-06-22 18:01:23 | INFO | Tentando provider=mistral model=mistral-small-latest
+2026-06-22 18:01:23 | INFO | Tentando provider=mistral model=mistral-small-latest
+2026-06-22 18:01:23 | INFO | Tentando provider=mistral model=mistral-small-latest
+2026-06-22 18:01:23 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:01:23 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:01:23 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:01:23 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:01:43 | INFO | Mistral ok em 19.9s
+2026-06-22 18:01:43 | INFO | Mistral ok em 19.9s
+2026-06-22 18:01:43 | INFO | Mistral ok em 19.9s
+2026-06-22 18:01:43 | INFO | Mistral ok em 19.9s
+2026-06-22 18:05:19 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 18:05:19 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 18:05:19 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 18:05:19 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 18:05:19 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 18:05:19 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 18:05:19 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 18:05:19 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 18:05:19 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 18:05:19 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 18:05:19 | INFO | CSV ok encoding=utf-8 sep=',' shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | CSV ok encoding=utf-8 sep=',' shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | CSV ok encoding=utf-8 sep=',' shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | CSV ok encoding=utf-8 sep=',' shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | CSV ok encoding=utf-8 sep=',' shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | CSV ok encoding=utf-8 sep=',' shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | CSV ok encoding=utf-8 sep=',' shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | CSV ok encoding=utf-8 sep=',' shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | CSV ok encoding=utf-8 sep=',' shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | CSV ok encoding=utf-8 sep=',' shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 18:05:19 | INFO | Perfil: 5 num | 4 cat | 123 dup | Q=99.1
+2026-06-22 18:05:19 | INFO | Perfil: 5 num | 4 cat | 123 dup | Q=99.1
+2026-06-22 18:05:19 | INFO | Perfil: 5 num | 4 cat | 123 dup | Q=99.1
+2026-06-22 18:05:19 | INFO | Perfil: 5 num | 4 cat | 123 dup | Q=99.1
+2026-06-22 18:05:19 | INFO | Perfil: 5 num | 4 cat | 123 dup | Q=99.1
+2026-06-22 18:05:19 | INFO | Perfil: 5 num | 4 cat | 123 dup | Q=99.1
+2026-06-22 18:05:19 | INFO | Perfil: 5 num | 4 cat | 123 dup | Q=99.1
+2026-06-22 18:05:19 | INFO | Perfil: 5 num | 4 cat | 123 dup | Q=99.1
+2026-06-22 18:05:19 | INFO | Perfil: 5 num | 4 cat | 123 dup | Q=99.1
+2026-06-22 18:05:19 | INFO | Perfil: 5 num | 4 cat | 123 dup | Q=99.1
+2026-06-22 18:05:19 | INFO | Novo arquivo detectado (hash=6fe74e2fdbdf), estado limpo.
+2026-06-22 18:05:19 | INFO | Novo arquivo detectado (hash=6fe74e2fdbdf), estado limpo.
+2026-06-22 18:05:19 | INFO | Novo arquivo detectado (hash=6fe74e2fdbdf), estado limpo.
+2026-06-22 18:05:19 | INFO | Novo arquivo detectado (hash=6fe74e2fdbdf), estado limpo.
+2026-06-22 18:05:19 | INFO | Novo arquivo detectado (hash=6fe74e2fdbdf), estado limpo.
+2026-06-22 18:05:19 | INFO | Novo arquivo detectado (hash=6fe74e2fdbdf), estado limpo.
+2026-06-22 18:05:19 | INFO | Novo arquivo detectado (hash=6fe74e2fdbdf), estado limpo.
+2026-06-22 18:05:19 | INFO | Novo arquivo detectado (hash=6fe74e2fdbdf), estado limpo.
+2026-06-22 18:05:19 | INFO | Novo arquivo detectado (hash=6fe74e2fdbdf), estado limpo.
+2026-06-22 18:05:19 | INFO | Novo arquivo detectado (hash=6fe74e2fdbdf), estado limpo.
+2026-06-22 18:05:20 | INFO | Prompt: 3308 chars
+2026-06-22 18:05:20 | INFO | Prompt: 3308 chars
+2026-06-22 18:05:20 | INFO | Prompt: 3308 chars
+2026-06-22 18:05:20 | INFO | Prompt: 3308 chars
+2026-06-22 18:05:20 | INFO | Prompt: 3308 chars
+2026-06-22 18:05:20 | INFO | Prompt: 3308 chars
+2026-06-22 18:05:20 | INFO | Prompt: 3308 chars
+2026-06-22 18:05:20 | INFO | Prompt: 3308 chars
+2026-06-22 18:05:20 | INFO | Prompt: 3308 chars
+2026-06-22 18:05:20 | INFO | Prompt: 3308 chars
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:20 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:05:39 | INFO | Mistral ok em 18.2s
+2026-06-22 18:05:39 | INFO | Mistral ok em 18.2s
+2026-06-22 18:05:39 | INFO | Mistral ok em 18.2s
+2026-06-22 18:05:39 | INFO | Mistral ok em 18.2s
+2026-06-22 18:05:39 | INFO | Mistral ok em 18.2s
+2026-06-22 18:05:39 | INFO | Mistral ok em 18.2s
+2026-06-22 18:05:39 | INFO | Mistral ok em 18.2s
+2026-06-22 18:05:39 | INFO | Mistral ok em 18.2s
+2026-06-22 18:05:39 | INFO | Mistral ok em 18.2s
+2026-06-22 18:05:39 | INFO | Mistral ok em 18.2s
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:05 | INFO | Carregando: 01_despesas_anomalias.csv (144,303,118 bytes)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:08 | INFO | CSV ok encoding=utf-8 sep=',' shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:09 | INFO | Gerando perfil shape=(743425, 17)
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Perfil: 9 num | 8 cat | 0 dup | Q=98.8
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:13 | INFO | Novo arquivo detectado (hash=b36f5f0d212b), estado limpo.
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Prompt: 4920 chars
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:21 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s
+2026-06-22 18:08:43 | INFO | Mistral ok em 21.9s

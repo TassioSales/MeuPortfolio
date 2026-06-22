@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  nlp:
+    build: ./nlp
+    container_name: memmap-nlp
+    ports:
+      - "8001:8001"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  api:
+    build: ./api
+    container_name: memmap-api
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_PATH=/data/memmap.db
+      - NLP_URL=http://nlp:8001
+      - API_PORT=8080
+    volumes:
+      - memmap_data:/data
+    depends_on:
+      nlp:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/graph"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    container_name: memmap-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_WS_URL=ws://localhost:8080/ws
+      - NLP_SERVICE_URL=http://nlp:8001
+      - GO_API_URL=http://api:8080
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  memmap_data:
+    driver: local

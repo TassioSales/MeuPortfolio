@@ -4,6 +4,7 @@ import csv as _csv_mod
 import json
 import unicodedata
 import hashlib
+from pathlib import Path
 from datetime import datetime
 
 import pandas as pd
@@ -63,13 +64,20 @@ _CHAT_SYSTEM_PROMPT = (
 # ── misc helpers ─────────────────────────────────────────────────────────────
 
 def _get_secret(key: str, env_var: str = "") -> str:
-    """Lê de .streamlit/secrets.toml primeiro, cai em variável de ambiente."""
-    try:
-        val = st.secrets.get(key)
-        if val:
-            return str(val)
-    except Exception:
-        pass
+    """Lê de .streamlit/secrets.toml se existir, cai em variável de ambiente.
+    Não acessa st.secrets quando nenhum arquivo existe para evitar o aviso do Streamlit.
+    """
+    _secrets_paths = [
+        Path.home() / ".streamlit" / "secrets.toml",
+        Path(__file__).parent / ".streamlit" / "secrets.toml",
+    ]
+    if any(p.exists() for p in _secrets_paths):
+        try:
+            val = st.secrets.get(key)
+            if val:
+                return str(val)
+        except Exception:
+            pass
     return os.getenv(env_var or key, "")
 
 

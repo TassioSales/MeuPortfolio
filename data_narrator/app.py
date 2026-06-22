@@ -11,7 +11,6 @@ import plotly.express as px
 import streamlit as st
 from loguru import logger
 from mistralai import Mistral
-from openai import OpenAI as NvidiaClient
 from fpdf import FPDF
 
 # ── logging ──────────────────────────────────────────────────────────────────
@@ -37,30 +36,8 @@ st.set_page_config(
 
 # ── constants ─────────────────────────────────────────────────────────────────
 
-PROVIDERS = {
-    "nvidia": {
-        "label": "NVIDIA NIM (gratuito)",
-        "models": [
-            "nvidia/llama-3.1-nemotron-70b-instruct",
-            "meta/llama-3.3-70b-instruct",
-            "meta/llama-3.1-70b-instruct",
-            "deepseek-ai/deepseek-r1-0528",
-            "mistralai/mistral-nemo-12b-instruct",
-            "nvidia/nemotron-mini-4b-instruct",
-        ],
-        "default": "nvidia/llama-3.1-nemotron-70b-instruct",
-        "key_env": "NVIDIA_API_KEY",
-        "free": True,
-        "base_url": "https://integrate.api.nvidia.com/v1",
-    },
-    "mistral": {
-        "label": "Mistral AI (pago)",
-        "models": ["mistral-small-latest", "mistral-large-latest"],
-        "default": "mistral-small-latest",
-        "key_env": "MISTRAL_API_KEY",
-        "free": False,
-    },
-}
+MISTRAL_MODELS = ["mistral-small-latest", "mistral-large-latest"]
+MISTRAL_DEFAULT = "mistral-small-latest"
 
 PALETTE = ["#00d4aa", "#ff7000", "#2496ed", "#ff4b4b", "#a855f7", "#facc15"]
 MAX_EDA_COLS = 20
@@ -145,7 +122,7 @@ def _detect_string_dates(df: pd.DataFrame, cat_cols: list[str]) -> list[str]:
     for col in cat_cols:
         sample = df[col].dropna().head(sample_size).astype(str)
         try:
-            parsed = pd.to_datetime(sample, infer_datetime_format=True, errors="coerce")
+            parsed = pd.to_datetime(sample, errors="coerce")
             if parsed.notna().mean() > 0.7:
                 date_like.append(col)
         except Exception:
@@ -345,44 +322,6 @@ def _chat_messages(profile: dict, narrative: str, history: list[dict], question:
     return msgs
 
 
-def _strip_think(gen):
-    """Remove blocos <think>...</think> do stream (DeepSeek reasoning)."""
-    OPEN, CLOSE = "<think>", "</think>"
-    in_think = False
-    partial = ""
-
-    for chunk in gen:
-        partial += chunk
-        out_parts = []
-        while partial:
-            if not in_think:
-                pos = partial.find(OPEN)
-                if pos == -1:
-                    # Nenhum <think>; guarda últimos (len(OPEN)-1) chars como proteção
-                    guard = len(OPEN) - 1
-                    if len(partial) > guard:
-                        out_parts.append(partial[:-guard])
-                        partial = partial[-guard:]
-                    break
-                out_parts.append(partial[:pos])
-                partial = partial[pos + len(OPEN):]
-                in_think = True
-            else:
-                pos = partial.find(CLOSE)
-                if pos == -1:
-                    guard = len(CLOSE) - 1
-                    if len(partial) > guard:
-                        partial = partial[-guard:]
-                    break
-                partial = partial[pos + len(CLOSE):]
-                in_think = False
-        if out_parts:
-            yield "".join(out_parts)
-
-    if partial and not in_think:
-        yield partial
-
-
 def stream_mistral(messages: list[dict], api_key: str, model: str):
     t0 = datetime.now()
     logger.info(f"Mistral stream model={model}")
@@ -394,37 +333,13 @@ def stream_mistral(messages: list[dict], api_key: str, model: str):
     logger.info(f"Mistral ok em {(datetime.now()-t0).total_seconds():.1f}s")
 
 
-def stream_nvidia(messages: list[dict], api_key: str, model: str, max_tokens: int = 2048):
-    t0 = datetime.now()
-    logger.info(f"NVIDIA stream model={model}")
-    client = NvidiaClient(
-        base_url="https://integrate.api.nvidia.com/v1",
-        api_key=api_key,
-        timeout=TIMEOUT_MS / 1000,
-    )
-    stream = client.chat.completions.create(
-        model=model,
-        messages=messages,
-        stream=True,
-        max_tokens=max_tokens,
-        temperature=0.6,
-    )
-    for chunk in stream:
-        delta = chunk.choices[0].delta.content
-        if delta:
-            yield delta
-    logger.info(f"NVIDIA ok em {(datetime.now()-t0).total_seconds():.1f}s")
-
-
 def classify_error(e: Exception) -> tuple[str, str, str]:
     msg = str(e)
     ml = msg.lower()
     if "401" in msg or "unauthorized" in ml or "authentication failed" in ml:
         return "auth", "Chave de API inválida", (
-            "A chave foi recusada pelo provedor.\n\n"
-            "**NVIDIA NIM:** chave deve começar com `nvapi-` — obtenha em "
-            "[build.nvidia.com/models](https://build.nvidia.com/models) → **Get API Key**.\n\n"
-            "**Mistral:** obtenha em [console.mistral.ai](https://console.mistral.ai)."
+            "A chave foi recusada pelo Mistral. "
+            "Verifique em [console.mistral.ai](https://console.mistral.ai)."
         )
     if "429" in msg or "rate limit" in ml or "too many" in ml:
         return "ratelimit", "Limite de requisições atingido", (
@@ -443,8 +358,6 @@ def classify_error(e: Exception) -> tuple[str, str, str]:
 def validate_key(provider: str, key: str) -> tuple[bool, str]:
     if not key or not key.strip():
         return False, "Chave não informada"
-    if provider == "nvidia" and not key.strip().startswith("nvapi-"):
-        return False, "Chave NVIDIA deve começar com `nvapi-`"
     return True, "ok"
 
 # ── PDF ───────────────────────────────────────────────────────────────────────
@@ -539,49 +452,17 @@ st.markdown("""
 with st.sidebar:
     st.markdown("## ⚙️ Configuração")
 
-    provider_choice = st.radio(
-        "Provedor de IA",
-        options=["nvidia", "mistral", "auto"],
-        format_func=lambda x: {
-            "nvidia": "🟢 NVIDIA NIM (gratuito)",
-            "mistral": "💳 Mistral AI (pago)",
-            "auto": "⚡ Auto (NVIDIA → Mistral)",
-        }[x],
-        index=0,
-        help="NVIDIA NIM é gratuito via build.nvidia.com",
+    mistral_key = st.text_input(
+        "Mistral API Key",
+        value=_get_secret("MISTRAL_API_KEY"),
+        type="password",
+        placeholder="sk-...",
+        help="console.mistral.ai  |  Também lido de .streamlit/secrets.toml",
     )
-
-    st.divider()
-
-    nvidia_key, nvidia_model = "", PROVIDERS["nvidia"]["default"]
-    mistral_key, mistral_model = "", PROVIDERS["mistral"]["default"]
-
-    if provider_choice in ("nvidia", "auto"):
-        nvidia_key = st.text_input(
-            "NVIDIA API Key",
-            value=_get_secret("NVIDIA_API_KEY"),
-            type="password",
-            placeholder="nvapi-...",
-            help="build.nvidia.com → escolha um modelo → Get API Key  |  Também lido de .streamlit/secrets.toml",
-        )
-        _nv_ok, _nv_msg = validate_key("nvidia", nvidia_key)
-        if nvidia_key:
-            st.caption("✅ Formato válido" if _nv_ok else f"⚠️ {_nv_msg}")
-        nvidia_model = st.selectbox("Modelo NVIDIA", PROVIDERS["nvidia"]["models"], index=0)
-        st.caption("📋 [Todos os modelos](https://build.nvidia.com/models)")
-
-    if provider_choice in ("mistral", "auto"):
-        mistral_key = st.text_input(
-            "Mistral API Key",
-            value=_get_secret("MISTRAL_API_KEY"),
-            type="password",
-            placeholder="sk-...",
-            help="console.mistral.ai  |  Também lido de .streamlit/secrets.toml",
-        )
-        _ms_ok, _ms_msg = validate_key("mistral", mistral_key)
-        if mistral_key:
-            st.caption("✅ Chave informada" if _ms_ok else f"⚠️ {_ms_msg}")
-        mistral_model = st.selectbox("Modelo Mistral", PROVIDERS["mistral"]["models"], index=0)
+    _ms_ok, _ms_msg = validate_key("mistral", mistral_key)
+    if mistral_key:
+        st.caption("✅ Chave informada" if _ms_ok else f"⚠️ {_ms_msg}")
+    mistral_model = st.selectbox("Modelo", MISTRAL_MODELS, index=0)
 
     st.divider()
     st.markdown("### 📂 Upload")
@@ -600,19 +481,20 @@ if not uploaded:
     col1, col2 = st.columns(2)
     with col1:
         st.info("⬅️ Faça o upload de um arquivo CSV ou Excel na barra lateral.")
-        st.markdown("**Provedores:**")
-        st.markdown("- 🟢 **NVIDIA NIM** — gratuito, Llama / Nemotron 70B")
-        st.markdown("- 💳 **Mistral AI** — pago, mistral-small / large")
-        st.markdown("- ⚡ **Auto** — NVIDIA primeiro, Mistral como fallback")
+        st.markdown("**O que o DataNarrator faz:**")
+        st.markdown("- Perfil automático: tipos, ausentes, outliers, correlações")
+        st.markdown("- EDA interativo com histogramas, barras, scatter, séries temporais")
+        st.markdown("- Narrativa em linguagem natural gerada por IA (Mistral)")
+        st.markdown("- Exporta PDF, Markdown, Excel e JSON")
+        st.markdown("- Modo chat para perguntas de follow-up sobre o dataset")
     with col2:
-        st.markdown("**Para usar NVIDIA NIM (gratuito):**")
-        st.markdown("1. Acesse [build.nvidia.com/models](https://build.nvidia.com/models)")
-        st.markdown("2. Escolha um modelo → **Get API Key**")
-        st.markdown("3. Faça login com Google / GitHub / NVIDIA")
-        st.markdown("4. Cole a chave `nvapi-...` na sidebar")
+        st.markdown("**Configuração rápida:**")
+        st.markdown("1. Obtenha sua chave em [console.mistral.ai](https://console.mistral.ai)")
+        st.markdown("2. Cole na sidebar → campo **Mistral API Key**")
+        st.markdown("3. Faça upload do seu CSV ou Excel")
         st.markdown("")
-        st.markdown("**Dica:** salve suas chaves em `.streamlit/secrets.toml` para não redigitar.")
-        st.code('NVIDIA_API_KEY = "nvapi-..."\nMISTRAL_API_KEY = "sk-..."', language="toml")
+        st.markdown("**Dica:** salve a chave em `.streamlit/secrets.toml` para não redigitar.")
+        st.code('MISTRAL_API_KEY = "sk-..."', language="toml")
     st.stop()
 
 # ── load ─────────────────────────────────────────────────────────────────────
@@ -900,17 +782,11 @@ with tab_ai:
     if not generate_ai:
         st.info("Ative 'Gerar narrativa com IA' na barra lateral.")
     else:
-        _nv_valid = provider_choice in ("nvidia", "auto") and validate_key("nvidia", nvidia_key)[0]
-        _ms_valid = provider_choice in ("mistral", "auto") and validate_key("mistral", mistral_key)[0]
+        _ms_valid = validate_key("mistral", mistral_key)[0]
 
-        if not _nv_valid and not _ms_valid:
-            if provider_choice == "nvidia":
-                st.warning("Informe uma NVIDIA API Key válida (`nvapi-...`) na barra lateral.")
-                st.markdown("Obtenha em [build.nvidia.com/models](https://build.nvidia.com/models) → **Get API Key**.")
-            elif provider_choice == "mistral":
-                st.warning("Informe sua Mistral API Key na barra lateral.")
-            else:
-                st.warning("Informe pelo menos uma API key válida na barra lateral.")
+        if not _ms_valid:
+            st.warning("Informe sua Mistral API Key na barra lateral.")
+            st.markdown("Obtenha em [console.mistral.ai](https://console.mistral.ai).")
         else:
             # Seletor de colunas para o prompt
             with st.expander("🔧 Colunas para análise IA", expanded=False):
@@ -935,53 +811,22 @@ with tab_ai:
                 profile_json = json.dumps(filtered_profile, ensure_ascii=False, default=str)
                 prompt = build_prompt(profile_json)
 
-                def _build_order():
-                    if provider_choice == "nvidia":
-                        return [("nvidia", nvidia_key, nvidia_model)] if _nv_valid else []
-                    if provider_choice == "mistral":
-                        return [("mistral", mistral_key, mistral_model)] if _ms_valid else []
-                    order = []
-                    if _nv_valid:
-                        order.append(("nvidia", nvidia_key, nvidia_model))
-                    if _ms_valid:
-                        order.append(("mistral", mistral_key, mistral_model))
-                    return order
-
                 def _run_stream():
-                    order = _build_order()
-                    last_err = None
-                    for prov, key, model in order:
-                        try:
-                            logger.info(f"Tentando provider={prov} model={model}")
-                            msgs = _messages(prompt)
-                            if prov == "mistral":
-                                yield from stream_mistral(msgs, key, model)
-                            else:
-                                yield from _strip_think(stream_nvidia(msgs, key, model))
-                            st.session_state["used_provider"] = prov
-                            st.session_state["used_model"] = model
-                            return
-                        except Exception as e:
-                            err_type, _, _ = classify_error(e)
-                            last_err = e
-                            logger.warning(f"Provider {prov} falhou [{err_type}]: {e}")
-                            if err_type == "auth":
-                                break
-
-                    if last_err is None:
-                        raise RuntimeError("Nenhum provedor configurado.")
-                    _, title, guidance = classify_error(last_err)
-                    raise RuntimeError(f"__err__{title}|||{guidance}")
+                    try:
+                        logger.info(f"Mistral stream model={mistral_model}")
+                        yield from stream_mistral(_messages(prompt), mistral_key, mistral_model)
+                        st.session_state["used_model"] = mistral_model
+                    except Exception as e:
+                        _, title, guidance = classify_error(e)
+                        logger.error(f"Mistral falhou: {title} — {e}")
+                        raise RuntimeError(f"__err__{title}|||{guidance}")
 
                 try:
                     full_text = st.write_stream(_run_stream())
                     st.session_state["narrative"] = full_text
-                    prov = st.session_state.get("used_provider", "")
-                    mdl = st.session_state.get("used_model", "")
-                    if prov:
-                        lbl = "🟢 NVIDIA NIM" if prov == "nvidia" else "💳 Mistral AI"
-                        st.markdown(f'<span class="provider-badge">{lbl} · {mdl}</span>',
-                                    unsafe_allow_html=True)
+                    mdl = st.session_state.get("used_model", mistral_model)
+                    st.markdown(f'<span class="provider-badge">💳 Mistral AI · {mdl}</span>',
+                                unsafe_allow_html=True)
                     words = len(full_text.split())
                     st.caption(f"Narrativa: {words:,} palavras · {len(full_text):,} caracteres")
                 except Exception as e:
@@ -995,12 +840,9 @@ with tab_ai:
                         logger.error(f"Narrativa falhou: {e}")
                         st.error(f"Erro ao gerar narrativa: {e}")
             else:
-                prov = st.session_state.get("used_provider", "")
-                mdl = st.session_state.get("used_model", "")
-                if prov:
-                    lbl = "🟢 NVIDIA NIM" if prov == "nvidia" else "💳 Mistral AI"
-                    st.markdown(f'<span class="provider-badge">{lbl} · {mdl}</span>',
-                                unsafe_allow_html=True)
+                mdl = st.session_state.get("used_model", mistral_model)
+                st.markdown(f'<span class="provider-badge">💳 Mistral AI · {mdl}</span>',
+                            unsafe_allow_html=True)
                 narrative = st.session_state["narrative"]
                 st.markdown(narrative)
                 words = len(narrative.split())
@@ -1034,18 +876,13 @@ with tab_ai:
                         user_q,
                     )
 
-                    used_prov = st.session_state.get("used_provider", "nvidia")
-                    used_mdl = st.session_state.get("used_model", nvidia_model)
+                    used_mdl = st.session_state.get("used_model", mistral_model)
 
                     def _chat_stream():
-                        if used_prov == "mistral" and _ms_valid:
+                        if _ms_valid:
                             yield from stream_mistral(chat_msgs, mistral_key, used_mdl)
-                        elif _nv_valid:
-                            yield from _strip_think(stream_nvidia(chat_msgs, nvidia_key, used_mdl, max_tokens=1024))
-                        elif _ms_valid:
-                            yield from stream_mistral(chat_msgs, mistral_key, mistral_model)
                         else:
-                            yield "Nenhum provedor disponível. Informe uma API key na sidebar."
+                            yield "Informe a Mistral API Key na sidebar para usar o chat."
 
                     with st.chat_message("assistant"):
                         try:

@@ -1,0 +1,235 @@
+2026-06-22 13:11:25 | INFO | Carregando arquivo: 08_mudanca_comportamento_deputados.csv (126,392 bytes)
+2026-06-22 13:11:25 | INFO | Carregando arquivo: 08_mudanca_comportamento_deputados.csv (126,392 bytes)
+2026-06-22 13:11:25 | INFO | CSV carregado com encoding=utf-8 | shape=(529, 22)
+2026-06-22 13:11:25 | INFO | CSV carregado com encoding=utf-8 | shape=(529, 22)
+2026-06-22 13:11:25 | INFO | Gerando perfil | shape=(529, 22)
+2026-06-22 13:11:25 | INFO | Gerando perfil | shape=(529, 22)
+2026-06-22 13:11:25 | INFO | Perfil: 18 num | 4 cat | 0 dup
+2026-06-22 13:11:25 | INFO | Perfil: 18 num | 4 cat | 0 dup
+2026-06-22 13:11:48 | INFO | Chamando Mistral API...
+2026-06-22 13:11:48 | INFO | Chamando Mistral API...
+2026-06-22 13:11:48 | INFO | Chamando Mistral API...
+2026-06-22 13:19:25 | INFO | Carregando arquivo: 06_previsao_gasto_mensal.csv (118,598 bytes)
+2026-06-22 13:19:25 | INFO | Carregando arquivo: 06_previsao_gasto_mensal.csv (118,598 bytes)
+2026-06-22 13:19:25 | INFO | CSV carregado com encoding=utf-8 | shape=(1884, 7)
+2026-06-22 13:19:25 | INFO | CSV carregado com encoding=utf-8 | shape=(1884, 7)
+2026-06-22 13:19:25 | INFO | Gerando perfil | shape=(1884, 7)
+2026-06-22 13:19:25 | INFO | Gerando perfil | shape=(1884, 7)
+2026-06-22 13:19:25 | INFO | Perfil: 3 num | 4 cat | 0 dup
+2026-06-22 13:19:25 | INFO | Perfil: 3 num | 4 cat | 0 dup
+2026-06-22 13:19:38 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:19:38 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:19:38 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:19:38 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:19:38 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:19:38 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:19:38 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:19:38 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:19:38 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:02 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:02 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:02 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:02 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:02 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:02 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:02 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:02 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:02 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:02 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:02 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:02 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:18 | INFO | Carregando arquivo: 23_valores_redondos_recorrentes.csv (13,067,166 bytes)
+2026-06-22 13:20:18 | INFO | Carregando arquivo: 23_valores_redondos_recorrentes.csv (13,067,166 bytes)
+2026-06-22 13:20:18 | INFO | Carregando arquivo: 23_valores_redondos_recorrentes.csv (13,067,166 bytes)
+2026-06-22 13:20:18 | INFO | Carregando arquivo: 23_valores_redondos_recorrentes.csv (13,067,166 bytes)
+2026-06-22 13:20:18 | INFO | Carregando arquivo: 23_valores_redondos_recorrentes.csv (13,067,166 bytes)
+2026-06-22 13:20:18 | INFO | Carregando arquivo: 23_valores_redondos_recorrentes.csv (13,067,166 bytes)
+2026-06-22 13:20:18 | INFO | Carregando arquivo: 23_valores_redondos_recorrentes.csv (13,067,166 bytes)
+2026-06-22 13:20:19 | INFO | CSV carregado com encoding=utf-8 | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | CSV carregado com encoding=utf-8 | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | CSV carregado com encoding=utf-8 | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | CSV carregado com encoding=utf-8 | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | CSV carregado com encoding=utf-8 | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | CSV carregado com encoding=utf-8 | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | CSV carregado com encoding=utf-8 | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | Gerando perfil | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | Gerando perfil | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | Gerando perfil | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | Gerando perfil | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | Gerando perfil | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | Gerando perfil | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | Gerando perfil | shape=(65610, 17)
+2026-06-22 13:20:19 | INFO | Perfil: 7 num | 7 cat | 0 dup
+2026-06-22 13:20:19 | INFO | Perfil: 7 num | 7 cat | 0 dup
+2026-06-22 13:20:19 | INFO | Perfil: 7 num | 7 cat | 0 dup
+2026-06-22 13:20:19 | INFO | Perfil: 7 num | 7 cat | 0 dup
+2026-06-22 13:20:19 | INFO | Perfil: 7 num | 7 cat | 0 dup
+2026-06-22 13:20:19 | INFO | Perfil: 7 num | 7 cat | 0 dup
+2026-06-22 13:20:19 | INFO | Perfil: 7 num | 7 cat | 0 dup
+2026-06-22 13:20:20 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:20 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:20 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:20 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:20 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:20 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:20 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:20:20 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Erro Mistral API (TypeError): Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:20:20 | ERROR | Narrativa IA falhou: Mistral.__init__() got an unexpected keyword argument 'timeout'. Did you mean 'timeout_ms'?
+2026-06-22 13:25:34 | INFO | Carregando arquivo: 07_ranking_risco_despesas.csv (140,117,549 bytes)
+2026-06-22 13:25:34 | INFO | Carregando arquivo: 07_ranking_risco_despesas.csv (140,117,549 bytes)
+2026-06-22 13:25:34 | INFO | Carregando arquivo: 07_ranking_risco_despesas.csv (140,117,549 bytes)
+2026-06-22 13:25:37 | INFO | CSV carregado com encoding=utf-8 | shape=(743425, 16)
+2026-06-22 13:25:37 | INFO | CSV carregado com encoding=utf-8 | shape=(743425, 16)
+2026-06-22 13:25:37 | INFO | CSV carregado com encoding=utf-8 | shape=(743425, 16)
+2026-06-22 13:25:38 | INFO | Gerando perfil | shape=(743425, 16)
+2026-06-22 13:25:38 | INFO | Gerando perfil | shape=(743425, 16)
+2026-06-22 13:25:38 | INFO | Gerando perfil | shape=(743425, 16)
+2026-06-22 13:25:40 | INFO | Perfil: 8 num | 8 cat | 0 dup
+2026-06-22 13:25:40 | INFO | Perfil: 8 num | 8 cat | 0 dup
+2026-06-22 13:25:40 | INFO | Perfil: 8 num | 8 cat | 0 dup
+2026-06-22 13:25:44 | WARNING | Histograma falhou para coluna 'cnpj_cpf_fornecedor': 
+2026-06-22 13:25:44 | WARNING | Histograma falhou para coluna 'cnpj_cpf_fornecedor': 
+2026-06-22 13:25:44 | WARNING | Histograma falhou para coluna 'cnpj_cpf_fornecedor': 
+2026-06-22 13:25:44 | WARNING | Histograma falhou para coluna 'cnpj_cpf_fornecedor': 
+2026-06-22 13:25:51 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:25:51 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:25:51 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:25:51 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:26:32 | INFO | Carregando arquivo: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 13:26:32 | INFO | Carregando arquivo: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 13:26:32 | INFO | Carregando arquivo: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 13:26:32 | INFO | Carregando arquivo: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 13:26:32 | INFO | Carregando arquivo: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 13:26:32 | INFO | Carregando arquivo: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 13:26:32 | INFO | Carregando arquivo: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 13:26:32 | INFO | CSV carregado com encoding=utf-8 | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | CSV carregado com encoding=utf-8 | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | CSV carregado com encoding=utf-8 | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | CSV carregado com encoding=utf-8 | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | CSV carregado com encoding=utf-8 | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | CSV carregado com encoding=utf-8 | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | CSV carregado com encoding=utf-8 | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | Gerando perfil | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | Gerando perfil | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | Gerando perfil | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | Gerando perfil | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | Gerando perfil | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | Gerando perfil | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | Gerando perfil | shape=(15000, 9)
+2026-06-22 13:26:32 | INFO | Perfil: 5 num | 4 cat | 123 dup
+2026-06-22 13:26:32 | INFO | Perfil: 5 num | 4 cat | 123 dup
+2026-06-22 13:26:32 | INFO | Perfil: 5 num | 4 cat | 123 dup
+2026-06-22 13:26:32 | INFO | Perfil: 5 num | 4 cat | 123 dup
+2026-06-22 13:26:32 | INFO | Perfil: 5 num | 4 cat | 123 dup
+2026-06-22 13:26:32 | INFO | Perfil: 5 num | 4 cat | 123 dup
+2026-06-22 13:26:32 | INFO | Perfil: 5 num | 4 cat | 123 dup
+2026-06-22 13:26:33 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:26:33 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:26:33 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:26:33 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:26:33 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:26:33 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:26:33 | INFO | Iniciando stream Mistral API...
+2026-06-22 13:27:21 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:27:21 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:27:21 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:27:21 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:27:21 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:27:21 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:27:21 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:27:21 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:27:21 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:27:21 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:27:21 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:27:21 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:27:21 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:27:21 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:28:04 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:28:04 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:28:04 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:28:04 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:28:04 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:28:04 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:28:04 | ERROR | Erro Mistral API (ReadTimeout): The read operation timed out
+2026-06-22 13:28:04 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:28:04 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:28:04 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:28:04 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:28:04 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:28:04 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:28:04 | ERROR | Narrativa IA falhou: The read operation timed out
+2026-06-22 13:43:27 | INFO | Carregando: 02_clusters_deputados.csv (141,487 bytes)
+2026-06-22 13:43:27 | INFO | Carregando: 02_clusters_deputados.csv (141,487 bytes)
+2026-06-22 13:43:27 | INFO | Carregando: 02_clusters_deputados.csv (141,487 bytes)
+2026-06-22 13:43:27 | INFO | Carregando: 02_clusters_deputados.csv (141,487 bytes)
+2026-06-22 13:43:27 | INFO | CSV ok encoding=utf-8 shape=(744, 29)
+2026-06-22 13:43:27 | INFO | CSV ok encoding=utf-8 shape=(744, 29)
+2026-06-22 13:43:27 | INFO | CSV ok encoding=utf-8 shape=(744, 29)
+2026-06-22 13:43:27 | INFO | CSV ok encoding=utf-8 shape=(744, 29)
+2026-06-22 13:43:27 | INFO | Gerando perfil shape=(744, 29)
+2026-06-22 13:43:27 | INFO | Gerando perfil shape=(744, 29)
+2026-06-22 13:43:27 | INFO | Gerando perfil shape=(744, 29)
+2026-06-22 13:43:27 | INFO | Gerando perfil shape=(744, 29)
+2026-06-22 13:43:27 | INFO | Perfil: 26 num | 3 cat | 0 dup | quality=100.0
+2026-06-22 13:43:27 | INFO | Perfil: 26 num | 3 cat | 0 dup | quality=100.0
+2026-06-22 13:43:27 | INFO | Perfil: 26 num | 3 cat | 0 dup | quality=100.0
+2026-06-22 13:43:27 | INFO | Perfil: 26 num | 3 cat | 0 dup | quality=100.0
+2026-06-22 13:43:30 | INFO | Prompt: 6781 chars
+2026-06-22 13:43:30 | INFO | Prompt: 6781 chars
+2026-06-22 13:43:30 | INFO | Prompt: 6781 chars
+2026-06-22 13:43:30 | INFO | Prompt: 6781 chars
+2026-06-22 13:43:30 | INFO | Tentando provider=mistral model=mistral-small-latest
+2026-06-22 13:43:30 | INFO | Tentando provider=mistral model=mistral-small-latest
+2026-06-22 13:43:30 | INFO | Tentando provider=mistral model=mistral-small-latest
+2026-06-22 13:43:30 | INFO | Tentando provider=mistral model=mistral-small-latest
+2026-06-22 13:43:30 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 13:43:30 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 13:43:30 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 13:43:30 | INFO | Mistral stream model=mistral-small-latest
+2026-06-22 13:43:32 | WARNING | Provider mistral falhou: 'generator' object does not support the context manager protocol. Tentando próximo...
+2026-06-22 13:43:32 | WARNING | Provider mistral falhou: 'generator' object does not support the context manager protocol. Tentando próximo...
+2026-06-22 13:43:32 | WARNING | Provider mistral falhou: 'generator' object does not support the context manager protocol. Tentando próximo...
+2026-06-22 13:43:32 | WARNING | Provider mistral falhou: 'generator' object does not support the context manager protocol. Tentando próximo...
+2026-06-22 13:43:32 | ERROR | Narrativa IA falhou: Todos os provedores falharam. Último erro: 'generator' object does not support the context manager protocol
+2026-06-22 13:43:32 | ERROR | Narrativa IA falhou: Todos os provedores falharam. Último erro: 'generator' object does not support the context manager protocol
+2026-06-22 13:43:32 | ERROR | Narrativa IA falhou: Todos os provedores falharam. Último erro: 'generator' object does not support the context manager protocol
+2026-06-22 13:43:32 | ERROR | Narrativa IA falhou: Todos os provedores falharam. Último erro: 'generator' object does not support the context manager protocol
+2026-06-22 13:52:51 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 13:52:51 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 13:52:51 | INFO | Carregando: 05_previsao_valor_despesa.csv (1,729,829 bytes)
+2026-06-22 13:52:52 | INFO | CSV ok encoding=utf-8 shape=(15000, 9)
+2026-06-22 13:52:52 | INFO | CSV ok encoding=utf-8 shape=(15000, 9)
+2026-06-22 13:52:52 | INFO | CSV ok encoding=utf-8 shape=(15000, 9)
+2026-06-22 13:52:52 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 13:52:52 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 13:52:52 | INFO | Gerando perfil shape=(15000, 9)
+2026-06-22 13:52:52 | INFO | Perfil: 5 num | 4 cat | 123 dup | quality=99.7
+2026-06-22 13:52:52 | INFO | Perfil: 5 num | 4 cat | 123 dup | quality=99.7
+2026-06-22 13:52:52 | INFO | Perfil: 5 num | 4 cat | 123 dup | quality=99.7
+2026-06-22 13:52:53 | INFO | Prompt: 3115 chars
+2026-06-22 13:52:53 | INFO | Prompt: 3115 chars
+2026-06-22 13:52:53 | INFO | Prompt: 3115 chars
+2026-06-22 13:52:53 | INFO | Tentando provider=nvidia model=nvidia/llama-3.1-nemotron-70b-instruct
+2026-06-22 13:52:53 | INFO | Tentando provider=nvidia model=nvidia/llama-3.1-nemotron-70b-instruct
+2026-06-22 13:52:53 | INFO | Tentando provider=nvidia model=nvidia/llama-3.1-nemotron-70b-instruct
+2026-06-22 13:52:53 | INFO | NVIDIA NIM stream model=nvidia/llama-3.1-nemotron-70b-instruct
+2026-06-22 13:52:53 | INFO | NVIDIA NIM stream model=nvidia/llama-3.1-nemotron-70b-instruct
+2026-06-22 13:52:53 | INFO | NVIDIA NIM stream model=nvidia/llama-3.1-nemotron-70b-instruct
+2026-06-22 13:52:56 | WARNING | Provider nvidia falhou: Error code: 401 - {'status': 401, 'title': 'Unauthorized', 'detail': 'Authentication failed'}. Tentando próximo...
+2026-06-22 13:52:56 | WARNING | Provider nvidia falhou: Error code: 401 - {'status': 401, 'title': 'Unauthorized', 'detail': 'Authentication failed'}. Tentando próximo...
+2026-06-22 13:52:56 | WARNING | Provider nvidia falhou: Error code: 401 - {'status': 401, 'title': 'Unauthorized', 'detail': 'Authentication failed'}. Tentando próximo...
+2026-06-22 13:52:56 | ERROR | Narrativa IA falhou: Todos os provedores falharam. Último erro: Error code: 401 - {'status': 401, 'title': 'Unauthorized', 'detail': 'Authentication failed'}
+2026-06-22 13:52:56 | ERROR | Narrativa IA falhou: Todos os provedores falharam. Último erro: Error code: 401 - {'status': 401, 'title': 'Unauthorized', 'detail': 'Authentication failed'}
+2026-06-22 13:52:56 | ERROR | Narrativa IA falhou: Todos os provedores falharam. Último erro: Error code: 401 - {'status': 401, 'title': 'Unauthorized', 'detail': 'Authentication failed'}

@@ -290,42 +290,211 @@ def controle_processos(request):
 @login_required
 def exportar_pdf(request, pk):
     from reportlab.lib.pagesizes import A4
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+    from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib import colors
+    from reportlab.lib.units import mm
+    from reportlab.lib.enums import TA_CENTER, TA_RIGHT
     from io import BytesIO
+    import datetime
 
     pedido = get_object_or_404(Pedido, pk=pk)
+    historico = list(pedido.historico.select_related("usuario").order_by("data_evento"))
+
+    C_TEAL   = colors.HexColor("#015350")
+    C_ORANGE = colors.HexColor("#ee8f2f")
+    C_GREEN  = colors.HexColor("#00502A")
+    C_BG     = colors.HexColor("#F6F6F6")
+    C_BORDER = colors.HexColor("#d8e0df")
+    C_TEXT   = colors.HexColor("#0d2e1a")
+    C_MUTED  = colors.HexColor("#5a7a6e")
+    C_PURPLE = colors.HexColor("#893d74")
+    C_RED    = colors.HexColor("#8c2000")
+
+    STATUS_MAP = {
+        "rascunho": (C_BG,                       C_MUTED,                      "Rascunho"),
+        "aberto":   (colors.HexColor("#fff7eb"),  colors.HexColor("#7a4a00"),   "Em Aberto"),
+        "correcao": (colors.HexColor("#f5eaf2"),  C_PURPLE,                     "Aguardando Correção"),
+        "aprovado": (colors.HexColor("#eefbd2"),  colors.HexColor("#2d5a00"),   "Aprovado"),
+        "reprovado":(colors.HexColor("#fff0eb"),  C_RED,                        "Reprovado"),
+    }
+
     buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4, leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
-    styles = getSampleStyleSheet()
+    doc = SimpleDocTemplate(
+        buffer, pagesize=A4,
+        leftMargin=20*mm, rightMargin=20*mm,
+        topMargin=15*mm, bottomMargin=20*mm,
+    )
+    W = doc.width
+
+    def P(text, **kw):
+        return Paragraph(str(text), ParagraphStyle("_", **kw))
+
     elements = []
-    elements.append(Paragraph(f"CompraBio — Pedido #{pedido.numero_pedido:04d}", styles["Title"]))
-    elements.append(Spacer(1, 12))
-    data = [
-        ["Campo", "Valor"],
-        ["Título", pedido.titulo],
-        ["Solicitante", str(pedido.solicitante)],
-        ["Status", pedido.get_status_display()],
-        ["Data Criação", pedido.data_criacao.strftime("%d/%m/%Y %H:%M")],
-        ["Data Envio", pedido.data_envio.strftime("%d/%m/%Y %H:%M") if pedido.data_envio else "—"],
-        ["Data Decisão", pedido.data_aprovacao.strftime("%d/%m/%Y %H:%M") if pedido.data_aprovacao else "—"],
-        ["Aprovador", str(pedido.aprovador) if pedido.aprovador else "—"],
-        ["Motivo Reprovação", pedido.motivo_reprovacao or "—"],
-    ]
-    t = Table(data, colWidths=[150, 350])
-    t.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#00502A")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#F6F6F6")]),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d8e0df")),
-        ("PADDING", (0, 0), (-1, -1), 7),
+
+    # ── Cabeçalho ─────────────────────────────────────────────────────────
+    hdr = Table([
+        [
+            P("CompraBio", fontName="Helvetica-Bold", fontSize=20, textColor=colors.white, leading=24),
+            P(f"#{pedido.numero_pedido:04d}", fontName="Helvetica-Bold", fontSize=26,
+              textColor=colors.white, leading=30, alignment=TA_RIGHT),
+        ],
+        [
+            P("Bio Mundo · Aprovação de Pedidos de Compra",
+              fontName="Helvetica", fontSize=9, textColor=colors.HexColor("#91bab5"), leading=12),
+            P("PEDIDO DE COMPRA", fontName="Helvetica", fontSize=8,
+              textColor=colors.HexColor("#91bab5"), leading=10, alignment=TA_RIGHT),
+        ],
+    ], colWidths=[W * 0.6, W * 0.4])
+    hdr.setStyle(TableStyle([
+        ("BACKGROUND",   (0, 0), (-1, -1), C_TEAL),
+        ("LEFTPADDING",  (0, 0), (-1, -1), 16),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 16),
+        ("TOPPADDING",   (0, 0), (-1, -1), 14),
+        ("BOTTOMPADDING",(0, 0), (-1, -1), 14),
+        ("VALIGN",       (0, 0), (-1, -1), "MIDDLE"),
+        ("LINEBELOW",    (0, -1), (-1, -1), 3, C_ORANGE),
     ]))
-    elements.append(t)
-    elements.append(Spacer(1, 16))
-    elements.append(Paragraph("Descrição", styles["Heading2"]))
-    elements.append(Paragraph(pedido.descricao, styles["Normal"]))
+    elements.append(hdr)
+    elements.append(Spacer(1, 8))
+
+    # ── Título + badge de status ───────────────────────────────────────────
+    sbg, sfg, slabel = STATUS_MAP.get(pedido.status, (C_BG, C_MUTED, pedido.status))
+    ts = Table([[
+        P(pedido.titulo, fontName="Helvetica-Bold", fontSize=13, textColor=C_TEXT, leading=17),
+        P(slabel, fontName="Helvetica-Bold", fontSize=10, textColor=sfg, leading=13, alignment=TA_CENTER),
+    ]], colWidths=[W * 0.72, W * 0.28])
+    ts.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (0, 0), colors.white),
+        ("BACKGROUND", (1, 0), (1, 0), sbg),
+        ("BOX",        (0, 0), (0, 0), 1,   C_BORDER),
+        ("BOX",        (1, 0), (1, 0), 1.5, sfg),
+        ("PADDING",    (0, 0), (-1, -1), 12),
+        ("VALIGN",     (0, 0), (-1, -1), "MIDDLE"),
+    ]))
+    elements.append(ts)
+    elements.append(Spacer(1, 8))
+
+    # ── Grid de informações ────────────────────────────────────────────────
+    solicitante  = pedido.solicitante.get_full_name() or pedido.solicitante.username
+    aprovador    = (pedido.aprovador.get_full_name() or pedido.aprovador.username) if pedido.aprovador else "—"
+    d_criacao    = pedido.data_criacao.strftime("%d/%m/%Y  %H:%M")
+    d_envio      = pedido.data_envio.strftime("%d/%m/%Y  %H:%M") if pedido.data_envio else "—"
+    d_decisao    = pedido.data_aprovacao.strftime("%d/%m/%Y  %H:%M") if pedido.data_aprovacao else "—"
+
+    def lbl(t): return P(t, fontName="Helvetica-Bold", fontSize=7, textColor=C_MUTED, leading=9)
+    def val(t): return P(t, fontName="Helvetica",      fontSize=10, textColor=C_TEXT,  leading=14)
+
+    h = W / 2 - 2
+    info = Table([
+        [lbl("SOLICITANTE"),     lbl("APROVADOR / ANALISADOR")],
+        [val(solicitante),       val(aprovador)],
+        [Spacer(1, 6),           Spacer(1, 6)],
+        [lbl("DATA DE CRIAÇÃO"), lbl("DATA DE ENVIO")],
+        [val(d_criacao),         val(d_envio)],
+        [Spacer(1, 6),           Spacer(1, 6)],
+        [lbl("DECISÃO"),         lbl("Nº DO PEDIDO")],
+        [val(d_decisao),         val(f"#{pedido.numero_pedido:04d}")],
+    ], colWidths=[h, h])
+    info.setStyle(TableStyle([
+        ("BACKGROUND",  (0, 0), (-1, -1), C_BG),
+        ("BOX",         (0, 0), (-1, -1), 1,   C_BORDER),
+        ("LINEAFTER",   (0, 0), (0, -1),  0.5, C_BORDER),
+        ("PADDING",     (0, 0), (-1, -1), 4),
+        ("LEFTPADDING", (0, 0), (-1, -1), 14),
+        ("TOPPADDING",  (0, 0), (-1, -1), 6),
+    ]))
+    elements.append(info)
+    elements.append(Spacer(1, 10))
+
+    # ── Bloco de motivo (reprovação ou correção) ───────────────────────────
+    if pedido.motivo_reprovacao:
+        m_bg = colors.HexColor("#fff0eb") if pedido.status == "reprovado" else colors.HexColor("#f5eaf2")
+        m_fg = C_RED if pedido.status == "reprovado" else C_PURPLE
+        m_lbl = "MOTIVO DA REPROVAÇÃO" if pedido.status == "reprovado" else "CORREÇÃO SOLICITADA"
+        mot = Table([
+            [P(m_lbl, fontName="Helvetica-Bold", fontSize=7, textColor=m_fg, leading=9)],
+            [P(pedido.motivo_reprovacao, fontName="Helvetica", fontSize=10, textColor=m_fg, leading=14)],
+        ], colWidths=[W])
+        mot.setStyle(TableStyle([
+            ("BACKGROUND",  (0, 0), (-1, -1), m_bg),
+            ("BOX",         (0, 0), (-1, -1), 2, m_fg),
+            ("LEFTPADDING", (0, 0), (-1, -1), 14),
+            ("PADDING",     (0, 0), (-1, -1), 11),
+        ]))
+        elements.append(mot)
+        elements.append(Spacer(1, 10))
+
+    # ── Descrição ──────────────────────────────────────────────────────────
+    elements.append(HRFlowable(width=W, thickness=1, color=C_BORDER, spaceAfter=6))
+    elements.append(P("DESCRIÇÃO", fontName="Helvetica-Bold", fontSize=8, textColor=C_MUTED, leading=10))
+    elements.append(Spacer(1, 5))
+    desc = Table([
+        [P(pedido.descricao, fontName="Helvetica", fontSize=11, textColor=C_TEXT, leading=16)]
+    ], colWidths=[W])
+    desc.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), colors.white),
+        ("BOX",        (0, 0), (-1, -1), 1, C_BORDER),
+        ("PADDING",    (0, 0), (-1, -1), 14),
+    ]))
+    elements.append(desc)
+
+    # ── Histórico ──────────────────────────────────────────────────────────
+    if historico:
+        elements.append(Spacer(1, 12))
+        elements.append(HRFlowable(width=W, thickness=1, color=C_BORDER, spaceAfter=6))
+        elements.append(P("HISTÓRICO DO PEDIDO", fontName="Helvetica-Bold", fontSize=8, textColor=C_MUTED, leading=10))
+        elements.append(Spacer(1, 5))
+
+        hist_rows = []
+        row_bgs = []
+        for i, ev in enumerate(historico):
+            bg = colors.white if i % 2 == 0 else C_BG
+            nome = (ev.usuario.get_full_name() or ev.usuario.username) if ev.usuario else "Sistema"
+            data_ev = ev.data_evento.strftime("%d/%m/%Y  %H:%M")
+            hist_rows.append([
+                P(f"<b>{ev.acao}</b>", fontName="Helvetica-Bold", fontSize=10, textColor=C_TEXT, leading=13),
+                P(f"{nome}  ·  {data_ev}", fontName="Helvetica", fontSize=8,
+                  textColor=C_MUTED, leading=10, alignment=TA_RIGHT),
+            ])
+            row_bgs.append(bg)
+            if ev.observacao:
+                hist_rows.append([
+                    P(ev.observacao, fontName="Helvetica", fontSize=9, textColor=C_MUTED, leading=12),
+                    P("", fontName="Helvetica", fontSize=9, leading=12),
+                ])
+                row_bgs.append(bg)
+
+        ts_hist = [
+            ("BOX",     (0, 0), (-1, -1), 1, C_BORDER),
+            ("PADDING", (0, 0), (-1, -1), 10),
+            ("LEFTPADDING", (0, 0), (-1, -1), 14),
+            ("VALIGN",  (0, 0), (-1, -1), "TOP"),
+        ]
+        for i, bg in enumerate(row_bgs):
+            ts_hist.append(("BACKGROUND", (0, i), (-1, i), bg))
+            ts_hist.append(("LINEBELOW",  (0, i), (-1, i), 0.5, C_BORDER))
+
+        hist_t = Table(hist_rows, colWidths=[W * 0.65, W * 0.35])
+        hist_t.setStyle(TableStyle(ts_hist))
+        elements.append(hist_t)
+
+    # ── Rodapé ─────────────────────────────────────────────────────────────
+    elements.append(Spacer(1, 14))
+    now_str = datetime.datetime.now().strftime("%d/%m/%Y às %H:%M")
+    footer = Table([[
+        P(f"Gerado em {now_str}", fontName="Helvetica", fontSize=8, textColor=C_MUTED, leading=10),
+        P("CompraBio · Bio Mundo", fontName="Helvetica-Bold", fontSize=8,
+          textColor=C_MUTED, leading=10, alignment=TA_CENTER),
+        P("Documento sem validade jurídica", fontName="Helvetica", fontSize=8,
+          textColor=C_MUTED, leading=10, alignment=TA_RIGHT),
+    ]], colWidths=[W / 3, W / 3, W / 3])
+    footer.setStyle(TableStyle([
+        ("LINEABOVE", (0, 0), (-1, -1), 1, C_BORDER),
+        ("PADDING",   (0, 0), (-1, -1), 8),
+    ]))
+    elements.append(footer)
+
     doc.build(elements)
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename=f"pedido_{pedido.numero_pedido:04d}.pdf")

@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% block title %}Pedido #{{ pedido.numero_pedido|stringformat:"04d" }} — CompraBio{% endblock %}
+{% block topbar_title %}Pedido #{{ pedido.numero_pedido|stringformat:"04d" }}{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+  <div>
+    <h1><i class="bi bi-file-text me-2 text-primary"></i>Pedido #{{ pedido.numero_pedido|stringformat:"04d" }}</h1>
+    <p>{{ pedido.titulo }}</p>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    {# Comprador: enviar rascunho #}
+    {% if pedido.status == 'rascunho' and pedido.solicitante == request.user %}
+    <a href="{% url 'editar_pedido' pedido.pk %}" class="btn btn-outline-primary btn-sm">
+      <i class="bi bi-pencil me-1"></i>Editar
+    </a>
+    <form method="post" action="{% url 'enviar_pedido' pedido.pk %}" style="display:inline;">
+      {% csrf_token %}
+      <button class="btn btn-primary btn-sm"><i class="bi bi-send me-1"></i>Enviar para Aprovação</button>
+    </form>
+    {% endif %}
+
+    {# Comprador: corrigir pedido devolvido para correção #}
+    {% if pedido.status == 'correcao' and pedido.solicitante == request.user %}
+    <a href="{% url 'editar_pedido' pedido.pk %}" class="btn btn-sm fw-semibold"
+       style="background:#893d74;border-color:#893d74;color:#fff;">
+      <i class="bi bi-pencil-square me-1"></i>Corrigir e Reenviar
+    </a>
+    {% endif %}
+
+    {# Comprador: pedido reprovado definitivo — só criar novo #}
+    {% if pedido.status == 'reprovado' and pedido.solicitante == request.user %}
+    <a href="{% url 'criar_pedido' %}" class="btn btn-sm fw-semibold btn-outline-secondary">
+      <i class="bi bi-plus-circle me-1"></i>Criar Novo Pedido
+    </a>
+    {% endif %}
+
+    {# Aprovador: aprovar / reprovar #}
+    {% if pedido.status == 'aberto' and request.user.is_aprovador or pedido.status == 'aberto' and request.user.is_admin_perfil %}
+    <a href="{% url 'aprovar_pedido' pedido.pk %}" class="btn btn-sm fw-semibold"
+       style="background:var(--green-dark);border-color:var(--green-dark);color:#fff;">
+      <i class="bi bi-check2-circle me-1"></i>Analisar Pedido
+    </a>
+    {% endif %}
+
+    <a href="{% url 'exportar_pdf' pedido.pk %}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-file-pdf me-1"></i>PDF
+    </a>
+    <a href="{% url 'controle_processos' %}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-arrow-left me-1"></i>Voltar
+    </a>
+  </div>
+</div>
+
+{# Banner: pedido devolvido para correção (solicitante) #}
+{% if pedido.status == 'correcao' and pedido.solicitante == request.user %}
+<div class="mb-4 p-4 d-flex align-items-start gap-3"
+     style="background:#fdf5fb;border:1.5px solid #d9a8cb;border-radius:12px;">
+  <i class="bi bi-pencil-square fs-4 flex-shrink-0" style="color:#893d74;margin-top:2px;"></i>
+  <div class="flex-grow-1">
+    <div class="fw-bold mb-1" style="color:#5d1a4a;font-size:15px;">Correção Solicitada pelo Aprovador</div>
+    <div style="font-size:14px;color:#5d1a4a;line-height:1.6;">{{ pedido.motivo_reprovacao }}</div>
+    <div class="mt-3">
+      <a href="{% url 'editar_pedido' pedido.pk %}" class="btn btn-sm fw-semibold"
+         style="background:#893d74;border-color:#893d74;color:#fff;">
+        <i class="bi bi-pencil-square me-1"></i>Corrigir e Reenviar
+      </a>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{# Banner: pedido reprovado definitivamente (solicitante) #}
+{% if pedido.status == 'reprovado' and pedido.solicitante == request.user %}
+<div class="mb-4 p-4 d-flex align-items-start gap-3"
+     style="background:#fff5f0;border:1.5px solid #FC6A43;border-radius:12px;">
+  <i class="bi bi-x-octagon-fill fs-4 flex-shrink-0" style="color:#FC6A43;margin-top:2px;"></i>
+  <div class="flex-grow-1">
+    <div class="fw-bold mb-1" style="color:#8c2000;font-size:15px;">Pedido Reprovado Definitivamente</div>
+    <div style="font-size:14px;color:#8c2000;line-height:1.6;">{{ pedido.motivo_reprovacao }}</div>
+    <div class="mt-3">
+      <a href="{% url 'criar_pedido' %}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-plus-circle me-1"></i>Criar Novo Pedido
+      </a>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{# Banner pedido em análise (aprovador) #}
+{% if pedido.status == 'aberto' and request.user.is_aprovador %}
+<div class="mb-4 p-3 d-flex align-items-center gap-3"
+     style="background:#fff8ec;border:1.5px solid var(--orange);border-radius:12px;">
+  <i class="bi bi-hourglass-split fs-5 flex-shrink-0" style="color:var(--orange);"></i>
+  <div class="flex-grow-1">
+    <span style="font-size:14px;color:#7a4a00;font-weight:600;">Este pedido aguarda sua análise.</span>
+    <span style="font-size:13px;color:#7a4a00;"> Enviado em {{ pedido.data_envio|date:"d/m/Y H:i" }}.</span>
+  </div>
+  <a href="{% url 'aprovar_pedido' pedido.pk %}" class="btn btn-sm fw-semibold flex-shrink-0"
+     style="background:var(--green-dark);border-color:var(--green-dark);color:#fff;">
+    Analisar Agora
+  </a>
+</div>
+{% endif %}
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="table-card p-4 mb-3">
+      <h6 style="font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:16px;">Informações</h6>
+      <div class="row g-3">
+        <div class="col-sm-6">
+          <div class="field-label">Solicitante</div>
+          <div class="field-val">{{ pedido.solicitante.get_full_name|default:pedido.solicitante.username }}</div>
+        </div>
+        <div class="col-sm-6">
+          <div class="field-label">Data de Criação</div>
+          <div class="field-val">{{ pedido.data_criacao|date:"d/m/Y H:i" }}</div>
+        </div>
+        <div class="col-sm-6">
+          <div class="field-label">Data de Envio</div>
+          <div class="field-val">{{ pedido.data_envio|date:"d/m/Y H:i"|default:"—" }}</div>
+        </div>
+        <div class="col-sm-6">
+          <div class="field-label">Data da Decisão</div>
+          <div class="field-val">{{ pedido.data_aprovacao|date:"d/m/Y H:i"|default:"—" }}</div>
+        </div>
+        {% if pedido.aprovador %}
+        <div class="col-sm-6">
+          <div class="field-label">Analisado por</div>
+          <div class="field-val">{{ pedido.aprovador.get_full_name|default:pedido.aprovador.username }}</div>
+        </div>
+        {% endif %}
+        <div class="col-12">
+          <div class="field-label">Descrição / Justificativa</div>
+          <div style="font-size:14px;color:var(--text-dark);margin-top:8px;line-height:1.7;
+                      white-space:pre-wrap;background:var(--bg);border-radius:8px;padding:14px;">{{ pedido.descricao }}</div>
+        </div>
+      </div>
+    </div>
+
+    {% if pedido.anexos.all %}
+    <div class="table-card p-4 mb-3">
+      <h6 style="font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:12px;">Anexos</h6>
+      {% for anexo in pedido.anexos.all %}
+      <div class="d-flex align-items-center justify-content-between py-2"
+           style="border-bottom:1px solid var(--border);">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-file-earmark-excel-fill fs-5" style="color:var(--green-dark);"></i>
+          <span style="font-size:14px;">{{ anexo.nome_arquivo }}</span>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <span class="text-muted" style="font-size:12px;">{{ anexo.data_upload|date:"d/m/Y H:i" }}</span>
+          <a href="{% url 'download_anexo' pedido.pk anexo.pk %}" class="btn btn-sm btn-outline-primary py-0 px-2">
+            <i class="bi bi-download"></i>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-4">
+    <!-- Status card -->
+    <div class="table-card p-4 mb-3 text-center">
+      <div class="field-label mb-2">Status Atual</div>
+      <span class="badge badge-{{ pedido.status }} px-3 py-2" style="border-radius:8px;font-size:14px;">
+        {% if pedido.status == 'aprovado' %}<i class="bi bi-check-circle-fill me-1"></i>
+        {% elif pedido.status == 'reprovado' %}<i class="bi bi-x-circle-fill me-1"></i>
+        {% elif pedido.status == 'correcao' %}<i class="bi bi-pencil-square me-1"></i>
+        {% elif pedido.status == 'aberto' %}<i class="bi bi-hourglass me-1"></i>
+        {% else %}<i class="bi bi-file-earmark me-1"></i>
+        {% endif %}{{ pedido.get_status_display }}
+      </span>
+    </div>
+
+    <!-- Histórico -->
+    <div class="table-card p-4">
+      <h6 style="font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:14px;">Histórico</h6>
+      {% for h in pedido.historico.all %}
+      <div class="d-flex gap-3 mb-3 pb-3" style="border-bottom:1px solid var(--border);">
+        <div class="flex-shrink-0" style="padding-top:3px;">
+          <div style="width:9px;height:9px;border-radius:50%;
+            background:{% if 'Reprovado' in h.acao %}#FC6A43{% elif 'Aprovado' in h.acao %}var(--lime){% elif 'Correção' in h.acao or 'correção' in h.acao %}#893d74{% elif 'Enviado' in h.acao or 'Reenviado' in h.acao %}var(--orange){% else %}var(--teal-mid){% endif %};"></div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-dark);">{{ h.acao }}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">
+            {% if h.usuario %}{{ h.usuario.get_full_name|default:h.usuario.username }}{% else %}Sistema{% endif %}
+            · {{ h.data_evento|date:"d/m/Y H:i" }}
+          </div>
+          {% if h.observacao %}
+          <div style="font-size:12px;color:#6d4a2a;background:#fff8ec;border-radius:6px;
+                      padding:6px 8px;margin-top:6px;line-height:1.5;">
+            {{ h.observacao }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-muted" style="font-size:13px;">Nenhum histórico.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .field-label { font-size:11px; text-transform:uppercase; letter-spacing:.05em; font-weight:700; color:var(--text-muted); margin-bottom:4px; }
+  .field-val { font-size:14px; color:var(--text-dark); }
+</style>
+{% endblock %}

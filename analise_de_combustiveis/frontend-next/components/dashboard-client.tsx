@@ -36,8 +36,9 @@ import {
   getMap,
   getMarket,
   getOverview,
+  getStats,
 } from "@/lib/api";
-import {
+import type {
   ComparisonPoint,
   ForecastPoint,
   FuelName,
@@ -45,8 +46,9 @@ import {
   HistoryPoint,
   InsightPayload,
   MarketSignal,
+  NationalStats,
 } from "@/lib/types";
-import { useDashboardStore } from "@/lib/store";
+import { useDashboardStore, useSettingsStore } from "@/lib/store";
 
 const FALLBACK_FUELS: FuelName[] = ["gasolina", "etanol", "diesel", "glp", "gnv"];
 
@@ -79,8 +81,8 @@ function InfoPanel({
 }) {
   return (
     <Card className={className}>
-      <p className="text-xs uppercase tracking-[0.28em] text-mist">{kicker}</p>
-      <h3 className="mt-3 font-display text-2xl text-white">{title}</h3>
+      <p className="text-[10px] uppercase tracking-widest text-muted">{kicker}</p>
+      <h3 className="mt-2 font-display text-xl font-bold text-text">{title}</h3>
       <div className="mt-4">{children}</div>
     </Card>
   );
@@ -96,10 +98,10 @@ function MetricStrip({
       {items.map((item) => (
         <div
           key={item.label}
-          className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4"
+          className="rounded-xl border border-line bg-surface2 p-4"
         >
-          <p className="text-xs uppercase tracking-[0.2em] text-white/45">{item.label}</p>
-          <p className="mt-3 font-display text-2xl text-white">{item.value}</p>
+          <p className="text-[10px] uppercase tracking-widest text-muted">{item.label}</p>
+          <p className="mt-2 font-mono text-xl font-bold text-text">{item.value}</p>
         </div>
       ))}
     </div>
@@ -121,20 +123,20 @@ function RankedList({
     <InfoPanel kicker={subtitle} title={title}>
       <div className="space-y-3">
         {items.length === 0 ? (
-          <div className="rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3 text-sm text-mist">
+          <div className="rounded-xl border border-line bg-surface2 px-4 py-3 text-sm text-muted">
             Sem dados suficientes para montar o ranking.
           </div>
         ) : (
           items.map((item, index) => (
             <div
               key={`${item.label}-${index}`}
-              className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3"
+              className="flex items-center justify-between rounded-xl border border-line bg-surface2 px-4 py-3 transition-colors hover:bg-surface"
             >
               <div>
-                <p className="text-sm text-white">{item.label}</p>
-                <p className="text-xs text-mist">Posicao {index + 1}</p>
+                <p className="text-sm text-text">{item.label}</p>
+                <p className="text-xs text-muted">#{index + 1}</p>
               </div>
-              <p className="font-display text-xl text-white">{formatter(item.value)}</p>
+              <p className="font-mono text-lg font-bold text-amber">{formatter(item.value)}</p>
             </div>
           ))
         )}
@@ -150,33 +152,38 @@ function FuelSwitchboard({
   fuels: FuelName[];
   activeFuel: FuelName;
 }) {
-  const colors = {
-    gasolina: "from-amber/20 to-coral/10 border-amber/20",
-    etanol: "from-accent/20 to-sky/10 border-accent/20",
-    diesel: "from-sky/20 to-white/[0.04] border-sky/20",
-    glp: "from-coral/20 to-amber/10 border-coral/20",
-    gnv: "from-iris/20 to-sky/10 border-iris/20",
-  } as const;
+  const fuelMeta: Record<FuelName, { gradient: string; accent: string; label: string }> = {
+    gasolina: { gradient: "from-amber/15 to-amber/[0.03] border-amber/25",  accent: "text-amber",   label: "Gasolina" },
+    etanol:   { gradient: "from-emerald/15 to-emerald/[0.03] border-emerald/25", accent: "text-emerald", label: "Etanol" },
+    diesel:   { gradient: "from-blue/15 to-blue/[0.03] border-blue/25",     accent: "text-blue",    label: "Diesel" },
+    glp:      { gradient: "from-rose/15 to-rose/[0.03] border-rose/25",     accent: "text-rose",    label: "GLP" },
+    gnv:      { gradient: "from-purple/15 to-purple/[0.03] border-purple/25", accent: "text-purple", label: "GNV" },
+  };
 
   return (
     <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
-      {fuels.map((item) => (
+      {fuels.map((item) => {
+        const meta = fuelMeta[item] ?? { gradient: "from-surface2 to-surface border-line", accent: "text-muted", label: item };
+        return (
         <Link
           key={item}
           href={`/combustivel/${item}`}
-          className={`min-h-[176px] rounded-[1.6rem] border bg-gradient-to-br p-5 transition hover:-translate-y-0.5 ${colors[item] ?? "from-white/[0.08] to-white/[0.02] border-white/10"}`}
+          className={`group flex min-h-[160px] flex-col justify-between rounded-2xl border bg-gradient-to-br p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card ${meta.gradient}`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase tracking-[0.24em] text-white/55">Analise dedicada</span>
-            <Fuel className={`h-4 w-4 ${item === activeFuel ? "text-white" : "text-white/60"}`} />
+            <span className="text-[9px] uppercase tracking-widest text-muted">Análise</span>
+            <Fuel className={`h-4 w-4 transition-colors ${item === activeFuel ? meta.accent : "text-muted"}`} />
           </div>
-          <p className="mt-6 break-words font-display text-[1.85rem] leading-none text-white">{item.toUpperCase()}</p>
-          <div className="mt-6 inline-flex items-center gap-2 text-sm text-white/72">
-            {item === activeFuel ? "Tela atual" : "Abrir dossie"}
-            <ChevronRight className="h-3.5 w-3.5" />
+          <div>
+            <p className={`font-display text-2xl font-bold leading-none ${meta.accent}`}>{meta.label}</p>
+            <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted group-hover:text-text">
+              {item === activeFuel ? "Tela atual" : "Abrir análise"}
+              <ChevronRight className="h-3 w-3" />
+            </div>
           </div>
         </Link>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -189,6 +196,7 @@ export function DashboardClient({
   initialFuel?: FuelName;
 }) {
   const { fuel, state, city, compareWith, startDate, endDate, setFuel } = useDashboardStore();
+  const { mistralKey } = useSettingsStore();
   const [overview, setOverview] = useState<FuelSummary[]>([]);
   const [history, setHistory] = useState<HistoryPoint[]>([]);
   const [forecast, setForecast] = useState<ForecastPoint[]>([]);
@@ -198,6 +206,7 @@ export function DashboardClient({
   const [insight, setInsight] = useState<InsightPayload | null>(null);
   const [availableFuels, setAvailableFuels] = useState<FuelName[]>([]);
   const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [nationalStats, setNationalStats] = useState<NationalStats | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -308,11 +317,12 @@ export function DashboardClient({
       pageMode === "comparacoes" ? getComparison(fuel, compareWith, state, startDate, endDate) : Promise.resolve([]),
       getMap(fuel),
       getMarket(fuel, state, startDate, endDate),
-      getInsights(fuel, state, pageMode, pageMode === "comparacoes" ? compareWith : "", city, startDate, endDate),
+      getInsights(fuel, state, pageMode, pageMode === "comparacoes" ? compareWith : "", city, startDate, endDate, mistralKey || undefined),
       getCities(fuel, state),
+      getStats(fuel, startDate, endDate),
     ]).then((results) => {
       if (!active) return;
-      const [overviewResult, historyResult, forecastResult, comparisonResult, mapResult, marketResult, insightResult, citiesResult] = results;
+      const [overviewResult, historyResult, forecastResult, comparisonResult, mapResult, marketResult, insightResult, citiesResult, statsResult] = results;
       setOverview(overviewResult.status === "fulfilled" ? overviewResult.value : []);
       setHistory(historyResult.status === "fulfilled" ? historyResult.value : []);
       setForecast(forecastResult.status === "fulfilled" ? forecastResult.value : []);
@@ -321,6 +331,7 @@ export function DashboardClient({
       setMarket(marketResult.status === "fulfilled" ? marketResult.value : []);
       setInsight(insightResult.status === "fulfilled" ? insightResult.value : null);
       setAvailableCities(citiesResult.status === "fulfilled" ? citiesResult.value : []);
+      setNationalStats(statsResult.status === "fulfilled" ? statsResult.value : null);
       const firstFailure = results.find((result) => result.status === "rejected");
       setError(firstFailure?.status === "rejected" ? firstFailure.reason?.message ?? "Falha parcial ao carregar dados" : null);
       setLoading(false);
@@ -329,7 +340,7 @@ export function DashboardClient({
     return () => {
       active = false;
     };
-  }, [fuel, state, city, compareWith, pageMode, startDate, endDate]);
+  }, [fuel, state, city, compareWith, pageMode, startDate, endDate, mistralKey]);
 
   const current = overview[0];
   const availableStates = useMemo(() => Array.from(new Set(mapData.map((item) => item.state))).sort(), [mapData]);
@@ -345,6 +356,7 @@ export function DashboardClient({
   );
   const visibleMarketData = useMemo(() => market.slice(-18), [market]);
   const priceDelta = latestHistory && previousHistory ? latestHistory.average_price - previousHistory.average_price : 0;
+  const priceDeltaPct = previousHistory?.average_price > 0 ? (priceDelta / previousHistory.average_price) * 100 : undefined;
   const rangeLow = recentHistory.length > 0 ? Math.min(...recentHistory.map((item) => item.average_price)) : undefined;
   const rangeHigh = recentHistory.length > 0 ? Math.max(...recentHistory.map((item) => item.average_price)) : undefined;
   const averageRecent = recentHistory.length > 0 ? recentHistory.reduce((sum, item) => sum + item.average_price, 0) / recentHistory.length : undefined;
@@ -394,6 +406,47 @@ export function DashboardClient({
     }
   }, [availableFuels, compareWith, fuel]);
 
+  const nationalStatsBar = nationalStats && (
+    <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      {[
+        {
+          label: "Media nacional",
+          value: formatCurrency(nationalStats.national_avg),
+          sub: `${nationalStats.state_count} estados`,
+          color: "border-blue/20 bg-blue/[0.04]",
+          valColor: "text-blue font-mono",
+        },
+        {
+          label: "Estado mais barato",
+          value: nationalStats.min_state.toUpperCase(),
+          sub: formatCurrency(nationalStats.min_price),
+          color: "border-emerald/20 bg-emerald/[0.04]",
+          valColor: "text-emerald",
+        },
+        {
+          label: "Estado mais caro",
+          value: nationalStats.max_state.toUpperCase(),
+          sub: formatCurrency(nationalStats.max_price),
+          color: "border-rose/20 bg-rose/[0.04]",
+          valColor: "text-rose",
+        },
+        {
+          label: "Var. semanal nacional",
+          value: `${nationalStats.change_week_pct > 0 ? "+" : ""}${nationalStats.change_week_pct.toFixed(2)}%`,
+          sub: nationalStats.change_week_pct > 0 ? "Alta nacional" : nationalStats.change_week_pct < 0 ? "Queda nacional" : "Estavel",
+          color: nationalStats.change_week_pct > 0 ? "border-rose/20 bg-rose/[0.04]" : nationalStats.change_week_pct < 0 ? "border-emerald/20 bg-emerald/[0.04]" : "border-line bg-surface",
+          valColor: nationalStats.change_week_pct > 0 ? "text-rose font-mono" : nationalStats.change_week_pct < 0 ? "text-emerald font-mono" : "text-muted font-mono",
+        },
+      ].map((item) => (
+        <div key={item.label} className={`bg-surface rounded-2xl border px-5 py-4 ${item.color}`}>
+          <p className="text-[9px] uppercase tracking-[0.3em] text-muted">{item.label}</p>
+          <p className={`mt-2 font-display text-2xl font-bold ${item.valColor}`}>{item.value}</p>
+          <p className="mt-1 text-[11px] text-muted">{item.sub}</p>
+        </div>
+      ))}
+    </section>
+  );
+
   const executiveStats = (
     <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       <StatCard
@@ -401,12 +454,20 @@ export function DashboardClient({
         value={formatCurrency(current?.average_price)}
         hint="Ultimo fechamento consolidado"
         trend={trendFromDelta(priceDelta)}
+        delta={priceDeltaPct}
       />
       <StatCard
         label="Variacao recente"
-        value={latestHistory && previousHistory ? formatCurrency(priceDelta) : "--"}
-        hint="Ultimo deslocamento semanal"
-        trend={trendFromDelta(priceDelta)}
+        value={
+          nationalStats
+            ? `${nationalStats.change_week_pct > 0 ? "+" : ""}${nationalStats.change_week_pct.toFixed(2)}%`
+            : priceDeltaPct !== undefined
+              ? `${priceDeltaPct > 0 ? "+" : ""}${priceDeltaPct.toFixed(2)}%`
+              : "--"
+        }
+        hint="Var. semanal nacional — fonte: /stats"
+        trend={trendFromDelta(nationalStats?.change_week_pct ?? priceDelta)}
+        delta={nationalStats?.change_week_pct ?? priceDeltaPct}
       />
       <StatCard
         label="Faixa recente"
@@ -436,16 +497,16 @@ export function DashboardClient({
       </InfoPanel>
       <InfoPanel kicker="Cobertura territorial" title="Profundidade do recorte">
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Estado</p>
+          <div className="rounded-[1.35rem] border border-line bg-surface2 p-4">
+            <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Estado</p>
             <p className="mt-3 font-display text-2xl text-white">{state}</p>
           </div>
-          <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Cidade</p>
+          <div className="rounded-[1.35rem] border border-line bg-surface2 p-4">
+            <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Cidade</p>
             <p className="mt-3 font-display text-2xl text-white">{city || "Todas"}</p>
           </div>
-          <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Municipios</p>
+          <div className="rounded-[1.35rem] border border-line bg-surface2 p-4">
+            <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Municipios</p>
             <p className="mt-3 font-display text-2xl text-white">{String(availableCities.length || 0)}</p>
           </div>
         </div>
@@ -457,17 +518,17 @@ export function DashboardClient({
     <section className="grid gap-4 xl:grid-cols-4">
       {scenarioCards.map((scenario) => (
         <Card key={scenario.scenario} className="bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))]">
-          <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">{scenario.scenario}</p>
+          <p className="text-[10px] uppercase tracking-[0.28em] text-muted">{scenario.scenario}</p>
           <p className="mt-4 font-display text-4xl text-white">{formatCurrency(scenario.predicted)}</p>
-          <p className="mt-3 text-sm text-mist">
+          <p className="mt-3 text-sm text-muted">
             {scenario.week ?? "--"} · {formatCurrency(scenario.minimum)} a {formatCurrency(scenario.maximum)}
           </p>
         </Card>
       ))}
       <Card className="bg-[linear-gradient(160deg,rgba(244,184,96,0.08),rgba(255,255,255,0.02))]">
-        <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">Regime de mercado</p>
+        <p className="text-[10px] uppercase tracking-[0.28em] text-muted">Regime de mercado</p>
         <p className="mt-4 font-display text-4xl text-white">{latestMarket?.market_regime ?? "--"}</p>
-        <p className="mt-3 text-sm text-mist">Oferta versus demanda no ultimo ponto do recorte.</p>
+        <p className="mt-3 text-sm text-muted">Oferta versus demanda no ultimo ponto do recorte.</p>
       </Card>
     </section>
   );
@@ -475,19 +536,19 @@ export function DashboardClient({
   const comparisonStats = (
     <section className="grid gap-4 xl:grid-cols-4">
       <Card className="bg-[linear-gradient(160deg,rgba(139,125,255,0.12),rgba(255,255,255,0.02))]">
-        <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Combustivel base</p>
+        <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Combustivel base</p>
         <p className="mt-4 font-display text-4xl text-white">{fuel.toUpperCase()}</p>
       </Card>
       <Card className="bg-[linear-gradient(160deg,rgba(107,184,255,0.12),rgba(255,255,255,0.02))]">
-        <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Combustivel comparado</p>
+        <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Combustivel comparado</p>
         <p className="mt-4 font-display text-4xl text-white">{compareWith.toUpperCase()}</p>
       </Card>
       <Card className="bg-[linear-gradient(160deg,rgba(54,214,167,0.12),rgba(255,255,255,0.02))]">
-        <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Spread final</p>
+        <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Spread final</p>
         <p className="mt-4 font-display text-4xl text-white">{formatPercent(latestComparison?.advantage_percent)}</p>
       </Card>
       <Card className="bg-[linear-gradient(160deg,rgba(255,123,114,0.12),rgba(255,255,255,0.02))]">
-        <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Vencedor</p>
+        <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Vencedor</p>
         <p className="mt-4 font-display text-4xl text-white">{latestComparison?.recommended_fuel ?? "--"}</p>
       </Card>
     </section>
@@ -497,16 +558,16 @@ export function DashboardClient({
     <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
       <InfoPanel kicker="Produto" title={`Panorama dedicado de ${(initialFuel ?? fuel).toUpperCase()}`}>
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Preco medio</p>
+          <div className="rounded-[1.35rem] border border-line bg-surface2 p-4">
+            <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Preco medio</p>
             <p className="mt-3 font-display text-3xl text-white">{formatCurrency(current?.average_price)}</p>
           </div>
-          <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Volatilidade</p>
+          <div className="rounded-[1.35rem] border border-line bg-surface2 p-4">
+            <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Volatilidade</p>
             <p className="mt-3 font-display text-3xl text-white">{current ? current.volatility.toFixed(3) : "--"}</p>
           </div>
-          <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Regime</p>
+          <div className="rounded-[1.35rem] border border-line bg-surface2 p-4">
+            <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Regime</p>
             <p className="mt-3 font-display text-3xl text-white">{latestMarket?.market_regime ?? "--"}</p>
           </div>
         </div>
@@ -540,6 +601,7 @@ export function DashboardClient({
 
   const dashboardLayout = (
     <>
+      {nationalStatsBar}
       {executiveStats}
       <AIBriefing insight={insight} contextLabel={aiContextLabel} />
       <section className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
@@ -552,7 +614,7 @@ export function DashboardClient({
               { label: "Regime", value: latestMarket?.market_regime ?? "--" },
             ]}
           />
-          <div className="mt-4 rounded-[1.3rem] border border-white/8 bg-black/15 p-4 text-sm leading-7 text-mist">
+          <div className="mt-4 rounded-[1.3rem] border border-line bg-surface p-4 text-sm leading-7 text-muted">
             O painel principal agora concentra contexto de mercado, leitura de IA e rankings por estado para servir como hub analitico, nao como uma repeticao das outras rotas.
           </div>
         </InfoPanel>
@@ -583,16 +645,16 @@ export function DashboardClient({
         <OverviewChart data={history} />
         <InfoPanel kicker="Extremos" title="Faixa e reversao">
           <div className="space-y-3">
-            <div className="rounded-2xl border border-white/8 bg-white/[0.04] p-4">
-              <p className="text-sm text-mist">Minimo recente</p>
+            <div className="rounded-2xl border border-line bg-surface2 p-4">
+              <p className="text-sm text-muted">Minimo recente</p>
               <p className="mt-2 font-display text-3xl text-white">{formatCurrency(rangeLow)}</p>
             </div>
-            <div className="rounded-2xl border border-white/8 bg-white/[0.04] p-4">
-              <p className="text-sm text-mist">Maximo recente</p>
+            <div className="rounded-2xl border border-line bg-surface2 p-4">
+              <p className="text-sm text-muted">Maximo recente</p>
               <p className="mt-2 font-display text-3xl text-white">{formatCurrency(rangeHigh)}</p>
             </div>
-            <div className="rounded-2xl border border-white/8 bg-white/[0.04] p-4">
-              <p className="text-sm text-mist">Mudanca semanal</p>
+            <div className="rounded-2xl border border-line bg-surface2 p-4">
+              <p className="text-sm text-muted">Mudanca semanal</p>
               <p className="mt-2 font-display text-3xl text-white">{formatCurrency(priceDelta)}</p>
             </div>
           </div>
@@ -602,10 +664,10 @@ export function DashboardClient({
         <InfoPanel kicker="Cadencia" title="Semanas recentes">
           <div className="space-y-3">
             {recentHistory.slice().reverse().map((point) => (
-              <div key={`${point.week}-${point.city || "state"}`} className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
+              <div key={`${point.week}-${point.city || "state"}`} className="flex items-center justify-between rounded-2xl border border-line bg-surface2 px-4 py-3">
                 <div>
                   <p className="text-sm text-white">{point.week}</p>
-                  <p className="text-xs text-mist">{point.city || state}</p>
+                  <p className="text-xs text-muted">{point.city || state}</p>
                 </div>
                 <p className="font-display text-xl text-white">{formatCurrency(point.average_price)}</p>
               </div>
@@ -620,7 +682,7 @@ export function DashboardClient({
               { label: "Municipios", value: String(availableCities.length || 0) },
             ]}
           />
-          <div className="mt-4 rounded-[1.25rem] border border-white/8 bg-black/15 p-4 text-sm leading-7 text-mist">
+          <div className="mt-4 rounded-[1.25rem] border border-line bg-surface p-4 text-sm leading-7 text-muted">
             Selecione uma cidade para trocar a serie agregada do estado por uma trilha municipal. Agora a lista de cidades e carregada diretamente da API, sem depender da serie agregada.
           </div>
         </InfoPanel>
@@ -640,18 +702,18 @@ export function DashboardClient({
         <ForecastChart data={forecast} />
         <InfoPanel kicker="Risco" title="Leitura do range">
           <div className="space-y-3">
-            <div className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
-              <span className="text-sm text-mist">Amplitude projetada</span>
+            <div className="flex items-center justify-between rounded-2xl border border-line bg-surface2 px-4 py-3">
+              <span className="text-sm text-muted">Amplitude projetada</span>
               <span className="font-display text-xl text-white">
                 {latestForecast ? formatCurrency(latestForecast.maximum - latestForecast.minimum) : "--"}
               </span>
             </div>
-            <div className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
-              <span className="text-sm text-mist">Regime atual</span>
+            <div className="flex items-center justify-between rounded-2xl border border-line bg-surface2 px-4 py-3">
+              <span className="text-sm text-muted">Regime atual</span>
               <span className="font-display text-xl text-white">{latestMarket?.market_regime ?? "--"}</span>
             </div>
-            <div className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
-              <span className="text-sm text-mist">Oferta / demanda</span>
+            <div className="flex items-center justify-between rounded-2xl border border-line bg-surface2 px-4 py-3">
+              <span className="text-sm text-muted">Oferta / demanda</span>
               <span className="font-display text-xl text-white">{latestMarket ? latestMarket.supply_demand_ratio.toFixed(2) : "--"}</span>
             </div>
           </div>
@@ -678,7 +740,7 @@ export function DashboardClient({
               { label: "Recomendacao", value: latestComparison?.recommended_fuel ?? "--" },
             ]}
           />
-          <div className="mt-4 rounded-[1.25rem] border border-white/8 bg-black/15 p-4 text-sm leading-7 text-mist">
+          <div className="mt-4 rounded-[1.25rem] border border-line bg-surface p-4 text-sm leading-7 text-muted">
             Esta tela privilegia a resposta final: quem vence agora, qual e o spread recente e quando a troca parece fazer sentido no fim da serie.
           </div>
         </InfoPanel>
@@ -687,14 +749,14 @@ export function DashboardClient({
         <InfoPanel kicker="Spread" title="Ultimos duelos">
           <div className="space-y-3">
             {comparison.slice(-8).reverse().map((point) => (
-              <div key={`${point.week}-${point.primary_fuel}-${point.compared_fuel}`} className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
+              <div key={`${point.week}-${point.primary_fuel}-${point.compared_fuel}`} className="flex items-center justify-between rounded-2xl border border-line bg-surface2 px-4 py-3">
                 <div>
                   <p className="text-sm text-white">{point.week}</p>
-                  <p className="text-xs text-mist">{point.primary_fuel} vs {point.compared_fuel}</p>
+                  <p className="text-xs text-muted">{point.primary_fuel} vs {point.compared_fuel}</p>
                 </div>
                 <div className="text-right">
                   <p className="font-display text-xl text-white">{formatPercent(point.advantage_percent)}</p>
-                  <p className="text-xs text-mist">{point.recommended_fuel}</p>
+                  <p className="text-xs text-muted">{point.recommended_fuel}</p>
                 </div>
               </div>
             ))}
@@ -702,13 +764,13 @@ export function DashboardClient({
         </InfoPanel>
         <InfoPanel kicker="Regra pratica" title="Leituras complementares">
           <div className="space-y-3">
-            <div className="rounded-2xl border border-white/8 bg-white/[0.04] p-4">
+            <div className="rounded-2xl border border-line bg-surface2 p-4">
               <p className="flex items-center gap-2 text-sm text-white"><TrendingUp className="h-4 w-4 text-accent" /> Melhor alternativa recente</p>
-              <p className="mt-2 text-sm leading-7 text-mist">{latestComparison?.recommended_fuel ?? "--"} lidera no ultimo ponto comparado.</p>
+              <p className="mt-2 text-sm leading-7 text-muted">{latestComparison?.recommended_fuel ?? "--"} lidera no ultimo ponto comparado.</p>
             </div>
-            <div className="rounded-2xl border border-white/8 bg-white/[0.04] p-4">
+            <div className="rounded-2xl border border-line bg-surface2 p-4">
               <p className="flex items-center gap-2 text-sm text-white"><TrendingDown className="h-4 w-4 text-coral" /> Spread</p>
-              <p className="mt-2 text-sm leading-7 text-mist">O diferencial mais recente esta em {formatPercent(latestComparison?.advantage_percent)}.</p>
+              <p className="mt-2 text-sm leading-7 text-muted">O diferencial mais recente esta em {formatPercent(latestComparison?.advantage_percent)}.</p>
             </div>
           </div>
         </InfoPanel>
@@ -725,7 +787,7 @@ export function DashboardClient({
         <InfoPanel kicker="Mapa" title="Onde este combustivel pressiona mais">
           <div className="space-y-3">
             {topStates.slice(0, 4).map((item) => (
-              <div key={item.label} className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
+              <div key={item.label} className="flex items-center justify-between rounded-2xl border border-line bg-surface2 px-4 py-3">
                 <span className="text-sm text-white">{item.label}</span>
                 <span className="font-display text-xl text-white">{formatCurrency(item.value)}</span>
               </div>
@@ -737,16 +799,16 @@ export function DashboardClient({
         <OverviewChart data={history} />
         <InfoPanel kicker="Trajetoria do produto" title="Leitura executiva do combustivel">
           <div className="space-y-3">
-            <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-              <p className="text-sm text-mist">Ultimo fechamento</p>
+            <div className="rounded-[1.35rem] border border-line bg-surface2 p-4">
+              <p className="text-sm text-muted">Ultimo fechamento</p>
               <p className="mt-2 font-display text-3xl text-white">{latestHistory?.week ?? "--"}</p>
             </div>
-            <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-              <p className="text-sm text-mist">Faixa do recorte</p>
+            <div className="rounded-[1.35rem] border border-line bg-surface2 p-4">
+              <p className="text-sm text-muted">Faixa do recorte</p>
               <p className="mt-2 font-display text-3xl text-white">{rangeLow !== undefined && rangeHigh !== undefined ? `${rangeLow.toFixed(2)} - ${rangeHigh.toFixed(2)}` : "--"}</p>
             </div>
-            <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-              <p className="text-sm text-mist">Direcao recente</p>
+            <div className="rounded-[1.35rem] border border-line bg-surface2 p-4">
+              <p className="text-sm text-muted">Direcao recente</p>
               <p className="mt-2 font-display text-3xl text-white">{priceDelta > 0 ? "Alta" : priceDelta < 0 ? "Queda" : "Estavel"}</p>
             </div>
           </div>
@@ -783,7 +845,7 @@ export function DashboardClient({
               <Link
                 key={item.href}
                 href={item.href}
-                className="inline-flex items-center gap-2 rounded-full border border-white/8 bg-white/[0.03] px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.08]"
+                className="inline-flex items-center gap-2 rounded-full border border-line bg-white/[0.03] px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.08]"
               >
                 <Icon className="h-4 w-4 text-accent" />
                 {item.label}
@@ -792,16 +854,16 @@ export function DashboardClient({
           })}
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[1.4rem] border border-white/10 bg-black/15 p-4">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Periodo</p>
+              <div className="rounded-[1.4rem] border border-line bg-surface p-4">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Periodo</p>
                 <p className="mt-2 text-sm leading-6 text-white">{periodLabel}</p>
               </div>
-              <div className="rounded-[1.4rem] border border-white/10 bg-black/15 p-4">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">Foco</p>
+              <div className="rounded-[1.4rem] border border-line bg-surface p-4">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-muted">Foco</p>
                 <p className="mt-2 text-sm leading-6 text-white">{city || state}</p>
               </div>
-              <div className="rounded-[1.4rem] border border-white/10 bg-black/15 p-4">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-white/45">IA</p>
+              <div className="rounded-[1.4rem] border border-line bg-surface p-4">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-muted">IA</p>
                 <div className="mt-2 inline-flex items-center gap-2 text-sm text-white/80">
                   <Bot className="h-4 w-4 text-amber" />
                   {insight?.source === "mistral" ? "Mistral contextual" : "Fallback local"}
@@ -819,7 +881,7 @@ export function DashboardClient({
       </motion.div>
 
       {error ? <Card className="border-coral/50 text-coral">Falha ao carregar dados: {error}</Card> : null}
-      {loading ? <Card className="text-mist">Atualizando painéis, rankings e briefings inteligentes...</Card> : null}
+      {loading ? <Card className="text-muted">Atualizando painéis, rankings e briefings inteligentes...</Card> : null}
 
       {pageMode === "dashboard" && dashboardLayout}
       {pageMode === "historico" && historicalLayout}
@@ -834,9 +896,9 @@ export function DashboardClient({
             className="bg-[linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03))]"
             style={{ backgroundImage: `linear-gradient(135deg, ${card.tone}, rgba(255,255,255,0.03))` }}
           >
-            <p className="text-xs uppercase tracking-[0.28em] text-mist">{card.kicker}</p>
+            <p className="text-xs uppercase tracking-[0.28em] text-muted">{card.kicker}</p>
             <p className="mt-4 font-display text-2xl text-white">{card.value}</p>
-            <p className="mt-3 text-sm leading-7 text-mist">{card.note}</p>
+            <p className="mt-3 text-sm leading-7 text-muted">{card.note}</p>
           </Card>
         ))}
       </section>

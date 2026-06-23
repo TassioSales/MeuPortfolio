@@ -3,7 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import polars as pl
+from dotenv import load_dotenv
 from prefect import flow, task
+
+load_dotenv()  # carrega .env antes de ler settings
 
 from fuel_analytics.clients.anp import ANPClient
 from fuel_analytics.config import settings
@@ -113,10 +116,29 @@ def bootstrap_flow() -> int:
     return frame.height
 
 
+@task
+def ingest_basedosdados_task() -> pl.DataFrame:
+    from fuel_analytics.clients.basedosdados_client import ingest_basedosdados
+    logger.info(
+        "Ingest via BasedosDados microdados (billing={})", settings.gcp_billing_project
+    )
+    return ingest_basedosdados(
+        settings.gcp_billing_project,  # type: ignore[arg-type]
+        years=settings.gcp_years,
+        limit=settings.gcp_limit,
+    )
+
+
 @flow(name="fuel-analytics-pipeline")
 def pipeline_flow() -> dict[str, str]:
-    logger.info("Pipeline started with official ANP sources")
-    frame = ingest_anp()
+    if settings.gcp_billing_project:
+        logger.info(
+            "GCP billing project detectado — usando BasedosDados microdados (mais ricos)"
+        )
+        frame = ingest_basedosdados_task()
+    else:
+        logger.info("Sem GCP billing project — usando download direto ANP CSV")
+        frame = ingest_anp()
     parquet_paths, weekly = curate(frame)
     logger.info("Building DuckDB warehouse at {}", settings.warehouse_path)
     actual_warehouse_path = build_warehouse(parquet_paths, settings.warehouse_path)
@@ -137,3 +159,14 @@ def pipeline_flow() -> dict[str, str]:
     }
     logger.info("Pipeline finished successfully: {}", result)
     return result
+
+
+if __name__ == "__main__":
+    from fuel_analytics.logging import configure_logging
+    configure_logging()
+    try:
+        result = pipeline_flow()
+        logger.info("Resultado final: {}", result)
+    except Exception as exc:
+        logger.exception("Pipeline falhou: {}", exc)
+        raise

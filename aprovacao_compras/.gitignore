@@ -1,0 +1,57 @@
+# Ambiente virtual
+.venv/
+venv/
+env/
+
+# Variáveis de ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Banco de dados local
+*.sqlite3
+*.db
+
+# Logs
+logs/
+*.log
+
+# Uploads / arquivos de mídia enviados por usuários
+media/
+
+# Emails de desenvolvimento (backend filebased)
+logs/emails/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+
+# Distribuição / build
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Coverage e testes
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Arquivos temporários do Django
+staticfiles/

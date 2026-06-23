@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CompraBio{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --sidebar-width: 252px;
+      --sidebar-collapsed: 68px;
+
+      /* Bio Mundo palette */
+      --green-dark:   #00502A;
+      --green-darker: #003d20;
+      --teal-dark:    #015350;
+      --teal-mid:     #01635E;
+      --orange:       #ee8f2f;
+      --orange-hot:   #FC6A43;
+      --lime:         #B5D840;
+      --yellow:       #DEDD57;
+      --beige:        #ecddc5;
+      --bg:           #F6F6F6;
+      --surface:      #E9EEEE;
+      --white:        #ffffff;
+      --border:       #d8e0df;
+      --text-dark:    #0d2e1a;
+      --text-muted:   #5a7a6e;
+
+      /* Aliases */
+      --primary:      var(--green-dark);
+      --primary-dark: var(--green-darker);
+      --sidebar-bg:   var(--teal-dark);
+      --sidebar-text: #91bab5;
+      --sidebar-active-bg: rgba(238, 143, 47, .15);
+      --sidebar-active-text: var(--orange);
+      --sidebar-active-border: var(--orange);
+    }
+
+    * { box-sizing: border-box; }
+    body { background: var(--bg); font-family: 'Inter', system-ui, sans-serif; color: var(--text-dark); }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      position: fixed; top: 0; left: 0; height: 100vh;
+      width: var(--sidebar-width); background: var(--sidebar-bg);
+      transition: width .25s ease; z-index: 1000; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    #sidebar.collapsed { width: var(--sidebar-collapsed); }
+
+    .sidebar-brand {
+      padding: 18px 16px; display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08); min-height: 64px;
+    }
+    .sidebar-brand .brand-icon {
+      width: 34px; height: 34px; background: var(--orange);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: #fff; font-size: 17px; font-weight: 700;
+    }
+    .brand-text {
+      color: #fff; font-weight: 800; font-size: 15px;
+      white-space: nowrap; overflow: hidden; letter-spacing: -.3px;
+    }
+    .brand-text small {
+      display: block; color: var(--sidebar-text); font-size: 11px;
+      font-weight: 400; letter-spacing: 0;
+    }
+
+    .sidebar-nav { flex: 1; padding: 10px 0; overflow-y: auto; }
+    .nav-section-label {
+      padding: 10px 16px 4px; font-size: 10px; font-weight: 700;
+      letter-spacing: .1em; color: rgba(255,255,255,.3); text-transform: uppercase;
+      white-space: nowrap; overflow: hidden;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 16px; color: var(--sidebar-text); text-decoration: none;
+      transition: all .15s; white-space: nowrap; font-size: 14px;
+    }
+    .sidebar-link i { font-size: 18px; flex-shrink: 0; width: 22px; text-align: center; }
+    .sidebar-link:hover { background: rgba(255,255,255,.07); color: #fff; }
+    .sidebar-link.active {
+      background: var(--sidebar-active-bg);
+      color: var(--sidebar-active-text);
+      border-right: 3px solid var(--sidebar-active-border);
+      font-weight: 600;
+    }
+    .sidebar-link .link-text { overflow: hidden; transition: opacity .2s; }
+
+    #sidebar.collapsed .link-text,
+    #sidebar.collapsed .nav-section-label,
+    #sidebar.collapsed .brand-text { opacity: 0; pointer-events: none; }
+
+    .sidebar-footer { padding: 10px; border-top: 1px solid rgba(255,255,255,.08); }
+    .user-card {
+      display: flex; align-items: center; gap: 10px; padding: 10px 8px;
+      border-radius: 8px; background: rgba(255,255,255,.07);
+    }
+    .user-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-dark), var(--orange));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 14px; flex-shrink: 0;
+    }
+    .user-info { overflow: hidden; }
+    .user-name { color: #fff; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-role { color: var(--sidebar-text); font-size: 11px; }
+    #sidebar.collapsed .user-info { display: none; }
+
+    /* ── Topbar ── */
+    #topbar {
+      position: fixed; top: 0; left: var(--sidebar-width); right: 0; height: 64px;
+      background: var(--white); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 24px; gap: 12px;
+      z-index: 999; transition: left .25s ease;
+    }
+    #topbar.collapsed { left: var(--sidebar-collapsed); }
+    .topbar-title { font-weight: 700; font-size: 16px; color: var(--text-dark); flex: 1; }
+
+    /* ── Content ── */
+    #main-content {
+      margin-left: var(--sidebar-width); margin-top: 64px;
+      padding: 28px; transition: margin-left .25s ease; min-height: calc(100vh - 64px);
+    }
+    #main-content.collapsed { margin-left: var(--sidebar-collapsed); }
+
+    /* ── Stat cards ── */
+    .stat-card {
+      background: var(--white); border-radius: 12px; padding: 20px 22px;
+      border: 1px solid var(--border);
+    }
+    .stat-card .stat-icon {
+      width: 46px; height: 46px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 21px;
+    }
+    .stat-card .stat-value { font-size: 28px; font-weight: 800; color: var(--text-dark); }
+    .stat-card .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+
+    /* ── Badges status ── */
+    .badge-aberto   { background: #fff7eb; color: #7a4a00; border: 1px solid #f5d08a; }
+    .badge-aprovado { background: #eefbd2; color: #2d5a00; border: 1px solid #c2e87a; }
+    .badge-reprovado{ background: #fff0eb; color: #8c2000; border: 1px solid #fcb49a; }
+    .badge-correcao { background: #f5eaf2; color: #5d1a4a; border: 1px solid #d9a8cb; }
+    .badge-rascunho { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); }
+
+    /* ── Table card ── */
+    .table-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+    .table-card .table { margin: 0; }
+    .table-card .table th {
+      background: var(--surface); font-size: 11px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 1px solid var(--border); padding: 11px 16px;
+    }
+    .table-card .table td {
+      padding: 12px 16px; font-size: 14px; color: #2d4a38;
+      vertical-align: middle; border-bottom: 1px solid #f0f4f2;
+    }
+    .table-card .table tr:last-child td { border-bottom: none; }
+    .table-card .table tr:hover td { background: #f7fbf8; }
+
+    /* ── Misc ── */
+    .page-header { margin-bottom: 24px; }
+    .page-header h1 { font-size: 22px; font-weight: 800; color: var(--text-dark); margin: 0; }
+    .page-header p { color: var(--text-muted); font-size: 14px; margin: 4px 0 0; }
+
+    .btn-primary, .btn-primary:focus {
+      background: var(--green-dark); border-color: var(--green-dark); color: #fff;
+    }
+    .btn-primary:hover { background: var(--green-darker); border-color: var(--green-darker); color: #fff; }
+    .btn-outline-primary { color: var(--green-dark); border-color: var(--green-dark); }
+    .btn-outline-primary:hover { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+    .text-primary { color: var(--green-dark) !important; }
+    .bg-primary { background-color: var(--green-dark) !important; }
+
+    .toggle-btn { background: none; border: none; color: var(--text-muted); font-size: 22px; padding: 2px 6px; }
+    .toggle-btn:hover { color: var(--green-dark); }
+
+    /* Badge perfil no topbar */
+    .badge-perfil {
+      background: linear-gradient(90deg, var(--green-dark), var(--teal-mid));
+      color: #fff; font-size: 11px; font-weight: 600;
+      padding: 4px 10px; border-radius: 20px;
+    }
+
+    @media (max-width: 768px) {
+      #sidebar { width: 0; }
+      #sidebar.mobile-open { width: var(--sidebar-width); }
+      #topbar, #main-content { left: 0 !important; margin-left: 0 !important; }
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><i class="bi bi-cart-check-fill"></i></div>
+    <div class="brand-text">CompraBio<small>Aprovação de Pedidos</small></div>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+      <i class="bi bi-grid-1x2-fill"></i><span class="link-text">Dashboard</span>
+    </a>
+    <a href="{% url 'controle_processos' %}" class="sidebar-link {% if request.resolver_match.url_name == 'controle_processos' %}active{% endif %}">
+      <i class="bi bi-kanban-fill"></i><span class="link-text">Controle de Processos</span>
+    </a>
+
+    {% if not request.user.is_aprovador %}
+    <div class="nav-section-label">Pedidos</div>
+    <a href="{% url 'criar_pedido' %}" class="sidebar-link {% if request.resolver_match.url_name == 'criar_pedido' %}active{% endif %}">
+      <i class="bi bi-plus-circle-fill"></i><span class="link-text">Novo Pedido</span>
+    </a>
+    {% endif %}
+
+    {% if request.user.is_admin_perfil or request.user.is_superuser %}
+    <div class="nav-section-label">Administração</div>
+    <a href="{% url 'admin_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+      <i class="bi bi-bar-chart-line-fill"></i><span class="link-text">Dashboard Executivo</span>
+    </a>
+    <a href="{% url 'gerenciar_usuarios' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerenciar_usuarios' %}active{% endif %}">
+      <i class="bi bi-people-fill"></i><span class="link-text">Usuários</span>
+    </a>
+    <a href="/admin/" class="sidebar-link">
+      <i class="bi bi-gear-fill"></i><span class="link-text">Admin Django</span>
+    </a>
+    {% endif %}
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar">{{ request.user.first_name|first|upper|default:request.user.username|first|upper }}</div>
+      <div class="user-info">
+        <div class="user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+        <div class="user-role">{{ request.user.get_perfil_display }}</div>
+      </div>
+    </div>
+    <a href="{% url 'logout' %}" class="sidebar-link mt-2" style="border-radius:8px;">
+      <i class="bi bi-box-arrow-left"></i><span class="link-text">Sair</span>
+    </a>
+  </div>
+</nav>
+
+<!-- Topbar -->
+<header id="topbar">
+  <button class="toggle-btn" id="sidebarToggle"><i class="bi bi-list"></i></button>
+  <span class="topbar-title">{% block topbar_title %}Dashboard{% endblock %}</span>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge-perfil">{{ request.user.get_perfil_display }}</span>
+    <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-box-arrow-right"></i>
+    </a>
+  </div>
+</header>
+
+<!-- Content -->
+<main id="main-content">
+  {% for msg in messages %}
+  <div class="alert alert-{% if msg.tags == 'error' %}danger{% elif msg.tags == 'success' %}success{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %} alert-dismissible fade show" role="alert">
+    {{ msg }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endfor %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const topbar  = document.getElementById('topbar');
+  const content = document.getElementById('main-content');
+  const btn     = document.getElementById('sidebarToggle');
+  let collapsed = localStorage.getItem('sidebar') === 'collapsed';
+
+  function apply() {
+    sidebar.classList.toggle('collapsed', collapsed);
+    topbar.classList.toggle('collapsed', collapsed);
+    content.classList.toggle('collapsed', collapsed);
+    localStorage.setItem('sidebar', collapsed ? 'collapsed' : 'open');
+  }
+  apply();
+  btn.addEventListener('click', () => { collapsed = !collapsed; apply(); });
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -384,3 +384,165 @@ func (r *AnalyticsRepository) Cities(_ context.Context, fuel, state string) ([]s
 func round(value float64) float64 {
 	return math.Round(value*1000) / 1000
 }
+
+// Ranking returns states ranked by average price for a given fuel.
+// order: "desc" (most expensive first) or "asc" (cheapest first).
+func (r *AnalyticsRepository) Ranking(_ context.Context, fuel, order string, limit int) ([]domain.RankingEntry, error) {
+	filteredFuel := strings.ToLower(fuel)
+	// Aggregate last-2-weeks history per state to compute current price and week-over-week change.
+	type stateAgg struct {
+		weeks  []string
+		prices map[string]float64 // week -> avg price
+		vol    float64
+		n      int
+	}
+	byState := map[string]*stateAgg{}
+	for _, item := range r.history {
+		if filteredFuel != "" && item.Product != filteredFuel {
+			continue
+		}
+		if item.City != "" {
+			continue // only state-level rows
+		}
+		entry, ok := byState[item.State]
+		if !ok {
+			entry = &stateAgg{prices: map[string]float64{}}
+			byState[item.State] = entry
+		}
+		// accumulate by week
+		if _, seen := entry.prices[item.Week]; !seen {
+			entry.weeks = append(entry.weeks, item.Week)
+		}
+		entry.prices[item.Week] += item.AveragePrice
+		entry.vol += item.Volatility
+		entry.n++
+	}
+	result := make([]domain.RankingEntry, 0, len(byState))
+	for state, agg := range byState {
+		if agg.n == 0 {
+			continue
+		}
+		sort.Strings(agg.weeks)
+		lastWeek := agg.weeks[len(agg.weeks)-1]
+		currentPrice := agg.prices[lastWeek]
+		changePct := 0.0
+		if len(agg.weeks) >= 2 {
+			prevWeek := agg.weeks[len(agg.weeks)-2]
+			prevPrice := agg.prices[prevWeek]
+			if prevPrice > 0 {
+				changePct = round(((currentPrice / prevPrice) - 1) * 100)
+			}
+		}
+		result = append(result, domain.RankingEntry{
+			State:      state,
+			Product:    filteredFuel,
+			Price:      round(currentPrice),
+			Volatility: round(agg.vol / float64(agg.n)),
+			ChangeWeek: changePct,
+		})
+	}
+	if order == "asc" {
+		sort.Slice(result, func(i, j int) bool { return result[i].Price < result[j].Price })
+	} else {
+		sort.Slice(result, func(i, j int) bool { return result[i].Price > result[j].Price })
+	}
+	if limit > 0 && len(result) > limit {
+		result = result[:limit]
+	}
+	for i := range result {
+		result[i].Position = i + 1
+	}
+	return result, nil
+}
+
+// Trends returns week-over-week price changes for a given fuel/state.
+func (r *AnalyticsRepository) Trends(_ context.Context, fuel, state, startDate, endDate string) ([]domain.TrendPoint, error) {
+	history, err := r.History(context.Background(), fuel, state, "", startDate, endDate)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]domain.TrendPoint, 0, len(history))
+	for i, item := range history {
+		point := domain.TrendPoint{
+			Week:  item.Week,
+			Price: round(item.AveragePrice),
+		}
+		if i > 0 {
+			prev := history[i-1].AveragePrice
+			point.ChangeAbs = round(item.AveragePrice - prev)
+			if prev > 0 {
+				point.ChangePct = round(((item.AveragePrice / prev) - 1) * 100)
+			}
+		}
+		result = append(result, point)
+	}
+	return result, nil
+}
+
+// Stats returns aggregate national statistics for a given fuel.
+func (r *AnalyticsRepository) Stats(_ context.Context, fuel, startDate, endDate string) (domain.NationalStats, error) {
+	overview, err := r.Overview(context.Background(), fuel, "", startDate, endDate)
+	if err != nil || len(overview) == 0 {
+		return domain.NationalStats{Product: fuel}, err
+	}
+	minPrice := overview[0].AveragePrice
+	maxPrice := overview[0].AveragePrice
+	minState := overview[0].State
+	maxState := overview[0].State
+	total := 0.0
+	for _, item := range overview {
+		total += item.AveragePrice
+		if item.AveragePrice < minPrice {
+			minPrice = item.AveragePrice
+			minState = item.State
+		}
+		if item.AveragePrice > maxPrice {
+			maxPrice = item.AveragePrice
+			maxState = item.State
+		}
+	}
+	// National week-over-week: compare last 2 weeks across all states
+	history, _ := r.History(context.Background(), fuel, "", "", "", "")
+	type weekAgg struct {
+		total float64
+		n     int
+	}
+	weekMap := map[string]*weekAgg{}
+	for _, item := range history {
+		if item.City != "" {
+			continue
+		}
+		entry, ok := weekMap[item.Week]
+		if !ok {
+			entry = &weekAgg{}
+			weekMap[item.Week] = entry
+		}
+		entry.total += item.AveragePrice
+		entry.n++
+	}
+	weeks := make([]string, 0, len(weekMap))
+	for w := range weekMap {
+		weeks = append(weeks, w)
+	}
+	sort.Strings(weeks)
+	changePct := 0.0
+	if len(weeks) >= 2 {
+		last := weekMap[weeks[len(weeks)-1]]
+		prev := weekMap[weeks[len(weeks)-2]]
+		lastAvg := last.total / float64(last.n)
+		prevAvg := prev.total / float64(prev.n)
+		if prevAvg > 0 {
+			changePct = round(((lastAvg / prevAvg) - 1) * 100)
+		}
+	}
+	return domain.NationalStats{
+		Product:       fuel,
+		NationalAvg:   round(total / float64(len(overview))),
+		MinPrice:      round(minPrice),
+		MaxPrice:      round(maxPrice),
+		MinState:      minState,
+		MaxState:      maxState,
+		StateCount:    len(overview),
+		ChangeWeekPct: changePct,
+	}, nil
+}

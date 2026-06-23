@@ -68,3 +68,30 @@ export interface ExplorerPayload {
   warehouse_path: string;
   tables: ExplorerTable[];
 }
+
+export interface RankingEntry {
+  position: number;
+  state: string;
+  product: string;
+  price: number;
+  volatility: number;
+  change_week_pct: number;
+}
+
+export interface TrendPoint {
+  week: string;
+  price: number;
+  change_abs: number;
+  change_pct: number;
+}
+
+export interface NationalStats {
+  product: string;
+  national_avg: number;
+  min_price: number;
+  max_price: number;
+  min_state: string;
+  max_state: string;
+  state_count: number;
+  change_week_pct: number;
+}

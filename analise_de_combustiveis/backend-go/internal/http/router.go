@@ -10,8 +10,8 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func NewRouter(repo domain.Repository, insights *service.InsightsService) nethttp.Handler {
-	handler := &Handler{repo: repo, insights: insights}
+func NewRouter(repo domain.Repository, insights *service.InsightsService, mistralModel string) nethttp.Handler {
+	handler := &Handler{repo: repo, insights: insights, mistralModel: mistralModel}
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -31,6 +31,9 @@ func NewRouter(repo domain.Repository, insights *service.InsightsService) nethtt
 		r.Get("/market", handler.Market)
 		r.Get("/explorer", handler.Explorer)
 		r.Get("/insights", handler.Insights)
+		r.Get("/ranking", handler.Ranking)
+		r.Get("/trends", handler.Trends)
+		r.Get("/stats", handler.Stats)
 	})
 	return r
 }
@@ -38,7 +41,7 @@ func NewRouter(repo domain.Repository, insights *service.InsightsService) nethtt
 func cors(next nethttp.Handler) nethttp.Handler {
 	return nethttp.HandlerFunc(func(w nethttp.ResponseWriter, r *nethttp.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Mistral-Key")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
 		if r.Method == nethttp.MethodOptions {
 			w.WriteHeader(nethttp.StatusNoContent)

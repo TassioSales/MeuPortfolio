@@ -1,0 +1,271 @@
+2026-06-23 13:50:57 | INFO     | __main__:pipeline_flow:135 - GCP billing project detectado — usando BasedosDados microdados (mais ricos)
+2026-06-23 13:50:57 | INFO     | __main__:ingest_basedosdados_task:122 - Ingest via BasedosDados microdados (billing=the-ridge-500316-n2)
+2026-06-23 13:50:57 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:107 - Iniciando ingest BasedosDados: anos=[2023, 2024, 2025] estados=None limite=5000000
+2026-06-23 13:50:59 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:60 - Consultando BasedosDados (billing=the-ridge-500316-n2)
+2026-06-23 14:01:13 | INFO     | __main__:pipeline_flow:135 - GCP billing project detectado — usando BasedosDados microdados (mais ricos)
+2026-06-23 14:01:13 | INFO     | __main__:ingest_basedosdados_task:122 - Ingest via BasedosDados microdados (billing=the-ridge-500316-n2)
+2026-06-23 14:01:13 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:105 - Iniciando ingest BasedosDados: anos=[2023, 2024, 2025] estados=None limite=5000000
+2026-06-23 14:01:14 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:58 - Consultando BasedosDados (billing=the-ridge-500316-n2)
+2026-06-23 14:01:46 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:61 - BasedosDados retornou 167237 linhas
+2026-06-23 14:01:46 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:110 - Ingest BasedosDados concluido: 167237 linhas, colunas: ['state', 'product', 'brand', 'date', 'price', 'price_buy', 'price_min', 'price_max', 'price_std', 'sample_count']
+2026-06-23 14:01:46 | INFO     | __main__:curate:78 - Starting curation step with 167237 input rows
+2026-06-23 14:01:46 | ERROR    | __main__:<module>:171 - Pipeline falhou: Colunas obrigatorias ausentes: ['city']
+Traceback (most recent call last):
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\flows.py", line 168, in <module>
+    result = pipeline_flow()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flows.py", line 1886, in __call__
+    return run_flow(
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2193, in run_flow
+    ret_val = run_flow_sync(**kwargs)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2038, in run_flow_sync
+    return engine.state if return_type == "state" else engine.result()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 768, in result
+    raise self._raised
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 1288, in run_context
+    yield self
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2036, in run_flow_sync
+    engine.call_flow_fn()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 1308, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\utilities\callables\__init__.py", line 348, in call_with_parameters
+    return fn(*args, **kwargs)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\flows.py", line 142, in pipeline_flow
+    parquet_paths, weekly = curate(frame)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\tasks.py", line 1227, in __call__
+    return run_task(
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\task_engine.py", line 1913, in run_task
+    return run_task_sync(**kwargs)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\task_engine.py", line 1683, in run_task_sync
+    return engine.state if return_type == "state" else engine.result()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\task_engine.py", line 614, in result
+    raise self._raised
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\task_engine.py", line 1018, in run_context
+    yield self
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\task_engine.py", line 1680, in run_task_sync
+    engine.call_task_fn(txn)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\task_engine.py", line 1035, in call_task_fn
+    result = call_with_parameters(self.task.fn, parameters)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\utilities\callables\__init__.py", line 348, in call_with_parameters
+    return fn(*args, **kwargs)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\flows.py", line 79, in curate
+    normalized = normalize_frame(frame)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\processing.py", line 52, in normalize_frame
+    raise ValueError(f"Colunas obrigatorias ausentes: {sorted(required - set(renamed.columns))}")
+ValueError: Colunas obrigatorias ausentes: ['city']
+2026-06-23 14:05:28 | INFO     | __main__:pipeline_flow:135 - GCP billing project detectado — usando BasedosDados microdados (mais ricos)
+2026-06-23 14:05:28 | INFO     | __main__:ingest_basedosdados_task:122 - Ingest via BasedosDados microdados (billing=the-ridge-500316-n2)
+2026-06-23 14:05:28 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:105 - Iniciando ingest BasedosDados: anos=[2023, 2024, 2025] estados=None limite=5000000
+2026-06-23 14:05:29 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:58 - Consultando BasedosDados (billing=the-ridge-500316-n2)
+2026-06-23 14:06:01 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:61 - BasedosDados retornou 167237 linhas
+2026-06-23 14:06:01 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:110 - Ingest BasedosDados concluido: 167237 linhas, colunas: ['state', 'product', 'brand', 'date', 'price', 'price_buy', 'price_min', 'price_max', 'price_std', 'sample_count']
+2026-06-23 14:06:01 | INFO     | __main__:curate:78 - Starting curation step with 167237 input rows
+2026-06-23 14:06:01 | INFO     | __main__:curate:80 - Normalization completed with 0 rows
+2026-06-23 14:06:01 | INFO     | __main__:curate:84 - Curation completed with 0 weekly rows and 0 parquet partitions
+2026-06-23 14:06:01 | INFO     | __main__:pipeline_flow:143 - Building DuckDB warehouse at C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\warehouse\fuel_analytics.duckdb
+2026-06-23 14:06:02 | ERROR    | __main__:<module>:171 - Pipeline falhou: Binder Error: No function matches the given name and argument types 'read_parquet(INTEGER[])'. You might need to add explicit type casts.
+	Candidate functions:
+	read_parquet(VARCHAR, filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, file_row_number : BOOLEAN, hive_types : ANY, binary_as_string : BOOLEAN, hive_types_autocast : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, explicit_cardinality : UBIGINT, can_have_nan : BOOLEAN, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+	read_parquet(VARCHAR[], filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, hive_types : ANY, file_row_number : BOOLEAN, hive_types_autocast : BOOLEAN, binary_as_string : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, can_have_nan : BOOLEAN, explicit_cardinality : UBIGINT, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+
+
+LINE 4:             FROM read_parquet(?)
+                         ^
+Traceback (most recent call last):
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\flows.py", line 168, in <module>
+    result = pipeline_flow()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flows.py", line 1886, in __call__
+    return run_flow(
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2193, in run_flow
+    ret_val = run_flow_sync(**kwargs)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2038, in run_flow_sync
+    return engine.state if return_type == "state" else engine.result()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 768, in result
+    raise self._raised
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 1288, in run_context
+    yield self
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2036, in run_flow_sync
+    engine.call_flow_fn()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 1308, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\utilities\callables\__init__.py", line 348, in call_with_parameters
+    return fn(*args, **kwargs)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\flows.py", line 144, in pipeline_flow
+    actual_warehouse_path = build_warehouse(parquet_paths, settings.warehouse_path)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\storage.py", line 16, in build_warehouse
+    con.execute(
+_duckdb.BinderException: Binder Error: No function matches the given name and argument types 'read_parquet(INTEGER[])'. You might need to add explicit type casts.
+	Candidate functions:
+	read_parquet(VARCHAR, filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, file_row_number : BOOLEAN, hive_types : ANY, binary_as_string : BOOLEAN, hive_types_autocast : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, explicit_cardinality : UBIGINT, can_have_nan : BOOLEAN, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+	read_parquet(VARCHAR[], filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, hive_types : ANY, file_row_number : BOOLEAN, hive_types_autocast : BOOLEAN, binary_as_string : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, can_have_nan : BOOLEAN, explicit_cardinality : UBIGINT, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+
+
+LINE 4:             FROM read_parquet(?)
+                         ^
+2026-06-23 14:07:11 | INFO     | __main__:pipeline_flow:135 - GCP billing project detectado — usando BasedosDados microdados (mais ricos)
+2026-06-23 14:07:11 | INFO     | __main__:ingest_basedosdados_task:122 - Ingest via BasedosDados microdados (billing=the-ridge-500316-n2)
+2026-06-23 14:07:11 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:105 - Iniciando ingest BasedosDados: anos=[2023, 2024, 2025] estados=None limite=5000000
+2026-06-23 14:07:12 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:58 - Consultando BasedosDados (billing=the-ridge-500316-n2)
+2026-06-23 14:07:41 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:61 - BasedosDados retornou 167237 linhas
+2026-06-23 14:07:41 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:110 - Ingest BasedosDados concluido: 167237 linhas, colunas: ['state', 'product', 'brand', 'date', 'price', 'price_buy', 'price_min', 'price_max', 'price_std', 'sample_count']
+2026-06-23 14:07:41 | INFO     | __main__:curate:78 - Starting curation step with 167237 input rows
+2026-06-23 14:07:42 | INFO     | __main__:curate:80 - Normalization completed with 0 rows
+2026-06-23 14:07:42 | INFO     | __main__:curate:84 - Curation completed with 0 weekly rows and 0 parquet partitions
+2026-06-23 14:07:42 | INFO     | __main__:pipeline_flow:143 - Building DuckDB warehouse at C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\warehouse\fuel_analytics.duckdb
+2026-06-23 14:07:42 | ERROR    | __main__:<module>:171 - Pipeline falhou: Binder Error: No function matches the given name and argument types 'read_parquet(INTEGER[])'. You might need to add explicit type casts.
+	Candidate functions:
+	read_parquet(VARCHAR, filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, file_row_number : BOOLEAN, hive_types : ANY, binary_as_string : BOOLEAN, hive_types_autocast : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, explicit_cardinality : UBIGINT, can_have_nan : BOOLEAN, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+	read_parquet(VARCHAR[], filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, hive_types : ANY, file_row_number : BOOLEAN, hive_types_autocast : BOOLEAN, binary_as_string : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, can_have_nan : BOOLEAN, explicit_cardinality : UBIGINT, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+
+
+LINE 4:             FROM read_parquet(?)
+                         ^
+Traceback (most recent call last):
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\flows.py", line 168, in <module>
+    result = pipeline_flow()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flows.py", line 1886, in __call__
+    return run_flow(
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2193, in run_flow
+    ret_val = run_flow_sync(**kwargs)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2038, in run_flow_sync
+    return engine.state if return_type == "state" else engine.result()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 768, in result
+    raise self._raised
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 1288, in run_context
+    yield self
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2036, in run_flow_sync
+    engine.call_flow_fn()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 1308, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\utilities\callables\__init__.py", line 348, in call_with_parameters
+    return fn(*args, **kwargs)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\flows.py", line 144, in pipeline_flow
+    actual_warehouse_path = build_warehouse(parquet_paths, settings.warehouse_path)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\storage.py", line 16, in build_warehouse
+    con.execute(
+_duckdb.BinderException: Binder Error: No function matches the given name and argument types 'read_parquet(INTEGER[])'. You might need to add explicit type casts.
+	Candidate functions:
+	read_parquet(VARCHAR, filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, file_row_number : BOOLEAN, hive_types : ANY, binary_as_string : BOOLEAN, hive_types_autocast : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, explicit_cardinality : UBIGINT, can_have_nan : BOOLEAN, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+	read_parquet(VARCHAR[], filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, hive_types : ANY, file_row_number : BOOLEAN, hive_types_autocast : BOOLEAN, binary_as_string : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, can_have_nan : BOOLEAN, explicit_cardinality : UBIGINT, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+
+
+LINE 4:             FROM read_parquet(?)
+                         ^
+2026-06-23 14:12:50 | INFO     | __main__:pipeline_flow:135 - GCP billing project detectado — usando BasedosDados microdados (mais ricos)
+2026-06-23 14:12:50 | INFO     | __main__:ingest_basedosdados_task:122 - Ingest via BasedosDados microdados (billing=the-ridge-500316-n2)
+2026-06-23 14:12:50 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:105 - Iniciando ingest BasedosDados: anos=[2023, 2024, 2025] estados=None limite=5000000
+2026-06-23 14:12:51 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:58 - Consultando BasedosDados (billing=the-ridge-500316-n2)
+2026-06-23 14:13:19 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:61 - BasedosDados retornou 167237 linhas
+2026-06-23 14:13:19 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:110 - Ingest BasedosDados concluido: 167237 linhas, colunas: ['state', 'product', 'brand', 'date', 'price', 'price_buy', 'price_min', 'price_max', 'price_std', 'sample_count']
+2026-06-23 14:13:19 | INFO     | __main__:curate:78 - Starting curation step with 167237 input rows
+2026-06-23 14:13:19 | INFO     | __main__:curate:80 - Normalization completed with 0 rows
+2026-06-23 14:13:19 | INFO     | __main__:curate:84 - Curation completed with 0 weekly rows and 0 parquet partitions
+2026-06-23 14:13:19 | INFO     | __main__:pipeline_flow:143 - Building DuckDB warehouse at C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\warehouse\fuel_analytics.duckdb
+2026-06-23 14:13:19 | ERROR    | __main__:<module>:171 - Pipeline falhou: Binder Error: No function matches the given name and argument types 'read_parquet(INTEGER[])'. You might need to add explicit type casts.
+	Candidate functions:
+	read_parquet(VARCHAR, filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, file_row_number : BOOLEAN, hive_types : ANY, binary_as_string : BOOLEAN, hive_types_autocast : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, explicit_cardinality : UBIGINT, can_have_nan : BOOLEAN, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+	read_parquet(VARCHAR[], filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, hive_types : ANY, file_row_number : BOOLEAN, hive_types_autocast : BOOLEAN, binary_as_string : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, can_have_nan : BOOLEAN, explicit_cardinality : UBIGINT, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+
+
+LINE 4:             FROM read_parquet(?)
+                         ^
+Traceback (most recent call last):
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\flows.py", line 168, in <module>
+    result = pipeline_flow()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flows.py", line 1886, in __call__
+    return run_flow(
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2193, in run_flow
+    ret_val = run_flow_sync(**kwargs)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2038, in run_flow_sync
+    return engine.state if return_type == "state" else engine.result()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 768, in result
+    raise self._raised
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 1288, in run_context
+    yield self
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 2036, in run_flow_sync
+    engine.call_flow_fn()
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\flow_engine.py", line 1308, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\.venv\Lib\site-packages\prefect\utilities\callables\__init__.py", line 348, in call_with_parameters
+    return fn(*args, **kwargs)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\flows.py", line 144, in pipeline_flow
+    actual_warehouse_path = build_warehouse(parquet_paths, settings.warehouse_path)
+  File "C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-pipeline-python\src\fuel_analytics\storage.py", line 16, in build_warehouse
+    con.execute(
+_duckdb.BinderException: Binder Error: No function matches the given name and argument types 'read_parquet(INTEGER[])'. You might need to add explicit type casts.
+	Candidate functions:
+	read_parquet(VARCHAR, filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, file_row_number : BOOLEAN, hive_types : ANY, binary_as_string : BOOLEAN, hive_types_autocast : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, explicit_cardinality : UBIGINT, can_have_nan : BOOLEAN, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+	read_parquet(VARCHAR[], filename : ANY, hive_partitioning : BOOLEAN, union_by_name : BOOLEAN, hive_types : ANY, file_row_number : BOOLEAN, hive_types_autocast : BOOLEAN, binary_as_string : BOOLEAN, debug_use_openssl : BOOLEAN, compression : VARCHAR, can_have_nan : BOOLEAN, explicit_cardinality : UBIGINT, schema : ANY, encryption_config : ANY, parquet_version : VARCHAR)
+
+
+LINE 4:             FROM read_parquet(?)
+                         ^
+2026-06-23 14:15:04 | INFO     | __main__:pipeline_flow:135 - GCP billing project detectado — usando BasedosDados microdados (mais ricos)
+2026-06-23 14:15:04 | INFO     | __main__:ingest_basedosdados_task:122 - Ingest via BasedosDados microdados (billing=the-ridge-500316-n2)
+2026-06-23 14:15:04 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:105 - Iniciando ingest BasedosDados: anos=[2023, 2024, 2025] estados=None limite=5000000
+2026-06-23 14:15:05 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:58 - Consultando BasedosDados (billing=the-ridge-500316-n2)
+2026-06-23 14:15:34 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:61 - BasedosDados retornou 167237 linhas
+2026-06-23 14:15:34 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:110 - Ingest BasedosDados concluido: 167237 linhas, colunas: ['state', 'product', 'brand', 'date', 'price', 'price_buy', 'price_min', 'price_max', 'price_std', 'sample_count']
+2026-06-23 14:15:34 | INFO     | __main__:curate:78 - Starting curation step with 167237 input rows
+2026-06-23 14:15:34 | INFO     | __main__:curate:80 - Normalization completed with 167237 rows
+2026-06-23 14:15:35 | INFO     | __main__:curate:84 - Curation completed with 19137 weekly rows and 130 parquet partitions
+2026-06-23 14:15:35 | INFO     | __main__:pipeline_flow:143 - Building DuckDB warehouse at C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\warehouse\fuel_analytics.duckdb
+2026-06-23 14:15:36 | INFO     | __main__:pipeline_flow:145 - Warehouse materialized at C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\warehouse\fuel_analytics.duckdb
+2026-06-23 14:15:36 | INFO     | __main__:train_forecasts:90 - Starting forecast training for 19137 weekly rows
+2026-06-23 14:16:48 | INFO     | __main__:train_forecasts:97 - Forecast artifacts persisted to C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\models\forecasts.json
+2026-06-23 14:16:48 | INFO     | __main__:materialize_market_signals:103 - Loading supplemental demand and processing datasets
+2026-06-23 14:16:49 | INFO     | fuel_analytics.clients.anp:list_sales_files:59 - Fetching ANP sales page: https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/vendas-de-derivados-de-petroleo-e-biocombustiveis
+2026-06-23 14:16:49 | INFO     | fuel_analytics.clients.anp:download_files:95 - Downloading ANP file https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/vdpb/vendas-derivados-petroleo-e-etanol/vendas-combustiveis-m3-1990-2025.csv to C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\sales\vendas-combustiveis-m3-1990-2025.csv
+2026-06-23 14:16:51 | INFO     | fuel_analytics.clients.anp:download_files:98 - ANP download step finished with 1 files
+2026-06-23 14:16:51 | INFO     | fuel_analytics.market:load_sales_dataset:100 - Reading sales dataset from C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\sales\vendas-combustiveis-m3-1990-2025.csv
+2026-06-23 14:16:51 | INFO     | fuel_analytics.market:load_sales_dataset:102 - Sales raw columns: ['ANO', 'MÊS', 'GRANDE REGIÃO', 'UNIDADE DA FEDERAÇÃO', 'PRODUTO', 'VENDAS']
+2026-06-23 14:16:51 | INFO     | fuel_analytics.clients.anp:list_processing_files:63 - Fetching ANP processing page: https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/processamento-de-petroleo-e-producao-de-derivados
+2026-06-23 14:16:52 | INFO     | fuel_analytics.clients.anp:download_files:95 - Downloading ANP file https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/pppd/processamento-petroleo-m3-1990-2025.csv to C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\processing\processamento-petroleo-m3-1990-2025.csv
+2026-06-23 14:16:53 | INFO     | fuel_analytics.clients.anp:download_files:98 - ANP download step finished with 1 files
+2026-06-23 14:16:53 | INFO     | fuel_analytics.clients.anp:download_files:95 - Downloading ANP file https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/pppd/producao-derivados-petroleo-por-refinaria-m3-1990-2025.csv to C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\processing\producao-derivados-petroleo-por-refinaria-m3-1990-2025.csv
+2026-06-23 14:16:54 | INFO     | fuel_analytics.clients.anp:download_files:98 - ANP download step finished with 1 files
+2026-06-23 14:16:54 | INFO     | fuel_analytics.market:load_processing_dataset:129 - Reading processing dataset from C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\processing\processamento-petroleo-m3-1990-2025.csv
+2026-06-23 14:16:54 | INFO     | fuel_analytics.market:load_processing_dataset:131 - Reading production dataset from C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\processing\producao-derivados-petroleo-por-refinaria-m3-1990-2025.csv
+2026-06-23 14:16:54 | INFO     | fuel_analytics.market:load_processing_dataset:133 - Processing raw columns: ['ANO', 'MÊS', 'UNIDADE DA FEDERAÇÃO', 'REFINARIA', 'MATÉRIA PRIMA', 'PROCESSADO']
+2026-06-23 14:16:54 | INFO     | fuel_analytics.market:load_processing_dataset:134 - Production raw columns: ['ANO', 'MÊS', 'UNIDADE DA FEDERAÇÃO', 'REFINARIA', 'PRODUTO', 'PRODUÇÃO']
+2026-06-23 14:16:55 | INFO     | fuel_analytics.market:normalize_processing_frame:210 - Normalized processing dataset rows=6539
+2026-06-23 14:16:55 | INFO     | fuel_analytics.market:load_market_datasets:86 - Loaded official market datasets: sales_rows=35316 processing_rows=6539
+2026-06-23 14:16:55 | INFO     | fuel_analytics.market:build_market_signals:335 - Building market signals with sales_rows=35316 processing_rows=6539
+2026-06-23 14:16:55 | INFO     | fuel_analytics.market:build_market_signals:366 - Market signals built with 35316 rows
+2026-06-23 14:16:55 | INFO     | __main__:materialize_market_signals:107 - Market signals persisted to C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\models\market_signals.json
+2026-06-23 14:16:55 | INFO     | __main__:pipeline_flow:160 - Pipeline finished successfully: {'warehouse': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\data-lake\\warehouse\\fuel_analytics.duckdb', 'overview': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\overview.json', 'history': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\history.json', 'fuels': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\fuels.json', 'explorer': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\explorer.json', 'forecast': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\forecasts.json', 'market': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\market_signals.json', 'rows': '19137'}
+2026-06-23 14:16:55 | INFO     | __main__:<module>:169 - Resultado final: {'warehouse': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\data-lake\\warehouse\\fuel_analytics.duckdb', 'overview': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\overview.json', 'history': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\history.json', 'fuels': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\fuels.json', 'explorer': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\explorer.json', 'forecast': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\forecasts.json', 'market': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\market_signals.json', 'rows': '19137'}
+2026-06-23 14:29:23 | INFO     | __main__:pipeline_flow:135 - GCP billing project detectado — usando BasedosDados microdados (mais ricos)
+2026-06-23 14:29:24 | INFO     | __main__:ingest_basedosdados_task:122 - Ingest via BasedosDados microdados (billing=the-ridge-500316-n2)
+2026-06-23 14:29:24 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:105 - Iniciando ingest BasedosDados: anos=[2023, 2024, 2025] estados=None limite=5000000
+2026-06-23 14:29:25 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:58 - Consultando BasedosDados (billing=the-ridge-500316-n2)
+2026-06-23 14:29:58 | INFO     | fuel_analytics.clients.basedosdados_client:fetch_with_basedosdados:61 - BasedosDados retornou 167237 linhas
+2026-06-23 14:29:58 | INFO     | fuel_analytics.clients.basedosdados_client:ingest_basedosdados:110 - Ingest BasedosDados concluido: 167237 linhas, colunas: ['state', 'product', 'brand', 'date', 'price', 'price_buy', 'price_min', 'price_max', 'price_std', 'sample_count']
+2026-06-23 14:29:58 | INFO     | __main__:curate:78 - Starting curation step with 167237 input rows
+2026-06-23 14:29:58 | INFO     | __main__:curate:80 - Normalization completed with 167237 rows
+2026-06-23 14:29:58 | INFO     | __main__:curate:84 - Curation completed with 19137 weekly rows and 130 parquet partitions
+2026-06-23 14:29:58 | INFO     | __main__:pipeline_flow:143 - Building DuckDB warehouse at C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\warehouse\fuel_analytics.duckdb
+2026-06-23 14:30:00 | INFO     | __main__:pipeline_flow:145 - Warehouse materialized at C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\warehouse\fuel_analytics.duckdb
+2026-06-23 14:30:00 | INFO     | __main__:train_forecasts:90 - Starting forecast training for 19137 weekly rows
+2026-06-23 14:31:12 | INFO     | __main__:train_forecasts:97 - Forecast artifacts persisted to C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\models\forecasts.json
+2026-06-23 14:31:12 | INFO     | __main__:materialize_market_signals:103 - Loading supplemental demand and processing datasets
+2026-06-23 14:31:13 | INFO     | fuel_analytics.clients.anp:list_sales_files:59 - Fetching ANP sales page: https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/vendas-de-derivados-de-petroleo-e-biocombustiveis
+2026-06-23 14:31:13 | INFO     | fuel_analytics.clients.anp:download_files:92 - Using cached ANP file C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\sales\vendas-combustiveis-m3-1990-2025.csv
+2026-06-23 14:31:13 | INFO     | fuel_analytics.clients.anp:download_files:98 - ANP download step finished with 1 files
+2026-06-23 14:31:13 | INFO     | fuel_analytics.market:load_sales_dataset:100 - Reading sales dataset from C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\sales\vendas-combustiveis-m3-1990-2025.csv
+2026-06-23 14:31:13 | INFO     | fuel_analytics.market:load_sales_dataset:102 - Sales raw columns: ['ANO', 'MÊS', 'GRANDE REGIÃO', 'UNIDADE DA FEDERAÇÃO', 'PRODUTO', 'VENDAS']
+2026-06-23 14:31:14 | INFO     | fuel_analytics.clients.anp:list_processing_files:63 - Fetching ANP processing page: https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/processamento-de-petroleo-e-producao-de-derivados
+2026-06-23 14:31:14 | INFO     | fuel_analytics.clients.anp:download_files:92 - Using cached ANP file C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\processing\processamento-petroleo-m3-1990-2025.csv
+2026-06-23 14:31:14 | INFO     | fuel_analytics.clients.anp:download_files:98 - ANP download step finished with 1 files
+2026-06-23 14:31:14 | INFO     | fuel_analytics.clients.anp:download_files:92 - Using cached ANP file C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\processing\producao-derivados-petroleo-por-refinaria-m3-1990-2025.csv
+2026-06-23 14:31:14 | INFO     | fuel_analytics.clients.anp:download_files:98 - ANP download step finished with 1 files
+2026-06-23 14:31:14 | INFO     | fuel_analytics.market:load_processing_dataset:129 - Reading processing dataset from C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\processing\processamento-petroleo-m3-1990-2025.csv
+2026-06-23 14:31:14 | INFO     | fuel_analytics.market:load_processing_dataset:131 - Reading production dataset from C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\data-lake\raw\processing\producao-derivados-petroleo-por-refinaria-m3-1990-2025.csv
+2026-06-23 14:31:14 | INFO     | fuel_analytics.market:load_processing_dataset:133 - Processing raw columns: ['ANO', 'MÊS', 'UNIDADE DA FEDERAÇÃO', 'REFINARIA', 'MATÉRIA PRIMA', 'PROCESSADO']
+2026-06-23 14:31:14 | INFO     | fuel_analytics.market:load_processing_dataset:134 - Production raw columns: ['ANO', 'MÊS', 'UNIDADE DA FEDERAÇÃO', 'REFINARIA', 'PRODUTO', 'PRODUÇÃO']
+2026-06-23 14:31:14 | INFO     | fuel_analytics.market:normalize_processing_frame:210 - Normalized processing dataset rows=6539
+2026-06-23 14:31:14 | INFO     | fuel_analytics.market:load_market_datasets:86 - Loaded official market datasets: sales_rows=35316 processing_rows=6539
+2026-06-23 14:31:14 | INFO     | fuel_analytics.market:build_market_signals:335 - Building market signals with sales_rows=35316 processing_rows=6539
+2026-06-23 14:31:14 | INFO     | fuel_analytics.market:build_market_signals:366 - Market signals built with 35316 rows
+2026-06-23 14:31:14 | INFO     | __main__:materialize_market_signals:107 - Market signals persisted to C:\Users\tassi\Documents\GitHub\MeuPortfolio\analise_de_combustiveis\models\market_signals.json
+2026-06-23 14:31:14 | INFO     | __main__:pipeline_flow:160 - Pipeline finished successfully: {'warehouse': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\data-lake\\warehouse\\fuel_analytics.duckdb', 'overview': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\overview.json', 'history': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\history.json', 'fuels': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\fuels.json', 'explorer': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\explorer.json', 'forecast': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\forecasts.json', 'market': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\market_signals.json', 'rows': '19137'}
+2026-06-23 14:31:15 | INFO     | __main__:<module>:169 - Resultado final: {'warehouse': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\data-lake\\warehouse\\fuel_analytics.duckdb', 'overview': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\overview.json', 'history': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\history.json', 'fuels': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\fuels.json', 'explorer': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\explorer.json', 'forecast': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\forecasts.json', 'market': 'C:\\Users\\tassi\\Documents\\GitHub\\MeuPortfolio\\analise_de_combustiveis\\models\\market_signals.json', 'rows': '19137'}

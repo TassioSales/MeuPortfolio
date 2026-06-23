@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"fmt"
 	nethttp "net/http"
 
 	"fuel-analytics-api/internal/domain"
@@ -10,8 +11,9 @@ import (
 )
 
 type Handler struct {
-	repo     domain.Repository
-	insights *service.InsightsService
+	repo         domain.Repository
+	insights     *service.InsightsService
+	mistralModel string
 }
 
 func (h *Handler) Health(w nethttp.ResponseWriter, r *nethttp.Request) {
@@ -160,7 +162,11 @@ func (h *Handler) Insights(w nethttp.ResponseWriter, r *nethttp.Request) {
 	if compareWith != "" {
 		comparison, _ = h.repo.Compare(r.Context(), fuel, compareWith, state, startDate, endDate)
 	}
-	item, err := h.insights.Build(r.Context(), service.InsightContext{
+	svc := h.insights
+	if headerKey := r.Header.Get("X-Mistral-Key"); headerKey != "" {
+		svc = service.NewInsightsService(headerKey, h.mistralModel)
+	}
+	item, err := svc.Build(r.Context(), service.InsightContext{
 		View:        view,
 		Fuel:        fuel,
 		State:       state,
@@ -174,6 +180,70 @@ func (h *Handler) Insights(w nethttp.ResponseWriter, r *nethttp.Request) {
 		Comparison:  comparison,
 		Market:      market,
 	})
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	writeJSON(w, nethttp.StatusOK, map[string]any{"data": item})
+}
+
+func (h *Handler) Ranking(w nethttp.ResponseWriter, r *nethttp.Request) {
+	ext, ok := h.repo.(domain.ExtendedRepository)
+	if !ok {
+		writeJSON(w, nethttp.StatusNotImplemented, map[string]any{"error": "not supported by current repository"})
+		return
+	}
+	fuel := r.URL.Query().Get("fuel")
+	order := r.URL.Query().Get("order")
+	if order == "" {
+		order = "desc"
+	}
+	limit := 0
+	if ls := r.URL.Query().Get("limit"); ls != "" {
+		if _, err := fmt.Sscanf(ls, "%d", &limit); err != nil {
+			limit = 0
+		}
+	}
+	items, err := ext.Ranking(r.Context(), fuel, order, limit)
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	writeJSON(w, nethttp.StatusOK, map[string]any{"data": items})
+}
+
+func (h *Handler) Trends(w nethttp.ResponseWriter, r *nethttp.Request) {
+	ext, ok := h.repo.(domain.ExtendedRepository)
+	if !ok {
+		writeJSON(w, nethttp.StatusNotImplemented, map[string]any{"error": "not supported by current repository"})
+		return
+	}
+	items, err := ext.Trends(
+		r.Context(),
+		r.URL.Query().Get("fuel"),
+		r.URL.Query().Get("state"),
+		r.URL.Query().Get("start_date"),
+		r.URL.Query().Get("end_date"),
+	)
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	writeJSON(w, nethttp.StatusOK, map[string]any{"data": items})
+}
+
+func (h *Handler) Stats(w nethttp.ResponseWriter, r *nethttp.Request) {
+	ext, ok := h.repo.(domain.ExtendedRepository)
+	if !ok {
+		writeJSON(w, nethttp.StatusNotImplemented, map[string]any{"error": "not supported by current repository"})
+		return
+	}
+	item, err := ext.Stats(
+		r.Context(),
+		r.URL.Query().Get("fuel"),
+		r.URL.Query().Get("start_date"),
+		r.URL.Query().Get("end_date"),
+	)
 	if err != nil {
 		writeError(w, err)
 		return

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Controle de Processos — CompraBio{% endblock %}
+{% block topbar_title %}Controle de Processos{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+  <div>
+    <h1><i class="bi bi-kanban me-2 text-primary"></i>Controle de Processos</h1>
+    <p>Gerencie e filtre todos os pedidos de compra.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'exportar_excel' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" class="btn btn-outline-success btn-sm">
+      <i class="bi bi-file-earmark-excel me-1"></i>Exportar Excel
+    </a>
+    {% if not request.user.is_aprovador %}
+    <a href="{% url 'criar_pedido' %}" class="btn btn-primary btn-sm">
+      <i class="bi bi-plus-lg me-1"></i>Novo Pedido
+    </a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Filtros -->
+<div class="table-card p-3 mb-4">
+  <form method="get" class="row g-2 align-items-end">
+    <div class="col-md-2">
+      <label class="form-label mb-1" style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">Nº Pedido</label>
+      <input type="number" name="numero" value="{{ numero_q }}" class="form-control form-control-sm" placeholder="0001">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-1" style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">Status</label>
+      <select name="status" class="form-select form-select-sm">
+        <option value="">Todos</option>
+        {% for val, label in status_choices %}
+        {% if val != 'rascunho' %}
+        <option value="{{ val }}" {% if status_f == val %}selected{% endif %}>{{ label }}</option>
+        {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-1" style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">Solicitante</label>
+      <input type="text" name="solicitante" value="{{ solicitante_q }}" class="form-control form-control-sm" placeholder="nome">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-1" style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">Data Inicial</label>
+      <input type="date" name="data_ini" value="{{ data_ini }}" class="form-control form-control-sm">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-1" style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">Data Final</label>
+      <input type="date" name="data_fim" value="{{ data_fim }}" class="form-control form-control-sm">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-1" style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">Busca</label>
+      <input type="text" name="busca" value="{{ busca }}" class="form-control form-control-sm" placeholder="título, descrição">
+    </div>
+    <div class="col-auto d-flex gap-1">
+      <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-search"></i></button>
+      <a href="{% url 'controle_processos' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg"></i></a>
+    </div>
+  </form>
+</div>
+
+<!-- Resultados -->
+<div class="table-card">
+  <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
+    <h6 class="mb-0" style="font-size:14px;font-weight:600;">
+      {{ page.paginator.count }} pedido{{ page.paginator.count|pluralize }} encontrado{{ page.paginator.count|pluralize }}
+    </h6>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Nº</th><th>Data</th><th>Solicitante</th><th>Título</th>
+          <th>Status</th><th>Data Aprovação</th><th>Aprovador</th><th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in page %}
+        <tr>
+          <td><strong>#{{ p.numero_pedido|stringformat:"04d" }}</strong></td>
+          <td>{{ p.data_criacao|date:"d/m/Y" }}</td>
+          <td>{{ p.solicitante.get_full_name|default:p.solicitante.username }}</td>
+          <td>{{ p.titulo|truncatechars:45 }}</td>
+          <td>
+            <span class="badge badge-{{ p.status }} px-2 py-1" style="border-radius:6px;font-size:12px;">
+              {% if p.status == 'aprovado' %}<i class="bi bi-check-circle-fill me-1"></i>
+              {% elif p.status == 'reprovado' %}<i class="bi bi-x-circle-fill me-1"></i>
+              {% elif p.status == 'aberto' %}<i class="bi bi-hourglass me-1"></i>
+              {% endif %}{{ p.get_status_display }}
+            </span>
+          </td>
+          <td>{{ p.data_aprovacao|date:"d/m/Y"|default:"—" }}</td>
+          <td>{% if p.aprovador %}{{ p.aprovador.get_full_name|default:p.aprovador.username }}{% else %}—{% endif %}</td>
+          <td>
+            <div class="d-flex gap-1">
+              <a href="{% url 'detalhe_pedido' p.pk %}" class="btn btn-sm btn-outline-primary py-0 px-2" title="Ver">
+                <i class="bi bi-eye"></i>
+              </a>
+              {% if p.status == 'aberto' and request.user.is_aprovador %}
+              <a href="{% url 'aprovar_pedido' p.pk %}" class="btn btn-sm btn-outline-success py-0 px-2" title="Aprovar/Reprovar">
+                <i class="bi bi-check2-circle"></i>
+              </a>
+              {% endif %}
+              <a href="{% url 'exportar_pdf' p.pk %}" class="btn btn-sm btn-outline-secondary py-0 px-2" title="PDF">
+                <i class="bi bi-file-pdf"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" class="text-center text-muted py-5">
+          <i class="bi bi-search fs-3 d-block mb-2"></i>Nenhum pedido encontrado com os filtros aplicados.
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if page.has_other_pages %}
+  <div class="d-flex justify-content-center p-3">
+    <nav>
+      <ul class="pagination pagination-sm mb-0">
+        {% if page.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}&{{ request.GET.urlencode }}">«</a></li>
+        {% endif %}
+        {% for num in page.paginator.page_range %}
+        {% if page.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% elif num > page.number|add:"-3" and num < page.number|add:"3" %}
+        <li class="page-item"><a class="page-link" href="?page={{ num }}&{{ request.GET.urlencode }}">{{ num }}</a></li>
+        {% endif %}
+        {% endfor %}
+        {% if page.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}&{{ request.GET.urlencode }}">»</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

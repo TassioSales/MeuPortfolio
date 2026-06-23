@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Executivo — CompraBio{% endblock %}
+{% block topbar_title %}Dashboard Executivo{% endblock %}
+
+{% block extra_css %}
+<style>
+  .chart-card { background:#fff; border-radius:12px; border:1px solid #e2e8f0; padding:20px; }
+  .metric-big { font-size:36px; font-weight:800; color:#1e293b; line-height:1; }
+  .metric-pct { font-size:14px; font-weight:600; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-bar-chart-line me-2 text-primary"></i>Dashboard Executivo</h1>
+  <p>Visão analítica completa do processo de aprovação de compras.</p>
+</div>
+
+<!-- KPIs -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card text-center">
+      <div class="metric-big">{{ totais.total }}</div>
+      <div class="stat-label mt-1">Total de Pedidos</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card text-center">
+      <div class="metric-big text-success">{{ totais.aprovados }}</div>
+      <div class="stat-label mt-1">Aprovados</div>
+      <div class="metric-pct text-success">{{ totais.taxa_aprovacao }}% taxa</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card text-center">
+      <div class="metric-big text-danger">{{ totais.reprovados }}</div>
+      <div class="stat-label mt-1">Reprovados</div>
+      <div class="metric-pct text-danger">{{ totais.taxa_reprovacao }}% taxa</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card text-center">
+      <div class="metric-big text-warning">{{ totais.pendentes }}</div>
+      <div class="stat-label mt-1">Pendentes</div>
+    </div>
+  </div>
+</div>
+
+<!-- Gráficos -->
+<div class="row g-3">
+  <div class="col-md-8">
+    <div class="chart-card">
+      <div style="font-size:14px;font-weight:600;color:#1e293b;margin-bottom:4px;">Evolução Mensal</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Total, aprovados e reprovados por mês</div>
+      <canvas id="chartEvolucao" height="100"></canvas>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="chart-card">
+      <div style="font-size:14px;font-weight:600;color:#1e293b;margin-bottom:4px;">Distribuição</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Proporção aprovado/reprovado/pendente</div>
+      <canvas id="chartPizza" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Tabela mensal detalhada -->
+<div class="table-card mt-4">
+  <div class="p-3 border-bottom">
+    <h6 style="font-size:14px;font-weight:600;margin:0;">Análise por Mês</h6>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr><th>Mês</th><th>Total</th><th>Aprovados</th><th>Reprovados</th><th>Taxa Aprovação</th></tr>
+      </thead>
+      <tbody>
+        {% for m in meses %}
+        {% with total=m.total|default:1 %}
+        <tr>
+          <td><strong>{{ m.label }}</strong></td>
+          <td>{{ m.total }}</td>
+          <td><span class="text-success fw-semibold">{{ m.aprovados }}</span></td>
+          <td><span class="text-danger fw-semibold">{{ m.reprovados }}</span></td>
+          <td>
+            {% if m.total > 0 %}
+            <div class="d-flex align-items-center gap-2">
+              {% widthratio m.aprovados m.total 100 as pct %}
+              <div class="progress flex-grow-1" style="height:6px;border-radius:99px;">
+                <div class="progress-bar bg-success" style="width:{{ pct }}%;border-radius:99px;"></div>
+              </div>
+              <span style="font-size:12px;width:36px;">{{ pct }}%</span>
+            </div>
+            {% else %}
+            <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+  const labels = [{% for m in meses %}"{{ m.label }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+  const totais = [{% for m in meses %}{{ m.total }}{% if not forloop.last %},{% endif %}{% endfor %}];
+  const aprovados = [{% for m in meses %}{{ m.aprovados }}{% if not forloop.last %},{% endif %}{% endfor %}];
+  const reprovados = [{% for m in meses %}{{ m.reprovados }}{% if not forloop.last %},{% endif %}{% endfor %}];
+
+  new Chart(document.getElementById('chartEvolucao'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Total', data: totais, backgroundColor: '#E9EEEE', borderRadius: 4 },
+        { label: 'Aprovados', data: aprovados, backgroundColor: '#00502A', borderRadius: 4 },
+        { label: 'Reprovados', data: reprovados, backgroundColor: '#FC6A43', borderRadius: 4 },
+      ]
+    },
+    options: {
+      plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 12 } } } },
+      scales: { x: { stacked: false }, y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+      responsive: true,
+    }
+  });
+
+  new Chart(document.getElementById('chartPizza'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Aprovados', 'Reprovados', 'Pendentes'],
+      datasets: [{
+        data: [{{ totais_agg.aprovados }}, {{ totais_agg.reprovados }}, {{ totais_agg.pendentes }}],
+        backgroundColor: ['#B5D840', '#FC6A43', '#ee8f2f'], borderWidth: 0, hoverOffset: 6,
+      }]
+    },
+    options: {
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } } },
+      cutout: '65%',
+    }
+  });
+</script>
+{% endblock %}

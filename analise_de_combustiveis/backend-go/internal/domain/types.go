@@ -107,6 +107,33 @@ type ExplorerPayload struct {
 	Tables        []ExplorerTable `json:"tables"`
 }
 
+type RankingEntry struct {
+	Position    int     `json:"position"`
+	State       string  `json:"state"`
+	Product     string  `json:"product"`
+	Price       float64 `json:"price"`
+	Volatility  float64 `json:"volatility"`
+	ChangeWeek  float64 `json:"change_week_pct"`
+}
+
+type TrendPoint struct {
+	Week      string  `json:"week"`
+	Price     float64 `json:"price"`
+	ChangeAbs float64 `json:"change_abs"`
+	ChangePct float64 `json:"change_pct"`
+}
+
+type NationalStats struct {
+	Product       string  `json:"product"`
+	NationalAvg   float64 `json:"national_avg"`
+	MinPrice      float64 `json:"min_price"`
+	MaxPrice      float64 `json:"max_price"`
+	MinState      string  `json:"min_state"`
+	MaxState      string  `json:"max_state"`
+	StateCount    int     `json:"state_count"`
+	ChangeWeekPct float64 `json:"change_week_pct"`
+}
+
 type Repository interface {
 	Health(ctx context.Context) error
 	Fuels(ctx context.Context) ([]string, error)
@@ -118,4 +145,12 @@ type Repository interface {
 	Map(ctx context.Context, fuel string) ([]FuelSummary, error)
 	Market(ctx context.Context, fuel, state, startDate, endDate string) ([]MarketSignal, error)
 	Explorer(ctx context.Context) (ExplorerPayload, error)
+}
+
+// ExtendedRepository is implemented by repos that support advanced analytics.
+// Handlers use type assertion so DuckDB repos without these methods still work.
+type ExtendedRepository interface {
+	Ranking(ctx context.Context, fuel, order string, limit int) ([]RankingEntry, error)
+	Trends(ctx context.Context, fuel, state, startDate, endDate string) ([]TrendPoint, error)
+	Stats(ctx context.Context, fuel, startDate, endDate string) (NationalStats, error)
 }

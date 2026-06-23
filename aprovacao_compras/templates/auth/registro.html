@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CompraBio — Criar Conta</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #F6F6F6; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .wrap { width: 100%; max-width: 440px; padding: 24px; }
+
+    .brand { text-align: center; margin-bottom: 28px; }
+    .brand-icon {
+      width: 48px; height: 48px; background: #00502A; border-radius: 12px;
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 12px; color: #fff; font-size: 22px;
+    }
+    .brand h1 { font-size: 22px; font-weight: 800; color: #0d2e1a; letter-spacing: -.4px; margin-bottom: 4px; }
+    .brand p  { font-size: 13px; color: #5a7a6e; }
+
+    .card {
+      background: #fff; border: 1px solid #dde5e3;
+      border-radius: 14px; padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,80,42,.06);
+    }
+    .card h2 { font-size: 15px; font-weight: 700; color: #0d2e1a; margin-bottom: 20px; }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block; font-size: 11px; font-weight: 700; color: #3d6454;
+      text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px;
+    }
+    .input-wrap { position: relative; }
+    .input-wrap i {
+      position: absolute; left: 11px; top: 50%;
+      transform: translateY(-50%); color: #8aada5; font-size: 14px; pointer-events: none;
+    }
+    .input-wrap input {
+      width: 100%; height: 40px; border: 1.5px solid #dde5e3; border-radius: 8px;
+      padding: 0 12px 0 34px; font-size: 13px; color: #0d2e1a; outline: none;
+      transition: border-color .15s; background: #fff;
+    }
+    .input-wrap input:focus { border-color: #00502A; }
+    .input-wrap input.error { border-color: #FC6A43; }
+    .field-error { font-size: 11px; color: #8c2000; margin-top: 4px; }
+    .eye-btn {
+      position: absolute; right: 9px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: #8aada5; font-size: 14px; padding: 3px;
+    }
+    .eye-btn:hover { color: #00502A; }
+
+    .info-box {
+      background: #f5eaf2; border: 1px solid #d9a8cb; border-radius: 8px;
+      padding: 10px 14px; font-size: 12px; color: #5d1a4a;
+      display: flex; align-items: flex-start; gap: 8px; margin-bottom: 16px;
+    }
+
+    .btn-submit {
+      width: 100%; height: 42px; background: #00502A; border: none;
+      border-radius: 8px; color: #fff; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background .15s; margin-top: 4px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-submit:hover { background: #003d20; }
+
+    .footer-link { text-align: center; margin-top: 20px; font-size: 13px; color: #5a7a6e; }
+    .footer-link a { color: #00502A; font-weight: 600; text-decoration: none; }
+    .footer-link a:hover { text-decoration: underline; }
+
+    .page-footer { text-align: center; margin-top: 20px; font-size: 11px; color: #8aada5; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-icon"><i class="bi bi-cart-check-fill"></i></div>
+      <h1>CompraBio</h1>
+      <p>Criar nova conta · Bio Mundo</p>
+    </div>
+
+    <div class="card">
+      <h2>Preencha seus dados</h2>
+
+      <div class="info-box">
+        <i class="bi bi-info-circle-fill flex-shrink-0" style="margin-top:1px;"></i>
+        <span>Novas contas são criadas como <strong>Comprador</strong>. O administrador definirá seu perfil de acesso.</span>
+      </div>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="row2">
+          <div class="field">
+            <label>Nome <span style="color:#FC6A43">*</span></label>
+            <div class="input-wrap">
+              <i class="bi bi-person"></i>
+              <input type="text" name="first_name" value="{{ form.first_name|default:'' }}"
+                     placeholder="Ana" autofocus class="{% if errors.first_name %}error{% endif %}">
+            </div>
+            {% if errors.first_name %}<div class="field-error">{{ errors.first_name }}</div>{% endif %}
+          </div>
+          <div class="field">
+            <label>Sobrenome</label>
+            <div class="input-wrap">
+              <i class="bi bi-person"></i>
+              <input type="text" name="last_name" value="{{ form.last_name|default:'' }}" placeholder="Silva">
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Nome de usuário <span style="color:#FC6A43">*</span></label>
+          <div class="input-wrap">
+            <i class="bi bi-at"></i>
+            <input type="text" name="username" value="{{ form.username|default:'' }}"
+                   placeholder="ana.silva" autocomplete="username"
+                   class="{% if errors.username %}error{% endif %}">
+          </div>
+          {% if errors.username %}<div class="field-error">{{ errors.username }}</div>{% endif %}
+        </div>
+
+        <div class="field">
+          <label>E-mail <span style="color:#FC6A43">*</span></label>
+          <div class="input-wrap">
+            <i class="bi bi-envelope"></i>
+            <input type="email" name="email" value="{{ form.email|default:'' }}"
+                   placeholder="ana@biomundo.com.br"
+                   class="{% if errors.email %}error{% endif %}">
+          </div>
+          {% if errors.email %}<div class="field-error">{{ errors.email }}</div>{% endif %}
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Senha <span style="color:#FC6A43">*</span></label>
+            <div class="input-wrap">
+              <i class="bi bi-lock"></i>
+              <input type="password" name="password1" id="pwd1" placeholder="••••••"
+                     class="{% if errors.password1 %}error{% endif %}">
+              <button type="button" class="eye-btn" onclick="togglePwd('pwd1','eye1')">
+                <i class="bi bi-eye" id="eye1"></i>
+              </button>
+            </div>
+            {% if errors.password1 %}<div class="field-error">{{ errors.password1 }}</div>{% endif %}
+          </div>
+          <div class="field">
+            <label>Confirmar senha <span style="color:#FC6A43">*</span></label>
+            <div class="input-wrap">
+              <i class="bi bi-lock-fill"></i>
+              <input type="password" name="password2" id="pwd2" placeholder="••••••"
+                     class="{% if errors.password2 %}error{% endif %}">
+              <button type="button" class="eye-btn" onclick="togglePwd('pwd2','eye2')">
+                <i class="bi bi-eye" id="eye2"></i>
+              </button>
+            </div>
+            {% if errors.password2 %}<div class="field-error">{{ errors.password2 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          <i class="bi bi-person-plus-fill"></i> Criar Conta
+        </button>
+      </form>
+    </div>
+
+    <div class="footer-link">
+      Já tem uma conta? <a href="{% url 'login' %}">Entrar</a>
+    </div>
+    <div class="page-footer">Bio Mundo &copy; 2026</div>
+  </div>
+
+  <script>
+    function togglePwd(id, eyeId) {
+      const p = document.getElementById(id);
+      const e = document.getElementById(eyeId);
+      p.type = p.type === 'password' ? 'text' : 'password';
+      e.className = p.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+    }
+  </script>
+</body>
+</html>

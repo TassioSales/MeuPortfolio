@@ -1,76 +1,218 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────────
+   ROOT
+   ───────────────────────────────────────────────────────────────── */
 :root {
   color-scheme: dark;
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   BODY
+   Subtle ambient gradient — amber top-left (fuel/energy feel),
+   blue bottom-right (data/analytics feel). Both at ~8% opacity
+   so the #070C14 base remains dominant.
+   ───────────────────────────────────────────────────────────────── */
 body {
-  @apply bg-ink text-white font-body antialiased selection:bg-accent/30;
+  @apply antialiased selection:bg-amber/20 selection:text-amber;
+  background-color: #070C14;
   background-image:
-    radial-gradient(circle at 0% 0%, rgba(54, 214, 167, 0.16), transparent 34%),
-    radial-gradient(circle at 100% 0%, rgba(244, 184, 96, 0.16), transparent 30%),
-    radial-gradient(circle at 100% 35%, rgba(139, 125, 255, 0.16), transparent 28%),
-    radial-gradient(circle at 25% 85%, rgba(107, 184, 255, 0.14), transparent 28%),
-    linear-gradient(180deg, #030507 0%, #09111a 38%, #0a1621 100%);
+    radial-gradient(ellipse 60% 50% at 0% 0%,   rgba(245, 158,  11, 0.08) 0%, transparent 100%),
+    radial-gradient(ellipse 55% 45% at 100% 100%, rgba( 96, 165, 250, 0.07) 0%, transparent 100%);
   background-attachment: fixed;
+  color: #E2E8F0;
+  font-family: "Inter", sans-serif;
 }
 
 main {
   @apply min-h-screen relative z-10;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-  background-size: 96px 96px;
-  mask-image: radial-gradient(circle at center, black, transparent 88%);
-  opacity: 0.5;
-}
-
+/* ─────────────────────────────────────────────────────────────────
+   GRID BACKGROUND (opt-in only — add class .grid-bg to element)
+   ───────────────────────────────────────────────────────────────── */
 .grid-bg {
   background-image: theme("backgroundImage.grid");
-  background-size: 40px 40px;
+  background-size: 48px 48px;
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   SURFACE CARDS
+   ───────────────────────────────────────────────────────────────── */
+
+/* Standard dark card */
+.glass-surface {
+  background-color: #0D1623;
+  border: 1px solid #1A2B3D;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+}
+
+/* Elevated card (modal, tooltip, popover) */
+.glass-surface-2 {
+  background-color: #12213A;
+  border: 1px solid #1A2B3D;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+
+/* Legacy alias — keep so existing code doesn't break */
 .glass-panel {
-  @apply border border-glass-border backdrop-blur-xl shadow-float;
-  background:
-    linear-gradient(145deg, rgba(15, 26, 39, 0.9), rgba(10, 17, 26, 0.82)),
-    rgba(255, 255, 255, 0.03);
-}
-
-.glow-accent {
-  @apply shadow-glow border-accent/20;
+  @apply glass-surface;
 }
 
 .panel-surface {
-  background:
-    linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
-    rgba(7, 13, 20, 0.68);
-  border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(18px);
+  background-color: #0A111D;
+  border: 1px solid #1A2B3D;
+  backdrop-filter: blur(12px);
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   STICKY HEADER
+   ───────────────────────────────────────────────────────────────── */
+.header-surface {
+  background-color: rgba(10, 17, 29, 0.92);
+  border-bottom: 1px solid #1A2B3D;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SEMANTIC LEFT-BORDER ACCENTS FOR CARDS
+   ───────────────────────────────────────────────────────────────── */
+.card-amber   { border-left: 3px solid #F59E0B; }
+.card-emerald { border-left: 3px solid #10B981; }
+.card-rose    { border-left: 3px solid #F43F5E; }
+.card-blue    { border-left: 3px solid #60A5FA; }
+.card-purple  { border-left: 3px solid #A78BFA; }
+
+/* ─────────────────────────────────────────────────────────────────
+   TYPOGRAPHY UTILITIES
+   ───────────────────────────────────────────────────────────────── */
+
+/* Apply DM Mono to any data number */
+.number {
+  font-family: "DM Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Alias used by existing stat cards */
+.stat-num {
+  font-family: "DM Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  animation: num-in 0.35s ease-out both;
+}
+
+.font-display {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   GLOW HELPERS
+   ───────────────────────────────────────────────────────────────── */
+.glow-amber   { box-shadow: 0 0 24px rgba(245, 158,  11, 0.20); }
+.glow-emerald { box-shadow: 0 0 20px rgba( 16, 185, 129, 0.18); }
+.glow-rose    { box-shadow: 0 0 20px rgba(244,  63,  94, 0.18); }
+.glow-accent  { box-shadow: 0 0 20px rgba( 54, 214, 167, 0.15); }
+
+/* ─────────────────────────────────────────────────────────────────
+   TICKER BAR
+   ───────────────────────────────────────────────────────────────── */
+.ticker-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker-wrap > div {
+  display: inline-flex;
+  animation: ticker-scroll 40s linear infinite;
+}
+
+.ticker-wrap:hover > div {
+  animation-play-state: paused;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SCROLLBAR
+   ───────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.18);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.35);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   ANIMATIONS
+   ───────────────────────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes num-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes row-in {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-up       { animation: fade-up 0.35s ease-out both; }
+.animate-slide-in-left { animation: slide-in-left 0.30s ease-out both; }
+.animate-num-in        { animation: num-in 0.35s ease-out both; }
+.animate-row-in        { animation: row-in 0.25s ease-out both; }
+
+/* ─────────────────────────────────────────────────────────────────
+   GLOBAL TRANSITION
+   Scope to interactive elements only — applying to * causes
+   jank on layout-heavy pages.
+   ───────────────────────────────────────────────────────────────── */
+a,
+button,
+input,
+select,
+textarea,
+[role="button"] {
+  @apply transition-colors duration-150;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SECTION SHELL (legacy)
+   ───────────────────────────────────────────────────────────────── */
 .section-shell {
-  @apply rounded-[2rem] border border-white/10 bg-white/[0.03] p-4 md:p-5;
-}
-
-.mesh-accent {
-  background-image:
-    radial-gradient(circle at top left, rgba(54,214,167,0.14), transparent 28%),
-    radial-gradient(circle at top right, rgba(244,184,96,0.14), transparent 28%),
-    radial-gradient(circle at bottom center, rgba(107,184,255,0.12), transparent 28%);
-}
-
-* {
-  @apply transition-colors duration-200;
+  @apply rounded-xl border border-white/10 bg-white/[0.02] p-4 md:p-5;
 }

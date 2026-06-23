@@ -1,4 +1,4 @@
-import {
+import type {
   ComparisonPoint,
   ForecastPoint,
   FuelName,
@@ -7,13 +7,19 @@ import {
   InsightPayload,
   MarketSignal,
   ExplorerPayload,
+  RankingEntry,
+  TrendPoint,
+  NationalStats,
 } from "@/lib/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
-async function fetchJSON<T>(path: string): Promise<T> {
+async function fetchJSON<T>(path: string, extraHeaders?: Record<string, string>): Promise<T> {
   try {
-    const response = await fetch(`${API_URL}${path}`, { cache: "no-store" });
+    const response = await fetch(`${API_URL}${path}`, {
+      cache: "no-store",
+      headers: extraHeaders,
+    });
     if (!response.ok) {
       throw new Error(`API error ${response.status}`);
     }
@@ -76,17 +82,20 @@ export async function getInsights(
   city = "",
   startDate?: string,
   endDate?: string,
+  mistralKey?: string,
 ) {
-  const params = new URLSearchParams({ 
-    fuel, 
-    state, 
-    view, 
-    compare_with: compareWith, 
-    city 
+  const params = new URLSearchParams({
+    fuel,
+    state,
+    view,
+    compare_with: compareWith,
+    city,
   });
   if (startDate) params.append("start_date", startDate);
   if (endDate) params.append("end_date", endDate);
-  return fetchJSON<InsightPayload>(`/api/v1/insights?${params.toString()}`);
+  const headers: Record<string, string> = {};
+  if (mistralKey) headers["X-Mistral-Key"] = mistralKey;
+  return fetchJSON<InsightPayload>(`/api/v1/insights?${params.toString()}`, headers);
 }
 
 export async function getMarket(fuel: FuelName, state: string, startDate?: string, endDate?: string) {
@@ -102,4 +111,24 @@ export async function getExplorer() {
 
 export async function getFuels() {
   return fetchArray<FuelName>(`/api/v1/fuels`);
+}
+
+export async function getRanking(fuel: FuelName, order: "asc" | "desc" = "desc", limit = 0) {
+  const params = new URLSearchParams({ fuel, order });
+  if (limit > 0) params.append("limit", String(limit));
+  return fetchArray<RankingEntry>(`/api/v1/ranking?${params.toString()}`);
+}
+
+export async function getTrends(fuel: FuelName, state: string, startDate?: string, endDate?: string) {
+  const params = new URLSearchParams({ fuel, state });
+  if (startDate) params.append("start_date", startDate);
+  if (endDate) params.append("end_date", endDate);
+  return fetchArray<TrendPoint>(`/api/v1/trends?${params.toString()}`);
+}
+
+export async function getStats(fuel: FuelName, startDate?: string, endDate?: string) {
+  const params = new URLSearchParams({ fuel });
+  if (startDate) params.append("start_date", startDate);
+  if (endDate) params.append("end_date", endDate);
+  return fetchJSON<NationalStats>(`/api/v1/stats?${params.toString()}`);
 }

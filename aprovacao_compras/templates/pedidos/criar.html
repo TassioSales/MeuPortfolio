@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Novo Pedido — CompraBio{% endblock %}
+{% block topbar_title %}Novo Pedido de Compra{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-plus-circle me-2 text-primary"></i>Novo Pedido de Compra</h1>
+  <p>Preencha as informações do pedido e anexe planilhas de cotação.</p>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="table-card p-4 mb-3">
+        <h6 class="fw-600 mb-3" style="font-weight:600;color:#1e293b;">Informações do Pedido</h6>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Título <span class="text-danger">*</span></label>
+          <input type="text" name="titulo" class="form-control" placeholder="Ex.: Compra de equipamentos de escritório"
+            value="{{ form_data.titulo|default:'' }}" maxlength="200" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Descrição / Justificativa <span class="text-danger">*</span></label>
+          <textarea name="descricao" class="form-control" rows="5"
+            placeholder="Descreva o que será adquirido, a necessidade, fornecedores considerados, etc."
+            required>{{ form_data.descricao|default:'' }}</textarea>
+        </div>
+      </div>
+
+      <div class="table-card p-4 mb-4">
+        <h6 class="fw-600 mb-1" style="font-weight:600;color:#1e293b;">Anexos <span class="text-muted fw-normal">(opcional)</span></h6>
+        <p class="text-muted mb-3" style="font-size:13px;">Arquivos de cotação, planilhas, orçamentos — somente <strong>.xlsx</strong> e <strong>.xls</strong>.</p>
+        <input type="file" name="anexos" class="form-control" multiple accept=".xlsx,.xls">
+        <div class="form-text mt-1"><i class="bi bi-info-circle me-1"></i>Você pode selecionar múltiplos arquivos.</div>
+      </div>
+
+      <div class="d-flex gap-2 justify-content-end">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancelar</a>
+        <button type="submit" name="acao" value="rascunho" class="btn btn-outline-primary">
+          <i class="bi bi-floppy me-1"></i>Salvar Rascunho
+        </button>
+        <button type="submit" name="acao" value="enviar" class="btn btn-primary">
+          <i class="bi bi-send me-1"></i>Enviar para Aprovação
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

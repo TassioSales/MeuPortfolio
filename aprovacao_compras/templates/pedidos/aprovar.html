@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block title %}Analisar Pedido #{{ pedido.numero_pedido|stringformat:"04d" }} — CompraBio{% endblock %}
+{% block topbar_title %}Análise de Pedido #{{ pedido.numero_pedido|stringformat:"04d" }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-check2-circle me-2 text-primary"></i>Análise de Pedido</h1>
+  <p>#{{ pedido.numero_pedido|stringformat:"04d" }} — {{ pedido.titulo }}</p>
+</div>
+
+<div class="row g-3 justify-content-center">
+  <!-- Resumo -->
+  <div class="col-lg-5">
+    <div class="table-card p-4 mb-3">
+      <h6 class="field-label mb-3">Detalhes do Pedido</h6>
+      <div class="mb-3">
+        <div class="field-label">Solicitante</div>
+        <div class="field-val">{{ pedido.solicitante.get_full_name|default:pedido.solicitante.username }}</div>
+      </div>
+      <div class="mb-3">
+        <div class="field-label">Enviado em</div>
+        <div class="field-val">{{ pedido.data_envio|date:"d/m/Y H:i" }}</div>
+      </div>
+      <div class="mb-3">
+        <div class="field-label">Título</div>
+        <div class="field-val fw-semibold">{{ pedido.titulo }}</div>
+      </div>
+      <div>
+        <div class="field-label">Descrição / Justificativa</div>
+        <div style="font-size:14px;color:var(--text-dark);line-height:1.7;
+                    white-space:pre-wrap;background:var(--bg);border-radius:8px;padding:12px;margin-top:6px;">{{ pedido.descricao }}</div>
+      </div>
+    </div>
+
+    {% if pedido.anexos.all %}
+    <div class="table-card p-4">
+      <h6 class="field-label mb-3">Anexos</h6>
+      {% for anexo in pedido.anexos.all %}
+      <div class="d-flex align-items-center justify-content-between py-2"
+           style="border-bottom:1px solid var(--border);">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-file-earmark-excel-fill" style="color:var(--green-dark);font-size:16px;"></i>
+          <span style="font-size:14px;">{{ anexo.nome_arquivo }}</span>
+        </div>
+        <a href="{% url 'download_anexo' pedido.pk anexo.pk %}" class="btn btn-sm btn-outline-primary py-0 px-2">
+          <i class="bi bi-download"></i>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Decisão -->
+  <div class="col-lg-5">
+    <form method="post" id="formDecisao">
+      {% csrf_token %}
+      <div class="table-card p-4 mb-3">
+        <h6 class="field-label mb-3">Sua Decisão</h6>
+
+        <!-- 1. APROVAR -->
+        <div class="decisao-card mb-2" id="card-aprovar" onclick="selectDecisao('aprovar')"
+             style="border:2px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .15s;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="dec-icon" style="background:#eefbd2;">
+              <i class="bi bi-check-lg" style="color:#2d5a00;"></i>
+            </div>
+            <div class="flex-grow-1">
+              <div style="font-weight:700;font-size:14px;color:#2d5a00;">Aprovar</div>
+              <div style="font-size:12px;color:var(--text-muted);">Autorizar a compra conforme solicitado</div>
+            </div>
+            <input type="radio" name="decisao" value="aprovar" id="r-aprovar" class="d-none">
+          </div>
+          <div id="campo-comentario" style="display:none;margin-top:14px;">
+            <label class="field-label">Comentário <span class="fw-normal">(opcional)</span></label>
+            <textarea name="comentario" class="form-control mt-1" rows="2"
+              style="font-size:13px;border-color:var(--border);border-radius:8px;"
+              placeholder="Observação para o solicitante..."></textarea>
+          </div>
+        </div>
+
+        <!-- 2. SOLICITAR CORREÇÃO -->
+        <div class="decisao-card mb-2" id="card-correcao" onclick="selectDecisao('correcao')"
+             style="border:2px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .15s;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="dec-icon" style="background:#f5eaf2;">
+              <i class="bi bi-pencil-square" style="color:#5d1a4a;"></i>
+            </div>
+            <div class="flex-grow-1">
+              <div style="font-weight:700;font-size:14px;color:#5d1a4a;">Solicitar Correção</div>
+              <div style="font-size:12px;color:var(--text-muted);">Devolver para o comprador ajustar e reenviar</div>
+            </div>
+            <input type="radio" name="decisao" value="correcao" id="r-correcao" class="d-none">
+          </div>
+          <div id="campo-correcao" style="display:none;margin-top:14px;">
+            <label class="field-label">O que precisa ser corrigido <span class="text-danger">*</span></label>
+            <textarea name="motivo_correcao" id="motivo-correcao" class="form-control mt-1" rows="3"
+              style="font-size:13px;border-color:var(--border);border-radius:8px;"
+              placeholder="Descreva o que o comprador precisa ajustar para reenviar o pedido..."></textarea>
+            <div class="form-text mt-1" style="font-size:11px;color:var(--text-muted);">
+              <i class="bi bi-info-circle me-1"></i>O comprador verá essa mensagem e poderá editar e reenviar o pedido.
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. REPROVAR -->
+        <div class="decisao-card" id="card-reprovar" onclick="selectDecisao('reprovar')"
+             style="border:2px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .15s;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="dec-icon" style="background:#fff0eb;">
+              <i class="bi bi-x-lg" style="color:#8c2000;"></i>
+            </div>
+            <div class="flex-grow-1">
+              <div style="font-weight:700;font-size:14px;color:#8c2000;">Reprovar Definitivamente</div>
+              <div style="font-size:12px;color:var(--text-muted);">Recusar o pedido — comprador não poderá editá-lo</div>
+            </div>
+            <input type="radio" name="decisao" value="reprovar" id="r-reprovar" class="d-none">
+          </div>
+          <div id="campo-reprovacao" style="display:none;margin-top:14px;">
+            <label class="field-label">Motivo da Reprovação <span class="text-danger">*</span></label>
+            <textarea name="motivo_reprovacao" id="motivo-reprovacao" class="form-control mt-1" rows="3"
+              style="font-size:13px;border-color:var(--border);border-radius:8px;"
+              placeholder="Informe o motivo da reprovação definitiva..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 justify-content-between">
+        <a href="{% url 'detalhe_pedido' pedido.pk %}" class="btn btn-outline-secondary">Voltar</a>
+        <button type="submit" id="btn-confirmar" disabled
+                class="btn btn-secondary fw-semibold" style="min-width:200px;">
+          Selecione uma opção
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .field-label { font-size:11px; text-transform:uppercase; letter-spacing:.05em; font-weight:700; color:var(--text-muted); }
+  .field-val { font-size:14px; color:var(--text-dark); }
+  .dec-icon { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  let decisaoAtual = null;
+
+  const configs = {
+    aprovar: {
+      borderColor: '#B5D840', bg: '#f6fde8',
+      campos: ['campo-comentario'],
+      btnStyle: 'background:#00502A;border-color:#00502A;color:#fff;',
+      btnText: '<i class="bi bi-check-circle me-1"></i>Confirmar Aprovação',
+    },
+    correcao: {
+      borderColor: '#893d74', bg: '#fdf5fb',
+      campos: ['campo-correcao'],
+      btnStyle: 'background:#893d74;border-color:#893d74;color:#fff;',
+      btnText: '<i class="bi bi-pencil-square me-1"></i>Solicitar Correção',
+    },
+    reprovar: {
+      borderColor: '#FC6A43', bg: '#fff5f0',
+      campos: ['campo-reprovacao'],
+      btnStyle: 'background:#FC6A43;border-color:#FC6A43;color:#fff;',
+      btnText: '<i class="bi bi-x-circle me-1"></i>Reprovar Definitivamente',
+    },
+  };
+
+  const allCampos = ['campo-comentario', 'campo-correcao', 'campo-reprovacao'];
+  const allCards  = ['card-aprovar', 'card-correcao', 'card-reprovar'];
+
+  function selectDecisao(val) {
+    decisaoAtual = val;
+    document.getElementById('r-' + val).checked = true;
+
+    const cfg = configs[val];
+
+    // Reset all cards
+    allCards.forEach(id => {
+      const el = document.getElementById(id);
+      el.style.borderColor = 'var(--border)';
+      el.style.background  = '';
+    });
+    allCampos.forEach(id => document.getElementById(id).style.display = 'none');
+
+    // Activate selected
+    document.getElementById('card-' + val).style.borderColor = cfg.borderColor;
+    document.getElementById('card-' + val).style.background  = cfg.bg;
+    cfg.campos.forEach(id => document.getElementById(id).style.display = '');
+
+    // Update button
+    const btn = document.getElementById('btn-confirmar');
+    btn.disabled = false;
+    btn.removeAttribute('class');
+    btn.className = 'btn fw-semibold';
+    btn.style.cssText = 'min-width:200px;' + cfg.btnStyle;
+    btn.innerHTML = cfg.btnText;
+  }
+
+  document.getElementById('formDecisao').addEventListener('submit', function(e) {
+    if (!decisaoAtual) { e.preventDefault(); return; }
+    const fieldMap = { correcao: 'motivo-correcao', reprovar: 'motivo-reprovacao' };
+    const fieldId = fieldMap[decisaoAtual];
+    if (fieldId) {
+      const ta = document.getElementById(fieldId);
+      if (!ta || !ta.value.trim()) {
+        e.preventDefault();
+        if (ta) { ta.style.borderColor = '#FC6A43'; ta.focus(); }
+      }
+    }
+  });
+</script>
+{% endblock %}

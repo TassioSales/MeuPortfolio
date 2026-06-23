@@ -15,4 +15,5 @@ src/fuel_analytics.egg-info/dependency_links.txt
 src/fuel_analytics.egg-info/requires.txt
 src/fuel_analytics.egg-info/top_level.txt
 src/fuel_analytics/clients/anp.py
+src/fuel_analytics/clients/basedosdados_client.py
 tests/test_contracts.py

@@ -8,6 +8,7 @@ import polars as pl
 PRODUCT_MAP = {
     "GASOLINA": "gasolina",
     "GASOLINA C": "gasolina",
+    "GASOLINA COMUM": "gasolina",
     "GASOLINA ADITIVADA": "gasolina",
     "ETANOL": "etanol",
     "ETANOL HIDRATADO": "etanol",
@@ -18,6 +19,10 @@ PRODUCT_MAP = {
     "ÓLEO DIESEL B S10": "diesel",
     "GNV": "gnv",
     "GAS NATURAL VEICULAR": "gnv",
+    "GLP": "glp",
+    "GLP (13 KG)": "glp",
+    "GLP (45 KG)": "glp",
+    "GAS LIQUEFEITO DE PETROLEO": "glp",
 }
 
 
@@ -47,10 +52,11 @@ def normalize_frame(frame: pl.DataFrame) -> pl.DataFrame:
         "Regiao - Sigla": "region",
     }
     renamed = frame.rename({source: target for source, target in aliases.items() if source in frame.columns})
-    required = {"date", "state", "city", "product", "price"}
+    required = {"date", "state", "product", "price"}
     if not required.issubset(set(renamed.columns)):
         raise ValueError(f"Colunas obrigatorias ausentes: {sorted(required - set(renamed.columns))}")
     for column, default in {
+        "city": None,
         "price_buy": None,
         "unit": "R$/l",
         "brand": "Sem Bandeira",
@@ -71,20 +77,22 @@ def normalize_frame(frame: pl.DataFrame) -> pl.DataFrame:
             .otherwise(date_text.str.to_date(strict=False))
         )
 
-    price_expr = (
-        pl.col("price")
-        .cast(pl.Utf8)
-        .str.replace_all(r"\.", "")
-        .str.replace(",", ".")
-        .cast(pl.Float64, strict=False)
-    )
-    price_buy_expr = (
-        pl.col("price_buy")
-        .cast(pl.Utf8)
-        .str.replace_all(r"\.", "")
-        .str.replace(",", ".")
-        .cast(pl.Float64, strict=False)
-    )
+    def _parse_price(col_name: str) -> pl.Expr:
+        dtype = renamed.schema.get(col_name)
+        if dtype in {pl.Float32, pl.Float64, pl.Int32, pl.Int64}:
+            # já é numérico (vem do BigQuery) — cast direto sem parsing de string
+            return pl.col(col_name).cast(pl.Float64)
+        # formato ANP CSV: "5,89" ou "1.234,56" — remove separador de milhar, troca vírgula
+        return (
+            pl.col(col_name)
+            .cast(pl.Utf8)
+            .str.replace_all(r"\.", "")
+            .str.replace(",", ".")
+            .cast(pl.Float64, strict=False)
+        )
+
+    price_expr = _parse_price("price")
+    price_buy_expr = _parse_price("price_buy")
     normalized = renamed.with_columns(
         date_expr.alias("date"),
         pl.col("state").cast(pl.Utf8).str.to_uppercase().alias("state"),
@@ -96,7 +104,7 @@ def normalize_frame(frame: pl.DataFrame) -> pl.DataFrame:
         pl.col("brand").cast(pl.Utf8).fill_null("Sem Bandeira").alias("brand"),
         pl.col("region").cast(pl.Utf8).fill_null("NA").alias("region"),
     )
-    return normalized.drop_nulls(["date", "state", "city", "product", "price"])
+    return normalized.drop_nulls(["date", "state", "product", "price"])
 
 
 def enrich_with_external_features(frame: pl.DataFrame) -> pl.DataFrame:

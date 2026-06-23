@@ -50,7 +50,7 @@ func main() {
 	}
 
 	insights := service.NewInsightsService(cfg.MistralAPIKey, cfg.MistralModel)
-	router := apphttp.NewRouter(repo, insights)
+	router := apphttp.NewRouter(repo, insights, cfg.MistralModel)
 
 	log.Printf("fuel analytics api listening on :%s", cfg.Port)
 	if err := http.ListenAndServe(":"+cfg.Port, router); err != nil {

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Editar Pedido #{{ pedido.numero_pedido|stringformat:"04d" }} — CompraBio{% endblock %}
+{% block topbar_title %}Editar Pedido #{{ pedido.numero_pedido|stringformat:"04d" }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-pencil-square me-2" style="color:var(--orange);"></i>Revisar Pedido #{{ pedido.numero_pedido|stringformat:"04d" }}</h1>
+  <p>{{ pedido.titulo }}</p>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+
+    {% if pedido.status == 'reprovado' %}
+    <!-- Destaque do motivo de reprovação -->
+    <div class="mb-4 p-4" style="background:#fff5f0;border:1.5px solid #FC6A43;border-radius:12px;">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <i class="bi bi-x-circle-fill" style="color:#FC6A43;font-size:18px;"></i>
+        <strong style="color:#8c2000;font-size:14px;">Motivo da Reprovação</strong>
+        <span class="ms-auto badge" style="background:#fee2d0;color:#8c2000;font-size:11px;border-radius:6px;padding:4px 10px;">
+          por {{ pedido.aprovador.get_full_name|default:pedido.aprovador.username }}
+          em {{ pedido.data_aprovacao|date:"d/m/Y" }}
+        </span>
+      </div>
+      <p style="color:#8c2000;font-size:14px;margin:0;line-height:1.6;">{{ pedido.motivo_reprovacao }}</p>
+      <div class="mt-3 pt-3" style="border-top:1px solid #fca58a;">
+        <p style="font-size:13px;color:#6d3a2a;margin:0;">
+          <i class="bi bi-lightbulb me-1" style="color:var(--orange);"></i>
+          Revise as informações abaixo conforme o motivo acima e reenvie o pedido.
+          Você também pode criar um novo pedido se preferir.
+        </p>
+      </div>
+    </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="table-card p-4 mb-3">
+        <h6 class="mb-3" style="font-weight:700;font-size:14px;color:var(--text-dark);">Informações do Pedido</h6>
+        <div class="mb-3">
+          <label class="form-label" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);">
+            Título <span class="text-danger">*</span>
+          </label>
+          <input type="text" name="titulo" class="form-control" maxlength="200" required
+            value="{{ pedido.titulo }}"
+            style="border-color:var(--border);border-radius:8px;">
+        </div>
+        <div class="mb-0">
+          <label class="form-label" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);">
+            Descrição / Justificativa <span class="text-danger">*</span>
+          </label>
+          <textarea name="descricao" class="form-control" rows="6" required
+            style="border-color:var(--border);border-radius:8px;">{{ pedido.descricao }}</textarea>
+        </div>
+      </div>
+
+      <!-- Anexos existentes -->
+      {% if pedido.anexos.all %}
+      <div class="table-card p-4 mb-3">
+        <h6 class="mb-3" style="font-weight:700;font-size:14px;color:var(--text-dark);">Anexos Atuais</h6>
+        {% for anexo in pedido.anexos.all %}
+        <div class="d-flex align-items-center justify-content-between py-2"
+             style="border-bottom:1px solid var(--border);">
+          <div class="d-flex align-items-center gap-2">
+            <input type="checkbox" name="remover_anexo" value="{{ anexo.pk }}" id="rm_{{ anexo.pk }}"
+                   class="form-check-input mt-0">
+            <label for="rm_{{ anexo.pk }}" class="d-flex align-items-center gap-2 mb-0" style="cursor:pointer;">
+              <i class="bi bi-file-earmark-excel" style="color:var(--green-dark);font-size:16px;"></i>
+              <span style="font-size:14px;">{{ anexo.nome_arquivo }}</span>
+            </label>
+          </div>
+          <span class="text-muted" style="font-size:12px;">{{ anexo.data_upload|date:"d/m/Y" }}</span>
+        </div>
+        {% endfor %}
+        <p class="text-muted mt-2 mb-0" style="font-size:12px;">
+          <i class="bi bi-info-circle me-1"></i>Marque os arquivos que deseja remover.
+        </p>
+      </div>
+      {% endif %}
+
+      <!-- Adicionar novos anexos -->
+      <div class="table-card p-4 mb-4">
+        <h6 class="mb-1" style="font-weight:700;font-size:14px;color:var(--text-dark);">
+          Adicionar Anexos <span class="fw-normal text-muted">(opcional)</span>
+        </h6>
+        <p class="text-muted mb-3" style="font-size:13px;">Somente <strong>.xlsx</strong> e <strong>.xls</strong>.</p>
+        <input type="file" name="anexos" class="form-control" multiple accept=".xlsx,.xls"
+               style="border-color:var(--border);border-radius:8px;">
+      </div>
+
+      <div class="d-flex gap-2 justify-content-between flex-wrap">
+        <div class="d-flex gap-2">
+          <a href="{% url 'detalhe_pedido' pedido.pk %}" class="btn btn-outline-secondary">Cancelar</a>
+          {% if pedido.status == 'reprovado' %}
+          <a href="{% url 'criar_pedido' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-plus-circle me-1"></i>Criar Novo Pedido
+          </a>
+          {% endif %}
+        </div>
+        <div class="d-flex gap-2">
+          <button type="submit" name="acao" value="rascunho" class="btn btn-outline-primary">
+            <i class="bi bi-floppy me-1"></i>Salvar Rascunho
+          </button>
+          <button type="submit" name="acao" value="enviar" class="btn btn-primary">
+            <i class="bi bi-send me-1"></i>
+            {% if pedido.status == 'reprovado' %}Reenviar para Aprovação{% else %}Enviar para Aprovação{% endif %}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

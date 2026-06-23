@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 import { FuelName } from "@/lib/types";
 
@@ -35,3 +36,24 @@ export const useDashboardStore = create<DashboardState>((set) => ({
   setCompareWith: (compareWith) => set({ compareWith }),
   setDateRange: (startDate, endDate) => set({ startDate, endDate }),
 }));
+
+interface SettingsState {
+  mistralKey: string;
+  mistralModel: string;
+  setMistralKey: (key: string) => void;
+  setMistralModel: (model: string) => void;
+  clearKey: () => void;
+}
+
+export const useSettingsStore = create<SettingsState>()(
+  persist(
+    (set) => ({
+      mistralKey: "",
+      mistralModel: "mistral-small-latest",
+      setMistralKey: (mistralKey) => set({ mistralKey }),
+      setMistralModel: (mistralModel) => set({ mistralModel }),
+      clearKey: () => set({ mistralKey: "" }),
+    }),
+    { name: "fuel-settings" },
+  ),
+);

@@ -45,12 +45,39 @@
             value="{{ pedido.titulo }}"
             style="border-color:var(--border);border-radius:8px;">
         </div>
-        <div class="mb-0">
+        <div class="mb-3">
           <label class="form-label" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);">
             Descrição / Justificativa <span class="text-danger">*</span>
           </label>
           <textarea name="descricao" class="form-control" rows="6" required
             style="border-color:var(--border);border-radius:8px;">{{ pedido.descricao }}</textarea>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-5">
+            <label class="form-label" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);">Categoria</label>
+            <select name="categoria" class="form-select" style="border-color:var(--border);border-radius:8px;">
+              <option value="">— Selecione —</option>
+              {% for cat in categorias %}
+              <option value="{{ cat.pk }}" {% if pedido.categoria_id == cat.pk %}selected{% endif %}>{{ cat.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);">Valor Estimado (R$)</label>
+            <div style="position:relative;">
+              <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;color:#5a7a6e;font-weight:600;">R$</span>
+              <input type="number" name="valor_estimado" class="form-control" step="0.01" min="0"
+                placeholder="0,00" style="padding-left:36px;border-color:var(--border);border-radius:8px;"
+                value="{{ pedido.valor_estimado|default:'' }}">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);">Prazo Necessário</label>
+            <input type="date" name="prazo_necessario" class="form-control"
+              style="border-color:var(--border);border-radius:8px;"
+              value="{{ pedido.prazo_necessario|date:'Y-m-d'|default:'' }}">
+          </div>
         </div>
       </div>
 

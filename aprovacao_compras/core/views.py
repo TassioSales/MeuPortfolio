@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.db.models import Count, Q
 from django.utils import timezone
 from datetime import timedelta
-from pedidos.models import Pedido
+from pedidos.models import Pedido, Categoria
 
 
 def registro_view(request):
@@ -141,8 +141,12 @@ def login_view(request):
 
 @login_required
 def dashboard(request):
-    data_ini = request.GET.get("data_ini")
-    data_fim = request.GET.get("data_fim")
+    from pedidos.models import Pedido, Categoria as PedidoModel
+    data_ini  = request.GET.get("data_ini", "")
+    data_fim  = request.GET.get("data_fim", "")
+    filtro_status    = request.GET.get("status", "")
+    filtro_categoria = request.GET.get("categoria", "")
+    busca            = request.GET.get("q", "").strip()
 
     qs = Pedido.objects.exclude(status="rascunho")
     if request.user.is_comprador:
@@ -152,6 +156,12 @@ def dashboard(request):
         qs = qs.filter(data_criacao__date__gte=data_ini)
     if data_fim:
         qs = qs.filter(data_criacao__date__lte=data_fim)
+    if filtro_status:
+        qs = qs.filter(status=filtro_status)
+    if filtro_categoria:
+        qs = qs.filter(categoria_id=filtro_categoria)
+    if busca:
+        qs = qs.filter(Q(titulo__icontains=busca) | Q(descricao__icontains=busca))
 
     totais = qs.aggregate(
         total=Count("id"),
@@ -174,8 +184,13 @@ def dashboard(request):
         "totais": totais,
         "pedidos": pedidos,
         "meses": meses,
-        "data_ini": data_ini or "",
-        "data_fim": data_fim or "",
+        "data_ini": data_ini,
+        "data_fim": data_fim,
+        "filtro_status": filtro_status,
+        "filtro_categoria": filtro_categoria,
+        "busca": busca,
+        "status_choices": PedidoModel.STATUS_CHOICES,
+        "categorias": Categoria.objects.filter(ativa=True),
     })
 
 
@@ -213,3 +228,52 @@ def admin_dashboard(request):
         "totais_agg": totais,
         "meses": meses,
     })
+
+
+@login_required
+def gerenciar_categorias(request):
+    if not (request.user.is_admin_perfil or request.user.is_superuser):
+        messages.error(request, "Acesso restrito ao administrador.")
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        cat_id = request.POST.get("cat_id")
+
+        if action == "criar":
+            nome = request.POST.get("nome", "").strip()
+            if not nome:
+                messages.error(request, "Informe o nome da categoria.")
+            elif Categoria.objects.filter(nome__iexact=nome).exists():
+                messages.error(request, f"Já existe uma categoria com o nome '{nome}'.")
+            else:
+                ordem = Categoria.objects.count()
+                Categoria.objects.create(nome=nome, ordem=ordem)
+                messages.success(request, f"Categoria '{nome}' criada.")
+
+        elif action == "salvar" and cat_id:
+            cat = get_object_or_404(Categoria, pk=cat_id)
+            nome = request.POST.get("nome", "").strip()
+            ativa = request.POST.get("ativa") == "1"
+            if not nome:
+                messages.error(request, "O nome não pode ser vazio.")
+            elif Categoria.objects.filter(nome__iexact=nome).exclude(pk=cat_id).exists():
+                messages.error(request, f"Já existe outra categoria com o nome '{nome}'.")
+            else:
+                cat.nome = nome
+                cat.ativa = ativa
+                cat.save()
+                messages.success(request, f"Categoria '{cat.nome}' atualizada.")
+
+        elif action == "deletar" and cat_id:
+            cat = get_object_or_404(Categoria, pk=cat_id)
+            if cat.pedidos.exists():
+                messages.error(request, f"'{cat.nome}' possui pedidos vinculados e não pode ser excluída.")
+            else:
+                cat.delete()
+                messages.success(request, "Categoria excluída.")
+
+        return redirect("gerenciar_categorias")
+
+    categorias = Categoria.objects.annotate(total_pedidos=Count("pedidos")).order_by("ordem", "nome")
+    return render(request, "core/categorias.html", {"categorias": categorias})

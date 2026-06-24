@@ -113,6 +113,26 @@
           <div class="field-val">{{ pedido.solicitante.get_full_name|default:pedido.solicitante.username }}</div>
         </div>
         <div class="col-sm-6">
+          <div class="field-label">Categoria</div>
+          <div class="field-val">{{ pedido.categoria.nome|default:"—" }}</div>
+        </div>
+        <div class="col-sm-6">
+          <div class="field-label">Valor Estimado</div>
+          <div class="field-val">
+            {% if pedido.valor_estimado %}
+              <strong style="color:#00502A;">R$ {{ pedido.valor_estimado|floatformat:2 }}</strong>
+            {% else %}—{% endif %}
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="field-label">Prazo Necessário</div>
+          <div class="field-val">
+            {% if pedido.prazo_necessario %}
+              {{ pedido.prazo_necessario|date:"d/m/Y" }}
+            {% else %}—{% endif %}
+          </div>
+        </div>
+        <div class="col-sm-6">
           <div class="field-label">Data de Criação</div>
           <div class="field-val">{{ pedido.data_criacao|date:"d/m/Y H:i" }}</div>
         </div>

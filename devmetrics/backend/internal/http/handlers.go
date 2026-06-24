@@ -5,22 +5,39 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strings"
 	"sync"
+	"time"
 
 	"devmetrics/backend/internal/ai"
+	"devmetrics/backend/internal/cache"
 	githubclient "devmetrics/backend/internal/github"
 	"devmetrics/backend/internal/metrics"
 	"github.com/go-chi/chi/v5"
 )
 
+type cachedUserData struct {
+	user     *githubclient.User
+	repos    []githubclient.Repository
+	langData map[string]int
+}
+
 type Handlers struct {
-	github   *githubclient.Client
-	analyzer *metrics.Analyzer
-	insights *ai.InsightsService
+	github    *githubclient.Client
+	analyzer  *metrics.Analyzer
+	insights  *ai.InsightsService
+	userCache *cache.Cache
+	contCache *cache.Cache
 }
 
 func NewHandlers(gh *githubclient.Client, analyzer *metrics.Analyzer, ins *ai.InsightsService) *Handlers {
-	return &Handlers{github: gh, analyzer: analyzer, insights: ins}
+	return &Handlers{
+		github:    gh,
+		analyzer:  analyzer,
+		insights:  ins,
+		userCache: cache.New(5 * time.Minute),
+		contCache: cache.New(10 * time.Minute),
+	}
 }
 
 func writeJSON(w http.ResponseWriter, status int, v interface{}) {
@@ -38,6 +55,12 @@ func (h *Handlers) Health(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) fetchUserData(username string) (*githubclient.User, []githubclient.Repository, map[string]int, error) {
+	key := strings.ToLower(username)
+	if cached, ok := h.userCache.Get(key); ok {
+		d := cached.(*cachedUserData)
+		return d.user, d.repos, d.langData, nil
+	}
+
 	var (
 		user    *githubclient.User
 		repos   []githubclient.Repository
@@ -64,21 +87,21 @@ func (h *Handlers) fetchUserData(username string) (*githubclient.User, []githubc
 		return nil, nil, nil, repoErr
 	}
 
-	// Aggregate languages from top repos (limit to avoid rate limiting)
+	// Fetch languages from top-starred repos for representative results
+	topRepos := githubclient.TopReposByStars(repos, 30)
 	var langMaps []map[string]int
-	limit := len(repos)
-	if limit > 20 {
-		limit = 20
-	}
 	var langMu sync.Mutex
 	var langWg sync.WaitGroup
-	for _, repo := range repos[:limit] {
+	sem := make(chan struct{}, 10) // max 10 concurrent language requests
+	for _, repo := range topRepos {
 		langWg.Add(1)
 		go func(r githubclient.Repository) {
 			defer langWg.Done()
+			sem <- struct{}{}
+			defer func() { <-sem }()
 			lm, err := h.github.GetRepoLanguages(username, r.Name)
 			if err != nil {
-				log.Printf("failed to get languages for %s: %v", r.Name, err)
+				log.Printf("languages %s: %v", r.Name, err)
 				return
 			}
 			langMu.Lock()
@@ -89,6 +112,9 @@ func (h *Handlers) fetchUserData(username string) (*githubclient.User, []githubc
 	langWg.Wait()
 
 	aggregated := metrics.AggregateLanguages(langMaps)
+
+	d := &cachedUserData{user: user, repos: repos, langData: aggregated}
+	h.userCache.Set(key, d)
 	return user, repos, aggregated, nil
 }
 
@@ -110,16 +136,14 @@ func (h *Handlers) githubErrStatus(err error) int {
 func (h *Handlers) GetUserMetrics(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
 	if username == "" {
-		writeError(w, http.StatusBadRequest, "username is required")
+		writeError(w, http.StatusBadRequest, "username é obrigatório")
 		return
 	}
-
 	user, repos, langData, err := h.fetchUserData(username)
 	if err != nil {
 		writeError(w, h.githubErrStatus(err), err.Error())
 		return
 	}
-
 	m := h.analyzer.Compute(repos, langData)
 	writeJSON(w, http.StatusOK, userMetricsResponse{User: user, Metrics: m})
 }
@@ -127,16 +151,14 @@ func (h *Handlers) GetUserMetrics(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) GetLanguages(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
 	if username == "" {
-		writeError(w, http.StatusBadRequest, "username is required")
+		writeError(w, http.StatusBadRequest, "username é obrigatório")
 		return
 	}
-
 	_, repos, langData, err := h.fetchUserData(username)
 	if err != nil {
 		writeError(w, h.githubErrStatus(err), err.Error())
 		return
 	}
-
 	m := h.analyzer.Compute(repos, langData)
 	writeJSON(w, http.StatusOK, map[string]interface{}{"languages": m.Languages})
 }
@@ -144,21 +166,55 @@ func (h *Handlers) GetLanguages(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) GetInsights(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
 	if username == "" {
-		writeError(w, http.StatusBadRequest, "username is required")
+		writeError(w, http.StatusBadRequest, "username é obrigatório")
 		return
 	}
-
 	_, repos, langData, err := h.fetchUserData(username)
 	if err != nil {
 		writeError(w, h.githubErrStatus(err), err.Error())
 		return
 	}
-
 	m := h.analyzer.Compute(repos, langData)
-	insights, err := h.insights.GenerateInsights(username, m)
+	keyOverride := r.Header.Get("X-Mistral-Key")
+	insights, err := h.insights.GenerateInsightsWithKey(username, m, keyOverride)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]interface{}{"insights": insights})
+}
+
+func (h *Handlers) GetContributions(w http.ResponseWriter, r *http.Request) {
+	username := chi.URLParam(r, "username")
+	if username == "" {
+		writeError(w, http.StatusBadRequest, "username é obrigatório")
+		return
+	}
+
+	key := strings.ToLower(username)
+	if cached, ok := h.contCache.Get(key); ok {
+		writeJSON(w, http.StatusOK, cached)
+		return
+	}
+
+	cal, err := h.github.GetContributions(username)
+	if errors.Is(err, githubclient.ErrNoToken) {
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"total_contributions": 0,
+			"weeks":               []interface{}{},
+			"error":               "GITHUB_TOKEN necessário para acessar dados de contribuição",
+		})
+		return
+	}
+	if err != nil {
+		writeError(w, http.StatusBadGateway, err.Error())
+		return
+	}
+
+	result := map[string]interface{}{
+		"total_contributions": cal.TotalContributions,
+		"weeks":               cal.Weeks,
+	}
+	h.contCache.Set(key, result)
+	writeJSON(w, http.StatusOK, result)
 }

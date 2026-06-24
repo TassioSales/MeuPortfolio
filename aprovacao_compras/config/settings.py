@@ -8,7 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-6qvw@*&cy7=t1cm0m_1qmb%7aa^52s($3nh&$c_kckzr!n&_e(")
 DEBUG = os.getenv("DEBUG", "True") == "True"
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["comprabio.local", "localhost", "127.0.0.1"]
+SITE_URL = os.getenv("SITE_URL", "http://127.0.0.1:8000")
 
 INSTALLED_APPS = [
     "django.contrib.admin",

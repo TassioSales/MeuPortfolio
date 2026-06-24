@@ -1,8 +1,41 @@
+# Secrets
 .env
-*.db
-__pycache__/
+*.env.local
+
+# Go
+vendor/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/backend/api
+/backend/devmetrics
+
+# Node / Next.js
 node_modules/
 .next/
+out/
 dist/
+.npm
+*.tsbuildinfo
+
+# Logs
 *.log
-vendor/
+logs/
+
+# Database
+*.db
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo

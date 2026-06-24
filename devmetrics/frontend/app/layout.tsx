@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'DevMetrics — GitHub Analytics Dashboard',
-  description: 'Analyze GitHub profiles with AI-powered insights',
+  title: 'DevMetrics — Analytics GitHub com IA',
+  description: 'Analise perfis do GitHub com insights gerados por Inteligência Artificial',
 }
 
 export default function RootLayout({
@@ -12,10 +12,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-[#0d1117] text-[#e6edf3]">
-        {children}
-      </body>
+    <html lang="pt-BR">
+      <body>{children}</body>
     </html>
   )
 }

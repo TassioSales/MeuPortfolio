@@ -41,19 +41,27 @@ func NewInsightsService(apiKey string) *InsightsService {
 }
 
 func (s *InsightsService) GenerateInsights(username string, m *metrics.Metrics) ([]string, error) {
-	if s.apiKey == "" {
-		return []string{"Configure MISTRAL_API_KEY to enable AI insights."}, nil
+	return s.GenerateInsightsWithKey(username, m, "")
+}
+
+func (s *InsightsService) GenerateInsightsWithKey(username string, m *metrics.Metrics, keyOverride string) ([]string, error) {
+	key := keyOverride
+	if key == "" {
+		key = s.apiKey
+	}
+	if key == "" {
+		return []string{"Configure sua chave da Mistral AI para gerar insights sobre este perfil."}, nil
 	}
 
-	prompt := fmt.Sprintf(`Analyze this GitHub developer profile and provide 4-5 concise, actionable insights in English.
-Focus on strengths, patterns, and suggestions.
+	prompt := fmt.Sprintf(`Analise este perfil de desenvolvedor no GitHub e forneça de 4 a 5 insights concisos e acionáveis em português do Brasil.
+Foque em pontos fortes, padrões observados e sugestões de melhoria.
 
-Developer: %s
-Public Repos: %d
-Total Stars: %d
-Total Forks: %d
-Most Used Language: %s
-Top Languages: `, username, m.TotalRepos, m.TotalStars, m.TotalForks, m.MostUsedLang)
+Desenvolvedor: %s
+Repositórios públicos: %d
+Total de estrelas: %d
+Total de forks: %d
+Linguagem mais usada: %s
+Top linguagens: `, username, m.TotalRepos, m.TotalStars, m.TotalForks, m.MostUsedLang)
 
 	for i, lang := range m.Languages {
 		if i > 0 {
@@ -65,7 +73,7 @@ Top Languages: `, username, m.TotalRepos, m.TotalStars, m.TotalForks, m.MostUsed
 		prompt += fmt.Sprintf("%s (%.1f%%)", lang.Language, lang.Percentage)
 	}
 
-	prompt += "\n\nReturn ONLY a JSON array of strings, each string being one insight bullet point. Example: [\"insight 1\", \"insight 2\"]"
+	prompt += "\n\nRetorne APENAS um array JSON de strings, cada string sendo um insight. Responda somente em português do Brasil. Exemplo: [\"insight 1\", \"insight 2\"]"
 
 	reqBody := mistralRequest{
 		Model: "mistral-small-latest",
@@ -84,7 +92,7 @@ Top Languages: `, username, m.TotalRepos, m.TotalStars, m.TotalForks, m.MostUsed
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+s.apiKey)
+	req.Header.Set("Authorization", "Bearer "+key)
 
 	resp, err := s.httpClient.Do(req)
 	if err != nil {
@@ -93,7 +101,7 @@ Top Languages: `, username, m.TotalRepos, m.TotalStars, m.TotalForks, m.MostUsed
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("mistral API returned status %d", resp.StatusCode)
+		return nil, fmt.Errorf("mistral API retornou status %d", resp.StatusCode)
 	}
 
 	var mistralResp mistralResponse
@@ -102,13 +110,12 @@ Top Languages: `, username, m.TotalRepos, m.TotalStars, m.TotalForks, m.MostUsed
 	}
 
 	if len(mistralResp.Choices) == 0 {
-		return nil, fmt.Errorf("no choices returned from Mistral")
+		return nil, fmt.Errorf("nenhuma resposta retornada pela Mistral")
 	}
 
 	content := mistralResp.Choices[0].Message.Content
 	var insights []string
 	if err := json.Unmarshal([]byte(content), &insights); err != nil {
-		// fallback: return raw content as single item
 		return []string{content}, nil
 	}
 	return insights, nil

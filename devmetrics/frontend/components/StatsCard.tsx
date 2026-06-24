@@ -6,24 +6,51 @@ interface StatsCardProps {
   icon: IconType
   label: string
   value: number | string
+  delay?: number
 }
 
-const icons: Record<IconType, React.ReactNode> = {
-  repo: <BookOpen className="w-5 h-5 text-[#388bfd]" />,
-  star: <Star className="w-5 h-5 text-[#e3b341]" />,
-  fork: <GitFork className="w-5 h-5 text-[#3fb950]" />,
-  lang: <Code2 className="w-5 h-5 text-[#a371f7]" />,
+const config: Record<IconType, { icon: React.ReactNode; color: string; bg: string }> = {
+  repo: {
+    icon: <BookOpen className="w-5 h-5" />,
+    color: '#388bfd',
+    bg: 'rgba(56,139,253,0.12)',
+  },
+  star: {
+    icon: <Star className="w-5 h-5" />,
+    color: '#e3b341',
+    bg: 'rgba(227,179,65,0.12)',
+  },
+  fork: {
+    icon: <GitFork className="w-5 h-5" />,
+    color: '#3fb950',
+    bg: 'rgba(63,185,80,0.12)',
+  },
+  lang: {
+    icon: <Code2 className="w-5 h-5" />,
+    color: '#a371f7',
+    bg: 'rgba(163,113,247,0.12)',
+  },
 }
 
-export default function StatsCard({ icon, label, value }: StatsCardProps) {
+export default function StatsCard({ icon, label, value, delay = 0 }: StatsCardProps) {
+  const { icon: iconEl, color, bg } = config[icon]
+
   return (
-    <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-4">
-      <div className="flex items-center gap-2 mb-2">
-        {icons[icon]}
-        <span className="text-xs text-[#8b949e] font-medium uppercase tracking-wide">{label}</span>
+    <div
+      className="card card-accent p-5 animate-fade-in"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+        style={{ background: bg, color }}
+      >
+        {iconEl}
       </div>
-      <div className="text-2xl font-bold text-white">
-        {typeof value === 'number' ? value.toLocaleString() : value}
+      <div className="text-[26px] font-bold mb-1" style={{ color: 'var(--text)' }}>
+        {typeof value === 'number' ? value.toLocaleString('pt-BR') : value}
+      </div>
+      <div className="text-[12px] font-medium uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+        {label}
       </div>
     </div>
   )

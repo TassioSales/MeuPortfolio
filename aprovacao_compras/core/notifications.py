@@ -69,10 +69,16 @@ def _wrap(conteudo: str, cor_header: str = "#00502A") -> str:
 </body></html>"""
 
 
-def _botao(texto: str, cor: str = "#00502A") -> str:
+def _url_pedido(pedido) -> str:
+    from django.conf import settings
+    base = getattr(settings, "SITE_URL", "http://127.0.0.1:8000").rstrip("/")
+    return f"{base}/pedidos/{pedido.pk}/"
+
+
+def _botao(texto: str, href: str = "#", cor: str = "#00502A") -> str:
     return f"""<div style="margin:24px 0 4px;">
-  <span style="background:{cor};color:#fff;padding:12px 28px;border-radius:8px;
-    font-weight:700;font-size:14px;display:inline-block;">{texto}</span>
+  <a href="{href}" style="background:{cor};color:#fff;padding:12px 28px;border-radius:8px;
+    font-weight:700;font-size:14px;display:inline-block;text-decoration:none;">{texto}</a>
 </div>"""
 
 
@@ -85,11 +91,21 @@ def _linha_info(label: str, valor: str) -> str:
 
 
 def _tabela_pedido(pedido, linhas_extras: list = None) -> str:
+    valor_str = ""
+    if pedido.valor_estimado:
+        v = float(pedido.valor_estimado)
+        valor_str = f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
     rows = [
-        _linha_info("Nº Pedido", f"#{pedido.numero_pedido:04d}"),
-        _linha_info("Título", f"<strong>{pedido.titulo}</strong>"),
+        _linha_info("Nº Pedido",  f"#{pedido.numero_pedido:04d}"),
+        _linha_info("Título",     f"<strong>{pedido.titulo}</strong>"),
         _linha_info("Solicitante", pedido.solicitante.get_full_name() or pedido.solicitante.username),
+        _linha_info("Categoria",   pedido.categoria.nome if pedido.categoria else "—"),
     ]
+    if valor_str:
+        rows.append(_linha_info("Valor Estimado", f"<strong style='color:#00502A;'>{valor_str}</strong>"))
+    if pedido.prazo_necessario:
+        rows.append(_linha_info("Prazo Necessário", pedido.prazo_necessario.strftime("%d/%m/%Y")))
     if linhas_extras:
         rows.extend(linhas_extras)
     return f"""<table cellpadding="0" cellspacing="0" width="100%"
@@ -122,7 +138,7 @@ def notificar_novo_pedido(pedido) -> None:
   <span style="line-height:1.6;">{pedido.descricao[:300]}{"..." if len(pedido.descricao) > 300 else ""}</span>
 </div>
 
-{_botao("→ Acessar o Sistema para Analisar", "#00502A")}
+{_botao("→ Acessar o Sistema para Analisar", _url_pedido(pedido), "#00502A")}
 """
     html = _wrap(conteudo, cor_header="#015350")
     texto = (
@@ -171,6 +187,8 @@ def notificar_pedido_aprovado(pedido, comentario: str = "") -> None:
 <p style="font-size:13px;color:#5a7a6e;margin-top:16px;">
   O processo está concluído. Em caso de dúvidas, entre em contato com o aprovador.
 </p>
+
+{_botao("→ Ver Pedido no Sistema", _url_pedido(pedido), "#00502A")}
 """
     html = _wrap(conteudo, cor_header="#00502A")
     texto = (
@@ -217,7 +235,7 @@ def notificar_correcao_solicitada(pedido, motivo: str) -> None:
   e reenvie para aprovação.
 </div>
 
-{_botao("→ Corrigir Pedido no Sistema", "#893d74")}
+{_botao("→ Corrigir Pedido no Sistema", _url_pedido(pedido), "#893d74")}
 """
     html = _wrap(conteudo, cor_header="#893d74")
     texto = (
@@ -265,6 +283,8 @@ def notificar_pedido_reprovado(pedido, motivo: str) -> None:
   Este pedido não pode ser editado. Se necessário, você pode abrir uma nova solicitação
   considerando o motivo informado acima.
 </p>
+
+{_botao("→ Ver Pedido no Sistema", _url_pedido(pedido), "#8c2000")}
 """
     html = _wrap(conteudo, cor_header="#8c2000")
     texto = (
@@ -305,7 +325,7 @@ def notificar_pedido_reenviado(pedido) -> None:
   e aguarda sua nova análise.
 </div>
 
-{_botao("→ Analisar Pedido Corrigido", "#015350")}
+{_botao("→ Analisar Pedido Corrigido", _url_pedido(pedido), "#015350")}
 """
     html = _wrap(conteudo, cor_header="#015350")
     texto = (

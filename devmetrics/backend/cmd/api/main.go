@@ -10,9 +10,15 @@ import (
 	githubclient "devmetrics/backend/internal/github"
 	internalhttp "devmetrics/backend/internal/http"
 	"devmetrics/backend/internal/metrics"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Tenta carregar .env da raiz do projeto (devmetrics/.env)
+	if err := godotenv.Load("../.env"); err != nil {
+		godotenv.Load(".env")
+	}
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

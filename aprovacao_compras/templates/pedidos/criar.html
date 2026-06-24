@@ -12,26 +12,79 @@
   <div class="col-lg-8">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
+
+      <!-- Informações principais -->
       <div class="table-card p-4 mb-3">
-        <h6 class="fw-600 mb-3" style="font-weight:600;color:#1e293b;">Informações do Pedido</h6>
+        <h6 style="font-weight:700;color:#0d2e1a;margin-bottom:18px;">
+          <i class="bi bi-file-text me-2 text-primary"></i>Informações do Pedido
+        </h6>
+
         <div class="mb-3">
-          <label class="form-label fw-semibold" style="font-size:13px;">Título <span class="text-danger">*</span></label>
-          <input type="text" name="titulo" class="form-control" placeholder="Ex.: Compra de equipamentos de escritório"
+          <label class="form-label fw-semibold" style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#5a7a6e;">
+            Título <span class="text-danger">*</span>
+          </label>
+          <input type="text" name="titulo" class="form-control"
+            placeholder="Ex.: Compra de equipamentos de escritório"
             value="{{ form_data.titulo|default:'' }}" maxlength="200" required>
         </div>
+
         <div class="mb-3">
-          <label class="form-label fw-semibold" style="font-size:13px;">Descrição / Justificativa <span class="text-danger">*</span></label>
+          <label class="form-label fw-semibold" style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#5a7a6e;">
+            Descrição / Justificativa <span class="text-danger">*</span>
+          </label>
           <textarea name="descricao" class="form-control" rows="5"
             placeholder="Descreva o que será adquirido, a necessidade, fornecedores considerados, etc."
             required>{{ form_data.descricao|default:'' }}</textarea>
         </div>
+
+        <!-- Categoria + Valor + Prazo -->
+        <div class="row g-3 mt-1">
+          <div class="col-md-5">
+            <label class="form-label fw-semibold" style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#5a7a6e;">
+              Categoria <span class="text-danger">*</span>
+            </label>
+            <select name="categoria" class="form-select">
+              <option value="">— Selecione —</option>
+              {% for cat in categorias %}
+              <option value="{{ cat.pk }}" {% if form_data.categoria == cat.pk|stringformat:"i" %}selected{% endif %}>{{ cat.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold" style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#5a7a6e;">
+              Valor Estimado (R$)
+            </label>
+            <div style="position:relative;">
+              <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);
+                           font-size:13px;color:#5a7a6e;font-weight:600;">R$</span>
+              <input type="number" name="valor_estimado" class="form-control" step="0.01" min="0"
+                placeholder="0,00" style="padding-left:36px;"
+                value="{{ form_data.valor_estimado|default:'' }}">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold" style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#5a7a6e;">
+              Prazo Necessário
+            </label>
+            <input type="date" name="prazo_necessario" class="form-control"
+              value="{{ form_data.prazo_necessario|default:'' }}">
+          </div>
+        </div>
       </div>
 
+      <!-- Anexos -->
       <div class="table-card p-4 mb-4">
-        <h6 class="fw-600 mb-1" style="font-weight:600;color:#1e293b;">Anexos <span class="text-muted fw-normal">(opcional)</span></h6>
-        <p class="text-muted mb-3" style="font-size:13px;">Arquivos de cotação, planilhas, orçamentos — somente <strong>.xlsx</strong> e <strong>.xls</strong>.</p>
+        <h6 style="font-weight:700;color:#0d2e1a;margin-bottom:6px;">
+          <i class="bi bi-paperclip me-2 text-primary"></i>Anexos
+          <span class="text-muted fw-normal" style="font-size:12px;"> (opcional)</span>
+        </h6>
+        <p class="text-muted mb-3" style="font-size:13px;">
+          Arquivos de cotação, planilhas, orçamentos — somente <strong>.xlsx</strong> e <strong>.xls</strong>.
+        </p>
         <input type="file" name="anexos" class="form-control" multiple accept=".xlsx,.xls">
-        <div class="form-text mt-1"><i class="bi bi-info-circle me-1"></i>Você pode selecionar múltiplos arquivos.</div>
+        <div class="form-text mt-1">
+          <i class="bi bi-info-circle me-1"></i>Você pode selecionar múltiplos arquivos.
+        </div>
       </div>
 
       <div class="d-flex gap-2 justify-content-end">

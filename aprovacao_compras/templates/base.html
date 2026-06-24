@@ -225,6 +225,9 @@
     <a href="{% url 'gerenciar_usuarios' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerenciar_usuarios' %}active{% endif %}">
       <i class="bi bi-people-fill"></i><span class="link-text">Usuários</span>
     </a>
+    <a href="{% url 'gerenciar_categorias' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gerenciar_categorias' %}active{% endif %}">
+      <i class="bi bi-tags-fill"></i><span class="link-text">Categorias</span>
+    </a>
     <a href="/admin/" class="sidebar-link">
       <i class="bi bi-gear-fill"></i><span class="link-text">Admin Django</span>
     </a>

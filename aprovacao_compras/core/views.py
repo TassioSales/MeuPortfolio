@@ -141,7 +141,6 @@ def login_view(request):
 
 @login_required
 def dashboard(request):
-    from pedidos.models import Pedido, Categoria as PedidoModel
     data_ini  = request.GET.get("data_ini", "")
     data_fim  = request.GET.get("data_fim", "")
     filtro_status    = request.GET.get("status", "")
@@ -189,7 +188,7 @@ def dashboard(request):
         "filtro_status": filtro_status,
         "filtro_categoria": filtro_categoria,
         "busca": busca,
-        "status_choices": PedidoModel.STATUS_CHOICES,
+        "status_choices": Pedido.STATUS_CHOICES,
         "categorias": Categoria.objects.filter(ativa=True),
     })
 

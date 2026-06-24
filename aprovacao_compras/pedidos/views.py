@@ -6,7 +6,7 @@ from django.http import HttpResponse, FileResponse
 from django.utils import timezone
 from django.db.models import Q
 from django.core.paginator import Paginator
-from .models import Pedido, Anexo, Historico
+from .models import Pedido, Anexo, Historico, Categoria
 from core.notifications import (
     notificar_novo_pedido,
     notificar_pedido_aprovado,
@@ -53,13 +53,35 @@ def criar_pedido(request):
         descricao = request.POST.get("descricao", "").strip()
         acao = request.POST.get("acao", "rascunho")
 
+        categoria_id    = request.POST.get("categoria", "")
+        valor_str       = request.POST.get("valor_estimado", "").strip().replace(",", ".")
+        prazo_str       = request.POST.get("prazo_necessario", "").strip()
+
         if not titulo or not descricao:
             messages.error(request, "Título e descrição são obrigatórios.")
-            return render(request, "pedidos/criar.html", {"form_data": request.POST})
+            return render(request, "pedidos/criar.html", {"form_data": request.POST,
+                                                          "categorias": Categoria.objects.filter(ativa=True)})
+
+        categoria_obj    = Categoria.objects.filter(pk=categoria_id).first()
+        valor_estimado   = None
+        prazo_necessario = None
+        try:
+            if valor_str:
+                valor_estimado = float(valor_str)
+        except ValueError:
+            messages.warning(request, "Valor estimado inválido — campo ignorado.")
+        try:
+            if prazo_str:
+                from datetime import date
+                prazo_necessario = date.fromisoformat(prazo_str)
+        except ValueError:
+            messages.warning(request, "Data de prazo inválida — campo ignorado.")
 
         pedido = Pedido.objects.create(
             solicitante=request.user, titulo=titulo,
             descricao=descricao, status="rascunho",
+            categoria=categoria_obj, valor_estimado=valor_estimado,
+            prazo_necessario=prazo_necessario,
         )
         _registrar_historico(pedido, request.user, "Pedido criado")
         _salvar_anexos(request, pedido)
@@ -73,7 +95,7 @@ def criar_pedido(request):
 
         return redirect("detalhe_pedido", pk=pedido.pk)
 
-    return render(request, "pedidos/criar.html", {})
+    return render(request, "pedidos/criar.html", {"categorias": Categoria.objects.filter(ativa=True)})
 
 
 @login_required
@@ -92,11 +114,25 @@ def editar_pedido(request, pk):
 
         if not titulo or not descricao:
             messages.error(request, "Título e descrição são obrigatórios.")
-            return render(request, "pedidos/editar.html", {"pedido": pedido})
+            return render(request, "pedidos/editar.html", {"pedido": pedido, "categorias": Categoria.objects.filter(ativa=True)})
+
+        categoria_id    = request.POST.get("categoria", "")
+        valor_str       = request.POST.get("valor_estimado", "").strip().replace(",", ".")
+        prazo_str       = request.POST.get("prazo_necessario", "").strip()
 
         era_correcao = pedido.status == "correcao"
-        pedido.titulo = titulo
+        pedido.titulo    = titulo
         pedido.descricao = descricao
+        pedido.categoria = Categoria.objects.filter(pk=categoria_id).first()
+        try:
+            pedido.valor_estimado = float(valor_str) if valor_str else None
+        except ValueError:
+            pass
+        try:
+            from datetime import date
+            pedido.prazo_necessario = date.fromisoformat(prazo_str) if prazo_str else None
+        except ValueError:
+            pass
 
         # Remove anexos marcados pelo usuário
         if remover_ids:
@@ -133,7 +169,7 @@ def editar_pedido(request, pk):
 
         return redirect("detalhe_pedido", pk=pedido.pk)
 
-    return render(request, "pedidos/editar.html", {"pedido": pedido})
+    return render(request, "pedidos/editar.html", {"pedido": pedido, "categorias": Categoria.objects.filter(ativa=True)})
 
 
 @login_required
@@ -381,20 +417,29 @@ def exportar_pdf(request, pk):
     d_criacao    = pedido.data_criacao.strftime("%d/%m/%Y  %H:%M")
     d_envio      = pedido.data_envio.strftime("%d/%m/%Y  %H:%M") if pedido.data_envio else "—"
     d_decisao    = pedido.data_aprovacao.strftime("%d/%m/%Y  %H:%M") if pedido.data_aprovacao else "—"
+    categoria    = pedido.categoria.nome if pedido.categoria else "—"
+    valor        = f"R$ {pedido.valor_estimado:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") if pedido.valor_estimado else "—"
+    prazo        = pedido.prazo_necessario.strftime("%d/%m/%Y") if pedido.prazo_necessario else "—"
 
     def lbl(t): return P(t, fontName="Helvetica-Bold", fontSize=7, textColor=C_MUTED, leading=9)
     def val(t): return P(t, fontName="Helvetica",      fontSize=10, textColor=C_TEXT,  leading=14)
 
     h = W / 2 - 2
     info = Table([
-        [lbl("SOLICITANTE"),     lbl("APROVADOR / ANALISADOR")],
-        [val(solicitante),       val(aprovador)],
-        [Spacer(1, 6),           Spacer(1, 6)],
-        [lbl("DATA DE CRIAÇÃO"), lbl("DATA DE ENVIO")],
-        [val(d_criacao),         val(d_envio)],
-        [Spacer(1, 6),           Spacer(1, 6)],
-        [lbl("DECISÃO"),         lbl("Nº DO PEDIDO")],
-        [val(d_decisao),         val(f"#{pedido.numero_pedido:04d}")],
+        [lbl("SOLICITANTE"),       lbl("APROVADOR / ANALISADOR")],
+        [val(solicitante),         val(aprovador)],
+        [Spacer(1, 6),             Spacer(1, 6)],
+        [lbl("CATEGORIA"),         lbl("VALOR ESTIMADO")],
+        [val(categoria),           val(valor)],
+        [Spacer(1, 6),             Spacer(1, 6)],
+        [lbl("PRAZO NECESSÁRIO"),  lbl("Nº DO PEDIDO")],
+        [val(prazo),               val(f"#{pedido.numero_pedido:04d}")],
+        [Spacer(1, 6),             Spacer(1, 6)],
+        [lbl("DATA DE CRIAÇÃO"),   lbl("DATA DE ENVIO")],
+        [val(d_criacao),           val(d_envio)],
+        [Spacer(1, 6),             Spacer(1, 6)],
+        [lbl("DECISÃO"),           P("", fontName="Helvetica", fontSize=10, textColor=C_TEXT, leading=14)],
+        [val(d_decisao),           P("", fontName="Helvetica", fontSize=10, textColor=C_TEXT, leading=14)],
     ], colWidths=[h, h])
     info.setStyle(TableStyle([
         ("BACKGROUND",  (0, 0), (-1, -1), C_BG),

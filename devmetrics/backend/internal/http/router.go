@@ -17,6 +17,7 @@ func NewRouter(h *Handlers) http.Handler {
 	r.Get("/api/user/{username}", h.GetUserMetrics)
 	r.Get("/api/user/{username}/languages", h.GetLanguages)
 	r.Get("/api/user/{username}/insights", h.GetInsights)
+	r.Get("/api/user/{username}/contributions", h.GetContributions)
 
 	return r
 }
@@ -25,7 +26,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Mistral-Key")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return

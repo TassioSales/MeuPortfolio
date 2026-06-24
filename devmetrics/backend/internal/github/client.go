@@ -1,18 +1,18 @@
 package github
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"sort"
 	"time"
 )
 
-// ErrNotFound is returned when the requested GitHub resource does not exist.
 var ErrNotFound = errors.New("not found")
-
-// ErrRateLimit is returned when the GitHub API rate limit is exceeded.
 var ErrRateLimit = errors.New("github API rate limit exceeded — set GITHUB_TOKEN to increase limits")
+var ErrNoToken = errors.New("github token required")
 
 type User struct {
 	Login       string `json:"login"`
@@ -21,6 +21,7 @@ type User struct {
 	Bio         string `json:"bio"`
 	Company     string `json:"company"`
 	Location    string `json:"location"`
+	Blog        string `json:"blog"`
 	PublicRepos int    `json:"public_repos"`
 	Followers   int    `json:"followers"`
 	Following   int    `json:"following"`
@@ -42,6 +43,20 @@ type Repository struct {
 	Topics          []string  `json:"topics"`
 }
 
+type ContributionDay struct {
+	Date              string `json:"date"`
+	ContributionCount int    `json:"count"`
+}
+
+type ContributionWeek struct {
+	Days []ContributionDay `json:"days"`
+}
+
+type ContributionCalendar struct {
+	TotalContributions int                `json:"total_contributions"`
+	Weeks              []ContributionWeek `json:"weeks"`
+}
+
 type Client struct {
 	httpClient *http.Client
 	token      string
@@ -55,6 +70,8 @@ func NewClient(token string) *Client {
 		baseURL:    "https://api.github.com",
 	}
 }
+
+func (c *Client) HasToken() bool { return c.token != "" }
 
 func (c *Client) doRequest(url string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", url, nil)
@@ -103,7 +120,7 @@ func (c *Client) GetRepos(username string) ([]Repository, error) {
 	var allRepos []Repository
 	page := 1
 	for {
-		url := fmt.Sprintf("%s/users/%s/repos?per_page=100&page=%d&sort=updated", c.baseURL, username, page)
+		url := fmt.Sprintf("%s/users/%s/repos?per_page=100&page=%d&sort=pushed", c.baseURL, username, page)
 		resp, err := c.doRequest(url)
 		if err != nil {
 			return nil, err
@@ -128,6 +145,19 @@ func (c *Client) GetRepos(username string) ([]Repository, error) {
 	return allRepos, nil
 }
 
+// TopReposByStars returns repos sorted by stars (used to prioritize language fetching).
+func TopReposByStars(repos []Repository, n int) []Repository {
+	sorted := make([]Repository, len(repos))
+	copy(sorted, repos)
+	sort.Slice(sorted, func(i, j int) bool {
+		return sorted[i].StargazersCount > sorted[j].StargazersCount
+	})
+	if len(sorted) > n {
+		return sorted[:n]
+	}
+	return sorted
+}
+
 func (c *Client) GetRepoLanguages(owner, repo string) (map[string]int, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s/languages", c.baseURL, owner, repo)
 	resp, err := c.doRequest(url)
@@ -143,4 +173,71 @@ func (c *Client) GetRepoLanguages(owner, repo string) (map[string]int, error) {
 		return nil, err
 	}
 	return languages, nil
+}
+
+func (c *Client) GetContributions(username string) (*ContributionCalendar, error) {
+	if c.token == "" {
+		return nil, ErrNoToken
+	}
+
+	query := fmt.Sprintf(`{
+		"query": "query { user(login: \"%s\") { contributionsCollection { contributionCalendar { totalContributions weeks { contributionDays { date contributionCount } } } } } }"
+	}`, username)
+
+	req, err := http.NewRequest("POST", "https://api.github.com/graphql", bytes.NewBufferString(query))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+c.token)
+	req.Header.Set("User-Agent", "devmetrics/1.0")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("graphql status %d", resp.StatusCode)
+	}
+
+	var gqlResp struct {
+		Data struct {
+			User struct {
+				ContributionsCollection struct {
+					ContributionCalendar struct {
+						TotalContributions int `json:"totalContributions"`
+						Weeks              []struct {
+							ContributionDays []struct {
+								Date              string `json:"date"`
+								ContributionCount int    `json:"contributionCount"`
+							} `json:"contributionDays"`
+						} `json:"weeks"`
+					} `json:"contributionCalendar"`
+				} `json:"contributionsCollection"`
+			} `json:"user"`
+		} `json:"data"`
+		Errors []struct{ Message string } `json:"errors"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&gqlResp); err != nil {
+		return nil, err
+	}
+	if len(gqlResp.Errors) > 0 {
+		return nil, fmt.Errorf("graphql error: %s", gqlResp.Errors[0].Message)
+	}
+
+	cal := gqlResp.Data.User.ContributionsCollection.ContributionCalendar
+	result := &ContributionCalendar{TotalContributions: cal.TotalContributions}
+	for _, w := range cal.Weeks {
+		var week ContributionWeek
+		for _, d := range w.ContributionDays {
+			week.Days = append(week.Days, ContributionDay{
+				Date:              d.Date,
+				ContributionCount: d.ContributionCount,
+			})
+		}
+		result.Weeks = append(result.Weeks, week)
+	}
+	return result, nil
 }

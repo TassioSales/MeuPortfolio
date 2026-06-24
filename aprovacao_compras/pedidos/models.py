@@ -10,6 +10,20 @@ def gerar_numero_pedido():
     return ultimo + 1
 
 
+class Categoria(models.Model):
+    nome  = models.CharField(max_length=100, unique=True)
+    ativa = models.BooleanField(default=True)
+    ordem = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["ordem", "nome"]
+        verbose_name = "Categoria"
+        verbose_name_plural = "Categorias"
+
+    def __str__(self):
+        return self.nome
+
+
 class Pedido(models.Model):
     STATUS_CHOICES = [
         ("rascunho", "Rascunho"),
@@ -19,19 +33,28 @@ class Pedido(models.Model):
         ("reprovado", "Reprovado"),
     ]
 
-    numero_pedido = models.PositiveIntegerField(unique=True, editable=False)
-    data_criacao = models.DateTimeField(default=timezone.now)
-    solicitante = models.ForeignKey(
+    numero_pedido   = models.PositiveIntegerField(unique=True, editable=False)
+    data_criacao    = models.DateTimeField(default=timezone.now)
+    solicitante     = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
         related_name="pedidos_solicitados",
     )
-    titulo = models.CharField(max_length=200)
-    descricao = models.TextField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="rascunho")
-    data_envio = models.DateTimeField(null=True, blank=True)
-    data_aprovacao = models.DateTimeField(null=True, blank=True)
-    aprovador = models.ForeignKey(
+    titulo          = models.CharField(max_length=200)
+    descricao       = models.TextField()
+    categoria       = models.ForeignKey(
+        Categoria,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="pedidos",
+    )
+    valor_estimado  = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    prazo_necessario= models.DateField(null=True, blank=True)
+    status          = models.CharField(max_length=20, choices=STATUS_CHOICES, default="rascunho")
+    data_envio      = models.DateTimeField(null=True, blank=True)
+    data_aprovacao  = models.DateTimeField(null=True, blank=True)
+    aprovador       = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,

@@ -33,21 +33,46 @@
 
 <!-- Filtros -->
 <div class="table-card p-3 mb-4">
-  <form method="get" class="row g-2 align-items-end">
+  <form method="get" class="row g-2 align-items-end flex-wrap">
     <div class="col-auto">
-      <label class="form-label mb-1" style="font-size:12px;font-weight:600;color:#64748b;">DATA INICIAL</label>
+      <label class="form-label mb-1" style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Buscar</label>
+      <input type="text" name="q" value="{{ busca }}" class="form-control form-control-sm"
+             placeholder="Título ou descrição..." style="width:190px;">
+    </div>
+    <div class="col-auto">
+      <label class="form-label mb-1" style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Status</label>
+      <select name="status" class="form-select form-select-sm" style="width:145px;">
+        <option value="">Todos</option>
+        {% for val, label in status_choices %}{% if val != 'rascunho' %}
+        <option value="{{ val }}" {% if filtro_status == val %}selected{% endif %}>{{ label }}</option>
+        {% endif %}{% endfor %}
+      </select>
+    </div>
+    <div class="col-auto">
+      <label class="form-label mb-1" style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Categoria</label>
+      <select name="categoria" class="form-select form-select-sm" style="width:185px;">
+        <option value="">Todas</option>
+        {% for cat in categorias %}
+        <option value="{{ cat.pk }}" {% if filtro_categoria == cat.pk|stringformat:"i" %}selected{% endif %}>{{ cat.nome }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-auto">
+      <label class="form-label mb-1" style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Data Inicial</label>
       <input type="date" name="data_ini" value="{{ data_ini }}" class="form-control form-control-sm">
     </div>
     <div class="col-auto">
-      <label class="form-label mb-1" style="font-size:12px;font-weight:600;color:#64748b;">DATA FINAL</label>
+      <label class="form-label mb-1" style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Data Final</label>
       <input type="date" name="data_fim" value="{{ data_fim }}" class="form-control form-control-sm">
     </div>
     <div class="col-auto">
-      <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-search me-1"></i>Pesquisar</button>
+      <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-funnel me-1"></i>Filtrar</button>
     </div>
-    {% if data_ini or data_fim %}
+    {% if data_ini or data_fim or filtro_status or filtro_categoria or busca %}
     <div class="col-auto">
-      <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm">Limpar</a>
+      <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-x-circle me-1"></i>Limpar
+      </a>
     </div>
     {% endif %}
   </form>
@@ -124,7 +149,8 @@
       <thead>
         <tr>
           <th>Data</th><th>Nº Pedido</th><th>Solicitante</th><th>Título</th>
-          <th>Status</th><th>Data Aprovação</th><th>Aprovador</th><th>Ações</th>
+          <th>Categoria</th><th>Valor Est.</th>
+          <th>Status</th><th>Aprovador</th><th>Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -133,7 +159,18 @@
           <td>{{ p.data_criacao|date:"d/m/Y" }}</td>
           <td><strong>#{{ p.numero_pedido|stringformat:"04d" }}</strong></td>
           <td>{{ p.solicitante.get_full_name|default:p.solicitante.username }}</td>
-          <td>{{ p.titulo|truncatechars:40 }}</td>
+          <td>
+            {{ p.titulo|truncatechars:35 }}
+            {% if p.prazo_necessario %}
+            <br><span style="font-size:11px;color:#7a4a00;">
+              <i class="bi bi-calendar-event me-1"></i>até {{ p.prazo_necessario|date:"d/m/Y" }}
+            </span>
+            {% endif %}
+          </td>
+          <td style="font-size:12px;">{{ p.categoria.nome|default:"—" }}</td>
+          <td style="font-size:12px;font-weight:600;color:#00502A;">
+            {% if p.valor_estimado %}R$ {{ p.valor_estimado|floatformat:2 }}{% else %}—{% endif %}
+          </td>
           <td>
             <span class="badge badge-{{ p.status }} px-2 py-1" style="border-radius:6px;font-size:12px;">
               {% if p.status == 'aprovado' %}<i class="bi bi-check-circle-fill me-1"></i>
@@ -142,7 +179,6 @@
               {% endif %}{{ p.get_status_display }}
             </span>
           </td>
-          <td>{{ p.data_aprovacao|date:"d/m/Y H:i"|default:"—" }}</td>
           <td>{% if p.aprovador %}{{ p.aprovador.get_full_name|default:p.aprovador.username }}{% else %}—{% endif %}</td>
           <td>
             <a href="{% url 'detalhe_pedido' p.pk %}" class="btn btn-sm btn-outline-primary py-0 px-2">

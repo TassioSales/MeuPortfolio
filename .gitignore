@@ -8,3 +8,4 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 nexus/**/__pycache__/
+.playwright-mcp/email/04_novo_pedido.png

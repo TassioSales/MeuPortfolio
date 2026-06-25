@@ -1,0 +1,102 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]: 
+      - generic [ref=e6]:
+        - text: CompraBio
+        - generic [ref=e7]: Aprovação de Pedidos
+    - generic [ref=e8]:
+      - generic [ref=e9]: Principal
+      - link " Dashboard" [ref=e10] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e11]: 
+        - generic [ref=e12]: Dashboard
+      - link " Controle de Processos" [ref=e13] [cursor=pointer]:
+        - /url: /pedidos/controle/
+        - generic [ref=e14]: 
+        - generic [ref=e15]: Controle de Processos
+      - generic [ref=e16]: Pedidos
+      - link " Novo Pedido" [ref=e17] [cursor=pointer]:
+        - /url: /pedidos/novo/
+        - generic [ref=e18]: 
+        - generic [ref=e19]: Novo Pedido
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - generic [ref=e22]: J
+        - generic [ref=e23]:
+          - generic [ref=e24]: Junior Lima
+          - generic [ref=e25]: Comprador
+      - link " Sair" [ref=e26] [cursor=pointer]:
+        - /url: /logout/
+        - generic [ref=e27]: 
+        - generic [ref=e28]: Sair
+  - banner [ref=e29]:
+    - button "" [ref=e30] [cursor=pointer]:
+      - generic [ref=e31]: 
+    - generic [ref=e32]: Novo Pedido de Compra
+    - generic [ref=e33]:
+      - generic [ref=e34]: Comprador
+      - link "" [ref=e35] [cursor=pointer]:
+        - /url: /logout/
+        - generic [ref=e36]: 
+  - main [ref=e37]:
+    - generic [ref=e38]:
+      - heading " Novo Pedido de Compra" [level=1] [ref=e39]:
+        - generic [ref=e40]: 
+        - text: Novo Pedido de Compra
+      - paragraph [ref=e41]: Preencha as informações do pedido e anexe planilhas de cotação.
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - heading " Informações do Pedido" [level=6] [ref=e46]:
+          - generic [ref=e47]: 
+          - text: Informações do Pedido
+        - generic [ref=e48]:
+          - generic [ref=e49]: Título *
+          - 'textbox "Ex.: Compra de equipamentos de escritório" [ref=e50]'
+        - generic [ref=e51]:
+          - generic [ref=e52]: Descrição / Justificativa *
+          - textbox "Descreva o que será adquirido, a necessidade, fornecedores considerados, etc." [ref=e53]
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e56]: Categoria *
+            - combobox [ref=e57]:
+              - option "— Selecione —" [selected]
+              - option "TI / Tecnologia"
+              - option "Recursos Humanos"
+              - option "Marketing"
+              - option "Operacional"
+              - option "Infraestrutura / Facilities"
+              - option "Financeiro"
+              - option "Limpeza / Higiene"
+              - option "Outros"
+          - generic [ref=e58]:
+            - generic [ref=e59]: Valor Estimado (R$)
+            - generic [ref=e60]:
+              - generic [ref=e61]: R$
+              - spinbutton [ref=e62]
+          - generic [ref=e63]:
+            - generic [ref=e64]: Prazo Necessário
+            - textbox [ref=e65]
+      - generic [ref=e66]:
+        - heading " Anexos (opcional)" [level=6] [ref=e67]:
+          - generic [ref=e68]: 
+          - text: Anexos (opcional)
+        - paragraph [ref=e69]:
+          - text: Arquivos de cotação, planilhas, orçamentos — somente
+          - strong [ref=e70]: .xlsx
+          - text: e
+          - strong [ref=e71]: .xls
+          - text: .
+        - button "Choose File" [ref=e72] [cursor=pointer]
+        - generic [ref=e73]:
+          - generic [ref=e74]: 
+          - text: Você pode selecionar múltiplos arquivos.
+      - generic [ref=e75]:
+        - link "Cancelar" [ref=e76] [cursor=pointer]:
+          - /url: /
+        - button " Salvar Rascunho" [ref=e77] [cursor=pointer]:
+          - generic [ref=e78]: 
+          - text: Salvar Rascunho
+        - button " Enviar para Aprovação" [ref=e79] [cursor=pointer]:
+          - generic [ref=e80]: 
+          - text: Enviar para Aprovação

@@ -1,0 +1,51 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: 
+        - text: CompraBio · Sistema de Compras
+      - img "Bio Mundo" [ref=e9]
+      - heading "Controle total sobre as compras da sua rede" [level=2] [ref=e10]:
+        - text: Controle total
+        - text: sobre as
+        - emphasis [ref=e11]: compras
+        - text: da sua rede
+      - paragraph [ref=e12]: Gerencie pedidos, aprove solicitações e acompanhe o fluxo de compras da Bio Mundo em tempo real.
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e16]: 
+          - text: Aprovação de pedidos em um clique
+        - generic [ref=e17]:
+          - generic [ref=e19]: 
+          - text: Notificações automáticas por e-mail
+        - generic [ref=e20]:
+          - generic [ref=e22]: 
+          - text: Dashboard com visão consolidada
+    - generic [ref=e23]: Bio Mundo · Mercado Saudável © 2026
+  - generic [ref=e25]:
+    - generic [ref=e26]:
+      - heading "Bem-vindo de volta" [level=2] [ref=e27]
+      - paragraph [ref=e28]: Entre com suas credenciais para acessar o sistema
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]: Usuário
+        - generic [ref=e32]:
+          - generic: 
+          - textbox "Usuário" [ref=e33]:
+            - /placeholder: seu.usuario
+      - generic [ref=e34]:
+        - generic [ref=e35]: Senha
+        - generic [ref=e36]:
+          - generic: 
+          - textbox "Senha" [ref=e37]:
+            - /placeholder: ••••••••
+          - button "" [ref=e38] [cursor=pointer]:
+            - generic [ref=e39]: 
+      - button " Entrar na conta" [ref=e40] [cursor=pointer]:
+        - generic [ref=e41]: 
+        - text: Entrar na conta
+    - generic [ref=e43]:
+      - text: Não tem conta?
+      - link "Criar conta" [ref=e44] [cursor=pointer]:
+        - /url: /cadastro/
+    - generic [ref=e45]: Bio Mundo © 2026 · Todos os direitos reservados

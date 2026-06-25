@@ -1,0 +1,95 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]: 
+      - generic [ref=e6]:
+        - text: CompraBio
+        - generic [ref=e7]: Aprovação de Pedidos
+    - generic [ref=e8]:
+      - generic [ref=e9]: Principal
+      - link " Dashboard" [ref=e10] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e11]: 
+        - generic [ref=e12]: Dashboard
+      - link " Controle de Processos" [ref=e13] [cursor=pointer]:
+        - /url: /pedidos/controle/
+        - generic [ref=e14]: 
+        - generic [ref=e15]: Controle de Processos
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e18]: L
+        - generic [ref=e19]:
+          - generic [ref=e20]: Lucas Castilho
+          - generic [ref=e21]: Aprovador
+      - link " Sair" [ref=e22] [cursor=pointer]:
+        - /url: /logout/
+        - generic [ref=e23]: 
+        - generic [ref=e24]: Sair
+  - banner [ref=e25]:
+    - button "" [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: 
+    - generic [ref=e28]: Controle de Processos
+    - generic [ref=e29]:
+      - generic [ref=e30]: Aprovador
+      - link "" [ref=e31] [cursor=pointer]:
+        - /url: /logout/
+        - generic [ref=e32]: 
+  - main [ref=e33]:
+    - generic [ref=e34]:
+      - generic [ref=e35]:
+        - heading " Controle de Processos" [level=1] [ref=e36]:
+          - generic [ref=e37]: 
+          - text: Controle de Processos
+        - paragraph [ref=e38]: Gerencie e filtre todos os pedidos de compra.
+      - link " Exportar Excel" [ref=e40] [cursor=pointer]:
+        - /url: /pedidos/exportar-excel/
+        - generic [ref=e41]: 
+        - text: Exportar Excel
+    - generic [ref=e43]:
+      - generic [ref=e44]:
+        - generic [ref=e45]: Nº Pedido
+        - spinbutton [ref=e46]
+      - generic [ref=e47]:
+        - generic [ref=e48]: Status
+        - combobox [ref=e49]:
+          - option "Todos" [selected]
+          - option "Em Aberto"
+          - option "Aguardando Correção"
+          - option "Aprovado"
+          - option "Reprovado"
+      - generic [ref=e50]:
+        - generic [ref=e51]: Solicitante
+        - textbox "nome" [ref=e52]
+      - generic [ref=e53]:
+        - generic [ref=e54]: Data Inicial
+        - textbox [ref=e55]
+      - generic [ref=e56]:
+        - generic [ref=e57]: Data Final
+        - textbox [ref=e58]
+      - generic [ref=e59]:
+        - generic [ref=e60]: Busca
+        - textbox "título, descrição" [ref=e61]
+      - generic [ref=e62]:
+        - button "" [ref=e63] [cursor=pointer]:
+          - generic [ref=e64]: 
+        - link "" [ref=e65] [cursor=pointer]:
+          - /url: /pedidos/controle/
+          - generic [ref=e66]: 
+    - generic [ref=e67]:
+      - heading "0 pedidos encontrados" [level=6] [ref=e69]
+      - table [ref=e71]:
+        - rowgroup [ref=e72]:
+          - row "Nº Data Solicitante Título Status Data Aprovação Aprovador Ações" [ref=e73]:
+            - columnheader "Nº" [ref=e74]
+            - columnheader "Data" [ref=e75]
+            - columnheader "Solicitante" [ref=e76]
+            - columnheader "Título" [ref=e77]
+            - columnheader "Status" [ref=e78]
+            - columnheader "Data Aprovação" [ref=e79]
+            - columnheader "Aprovador" [ref=e80]
+            - columnheader "Ações" [ref=e81]
+        - rowgroup [ref=e82]:
+          - row " Nenhum pedido encontrado com os filtros aplicados." [ref=e83]:
+            - cell " Nenhum pedido encontrado com os filtros aplicados." [ref=e84]:
+              - generic [ref=e85]: 
+              - text: Nenhum pedido encontrado com os filtros aplicados.

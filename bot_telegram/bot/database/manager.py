@@ -21,6 +21,7 @@ class DatabaseManager:
             os.makedirs(parent, exist_ok=True)
 
         with self._get_connection() as conn:
+            self._migrate(conn)
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS gastos (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,11 +44,24 @@ class DatabaseManager:
                 CREATE TABLE IF NOT EXISTS metas (
                     user_id INTEGER PRIMARY KEY,
                     valor REAL NOT NULL,
-                    atualizado_em TEXT DEFAULT (datetime('now', 'localtime'))
+                    atualizado_em TEXT DEFAULT CURRENT_TIMESTAMP
                 )
             """)
             conn.commit()
         logger.info(f"Banco de dados configurado em: {self.db_path}")
+
+    def _migrate(self, conn: sqlite3.Connection) -> None:
+        """Drop and recreate tables whose schema no longer matches expectations."""
+        def _check(table: str, required: set[str]) -> None:
+            cols = {row[1] for row in conn.execute(f"PRAGMA table_info({table})").fetchall()}
+            if cols and not required.issubset(cols):
+                logger.warning(f"Schema da tabela '{table}' incompatível {cols} → recriando.")
+                conn.execute(f"DROP TABLE IF EXISTS {table}")
+                conn.commit()
+
+        _check("gastos", {"id", "user_id", "descricao", "valor", "categoria", "data"})
+        _check("notas",  {"id", "user_id", "texto", "criado_em"})
+        _check("metas",  {"user_id", "valor", "atualizado_em"})
 
     # ------------------------------------------------------------------
     # Gastos

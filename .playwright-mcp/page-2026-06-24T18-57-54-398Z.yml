@@ -1,0 +1,138 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]: 
+      - generic [ref=e6]:
+        - text: CompraBio
+        - generic [ref=e7]: Aprovação de Pedidos
+    - generic [ref=e8]:
+      - generic [ref=e9]: Principal
+      - link " Dashboard" [ref=e10] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e11]: 
+        - generic [ref=e12]: Dashboard
+      - link " Controle de Processos" [ref=e13] [cursor=pointer]:
+        - /url: /pedidos/controle/
+        - generic [ref=e14]: 
+        - generic [ref=e15]: Controle de Processos
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e18]: L
+        - generic [ref=e19]:
+          - generic [ref=e20]: Lucas Castilho
+          - generic [ref=e21]: Aprovador
+      - link " Sair" [ref=e22] [cursor=pointer]:
+        - /url: /logout/
+        - generic [ref=e23]: 
+        - generic [ref=e24]: Sair
+  - banner [ref=e25]:
+    - button "" [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: 
+    - generic [ref=e28]: Dashboard
+    - generic [ref=e29]:
+      - generic [ref=e30]: Aprovador
+      - link "" [ref=e31] [cursor=pointer]:
+        - /url: /logout/
+        - generic [ref=e32]: 
+  - main [ref=e33]:
+    - alert [ref=e34]:
+      - text: Apenas compradores podem criar pedidos.
+      - button [ref=e35] [cursor=pointer]
+    - generic [ref=e36]:
+      - generic [ref=e37]:
+        - heading " Dashboard" [level=1] [ref=e38]:
+          - generic [ref=e39]: 
+          - text: Dashboard
+        - paragraph [ref=e40]: Visão geral dos pedidos de compra
+      - generic [ref=e41]:
+        - link " Aprovação de Processos" [ref=e42] [cursor=pointer]:
+          - /url: /pedidos/controle/
+          - generic [ref=e43]: 
+          - text: Aprovação de Processos
+        - link " Atualizar" [ref=e44] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e45]: 
+          - text: Atualizar
+    - generic [ref=e47]:
+      - generic [ref=e48]:
+        - generic [ref=e49]: Buscar
+        - textbox "Título ou descrição..." [ref=e50]
+      - generic [ref=e51]:
+        - generic [ref=e52]: Status
+        - combobox [ref=e53]:
+          - option "Todos" [selected]
+          - option "Em Aberto"
+          - option "Aguardando Correção"
+          - option "Aprovado"
+          - option "Reprovado"
+      - generic [ref=e54]:
+        - generic [ref=e55]: Categoria
+        - combobox [ref=e56]:
+          - option "Todas" [selected]
+          - option "TI / Tecnologia"
+          - option "Recursos Humanos"
+          - option "Marketing"
+          - option "Operacional"
+          - option "Infraestrutura / Facilities"
+          - option "Financeiro"
+          - option "Limpeza / Higiene"
+          - option "Outros"
+      - generic [ref=e57]:
+        - generic [ref=e58]: Data Inicial
+        - textbox [ref=e59]
+      - generic [ref=e60]:
+        - generic [ref=e61]: Data Final
+        - textbox [ref=e62]
+      - button " Filtrar" [ref=e64] [cursor=pointer]:
+        - generic [ref=e65]: 
+        - text: Filtrar
+    - generic [ref=e66]:
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - generic [ref=e70]: Total de Pedidos
+          - generic [ref=e72]: 
+        - generic [ref=e73]: "0"
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - generic [ref=e77]: Aprovados
+          - generic [ref=e79]: 
+        - generic [ref=e80]: "0"
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - generic [ref=e84]: Reprovados
+          - generic [ref=e86]: 
+        - generic [ref=e87]: "0"
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e91]: Em Aberto
+          - generic [ref=e93]: 
+        - generic [ref=e94]: "0"
+    - generic [ref=e95]:
+      - generic [ref=e97]:
+        - generic [ref=e98]: Pedidos por Período
+        - generic [ref=e99]: Quantidade de pedidos nos últimos 6 meses
+      - generic [ref=e102]:
+        - generic [ref=e103]: Distribuição por Status
+        - generic [ref=e104]: Proporção dos pedidos
+    - generic [ref=e106]:
+      - generic [ref=e107]:
+        - heading "Lista de Pedidos" [level=6] [ref=e108]
+        - link " Exportar Excel" [ref=e109] [cursor=pointer]:
+          - /url: /pedidos/exportar-excel/
+          - generic [ref=e110]: 
+          - text: Exportar Excel
+      - table [ref=e112]:
+        - rowgroup [ref=e113]:
+          - row "Data Nº Pedido Solicitante Título Categoria Valor Est. Status Aprovador Ações" [ref=e114]:
+            - columnheader "Data" [ref=e115]
+            - columnheader "Nº Pedido" [ref=e116]
+            - columnheader "Solicitante" [ref=e117]
+            - columnheader "Título" [ref=e118]
+            - columnheader "Categoria" [ref=e119]
+            - columnheader "Valor Est." [ref=e120]
+            - columnheader "Status" [ref=e121]
+            - columnheader "Aprovador" [ref=e122]
+            - columnheader "Ações" [ref=e123]
+        - rowgroup [ref=e124]:
+          - row "Nenhum pedido encontrado." [ref=e125]:
+            - cell "Nenhum pedido encontrado." [ref=e126]

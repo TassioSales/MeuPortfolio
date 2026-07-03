@@ -9,4 +9,5 @@ reportlab==5.0.0
 sqlparse==0.5.5
 tzdata==2026.2
 waitress==3.0.2
+whitenoise==6.8.2
 xlrd==2.0.2

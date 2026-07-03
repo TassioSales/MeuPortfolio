@@ -7,9 +7,20 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-6qvw@*&cy7=t1cm0m_1qmb%7aa^52s($3nh&$c_kckzr!n&_e(")
-DEBUG = os.getenv("DEBUG", "True") == "True"
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-SITE_URL = os.getenv("SITE_URL", "http://127.0.0.1:8504")
+DEBUG = os.getenv("DEBUG", "False") == "True"
+_EXTRA_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "aprovacoes.portalbiomundo.com.br"] + _EXTRA_HOSTS
+SITE_URL = os.getenv("SITE_URL", "https://aprovacoes.portalbiomundo.com.br")
+
+# Cloudflare termina o SSL — informa o Django que a conexão original era HTTPS
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://aprovacoes.portalbiomundo.com.br",
+    "http://localhost:8504",
+    "http://127.0.0.1:8504",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",

@@ -40,4 +40,4 @@ echo.
 echo   Pressione Ctrl+C para encerrar.
 echo.
 
-python manage.py runserver 0.0.0.0:8504
+python run.py

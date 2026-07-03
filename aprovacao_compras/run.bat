@@ -25,11 +25,11 @@ python manage.py migrate --run-syncdb >nul 2>&1
 
 :: Abre o navegador apos 2 segundos (tempo do Django subir)
 echo  [2] Iniciando servidor...
-start "" /B cmd /C "timeout /t 2 >nul && start http://comprabio.local:8000"
+start "" /B cmd /C "timeout /t 2 >nul && start http://localhost:8504"
 
 echo.
 echo  ==========================================
-echo   Acesso:  http://comprabio.local:8000
+echo   Acesso:  http://localhost:8504
 echo  ==========================================
 echo.
 echo   Usuarios:
@@ -40,4 +40,4 @@ echo.
 echo   Pressione Ctrl+C para encerrar.
 echo.
 
-python manage.py runserver 0.0.0.0:8000
+python manage.py runserver 0.0.0.0:8504

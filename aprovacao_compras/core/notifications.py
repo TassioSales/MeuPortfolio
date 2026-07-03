@@ -71,7 +71,7 @@ def _wrap(conteudo: str, cor_header: str = "#00502A") -> str:
 
 def _url_pedido(pedido) -> str:
     from django.conf import settings
-    base = getattr(settings, "SITE_URL", "http://127.0.0.1:8000").rstrip("/")
+    base = getattr(settings, "SITE_URL", "http://127.0.0.1:8504").rstrip("/")
     return f"{base}/pedidos/{pedido.pk}/"
 
 

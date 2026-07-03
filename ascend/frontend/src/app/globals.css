@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent: #00e87a;
+  --surface: #0f1219;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: #0f1219;
+  color: #f0f4ff;
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2e3447; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #404a63; }
+
+@keyframes path-draw {
+  from { stroke-dashoffset: 1200; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Glow accent utility */
+.glow-accent {
+  box-shadow: 0 0 24px rgba(0, 232, 122, 0.18);
+}
+
+/* Card glass depth */
+.card-glass {
+  background: linear-gradient(135deg, rgba(36, 41, 56, 0.9), rgba(36, 41, 56, 0.6));
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(53, 60, 82, 0.8);
+}

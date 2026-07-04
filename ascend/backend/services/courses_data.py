@@ -1467,11 +1467,230 @@ ARCH_COURSE = Course(
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# CURSO 9 — AWS CLOUD FUNDAMENTOS
+# ─────────────────────────────────────────────────────────────────────────────
+AWS_COURSE = Course(
+    id="aws-cloud-fundamentos",
+    title="AWS Cloud: Do Zero ao Deploy em Produção",
+    tagline="Domine os serviços AWS essenciais e suba aplicações reais na nuvem",
+    description="Aprenda os serviços AWS mais usados na prática: compute, storage, banco de dados, rede, serverless, IAM e monitoramento. Foco em aplicações reais.",
+    level="Iniciante → Intermediário",
+    category="Cloud",
+    duration_hours=20,
+    skills=["AWS", "EC2", "S3", "RDS", "Lambda", "IAM", "VPC", "CloudFormation", "Terraform"],
+    color="#f97316",
+    modules=[
+        Module("aws-m1", "Fundamentos: IAM, VPC e Compute", "Os blocos fundamentais que toda aplicação AWS usa.", [
+            Lesson("aws-m1-l1", "IAM: Identidade e Controle de Acesso", 18,
+                "IAM é a fundação de segurança da AWS. Tudo começa aqui — sem entender IAM, você não entende AWS.",
+                [
+                    Section("Users, Groups, Roles e Policies",
+                        "User: pessoa ou serviço. Group: conjunto de users. Role: identidade temporária assumida por serviço. Policy: documento JSON que define permissões.",
+                        "# Criar policy de acesso apenas a um bucket S3\naws iam create-policy \\\n    --policy-name MeuBucketReadOnly \\\n    --policy-document '{\n        \"Version\": \"2012-10-17\",\n        \"Statement\": [{\n            \"Effect\": \"Allow\",\n            \"Action\": [\"s3:GetObject\", \"s3:ListBucket\"],\n            \"Resource\": [\n                \"arn:aws:s3:::meu-bucket\",\n                \"arn:aws:s3:::meu-bucket/*\"\n            ]\n        }]\n    }'\n\n# Criar role para EC2 acessar S3 sem credenciais hardcoded\naws iam create-role \\\n    --role-name EC2S3ReadRole \\\n    --assume-role-policy-document '{\n        \"Version\": \"2012-10-17\",\n        \"Statement\": [{\n            \"Effect\": \"Allow\",\n            \"Principal\": {\"Service\": \"ec2.amazonaws.com\"},\n            \"Action\": \"sts:AssumeRole\"\n        }]\n    }'\n\naws iam attach-role-policy \\\n    --role-name EC2S3ReadRole \\\n    --policy-arn arn:aws:iam::123456789:policy/MeuBucketReadOnly", "bash"),
+                    Section("Least Privilege: Nunca use root ou AdministratorAccess",
+                        "Root é para criar a conta e nunca mais. AdministratorAccess em produção é malpractice. Sempre menor privilégio necessário.",
+                        "# Ruim: usar root account no dia a dia\n# Ruim: AdministratorAccess para aplicação\n# Bom: policy específica para o que a aplicação precisa\n\n# Verificar permissões excessivas com Access Analyzer\naws accessanalyzer list-findings \\\n    --analyzer-arn arn:aws:access-analyzer:us-east-1:123:analyzer/meu-analyzer\n\n# Simular acesso antes de criar resource (Policy Simulator)\naws iam simulate-principal-policy \\\n    --policy-source-arn arn:aws:iam::123:user/meu-usuario \\\n    --action-names s3:DeleteObject \\\n    --resource-arns arn:aws:s3:::meu-bucket/*\n\n# Regra: SCP (Service Control Policy) na org bloqueia\n# criação de recursos fora de us-east-1 e sa-east-1\n# Garante conformidade mesmo se dev errar a região", "bash"),
+                    Section("Python com Boto3: Autenticação sem Credenciais Hardcoded",
+                        "Nunca coloque access keys no código. Use roles em EC2/Lambda, profiles locais ou environment variables.",
+                        "import boto3\n\n# Em EC2/Lambda: boto3 pega credenciais da role automaticamente\ns3 = boto3.client('s3')  # sem credencial explícita!\n\n# Local: use AWS profiles (~/.aws/credentials)\ns3 = boto3.Session(profile_name='meu-perfil-dev').client('s3')\n\n# Listar objetos de um bucket\ndef listar_arquivos(bucket: str, prefix: str = '') -> list[str]:\n    paginator = s3.get_paginator('list_objects_v2')\n    arquivos = []\n    for page in paginator.paginate(Bucket=bucket, Prefix=prefix):\n        for obj in page.get('Contents', []):\n            arquivos.append(obj['Key'])\n    return arquivos\n\n# Upload com metadados\ndef upload_parquet(df, bucket: str, key: str):\n    import io\n    buffer = io.BytesIO()\n    df.to_parquet(buffer)\n    s3.put_object(\n        Bucket=bucket,\n        Key=key,\n        Body=buffer.getvalue(),\n        ContentType='application/octet-stream',\n        Metadata={'criado-por': 'pipeline-vendas', 'versao': '2'}\n    )", "python"),
+                ],
+                exercise="Crie um IAM user com acesso apenas a S3, um role para EC2 e teste com Boto3 sem credenciais hardcoded.",
+                takeaway="IAM Role > IAM User para serviços. Nunca hardcode access keys. Least privilege não é paranoia — é profissionalismo."
+            ),
+            Lesson("aws-m1-l2", "VPC: Rede Privada na AWS", 20,
+                "VPC é sua rede privada na AWS. Sem entender subnets, security groups e routing, você não sabe onde seus serviços estão.",
+                [
+                    Section("VPC, Subnets, Internet Gateway e NAT",
+                        "Public subnet: tem rota para Internet Gateway. Private subnet: sem acesso direto à internet, usa NAT Gateway para saída.",
+                        "# Criar VPC com subnets via Terraform\nresource \"aws_vpc\" \"main\" {\n  cidr_block           = \"10.0.0.0/16\"\n  enable_dns_hostnames = true\n  tags = { Name = \"minha-vpc\" }\n}\n\nresource \"aws_subnet\" \"public\" {\n  vpc_id                  = aws_vpc.main.id\n  cidr_block              = \"10.0.1.0/24\"\n  availability_zone       = \"us-east-1a\"\n  map_public_ip_on_launch = true\n  tags = { Name = \"public-subnet\" }\n}\n\nresource \"aws_subnet\" \"private\" {\n  vpc_id            = aws_vpc.main.id\n  cidr_block        = \"10.0.2.0/24\"\n  availability_zone = \"us-east-1a\"\n  tags = { Name = \"private-subnet\" }\n}\n\nresource \"aws_internet_gateway\" \"igw\" {\n  vpc_id = aws_vpc.main.id\n}\n\n# NAT Gateway: permite private subnet acessar internet\nresource \"aws_nat_gateway\" \"nat\" {\n  allocation_id = aws_eip.nat.id\n  subnet_id     = aws_subnet.public.id\n}", "hcl"),
+                    Section("Security Groups vs NACLs",
+                        "Security Group: firewall stateful no nível do recurso. NACL: stateless no nível da subnet. Use SG para 99% dos casos.",
+                        "resource \"aws_security_group\" \"app\" {\n  name   = \"app-sg\"\n  vpc_id = aws_vpc.main.id\n\n  ingress {\n    from_port       = 8000\n    to_port         = 8000\n    protocol        = \"tcp\"\n    security_groups = [aws_security_group.alb.id]\n  }\n\n  egress {\n    from_port   = 0\n    to_port     = 0\n    protocol    = \"-1\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n}\n\nresource \"aws_security_group\" \"db\" {\n  ingress {\n    from_port       = 5432\n    to_port         = 5432\n    protocol        = \"tcp\"\n    security_groups = [aws_security_group.app.id]\n  }\n}", "hcl"),
+                    Section("VPC Endpoints: Acesso Privado a Serviços AWS",
+                        "VPC Endpoint permite acessar S3, DynamoDB e outros serviços sem passar pela internet pública — mais seguro e sem custo de NAT.",
+                        "# S3 Gateway Endpoint (gratuito!)\nresource \"aws_vpc_endpoint\" \"s3\" {\n  vpc_id       = aws_vpc.main.id\n  service_name = \"com.amazonaws.us-east-1.s3\"\n  vpc_endpoint_type = \"Gateway\"\n  route_table_ids = [aws_route_table.private.id]\n}\n\n# Interface Endpoint para Secrets Manager\nresource \"aws_vpc_endpoint\" \"secrets\" {\n  vpc_id              = aws_vpc.main.id\n  service_name        = \"com.amazonaws.us-east-1.secretsmanager\"\n  vpc_endpoint_type   = \"Interface\"\n  subnet_ids          = [aws_subnet.private.id]\n  security_group_ids  = [aws_security_group.endpoint.id]\n  private_dns_enabled = true\n}", "hcl"),
+                ],
+                exercise="Crie uma VPC com subnets pública e privada. Coloque uma EC2 na private subnet, acesse o S3 via VPC Endpoint sem NAT.",
+                takeaway="Banco de dados sempre em private subnet. Load Balancer em public. VPC Endpoint para S3 economiza NAT Gateway e elimina tráfego público."
+            ),
+            Lesson("aws-m1-l3", "EC2: Compute na AWS", 20,
+                "EC2 é o bloco de compute mais flexível da AWS. Aprenda a escolher o tipo certo, configurar e automatizar.",
+                [
+                    Section("Tipos de Instância e Quando Usar",
+                        "t3: propósito geral burstable. m6i: steady state. c6i: compute-intensivo. r6i: memory-intensivo. Spot economiza 90% para batch.",
+                        "# Tipos mais usados:\n# t3.micro / t3.small: dev/staging, CPU burstable\n# t3.medium / t3.large: apps pequenas de produção\n# m6i.large: apps web com carga constante\n# c6i.xlarge: processamento de dados, APIs high-throughput\n# r6i.large: banco de dados in-memory, caches grandes\n\n# Spot para pipeline de dados:\nresource \"aws_spot_instance_request\" \"pipeline\" {\n  ami           = data.aws_ami.amazon_linux.id\n  instance_type = \"c6i.4xlarge\"\n  spot_price    = \"0.20\"\n  user_data     = base64encode(file(\"startup.sh\"))\n}", "hcl"),
+                    Section("User Data e Instance Profile: Bootstrap sem SSH",
+                        "User Data executa na inicialização. Instance Profile injeta credenciais. Juntos eliminam acesso manual via SSH.",
+                        "#!/bin/bash\nset -euxo pipefail\n\nyum update -y && yum install -y python3.11 git\n\ngit clone https://github.com/minha-org/minha-api.git /opt/app\ncd /opt/app && pip3.11 install -r requirements.txt\n\n# Buscar secret sem credenciais hardcoded (usa a role da EC2)\nDATABASE_URL=$(aws secretsmanager get-secret-value \\\n    --secret-id prod/myapp/database \\\n    --query SecretString --output text | jq -r .url)\n\nexport DATABASE_URL\n\ncat > /etc/systemd/system/myapp.service <<EOF\n[Unit]\nDescription=MyApp FastAPI\n[Service]\nExecStart=/usr/bin/python3.11 -m uvicorn app.main:app --host 0.0.0.0 --port 8000\nRestart=always\nEOF\n\nsystemctl enable myapp && systemctl start myapp", "bash"),
+                    Section("Auto Scaling Group: Escala Automática",
+                        "ASG adiciona e remove instâncias baseado em métricas. Com ALB, distribui tráfego automaticamente.",
+                        "resource \"aws_autoscaling_group\" \"app\" {\n  min_size            = 2\n  max_size            = 10\n  desired_capacity    = 2\n  vpc_zone_identifier = [aws_subnet.private_a.id, aws_subnet.private_b.id]\n\n  launch_template {\n    id      = aws_launch_template.app.id\n    version = \"$Latest\"\n  }\n\n  target_group_arns = [aws_lb_target_group.app.arn]\n  health_check_type = \"ELB\"\n}\n\n# Escalar quando CPU > 70%\nresource \"aws_autoscaling_policy\" \"cpu\" {\n  policy_type            = \"TargetTrackingScaling\"\n  autoscaling_group_name = aws_autoscaling_group.app.name\n  target_tracking_configuration {\n    predefined_metric_specification {\n      predefined_metric_type = \"ASGAverageCPUUtilization\"\n    }\n    target_value = 70.0\n  }\n}", "hcl"),
+                ],
+                exercise="Crie um ASG com Launch Template, User Data que instala e inicia uma FastAPI, e política de auto-scaling por CPU.",
+                takeaway="User Data + Instance Profile = EC2 que se configura sozinha sem SSH. ASG + ALB = escala automática sem downtime."
+            ),
+        ]),
+        Module("aws-m2", "Storage, Banco de Dados e Serverless", "Os serviços mais usados em aplicações reais.", [
+            Lesson("aws-m2-l1", "S3: Object Storage para Tudo", 15,
+                "S3 é o serviço mais versátil da AWS. Aprenda além do básico: lifecycle, replication e presigned URLs.",
+                [
+                    Section("S3 Lifecycle e Storage Classes",
+                        "S3 Standard: acesso frequente. IA: 40% mais barato. Glacier: centavos/GB. Lifecycle automatiza a transição.",
+                        "import boto3\n\ns3 = boto3.client('s3')\n\ns3.put_bucket_lifecycle_configuration(\n    Bucket='meu-datalake',\n    LifecycleConfiguration={\n        'Rules': [{\n            'ID': 'mover-dados-antigos',\n            'Status': 'Enabled',\n            'Filter': {'Prefix': 'raw/'},\n            'Transitions': [\n                {'Days': 30,  'StorageClass': 'STANDARD_IA'},\n                {'Days': 90,  'StorageClass': 'GLACIER'},\n                {'Days': 365, 'StorageClass': 'DEEP_ARCHIVE'},\n            ],\n        }]\n    }\n)\n\n# Presigned URL: acesso temporário sem expor credenciais\ndef gerar_url_download(bucket: str, key: str, expira_em: int = 3600) -> str:\n    return s3.generate_presigned_url(\n        'get_object',\n        Params={'Bucket': bucket, 'Key': key},\n        ExpiresIn=expira_em\n    )", "python"),
+                    Section("S3 Event Notifications: Reagir a Uploads",
+                        "S3 aciona Lambda quando um objeto é criado. Base de pipelines event-driven.",
+                        "resource \"aws_s3_bucket_notification\" \"pipeline\" {\n  bucket = aws_s3_bucket.datalake.id\n\n  lambda_function {\n    lambda_function_arn = aws_lambda_function.processar.arn\n    events              = [\"s3:ObjectCreated:*\"]\n    filter_prefix       = \"raw/vendas/\"\n    filter_suffix       = \".parquet\"\n  }\n}\n\ndef lambda_handler(event, context):\n    for record in event['Records']:\n        bucket = record['s3']['bucket']['name']\n        key    = record['s3']['object']['key']\n        processar_arquivo(bucket, key)", "python"),
+                    Section("S3 + CloudFront: CDN Global",
+                        "S3 + CloudFront = CDN global para sites estáticos. Next.js export, SPAs e assets em < 20ms mundialmente.",
+                        "resource \"aws_cloudfront_distribution\" \"cdn\" {\n  origin {\n    domain_name = aws_s3_bucket.site.bucket_regional_domain_name\n    origin_id   = \"S3Origin\"\n    s3_origin_config {\n      origin_access_identity = aws_cloudfront_origin_access_identity.oai.cloudfront_access_identity_path\n    }\n  }\n\n  default_cache_behavior {\n    allowed_methods        = [\"GET\", \"HEAD\"]\n    cached_methods         = [\"GET\", \"HEAD\"]\n    target_origin_id       = \"S3Origin\"\n    viewer_protocol_policy = \"redirect-to-https\"\n    compress               = true\n    forwarded_values {\n      query_string = false\n      cookies { forward = \"none\" }\n    }\n  }\n\n  enabled = true\n}", "hcl"),
+                ],
+                exercise="Configure lifecycle no S3 para mover logs para Glacier após 90 dias. Gere presigned URLs para download de relatórios.",
+                takeaway="S3 Lifecycle economiza 80% em storage de dados antigos automaticamente. Presigned URLs são a forma segura de dar acesso temporário."
+            ),
+            Lesson("aws-m2-l2", "RDS e DynamoDB: Banco de Dados Gerenciado", 18,
+                "RDS elimina a operação do banco. DynamoDB resolve escala que SQL não resolve. Aprenda quando usar cada um.",
+                [
+                    Section("RDS PostgreSQL: Multi-AZ e Read Replicas",
+                        "Multi-AZ: failover automático em < 60s. Read Replicas: escalar leitura horizontalmente.",
+                        "resource \"aws_db_instance\" \"postgres\" {\n  engine          = \"postgres\"\n  engine_version  = \"16.1\"\n  instance_class  = \"db.t3.medium\"\n  allocated_storage = 100\n  storage_encrypted = true\n\n  multi_az               = true\n  deletion_protection    = true\n  backup_retention_period = 7\n\n  db_subnet_group_name   = aws_db_subnet_group.main.name\n  vpc_security_group_ids = [aws_security_group.db.id]\n\n  performance_insights_enabled = true\n}\n\nresource \"aws_db_instance\" \"replica\" {\n  replicate_source_db = aws_db_instance.postgres.id\n  instance_class      = \"db.t3.large\"\n}", "hcl"),
+                    Section("DynamoDB: Quando SQL não Escala",
+                        "DynamoDB é serverless, escala para milhões de writes/s. Use para: session store, leaderboards, IoT, carrinhos.",
+                        "import boto3\nfrom boto3.dynamodb.conditions import Key\nimport time\n\ndynamodb = boto3.resource('dynamodb')\ntabela = dynamodb.Table('sessoes')\n\ndef salvar_sessao(user_id: str, dados: dict, ttl_s: int = 86400):\n    tabela.put_item(Item={\n        'pk': f'USER#{user_id}',\n        'sk': 'SESSION',\n        'dados': dados,\n        'ttl': int(time.time()) + ttl_s,  # DynamoDB deleta automaticamente\n    })\n\n# Padrão Single-Table Design:\n# pk=USER#123, sk=PROFILE    → perfil\n# pk=USER#123, sk=ORDER#456  → pedido do usuário\n# pk=ORDER#456, sk=ITEM#789  → item do pedido", "python"),
+                    Section("ElastiCache Redis: Cache Gerenciado",
+                        "ElastiCache Redis elimina operação do Redis. Use para cache de sessão, rate limiting e Pub/Sub.",
+                        "import redis, json\n\nr = redis.Redis(\n    host='meu-cluster.abc123.cache.amazonaws.com',\n    port=6379,\n    decode_responses=True,\n)\n\ndef cachear(key: str, valor: dict, ttl: int = 300):\n    r.setex(key, ttl, json.dumps(valor))\n\ndef buscar_cache(key: str) -> dict | None:\n    cached = r.get(key)\n    return json.loads(cached) if cached else None\n\n# Rate limiting\ndef verificar_rate_limit(user_id: str, limite: int = 100) -> bool:\n    key = f'ratelimit:{user_id}'\n    pipe = r.pipeline()\n    pipe.incr(key)\n    pipe.expire(key, 60)\n    return pipe.execute()[0] <= limite", "python"),
+                ],
+                exercise="Configure RDS PostgreSQL Multi-AZ com Terraform. Implemente cache com ElastiCache Redis para os endpoints mais lentos da API.",
+                takeaway="RDS Multi-AZ para HA, Read Replica para escalar leitura. DynamoDB quando precisa de escala serverless. ElastiCache quando o banco virou gargalo."
+            ),
+            Lesson("aws-m2-l3", "Lambda e API Gateway: Arquitetura Serverless", 20,
+                "Serverless elimina gestão de servidores. Lambda escala de zero para milhões sem configuração.",
+                [
+                    Section("Lambda: Funções como Serviço",
+                        "Lambda executa código em resposta a eventos. Pago por 100ms de execução. Escala automática.",
+                        "import json, boto3, os\n\ndef lambda_handler(event, context):\n    s3 = boto3.client('s3')\n\n    for record in event['Records']:\n        body = json.loads(record['body'])\n        arquivo = body['arquivo']\n\n        try:\n            obj = s3.get_object(Bucket=os.environ['BUCKET'], Key=arquivo)\n            dados = json.loads(obj['Body'].read())\n            resultado = processar(dados)\n            s3.put_object(\n                Bucket=os.environ['BUCKET'],\n                Key=f'processado/{arquivo}',\n                Body=json.dumps(resultado)\n            )\n        except Exception as e:\n            print(f'Erro em {arquivo}: {e}')\n            raise  # SQS re-entrega a mensagem\n\n    return {'statusCode': 200}", "python"),
+                    Section("API Gateway + Lambda: FastAPI Serverless",
+                        "API Gateway roteia requests HTTP para Lambda. Pago por request — zero custo quando sem tráfego.",
+                        "# serverless.yml\nservice: minha-api\nprovider:\n  name: aws\n  runtime: python3.12\n  region: us-east-1\n\nfunctions:\n  api:\n    handler: app.handler\n    events:\n      - httpApi:\n          path: /{proxy+}\n          method: ANY\n    timeout: 30\n    memorySize: 512\n\n# app.py: FastAPI + Mangum (adapter para Lambda)\nfrom fastapi import FastAPI\nfrom mangum import Mangum\n\napp = FastAPI()\n\n@app.get('/saude')\ndef saude():\n    return {'status': 'ok'}\n\nhandler = Mangum(app)", "yaml"),
+                    Section("SQS + Lambda: Processamento Assíncrono com DLQ",
+                        "SQS desacopla produtor do consumidor. DLQ captura falhas após N tentativas.",
+                        "resource \"aws_sqs_queue\" \"tarefas\" {\n  name                       = \"tarefas-pipeline\"\n  visibility_timeout_seconds = 300\n  redrive_policy = jsonencode({\n    deadLetterTargetArn = aws_sqs_queue.dlq.arn\n    maxReceiveCount     = 3\n  })\n}\n\nresource \"aws_sqs_queue\" \"dlq\" {\n  name                      = \"tarefas-pipeline-dlq\"\n  message_retention_seconds = 1209600  # 14 dias\n}\n\nresource \"aws_lambda_event_source_mapping\" \"sqs\" {\n  event_source_arn               = aws_sqs_queue.tarefas.arn\n  function_name                  = aws_lambda_function.processar.arn\n  batch_size                     = 10\n  bisect_batch_on_function_error = true\n}", "hcl"),
+                ],
+                exercise="Construa uma API serverless: API Gateway → Lambda (FastAPI + Mangum) → SQS para tarefas assíncronas → DLQ para falhas.",
+                takeaway="Lambda + SQS é o padrão mais custo-eficiente para workloads variáveis. DLQ é obrigatória — sem ela mensagens com erro somem silenciosamente."
+            ),
+        ]),
+        Module("aws-m3", "IaC com Terraform e Monitoramento", "Infraestrutura como código e observabilidade na AWS.", [
+            Lesson("aws-m3-l1", "Terraform na AWS: Infraestrutura como Código", 22,
+                "Terraform é o padrão de fato para IaC na AWS. Toda infraestrutura em código versionado, revisável e repetível.",
+                [
+                    Section("Estrutura de Projeto Terraform Profissional",
+                        "Módulos reutilizáveis, estados remotos no S3 e lock com DynamoDB para trabalho em time.",
+                        "# environments/prod/main.tf\nterraform {\n  backend \"s3\" {\n    bucket         = \"meu-terraform-state\"\n    key            = \"prod/terraform.tfstate\"\n    region         = \"us-east-1\"\n    dynamodb_table = \"terraform-locks\"  # evita conflito em time\n    encrypt        = true\n  }\n  required_providers {\n    aws = { source = \"hashicorp/aws\", version = \"~> 5.0\" }\n  }\n}\n\nmodule \"vpc\" {\n  source = \"../../modules/vpc\"\n  cidr   = \"10.0.0.0/16\"\n  name   = \"prod-vpc\"\n}", "hcl"),
+                    Section("Secrets: Nunca no tfstate",
+                        "tfstate salva o estado dos recursos — incluindo senhas se passadas diretamente. Use Secrets Manager.",
+                        "# RUIM: senha salva em texto no tfstate!\nresource \"aws_db_instance\" \"db\" {\n  password = \"minha-senha-123\"\n}\n\n# BOM: gerada pelo Terraform, salva no Secrets Manager\nresource \"random_password\" \"db\" { length = 32 }\n\nresource \"aws_secretsmanager_secret_version\" \"db\" {\n  secret_id     = aws_secretsmanager_secret.db.id\n  secret_string = jsonencode({ password = random_password.db.result })\n}\n\nresource \"aws_db_instance\" \"db\" {\n  password = random_password.db.result\n}\n\n# Na aplicação: buscar dinamicamente\nimport boto3, json\n\ndef get_db_password() -> str:\n    sm = boto3.client('secretsmanager')\n    secret = sm.get_secret_value(SecretId='prod/app/db-password')\n    return json.loads(secret['SecretString'])['password']", "python"),
+                    Section("CI/CD para Terraform: GitHub Actions",
+                        "Plan no PR para revisão, apply no merge para main. Ninguém faz terraform apply manual em produção.",
+                        "# .github/workflows/terraform.yml\non:\n  pull_request:\n    paths: ['infrastructure/**']\n  push:\n    branches: [main]\n\njobs:\n  plan:\n    if: github.event_name == 'pull_request'\n    steps:\n      - uses: aws-actions/configure-aws-credentials@v4\n        with:\n          role-to-assume: arn:aws:iam::123:role/GitHubActionsRole\n          aws-region: us-east-1\n      - run: terraform init && terraform plan -out=tfplan\n\n  apply:\n    if: github.ref == 'refs/heads/main'\n    environment: production  # requer aprovação manual\n    steps:\n      - run: terraform apply -auto-approve", "yaml"),
+                ],
+                exercise="Crie um módulo Terraform reutilizável para VPC. Use remote state no S3. Configure CI/CD com plan no PR e apply no merge.",
+                takeaway="Estado remoto + DynamoDB lock são obrigatórios em time. Apply manual em produção é erro de processo — use CI/CD com aprovação."
+            ),
+            Lesson("aws-m3-l2", "CloudWatch: Logs, Métricas e Alarmes", 18,
+                "CloudWatch é a observabilidade nativa da AWS. Configure antes de ir para produção, não depois do incidente.",
+                [
+                    Section("Logs Estruturados no CloudWatch",
+                        "Aplicações devem logar JSON estruturado. CloudWatch Logs Insights permite queries SQL-like nos logs.",
+                        "import json\nfrom datetime import datetime\n\nclass JSONLogger:\n    def __init__(self, service: str):\n        self.service = service\n\n    def log(self, level: str, message: str, **ctx):\n        print(json.dumps({\n            'timestamp': datetime.utcnow().isoformat(),\n            'level': level,\n            'service': self.service,\n            'message': message,\n            **ctx\n        }))\n\n    def info(self, msg, **ctx):  self.log('INFO', msg, **ctx)\n    def error(self, msg, **ctx): self.log('ERROR', msg, **ctx)\n\nlogger = JSONLogger('api-pedidos')\nlogger.info('pedido_processado', pedido_id=123, tempo_ms=150)\n\n# CloudWatch Logs Insights:\n# fields @timestamp, pedido_id, tempo_ms\n# | filter level = 'ERROR'\n# | stats avg(tempo_ms) by bin(5m)", "python"),
+                    Section("Métricas Customizadas e Alarmes",
+                        "Métricas de negócio (pedidos/min, taxa de conversão) são tão importantes quanto CPU/RAM.",
+                        "import boto3\n\ncw = boto3.client('cloudwatch')\n\ndef registrar_metrica(nome: str, valor: float):\n    cw.put_metric_data(\n        Namespace='MeuApp/Negocio',\n        MetricData=[{'MetricName': nome, 'Value': valor, 'Unit': 'Count'}]\n    )\n\n# Alarme: notificar se pedidos caírem abaixo de 10/5min\ncw.put_metric_alarm(\n    AlarmName='PedidosCaindo',\n    MetricName='PedidosCriados',\n    Namespace='MeuApp/Negocio',\n    Statistic='Sum',\n    Period=300,\n    EvaluationPeriods=2,\n    Threshold=10,\n    ComparisonOperator='LessThanThreshold',\n    AlarmActions=['arn:aws:sns:us-east-1:123:alertas-producao'],\n    TreatMissingData='breaching'\n)", "python"),
+                    Section("X-Ray: Tracing Distribuído",
+                        "X-Ray rastreia requests através de Lambda, API Gateway e RDS automaticamente com zero código.",
+                        "from aws_xray_sdk.core import xray_recorder, patch_all\n\npatch_all()  # instrumenta boto3, requests, sqlalchemy automaticamente\n\n@xray_recorder.capture('processar_pedido')\ndef processar_pedido(pedido_id: int):\n    with xray_recorder.in_subsegment('buscar_banco'):\n        pedido = db.get(pedido_id)\n\n    with xray_recorder.in_subsegment('chamar_pagamento'):\n        resultado = requests.post('https://api.pagamento.com/cobrar')\n\n    return resultado\n\n# X-Ray Service Map:\n# Cliente → API Gateway → Lambda → RDS\n# Latência e taxa de erro em cada hop", "python"),
+                ],
+                exercise="Configure logs JSON, métricas de negócio customizadas e alarme no SNS para quando erros ultrapassarem 1% das requests.",
+                takeaway="Logs sem estrutura não são consultáveis. Métricas de negócio revelam o impacto real do problema — CPU alto não significa nada sem contexto."
+            ),
+            Lesson("aws-m3-l3", "Deploy Containerizado: ECR + ECS Fargate", 22,
+                "Pipeline completo: GitHub Actions → ECR → ECS Fargate. Aplicação em produção sem gerenciar servidores.",
+                [
+                    Section("ECR: Registry Privado de Imagens",
+                        "ECR é o Docker Hub privado da AWS. Integra nativamente com ECS e EKS.",
+                        "# GitHub Actions: build e push para ECR\n- name: Login no ECR\n  uses: aws-actions/amazon-ecr-login@v2\n\n- name: Build e push\n  env:\n    ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}\n    IMAGE_TAG: ${{ github.sha }}\n  run: |\n    docker build -t $ECR_REGISTRY/minha-api:$IMAGE_TAG .\n    docker push $ECR_REGISTRY/minha-api:$IMAGE_TAG\n\n# Lifecycle: manter apenas 10 imagens mais recentes\nresource \"aws_ecr_lifecycle_policy\" \"api\" {\n  repository = aws_ecr_repository.api.name\n  policy = jsonencode({\n    rules = [{\n      rulePriority = 1\n      action = { type = \"expire\" }\n      selection = { tagStatus = \"any\", countType = \"imageCountMoreThan\", countNumber = 10 }\n    }]\n  })\n}", "yaml"),
+                    Section("ECS Fargate: Containers sem EC2",
+                        "Fargate executa containers sem você gerenciar instâncias. Pago pelo vCPU/memória usados.",
+                        "resource \"aws_ecs_task_definition\" \"api\" {\n  family                   = \"minha-api\"\n  requires_compatibilities = [\"FARGATE\"]\n  network_mode             = \"awsvpc\"\n  cpu                      = 512\n  memory                   = 1024\n\n  container_definitions = jsonencode([{\n    name  = \"api\"\n    image = \"${aws_ecr_repository.api.repository_url}:latest\"\n    portMappings = [{ containerPort = 8000 }]\n    secrets = [{\n      name      = \"DATABASE_URL\"\n      valueFrom = aws_secretsmanager_secret.db.arn\n    }]\n    logConfiguration = {\n      logDriver = \"awslogs\"\n      options = {\n        awslogs-group  = \"/ecs/minha-api\"\n        awslogs-region = \"us-east-1\"\n      }\n    }\n  }])\n}\n\nresource \"aws_ecs_service\" \"api\" {\n  task_definition = aws_ecs_task_definition.api.arn\n  desired_count   = 2\n  launch_type     = \"FARGATE\"\n\n  load_balancer {\n    target_group_arn = aws_lb_target_group.app.arn\n    container_name   = \"api\"\n    container_port   = 8000\n  }\n}", "hcl"),
+                    Section("Blue/Green Deploy com CodeDeploy",
+                        "Nova versão sobe em paralelo, tráfego migra gradualmente. Rollback automático em segundos se algo falhar.",
+                        "resource \"aws_codedeploy_deployment_group\" \"api\" {\n  deployment_config_name = \"CodeDeployDefault.ECSLinear10PercentEvery1Minutes\"\n  # 10% do tráfego por minuto → migração em 10 minutos\n\n  ecs_service {\n    cluster_name = aws_ecs_cluster.main.name\n    service_name = aws_ecs_service.api.name\n  }\n\n  load_balancer_info {\n    target_group_pair_info {\n      prod_traffic_route { listener_arns = [aws_lb_listener.https.arn] }\n      target_group { name = aws_lb_target_group.blue.name }\n      target_group { name = aws_lb_target_group.green.name }\n    }\n  }\n\n  auto_rollback_configuration {\n    enabled = true\n    events  = [\"DEPLOYMENT_FAILURE\"]\n  }\n}", "hcl"),
+                ],
+                exercise="Configure pipeline completo: GitHub Actions → ECR → ECS Fargate com blue/green deploy e rollback automático em falha.",
+                takeaway="ECS Fargate + ALB + Blue/Green = deploy com zero downtime e rollback em segundos. Nunca faça deploy manual em produção."
+            ),
+        ]),
+        Module("aws-m4", "Well-Architected, Segurança e DR", "Checklist profissional antes de ir para produção.", [
+            Lesson("aws-m4-l1", "Well-Architected Framework", 15,
+                "6 pilares para sistemas de qualidade. Use como checklist antes de lançar em produção.",
+                [
+                    Section("Os 6 Pilares na Prática",
+                        "Operational Excellence, Security, Reliability, Performance, Cost Optimization, Sustainability.",
+                        "# SECURITY (mais crítico)\n# - IAM least privilege\n# - Secrets no Secrets Manager\n# - VPC com subnets privadas para banco/app\n# - Encryption at rest e in transit\n# - GuardDuty habilitado\n# - CloudTrail para auditoria\n\n# RELIABILITY\n# - Multi-AZ para RDS e EC2\n# - Auto Scaling Groups\n# - Health checks e circuit breakers\n# - Backup automatizado com testes de restore\n\n# COST OPTIMIZATION\n# - Reserved Instances para cargas previsíveis\n# - Spot para batch jobs (economia de 90%)\n# - S3 Lifecycle para dados antigos\n# - Budget alerts no AWS Budgets", "bash"),
+                    Section("AWS Cost Explorer e Budget Alerts",
+                        "Surpresa na fatura AWS é evitável. Configure alertas antes de atingir o limite.",
+                        "import boto3\n\nbudgets = boto3.client('budgets')\n\n# Alerta quando custo > 80% do limite mensal\nbudgets.create_budget(\n    AccountId='123456789012',\n    Budget={\n        'BudgetName': 'Limite-Mensal-Producao',\n        'BudgetLimit': {'Amount': '500', 'Unit': 'USD'},\n        'BudgetType': 'COST',\n        'TimeUnit': 'MONTHLY',\n    },\n    NotificationsWithSubscribers=[{\n        'Notification': {\n            'NotificationType': 'ACTUAL',\n            'ComparisonOperator': 'GREATER_THAN',\n            'Threshold': 80,\n        },\n        'Subscribers': [{'SubscriptionType': 'EMAIL', 'Address': 'eng@empresa.com'}]\n    }]\n)", "python"),
+                    Section("Graviton e Serverless: Sustentabilidade e Custo",
+                        "Graviton (ARM) é 40% mais eficiente que x86. Serverless escala a zero. Sustentabilidade e custo andam juntos.",
+                        "# Mudar para Graviton: só trocar o instance_type\nresource \"aws_db_instance\" \"postgres\" {\n  instance_class = \"db.t4g.medium\"  # 't4g' = Graviton, 35% mais barato\n}\n\nresource \"aws_ecs_task_definition\" \"api\" {\n  runtime_platform {\n    cpu_architecture        = \"ARM64\"  # Graviton Fargate\n    operating_system_family = \"LINUX\"\n  }\n}\n\n# Right-sizing: identificar instâncias superprovisionadas\naws ce get-rightsizing-recommendation \\\n    --service \"AmazonEC2\" \\\n    --configuration '{ \"RecommendationTarget\": \"SAME_INSTANCE_FAMILY\" }'", "hcl"),
+                ],
+                exercise="Rode o Well-Architected Tool na conta AWS. Identifique os 3 riscos mais críticos e implemente as correções.",
+                takeaway="Well-Architected é um checklist de coisas que vão dar problema em produção. Use antes de lançar, não depois do incidente."
+            ),
+            Lesson("aws-m4-l2", "Segurança: GuardDuty, WAF e Config", 18,
+                "Segurança na AWS é compartilhada. AWS cuida da infraestrutura, você cuida do que coloca nela.",
+                [
+                    Section("GuardDuty: Detecção de Ameaças com ML",
+                        "GuardDuty analisa CloudTrail, VPC Flow Logs e DNS automaticamente. Detecta comportamentos suspeitos.",
+                        "resource \"aws_guardduty_detector\" \"main\" {\n  enable = true\n  datasources {\n    s3_logs { enable = true }\n    malware_protection {\n      scan_ec2_instance_with_findings {\n        ebs_volumes { enable = true }\n      }\n    }\n  }\n}\n\n# Reagir automaticamente a achados críticos:\nresource \"aws_cloudwatch_event_rule\" \"guardduty_high\" {\n  event_pattern = jsonencode({\n    source      = [\"aws.guardduty\"]\n    detail-type = [\"GuardDuty Finding\"]\n    detail      = { severity = [{ numeric = [\">=\", 7] }] }\n  })\n}\n# EventBridge → Lambda → bloquear IP no WAF / revogar credenciais", "hcl"),
+                    Section("WAF: Proteger APIs de Ataques",
+                        "WAF filtra requests maliciosos antes de chegarem na aplicação. SQLi, XSS, bots e rate limit por IP.",
+                        "resource \"aws_wafv2_web_acl\" \"api\" {\n  name  = \"api-protecao\"\n  scope = \"REGIONAL\"\n  default_action { allow {} }\n\n  rule {\n    name     = \"AWSManagedRulesCommonRuleSet\"\n    priority = 1\n    override_action { none {} }\n    statement {\n      managed_rule_group_statement {\n        vendor_name = \"AWS\"\n        name        = \"AWSManagedRulesCommonRuleSet\"\n      }\n    }\n    visibility_config {\n      sampled_requests_enabled = true\n      cloudwatch_metrics_enabled = true\n      metric_name = \"CommonRuleSet\"\n    }\n  }\n\n  rule {\n    name     = \"RateLimit\"\n    priority = 10\n    action { block {} }\n    statement {\n      rate_based_statement {\n        limit              = 2000\n        aggregate_key_type = \"IP\"\n      }\n    }\n  }\n}", "hcl"),
+                    Section("AWS Config: Conformidade Contínua",
+                        "Config monitora mudanças e verifica conformidade. Detecta drift de IaC e recursos fora das regras.",
+                        "resource \"aws_config_config_rule\" \"s3_sem_acesso_publico\" {\n  name = \"s3-bucket-public-read-prohibited\"\n  source {\n    owner             = \"AWS\"\n    source_identifier = \"S3_BUCKET_PUBLIC_READ_PROHIBITED\"\n  }\n}\n\nresource \"aws_config_config_rule\" \"rds_encrypted\" {\n  name = \"rds-storage-encrypted\"\n  source {\n    owner             = \"AWS\"\n    source_identifier = \"RDS_STORAGE_ENCRYPTED\"\n  }\n}\n\n# Auto-remediation: bloquear S3 público automaticamente\nresource \"aws_config_remediation_configuration\" \"s3\" {\n  config_rule_name = aws_config_config_rule.s3_sem_acesso_publico.name\n  target_type      = \"SSM_DOCUMENT\"\n  target_id        = \"AWS-DisableS3BucketPublicReadWrite\"\n  automatic        = true\n}", "hcl"),
+                ],
+                exercise="Habilite GuardDuty e configure resposta automática para achados de alta severidade via EventBridge → Lambda → SNS.",
+                takeaway="GuardDuty detecta, WAF bloqueia, Config audita. Os três juntos cobrem detecção, prevenção e conformidade — o mínimo para produção."
+            ),
+            Lesson("aws-m4-l3", "Disaster Recovery: RTO, RPO e Failover", 18,
+                "DR não é opcional — é quanto tempo você aceita ficar fora do ar e quanto dado aceita perder.",
+                [
+                    Section("Estratégias DR por Custo vs RTO",
+                        "Backup & Restore: RTO horas, custo baixo. Pilot Light: RTO 30min. Warm Standby: RTO 5min. Multi-Site: RTO zero.",
+                        "# Estratégias por criticidade:\n\n# Backup & Restore (RPO: horas, RTO: 1-8h)\n# - Backups S3, restaurar em nova região\n# - Use para: apps não-críticas\n\n# Pilot Light (RPO: minutos, RTO: 15-60min)\n# - Banco em réplica na região DR\n# - Compute desligado (AMI/Terraform prontos)\n# - Ligar e escalar em desastre\n\n# Warm Standby (RPO: segundos, RTO: 1-15min)\n# - Versão reduzida rodando na DR\n# - Escalar automaticamente se primary cair\n# - Use para: e-commerce, SaaS\n\n# Multi-Site Active/Active (RPO: 0, RTO: 0)\n# - Duas regiões ativas com Route 53 failover\n# - Aurora Global Database (< 1s replication lag)\n# - Use para: fintech, healthcare crítico", "bash"),
+                    Section("Route 53 Failover Automático",
+                        "Route 53 detecta falhas via health check e redireciona para região DR sem intervenção manual.",
+                        "resource \"aws_route53_health_check\" \"primary\" {\n  fqdn              = \"api.meusite.com\"\n  port              = 443\n  type              = \"HTTPS\"\n  resource_path     = \"/saude\"\n  failure_threshold = 3\n  request_interval  = 10\n}\n\nresource \"aws_route53_record\" \"primary\" {\n  name = \"api.meusite.com\"\n  type = \"A\"\n  failover_routing_policy { type = \"PRIMARY\" }\n  health_check_id = aws_route53_health_check.primary.id\n  set_identifier  = \"primary\"\n  alias {\n    name    = aws_lb.primary.dns_name\n    zone_id = aws_lb.primary.zone_id\n    evaluate_target_health = true\n  }\n}\n\nresource \"aws_route53_record\" \"secondary\" {\n  name = \"api.meusite.com\"\n  type = \"A\"\n  failover_routing_policy { type = \"SECONDARY\" }  # ativa quando primary falha\n  set_identifier = \"secondary\"\n  alias {\n    name    = aws_lb.dr_region.dns_name\n    zone_id = aws_lb.dr_region.zone_id\n    evaluate_target_health = true\n  }\n}", "hcl"),
+                    Section("Aurora Global Database: Replicação Multi-Região",
+                        "Aurora Global Database replica com lag < 1 segundo. Promoção da réplica para primary em < 1 minuto.",
+                        "resource \"aws_rds_global_cluster\" \"main\" {\n  global_cluster_identifier = \"minha-app-global\"\n  engine                    = \"aurora-postgresql\"\n  engine_version            = \"16.1\"\n}\n\n# Cluster primário (us-east-1)\nresource \"aws_rds_cluster\" \"primary\" {\n  cluster_identifier        = \"app-primary\"\n  engine                    = \"aurora-postgresql\"\n  global_cluster_identifier = aws_rds_global_cluster.main.id\n}\n\n# Cluster secundário (sa-east-1 — São Paulo)\nresource \"aws_rds_cluster\" \"secondary\" {\n  provider                  = aws.sa_east_1\n  cluster_identifier        = \"app-secondary\"\n  engine                    = \"aurora-postgresql\"\n  global_cluster_identifier = aws_rds_global_cluster.main.id\n}\n\n# Promover secondary em DR:\n# aws rds failover-global-cluster \\\n#   --global-cluster-identifier minha-app-global \\\n#   --target-db-cluster-identifier arn:...:app-secondary", "hcl"),
+                ],
+                exercise="Defina RTO e RPO para uma aplicação. Implemente Pilot Light com réplica RDS em sa-east-1 e failover Route 53 automático.",
+                takeaway="DR sem teste não é DR — é esperança. Faça game day a cada 6 meses: corte a região primária e meça o RTO real."
+            ),
+        ]),
+    ]
+)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # CATALOG — adicionar todos os cursos aqui
 # ─────────────────────────────────────────────────────────────────────────────
 COURSES: list[Course] = [
     SQL_COURSE, PYTHON_DATA_COURSE, ML_COURSE, GIT_COURSE,
     DOCKER_COURSE, FASTAPI_COURSE, DATA_ENG_COURSE, ARCH_COURSE,
+    AWS_COURSE,
 ]
 _INDEX: dict[str, Course] = {c.id: c for c in COURSES}
 

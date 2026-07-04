@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from core.database import get_db, get_read_db
+from core.limiter import limiter
 from core.security import get_current_user
 from models.user import User
 from models.career_path import CareerPath, MilestoneProgress
@@ -38,7 +39,9 @@ async def _build_user_context(user: User, db: AsyncSession) -> dict:
 
 
 @router.post("/chat")
+@limiter.limit("20/minute")
 async def chat_stream(
+    request: Request,
     req: ChatRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),

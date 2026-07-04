@@ -6,6 +6,7 @@ import { BarChart2, Clock, Activity, TrendingUp, Target, CheckCircle } from "luc
 import { useCareerStore } from "@/lib/stores/careerStore";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { SkeletonCard } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import type { AnalyticsSummary } from "@/lib/api";
 
 function CircleGauge({ pct }: { pct: number }) {
@@ -111,7 +112,7 @@ const BAR_DATA = (a: AnalyticsSummary) => [
 ];
 
 export default function AnalyticsPage() {
-  const { analytics, fetchAnalytics } = useCareerStore();
+  const { analytics, loading, fetchAnalytics } = useCareerStore();
 
   useEffect(() => {
     fetchAnalytics();
@@ -141,11 +142,28 @@ export default function AnalyticsPage() {
             </div>
           </div>
 
-          {/* Skeleton */}
-          {!analytics && (
+          {/* Loading */}
+          {loading && !analytics && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
+          )}
+
+          {/* Empty state — analytics null após loading terminar */}
+          {!loading && !analytics && (
+            <EmptyState
+              icon={<BarChart2 size={28} className="text-text-dim" />}
+              title="Nenhum dado disponível"
+              description="Complete ao menos um milestone para ver suas métricas de progresso."
+              action={
+                <button
+                  onClick={() => fetchAnalytics()}
+                  className="px-4 py-2 bg-accent text-surface text-sm font-semibold rounded-lg hover:bg-accent-dim transition-colors"
+                >
+                  Tentar novamente
+                </button>
+              }
+            />
           )}
 
           {analytics && (
@@ -159,14 +177,14 @@ export default function AnalyticsPage() {
               </div>
 
               {/* Charts row */}
-              <div className="grid grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
                 {/* Circle gauge */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.93 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.32 }}
-                  className="col-span-2 bg-surface-card border border-border rounded-2xl p-6 shadow-card flex flex-col"
+                  className="lg:col-span-2 bg-surface-card border border-border rounded-2xl p-6 shadow-card flex flex-col"
                 >
                   <p className="text-sm font-semibold text-text-primary mb-4">Progresso geral</p>
                   <div className="flex flex-col items-center justify-center flex-1 gap-4">
@@ -195,7 +213,7 @@ export default function AnalyticsPage() {
                   initial={{ opacity: 0, scale: 0.93 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.4 }}
-                  className="col-span-3 bg-surface-card border border-border rounded-2xl p-6 shadow-card"
+                  className="lg:col-span-3 bg-surface-card border border-border rounded-2xl p-6 shadow-card"
                 >
                   <p className="text-sm font-semibold text-text-primary mb-4">Milestones por status</p>
                   <ResponsiveContainer width="100%" height={200}>

@@ -1,6 +1,7 @@
 import uuid
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
+from core.limiter import limiter
 from core.security import get_current_user
 from models.user import User
 from services.ai_service import ai_service
@@ -28,7 +29,9 @@ def _build_context(user: User) -> dict:
 
 
 @router.post("/start")
+@limiter.limit("10/minute")
 async def start_simulation(
+    request: Request,
     scenario: str = "client_requirements",
     current_user: User = Depends(get_current_user),
 ):
@@ -56,7 +59,9 @@ async def start_simulation(
 
 
 @router.post("/respond")
+@limiter.limit("20/minute")
 async def respond_simulation(
+    request: Request,
     req: SimulationRespondRequest,
     current_user: User = Depends(get_current_user),
 ):

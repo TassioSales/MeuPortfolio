@@ -6,7 +6,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from core.config import settings
-from core.database import get_db
+from core.database import get_read_db
 
 bearer_scheme = HTTPBearer()
 
@@ -26,7 +26,7 @@ def create_access_token(user_id: int) -> str:
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_read_db),
 ):
     from models.user import User
 

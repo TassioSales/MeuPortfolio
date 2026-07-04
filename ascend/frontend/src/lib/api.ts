@@ -63,7 +63,7 @@ export const api = {
     getMentors: () => request<Mentor[]>("/mentorship/mentors"),
     getSlots: () => request<Slot[]>("/mentorship/slots"),
     book: (mentor_id: number, scheduled_at: string, topic: string) =>
-      request("/mentorship/book", {
+      request<{ message: string }>("/mentorship/book", {
         method: "POST",
         body: JSON.stringify({ mentor_id, scheduled_at, topic }),
       }),

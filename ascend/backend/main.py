@@ -3,15 +3,25 @@ from fastapi import FastAPI
 from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
+from core.config import settings
 from core.database import create_tables
 from core.exceptions import global_exception_handler, http_exception_handler
+from core.limiter import limiter
 from core.middleware import RequestLoggingMiddleware
 from routers import auth, career, coach, simulation, analytics, mentorship, courses
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    if settings.SECRET_KEY == "dev-secret-key-change-in-production":
+        logger.critical(
+            "SECRET_KEY é o valor padrão inseguro. "
+            "Defina uma chave forte no .env antes de ir a produção."
+        )
+        raise RuntimeError("SECRET_KEY não configurado — startup abortado.")
     await create_tables()
     logger.info("Trilha API iniciada — http://localhost:8000/docs")
     yield
@@ -25,6 +35,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(RequestLoggingMiddleware)
 app.add_middleware(
     CORSMiddleware,

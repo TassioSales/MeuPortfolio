@@ -1,11 +1,12 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { RefreshCw, Play, BookOpen, Users, BarChart2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { CareerPath } from "@/components/roadmap/CareerPath";
 import { AIChatPanel } from "@/components/coach/AIChatPanel";
 import { NextBestAction } from "@/components/coach/NextBestAction";
+import { PageTransition } from "@/components/layout/PageTransition";
 import { useCareerStore } from "@/lib/stores/careerStore";
 import { useAuthStore } from "@/lib/stores/authStore";
 import { SkeletonCard } from "@/components/ui/Skeleton";
@@ -20,13 +21,31 @@ const QUICK_ACTIONS = [
 export default function HomePage() {
   const { roadmap, loading, fetchRoadmap, updateMilestone } = useCareerStore();
   const { user } = useAuthStore();
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => { fetchRoadmap(); }, []);
+  useEffect(() => {
+    fetchRoadmap();
+  }, []);
+
+  // Polling enquanto o roadmap ainda não foi gerado (background task do registro)
+  useEffect(() => {
+    if (roadmap?.milestones?.length) {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+      return;
+    }
+    pollingRef.current = setInterval(() => {
+      fetchRoadmap();
+    }, 5000);
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+    };
+  }, [roadmap?.milestones?.length]);
 
   const currentMs = roadmap?.milestones[roadmap.current_milestone_index] ?? null;
   const pct = roadmap?.progress_pct ?? 0;
 
   return (
+    <PageTransition>
     <div className="flex h-screen overflow-hidden bg-surface">
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-y-auto p-6 gap-5 min-w-0">
@@ -156,8 +175,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Right panel */}
-      <div className="w-80 flex flex-col gap-4 p-4 border-l border-border shrink-0 overflow-y-auto">
+      {/* Right panel — oculto em mobile, visível em xl+ */}
+      <div className="hidden xl:flex w-80 flex-col gap-4 p-4 border-l border-border shrink-0 overflow-y-auto">
         <NextBestAction
           milestone={currentMs}
           progressPct={pct}
@@ -169,5 +188,6 @@ export default function HomePage() {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 }

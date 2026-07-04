@@ -34,6 +34,5 @@ export const useCareerStore = create<CareerState>((set, get) => ({
   updateMilestone: async (index, status, minutes = 0) => {
     await api.career.updateMilestone(index, status, minutes);
     await get().fetchRoadmap();
-    await get().fetchAnalytics();
   },
 }));

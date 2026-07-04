@@ -6,6 +6,7 @@ from core.database import get_db, get_read_db
 from core.security import get_current_user
 from models.user import User
 from models.career_path import MentorshipSession
+from schemas.mentorship import BookRequest
 from services.mentor_service import get_all, get_by_id
 
 router = APIRouter(prefix="/mentorship", tags=["mentorship"])
@@ -27,15 +28,13 @@ async def list_slots():
     return slots[:10]
 
 
-@router.post("/book")
+@router.post("/book", status_code=201)
 async def book_session(
-    mentor_id: int,
-    scheduled_at: str,
-    topic: str,
+    body: BookRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    mentor = get_by_id(mentor_id)
+    mentor = get_by_id(body.mentor_id)
     if not mentor:
         raise HTTPException(status_code=404, detail="Mentor não encontrado")
 
@@ -43,8 +42,8 @@ async def book_session(
         user_id=current_user.id,
         mentor_name=mentor.name,
         mentor_role=mentor.role,
-        scheduled_at=datetime.fromisoformat(scheduled_at),
-        topic=topic,
+        scheduled_at=datetime.fromisoformat(body.scheduled_at),
+        topic=body.topic,
         status="scheduled",
     )
     db.add(session)

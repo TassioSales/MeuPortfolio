@@ -1,26 +1,42 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { Send, Sparkles } from "lucide-react";
-import { streamChat } from "@/lib/api";
+import { streamChat, api } from "@/lib/api";
 
 interface Message { role: "user" | "assistant"; content: string; }
 
+const WELCOME: Message = { role: "assistant", content: "Olá! Sou o Trilha, seu AI Coach de carreira. Como posso te ajudar hoje?" };
 const SUGGESTED = [
   "O que devo priorizar esta semana?",
   "Como acelero meu progresso?",
   "Quais skills são mais valorizadas?",
 ];
 
+const MAX_HISTORY = 20;
+
 export function AIChatPanel() {
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Olá! Sou o Trilha, seu AI Coach de carreira. Como posso te ajudar hoje?" },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([WELCOME]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [showSuggested, setShowSuggested] = useState(true);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  // Carrega histórico da API ao montar
+  useEffect(() => {
+    api.coach.history(0, 50).then((history) => {
+      if (!history.length) return;
+      const loaded: Message[] = history.map((m) => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      }));
+      setMessages(loaded);
+      setShowSuggested(false);
+    }).catch(() => {
+      // falha silenciosa — mantém mensagem de boas-vindas
+    });
+  }, []);
 
   async function send(text?: string) {
     const content = (text ?? input).trim();
@@ -32,7 +48,9 @@ export function AIChatPanel() {
     setMessages((m) => [...m, userMsg]);
     setStreaming(true);
 
-    const history = [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
+    // Envia apenas as últimas MAX_HISTORY mensagens para não estourar o contexto do modelo
+    const allMessages = [...messages, userMsg];
+    const history = allMessages.slice(-MAX_HISTORY).map((m) => ({ role: m.role, content: m.content }));
     let buffer = "";
     setMessages((m) => [...m, { role: "assistant", content: "" }]);
 

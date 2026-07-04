@@ -82,6 +82,17 @@ export const api = {
     categories: () =>
       request<{ categories: string[] }>("/courses/categories"),
   },
+  trilha: {
+    list: () => request<{ courses: BuiltinCourseSummary[] }>("/courses/trilha"),
+    get: (id: string) => request<BuiltinCourse>(`/courses/trilha/${id}`),
+    enroll: (id: string) =>
+      request<{ enrolled: boolean; already_enrolled: boolean }>(`/courses/trilha/${id}/enroll`, { method: "POST" }),
+    completeLesson: (courseId: string, lessonId: string) =>
+      request<{ lesson_id: string; completed_lessons: string[]; progress_pct: number }>(
+        `/courses/trilha/${courseId}/lessons/${lessonId}/complete`,
+        { method: "PATCH" }
+      ),
+  },
 };
 
 export async function streamChat(
@@ -227,4 +238,26 @@ export interface Course {
   id: number; title: string; platform: string; url: string;
   duration: string; level: string; skills: string[];
   is_free: boolean; rating: number; description: string; category: string;
+}
+
+export interface BuiltinCourseSummary {
+  id: string; title: string; tagline: string; description: string;
+  level: string; category: string; duration_hours: number; skills: string[];
+  color: string; module_count: number; lesson_count: number;
+  enrolled: boolean; completed_lessons: number; progress_pct: number;
+}
+
+export interface Section {
+  heading: string; body: string; code: string; lang: string;
+}
+export interface Lesson {
+  id: string; title: string; duration_min: number; intro: string;
+  sections: Section[]; exercise: string; takeaway: string;
+}
+export interface CourseModule {
+  id: string; title: string; description: string; lessons: Lesson[];
+}
+export interface BuiltinCourse extends Omit<BuiltinCourseSummary, "completed_lessons"> {
+  modules: CourseModule[];
+  completed_lessons: string[];
 }

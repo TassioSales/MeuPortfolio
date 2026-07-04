@@ -1,14 +1,105 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen, ExternalLink, Star, Clock, Tag, Zap,
-  ChevronDown, Filter, Sparkles
+  ChevronDown, Filter, Sparkles, GraduationCap, Play, CheckCircle2,
 } from "lucide-react";
-import { api, type Course } from "@/lib/api";
+import { api, type Course, type BuiltinCourseSummary } from "@/lib/api";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SkeletonCard } from "@/components/ui/Skeleton";
+
+const COURSE_LEVEL_BADGE: Record<string, string> = {
+  "Iniciante":     "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  "Intermediário": "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  "Avançado":      "bg-red-500/10 text-red-400 border-red-500/20",
+};
+
+function TrilhaCard({ course, index }: { course: BuiltinCourseSummary; index: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.04, duration: 0.35 }}
+      className="group relative bg-surface-card border border-border hover:border-border-bright rounded-2xl p-5 flex flex-col gap-3 shadow-card hover:shadow-card-hover transition-all"
+    >
+      {/* Color accent bar */}
+      <div
+        className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
+        style={{ background: course.color }}
+      />
+
+      {/* Header */}
+      <div className="flex items-start justify-between gap-2 pt-1">
+        <div>
+          <h3 className="text-sm font-semibold text-text-primary leading-snug group-hover:text-accent transition-colors">
+            {course.title}
+          </h3>
+          <p className="text-xs text-text-muted mt-0.5">{course.tagline}</p>
+        </div>
+        {course.progress_pct === 100 && (
+          <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
+        )}
+      </div>
+
+      {/* Meta row */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className={`text-[10px] font-semibold border px-2 py-0.5 rounded-full ${COURSE_LEVEL_BADGE[course.level] ?? "bg-surface-high text-text-muted border-border"}`}>
+          {course.level}
+        </span>
+        <span className="flex items-center gap-1 text-[11px] text-text-muted">
+          <Clock size={10} />
+          {course.duration_hours}h
+        </span>
+        <span className="flex items-center gap-1 text-[11px] text-text-muted">
+          <BookOpen size={10} />
+          {course.lesson_count} aulas
+        </span>
+      </div>
+
+      {/* Skills */}
+      {course.skills.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {course.skills.slice(0, 4).map((s) => (
+            <span key={s} className="text-[10px] bg-surface-high text-text-muted px-2 py-0.5 rounded-md border border-border">
+              {s}
+            </span>
+          ))}
+          {course.skills.length > 4 && (
+            <span className="text-[10px] text-text-dim">+{course.skills.length - 4}</span>
+          )}
+        </div>
+      )}
+
+      {/* Progress bar */}
+      {course.enrolled && (
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] text-text-dim">Progresso</span>
+            <span className="text-[11px] font-semibold text-text-muted">{course.progress_pct}%</span>
+          </div>
+          <div className="w-full h-1 bg-surface-high rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all"
+              style={{ width: `${course.progress_pct}%`, background: course.color }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* CTA */}
+      <Link
+        href={`/dashboard/courses/${course.id}`}
+        className="mt-auto flex items-center gap-2 text-xs font-semibold text-accent hover:text-accent/80 transition-colors"
+      >
+        <Play size={11} />
+        {course.enrolled ? "Continuar" : "Começar curso"}
+      </Link>
+    </motion.div>
+  );
+}
 
 const LEVEL_COLORS: Record<string, string> = {
   "Iniciante":     "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
@@ -88,23 +179,26 @@ function CourseCard({ course, index }: { course: Course; index: number }) {
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [recommended, setRecommended] = useState<Course[]>([]);
+  const [trilhaCourses, setTrilhaCourses] = useState<BuiltinCourseSummary[]>([]);
   const [milestoneTitle, setMilestoneTitle] = useState<string>("");
   const [categories, setCategories] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [tab, setTab] = useState<"recommended" | "all">("recommended");
+  const [tab, setTab] = useState<"recommended" | "all" | "trilha">("recommended");
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [recResult, catResult] = await Promise.all([
+      const [recResult, catResult, trilhaResult] = await Promise.all([
         api.courses.recommended(),
         api.courses.categories(),
+        api.trilha.list(),
       ]);
       setRecommended(recResult.courses);
       setMilestoneTitle(recResult.milestone_title ?? "");
       setCategories(catResult.categories);
+      setTrilhaCourses(trilhaResult.courses);
     } catch {
       // silently fail
     } finally {
@@ -134,7 +228,7 @@ export default function CoursesPage() {
     loadCatalog(cat ?? undefined);
   };
 
-  const displayed = tab === "recommended" ? recommended : courses;
+  const displayed = tab === "recommended" ? recommended : tab === "all" ? courses : [];
 
   return (
     <PageTransition>
@@ -165,6 +259,11 @@ export default function CoursesPage() {
                   {activeCategory ? ` em ${activeCategory}` : ""}
                 </p>
               )}
+              {tab === "trilha" && (
+                <p className="text-sm text-text-muted">
+                  {trilhaCourses.filter(c => c.enrolled).length} de {trilhaCourses.length} cursos iniciados
+                </p>
+              )}
             </div>
 
             {tab === "all" && (
@@ -184,6 +283,7 @@ export default function CoursesPage() {
             {[
               { key: "recommended" as const, label: "Recomendados", icon: Zap },
               { key: "all" as const, label: "Catálogo completo", icon: BookOpen },
+              { key: "trilha" as const, label: "Trilha de Aprendizado", icon: GraduationCap },
             ].map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
@@ -243,7 +343,25 @@ export default function CoursesPage() {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-8 py-6">
-          {loading ? (
+          {tab === "trilha" ? (
+            loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+              </div>
+            ) : trilhaCourses.length === 0 ? (
+              <EmptyState
+                icon={<GraduationCap size={28} className="text-text-dim" />}
+                title="Nenhum curso na trilha"
+                description="Os cursos built-in ainda não foram carregados."
+              />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {trilhaCourses.map((course, i) => (
+                  <TrilhaCard key={course.id} course={course} index={i} />
+                ))}
+              </div>
+            )
+          ) : loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
                 <SkeletonCard key={i} />

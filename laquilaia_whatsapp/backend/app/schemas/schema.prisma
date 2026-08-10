@@ -1,0 +1,252 @@
+// Prisma schema file for L'Aquila AI WhatsApp Clone
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-py"
+  interface = "sync"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========== USERS & AUTHENTICATION ==========
+
+model User {
+  id              String      @id @default(cuid())
+  email           String      @unique
+  nome            String
+  senha_hash      String
+  status          String      @default("ativo") // ativo, inativo, bloqueado
+  data_criacao    DateTime    @default(now())
+  data_atualizacao DateTime   @updatedAt
+
+  // Relations
+  api_keys        ApiKey[]
+  agents          Agent[]
+  lead_timeline   LeadTimeline[]
+
+  @@map("users")
+}
+
+model ApiKey {
+  id              String      @id @default(cuid())
+  user_id         String
+  user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  chave           String      @unique
+  is_active       Boolean     @default(true)
+  criado_em       DateTime    @default(now())
+  expira_em       DateTime?
+
+  @@map("api_keys")
+}
+
+// ========== AGENTS & PROMPTS ==========
+
+model Agent {
+  id                    String      @id @default(cuid())
+  user_id               String
+  user                  User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  nome                  String
+  descricao             String?
+  system_prompt         String      @db.Text
+  modelo                String      @default("claude-3-5-sonnet-20241022")
+  temperatura           Float       @default(0.7)
+  max_tokens            Int         @default(1024)
+  status                String      @default("ativo") // ativo, inativo, em_teste
+  data_criacao          DateTime    @default(now())
+  data_atualizacao      DateTime    @updatedAt
+
+  // Relations
+  agent_variables       AgentVariable[]
+  conversations         Conversation[]
+  kanban_columns        KanbanColumn[]
+  conversation_metrics  ConversationMetrics[]
+
+  @@map("agents")
+}
+
+model AgentVariable {
+  id                String      @id @default(cuid())
+  agent_id          String
+  agent             Agent       @relation(fields: [agent_id], references: [id], onDelete: Cascade)
+  nome_variavel     String
+  descricao         String?
+  tipo              String      // texto, numero, enum, booleano
+  valor_padrao      String?
+  opcoes            String?     @db.Text // JSON array para enum
+  data_criacao      DateTime    @default(now())
+
+  @@unique([agent_id, nome_variavel])
+  @@map("agent_variables")
+}
+
+// ========== CONVERSATIONS & MESSAGES ==========
+
+model Conversation {
+  id                    String      @id @default(cuid())
+  agent_id              String
+  agent                 Agent       @relation(fields: [agent_id], references: [id], onDelete: Cascade)
+  phone_number          String
+  status                String      @default("ativa") // ativa, pausada, encerrada
+  data_inicio           DateTime    @default(now())
+  data_ultima_msg       DateTime    @default(now()) @updatedAt
+  metadata              String?     @db.Text // JSON com info adicional
+
+  // Relations
+  messages              Message[]
+  lead                  Lead?
+  function_calls        FunctionCall[]
+
+  @@unique([agent_id, phone_number])
+  @@index([phone_number])
+  @@map("conversations")
+}
+
+model Message {
+  id                String      @id @default(cuid())
+  conversation_id   String
+  conversation      Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  remetente         String      // "user" ou "agent"
+  conteudo          String      @db.Text
+  tokens_usados     Int?
+  timestamp         DateTime    @default(now())
+  metadata          String?     @db.Text // JSON com info adicional (model usado, temperature, etc)
+
+  // Relations
+  function_calls    FunctionCall[]
+
+  @@index([conversation_id])
+  @@index([timestamp])
+  @@map("messages")
+}
+
+model FunctionCall {
+  id                String      @id @default(cuid())
+  message_id        String
+  message           Message     @relation(fields: [message_id], references: [id], onDelete: Cascade)
+  conversation_id   String
+  conversation      Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  nome_funcao       String      // "qualificar_lead", "agendar", etc
+  parametros_json   String      @db.Text
+  resultado_json    String?     @db.Text
+  timestamp         DateTime    @default(now())
+
+  @@index([conversation_id])
+  @@map("function_calls")
+}
+
+// ========== CRM / LEADS ==========
+
+model Lead {
+  id                String      @id @default(cuid())
+  phone_number      String      @unique
+  conversation_id   String      @unique
+  conversation      Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  nome              String?
+  email             String?
+  status_funil      String      @default("novo") // novo, em_qualificacao, qualificado, agendado, arquivado
+  data_criacao      DateTime    @default(now())
+  data_atualizacao  DateTime    @updatedAt
+
+  // Relations
+  lead_details      LeadDetails?
+  lead_timeline     LeadTimeline[]
+  kanban_card       KanbanCard?
+
+  @@map("leads")
+}
+
+model LeadDetails {
+  id                    String      @id @default(cuid())
+  lead_id               String      @unique
+  lead                  Lead        @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+  inconsistencias       String?     @db.Text
+  problemas_detectados  String?     @db.Text
+  score_qualificacao    Int?        @default(0) // 0-100
+  dados_json            String?     @db.Text
+  data_atualizacao      DateTime    @updatedAt
+
+  @@map("lead_details")
+}
+
+model LeadTimeline {
+  id                String      @id @default(cuid())
+  lead_id           String
+  lead              Lead        @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+  status_anterior   String?
+  status_novo       String
+  mudado_por        String?     // user_id ou "system"
+  user              User?       @relation(fields: [mudado_por], references: [id], onDelete: SetNull)
+  motivo            String?
+  timestamp         DateTime    @default(now())
+
+  @@index([lead_id])
+  @@index([timestamp])
+  @@map("lead_timeline")
+}
+
+// ========== KANBAN BOARD ==========
+
+model KanbanColumn {
+  id                String      @id @default(cuid())
+  agent_id          String
+  agent             Agent       @relation(fields: [agent_id], references: [id], onDelete: Cascade)
+  nome              String
+  ordem             Int
+  cor_hex           String      @default("#6366f1")
+  data_criacao      DateTime    @default(now())
+
+  // Relations
+  cards             KanbanCard[]
+
+  @@unique([agent_id, nome])
+  @@map("kanban_columns")
+}
+
+model KanbanCard {
+  id                String      @id @default(cuid())
+  column_id         String
+  column            KanbanColumn @relation(fields: [column_id], references: [id], onDelete: Cascade)
+  lead_id           String      @unique
+  lead              Lead        @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+  ordem             Int
+  data_movimentacao DateTime    @default(now())
+
+  @@index([column_id])
+  @@map("kanban_cards")
+}
+
+// ========== METRICS & ANALYTICS ==========
+
+model ConversationMetrics {
+  id                    String      @id @default(cuid())
+  agent_id              String
+  agent                 Agent       @relation(fields: [agent_id], references: [id], onDelete: Cascade)
+  data                  DateTime
+  total_atendimentos    Int         @default(0)
+  taxa_qualificacao     Float       @default(0.0)
+  tempo_medio_min       Float?
+  mensagens_recebidas   Int         @default(0)
+  mensagens_enviadas    Int         @default(0)
+  leads_qualificados    Int         @default(0)
+
+  @@unique([agent_id, data])
+  @@index([data])
+  @@map("conversation_metrics")
+}
+
+model DailyStats {
+  id                    String      @id @default(cuid())
+  data                  DateTime
+  agent_id              String?
+  mensagens_recebidas   Int         @default(0)
+  mensagens_enviadas    Int         @default(0)
+  leads_criados         Int         @default(0)
+  leads_qualificados    Int         @default(0)
+
+  @@unique([data])
+  @@index([data])
+  @@map("daily_stats")
+}

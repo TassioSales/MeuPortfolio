@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     claude_model: str = os.getenv("CLAUDE_MODEL", "claude-3-5-sonnet-20241022")
     temperature: float = float(os.getenv("TEMPERATURE", "0.7"))
     max_tokens: int = int(os.getenv("MAX_TOKENS", "1024"))
+    llm_max_tokens_per_minute: int = int(os.getenv("LLM_MAX_TOKENS_PER_MINUTE", "40000"))
+    llm_max_calls_per_minute: int = int(os.getenv("LLM_MAX_CALLS_PER_MINUTE", "60"))
 
     # WhatsApp / Evolution API
     evolution_api_url: str = os.getenv("EVOLUTION_API_URL", "http://evolution:4000")

@@ -7,7 +7,7 @@ import os
 
 from app.config import settings
 from app.db.database import init_db, close_db
-from app.routers import auth, agents
+from app.routers import auth, agents, chat
 
 # Configure logger
 logger.remove()
@@ -138,6 +138,7 @@ connection_manager = ConnectionManager()
 
 app.include_router(auth.router)
 app.include_router(agents.router)
+app.include_router(chat.router)
 
 
 # ========== WEBSOCKET ENDPOINTS ==========

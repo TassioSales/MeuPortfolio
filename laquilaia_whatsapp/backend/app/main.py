@@ -6,6 +6,8 @@ import sys
 import os
 
 from app.config import settings
+from app.db.database import init_db, close_db
+from app.routers import auth
 
 # Configure logger
 logger.remove()
@@ -33,8 +35,18 @@ async def lifespan(app: FastAPI):
     logger.info(f"📊 Environment: {'DEBUG' if settings.debug else 'PRODUCTION'}")
     logger.info(f"🤖 LLM Model: {settings.claude_model}")
     logger.info(f"💾 Database: {settings.database_url.split('@')[-1]}")
+
+    try:
+        await init_db()
+        logger.info("✅ Database initialized successfully")
+    except Exception as e:
+        logger.error(f"❌ Database initialization failed: {e}")
+        raise
+
     yield
+
     logger.info("🛑 Shutting down L'Aquila AI Backend")
+    await close_db()
 
 
 # Initialize FastAPI app
@@ -120,6 +132,11 @@ class ConnectionManager:
 
 
 connection_manager = ConnectionManager()
+
+
+# ========== INCLUDE ROUTERS ==========
+
+app.include_router(auth.router)
 
 
 # ========== WEBSOCKET ENDPOINTS ==========

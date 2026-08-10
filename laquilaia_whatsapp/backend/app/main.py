@@ -7,7 +7,7 @@ import os
 
 from app.config import settings
 from app.db.database import init_db, close_db
-from app.routers import auth, agents, chat
+from app.routers import auth, agents, chat, webhook
 
 # Configure logger
 logger.remove()
@@ -139,6 +139,7 @@ connection_manager = ConnectionManager()
 app.include_router(auth.router)
 app.include_router(agents.router)
 app.include_router(chat.router)
+app.include_router(webhook.router)
 
 
 # ========== WEBSOCKET ENDPOINTS ==========
@@ -162,13 +163,6 @@ async def websocket_endpoint(websocket: WebSocket, conversation_id: str):
         connection_manager.disconnect(conversation_id, websocket)
 
 
-# ========== PLACEHOLDER ROUTERS (To be imported from routers/ subpackage) ==========
-
-@app.post("/webhook/whatsapp")
-async def webhook_whatsapp(payload: dict):
-    """Placeholder: Webhook for incoming WhatsApp messages from Evolution API."""
-    logger.info(f"📨 Webhook received: {payload}")
-    return {"status": "ok", "message": "Webhook handling - to be implemented in Fase 5"}
 
 
 # ========== ERROR HANDLING ==========

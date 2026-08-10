@@ -7,7 +7,7 @@ import os
 
 from app.config import settings
 from app.db.database import init_db, close_db
-from app.routers import auth
+from app.routers import auth, agents
 
 # Configure logger
 logger.remove()
@@ -137,6 +137,7 @@ connection_manager = ConnectionManager()
 # ========== INCLUDE ROUTERS ==========
 
 app.include_router(auth.router)
+app.include_router(agents.router)
 
 
 # ========== WEBSOCKET ENDPOINTS ==========
@@ -161,18 +162,6 @@ async def websocket_endpoint(websocket: WebSocket, conversation_id: str):
 
 
 # ========== PLACEHOLDER ROUTERS (To be imported from routers/ subpackage) ==========
-
-@app.get("/api/v1/agents")
-async def list_agents():
-    """Placeholder: List all agents."""
-    return {"message": "Agent listing - to be implemented in Fase 3", "agents": []}
-
-
-@app.post("/api/v1/agents")
-async def create_agent(agent_data: dict):
-    """Placeholder: Create new agent."""
-    return {"message": "Agent creation - to be implemented in Fase 3", "agent_id": "placeholder"}
-
 
 @app.post("/webhook/whatsapp")
 async def webhook_whatsapp(payload: dict):

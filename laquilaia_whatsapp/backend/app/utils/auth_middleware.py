@@ -1,7 +1,7 @@
 """Authentication middleware for JWT validation."""
 
 from fastapi import HTTPException, status, Depends
-from fastapi.security import HTTPBearer, HTTPAuthCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.services.auth_service import auth_service
 from app.utils.logger import logger
 from typing import Optional
@@ -10,7 +10,7 @@ security = HTTPBearer()
 
 
 async def get_current_user(
-    credentials: HTTPAuthCredentials = Depends(security),
+    credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> str:
     """
     Dependency to extract and verify JWT token from request headers.
@@ -40,7 +40,7 @@ async def get_current_user(
 
 
 async def get_current_user_optional(
-    credentials: Optional[HTTPAuthCredentials] = Depends(security),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
 ) -> Optional[str]:
     """
     Optional dependency to extract JWT token from request headers.

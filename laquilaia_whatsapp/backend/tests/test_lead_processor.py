@@ -2,7 +2,7 @@
 
 import pytest
 import json
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch, AsyncMock, MagicMock
 from datetime import datetime
 from app.services.lead_processor import lead_processor
 from app.db.models import Lead, LeadDetails, LeadTimeline, KanbanCard, KanbanColumn
@@ -147,7 +147,7 @@ class TestLeadProcessorLeadManagement:
     async def test_get_or_create_new_lead(self):
         """Test creating new lead."""
         db = AsyncMock(spec=AsyncSession)
-        mock_result = AsyncMock()
+        mock_result = MagicMock()
         mock_result.scalars.return_value.first.return_value = None
         db.execute = AsyncMock(return_value=mock_result)
 
@@ -171,7 +171,7 @@ class TestLeadProcessorLeadManagement:
         )
 
         db = AsyncMock(spec=AsyncSession)
-        mock_result = AsyncMock()
+        mock_result = MagicMock()
         mock_result.scalars.return_value.first.return_value = existing_lead
         db.execute = AsyncMock(return_value=mock_result)
 
@@ -282,19 +282,22 @@ class TestLeadProcessorKanban:
         db = AsyncMock(spec=AsyncSession)
 
         # Mock column query
-        col_result = AsyncMock()
+        col_result = MagicMock()
         col_result.scalars.return_value.first.return_value = column
 
         # Mock cards query
-        cards_result = AsyncMock()
+        cards_result = MagicMock()
         cards_result.scalars.return_value.all.return_value = []
 
         async def mock_execute(query):
-            if "KanbanColumn" in str(query):
+            # `str(query)` é o SQL renderizado, então o que aparece é o nome da
+            # tabela ("kanban_columns"), não o da classe ("KanbanColumn").
+            sql = str(query)
+            if "kanban_columns" in sql:
                 return col_result
-            elif "KanbanCard" in str(query):
+            elif "kanban_cards" in sql:
                 return cards_result
-            return AsyncMock()
+            return MagicMock()
 
         db.execute = mock_execute
         db.flush = AsyncMock()

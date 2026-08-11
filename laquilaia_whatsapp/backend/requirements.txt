@@ -5,12 +5,16 @@ python-multipart==0.0.6
 
 # Database
 sqlalchemy==2.0.23
+# Driver async exigido por create_async_engine — sem ele o app não inicia.
+asyncpg==0.29.0
 alembic==1.12.1
 psycopg2-binary==2.9.9
 prisma==0.13.0
 
 # Data Validation
 pydantic==2.5.0
+# Exigido pelo tipo EmailStr usado nos schemas.
+email-validator==2.1.1
 pydantic-settings==2.1.0
 
 # Authentication & Security

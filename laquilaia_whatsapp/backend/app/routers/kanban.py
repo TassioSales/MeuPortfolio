@@ -158,6 +158,10 @@ async def get_kanban_board(
 
     except NotFoundException:
         raise
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error getting Kanban board: {e}")
         raise HTTPException(
@@ -265,6 +269,10 @@ async def move_lead_card(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=e.detail,
         )
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error moving card: {e}")
         await db.rollback()
@@ -326,6 +334,10 @@ async def list_kanban_columns(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Agent not found",
         )
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error listing columns: {e}")
         raise HTTPException(
@@ -414,6 +426,10 @@ async def initialize_kanban_columns(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Agent not found",
         )
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error initializing columns: {e}")
         await db.rollback()
@@ -509,6 +525,10 @@ async def get_kanban_stats(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Agent not found",
         )
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error getting stats: {e}")
         raise HTTPException(

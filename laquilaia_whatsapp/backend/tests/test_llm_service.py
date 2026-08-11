@@ -1,8 +1,10 @@
 """Tests for LLM service."""
 
+import httpx
 import pytest
 from datetime import datetime, timedelta
 from unittest.mock import patch, MagicMock, AsyncMock
+from app.config import settings
 from app.services.llm_service import llm_service, LLMService
 from app.db.models import Agent
 from app.utils.exceptions import ValidationException
@@ -197,8 +199,10 @@ class TestGenerateResponse:
         from anthropic import APIConnectionError
 
         mock_client = MagicMock()
+        # O SDK exige o `request` que originou a falha.
         mock_client.messages.create.side_effect = APIConnectionError(
-            message="Connection failed"
+            message="Connection failed",
+            request=httpx.Request("POST", "https://api.anthropic.com/v1/messages"),
         )
         self.service.client = mock_client
 
@@ -213,9 +217,9 @@ class TestGenerateResponse:
 
         mock_client = MagicMock()
         mock_client.messages.create.side_effect = APIError(
-            message="API error",
-            response=MagicMock(status_code=500),
-            body={}
+            "API error",
+            httpx.Request("POST", "https://api.anthropic.com/v1/messages"),
+            body={},
         )
         self.service.client = mock_client
 
@@ -392,7 +396,9 @@ class TestServiceInitialization:
         """Test that service initializes correctly."""
         service = LLMService()
         assert service.client is not None
-        assert service.model == "claude-3-5-sonnet-20241022"
+        # Compara com a config em vez de fixar a versão do modelo: trocar o
+        # default não deve quebrar o teste de inicialização.
+        assert service.model == settings.claude_model
         assert service.max_calls_per_minute > 0
         assert service.max_tokens_per_minute > 0
 
@@ -434,8 +440,10 @@ class TestConversationHistoryRetrieval:
 
         mock_db = AsyncMock()
         mock_db.execute = AsyncMock()
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = [mock_message1, mock_message2]
+        mock_result = MagicMock()
+        # Delega ao memory_service, cuja query é ORDER BY timestamp DESC:
+        # o banco devolveria a mais recente primeiro.
+        mock_result.scalars.return_value.all.return_value = [mock_message2, mock_message1]
         mock_db.execute.return_value = mock_result
 
         history = await service.get_conversation_history(

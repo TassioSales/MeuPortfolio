@@ -60,6 +60,10 @@ async def register(
 
     except UserAlreadyExistsException:
         raise
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Registration error: {e}")
         await db.rollback()
@@ -224,6 +228,10 @@ async def verify_token(
             "message": "Token is valid",
         }
 
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Token verification error: {e}")
         raise HTTPException(

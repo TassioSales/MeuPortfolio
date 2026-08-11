@@ -98,7 +98,7 @@ class MessageCreate(BaseModel):
     """Message creation model."""
     conversation_id: str
     conteudo: str = Field(..., min_length=1, max_length=4096)
-    remetente: str = Field(..., regex="^(user|agent)$")
+    remetente: str = Field(..., pattern="^(user|agent)$")
 
 
 class MessageResponse(MessageCreate):

@@ -36,8 +36,14 @@ async def webhook_messages(
     - Async task processing
     """
     try:
-        # Log webhook received
         event_type = payload.event
+
+        # O tipo do evento é checado ANTES de ler campos de mensagem: eventos
+        # como connection.update não trazem `key` nem `message`.
+        if event_type != "messages.upsert":
+            logger.debug(f"⏭️ Ignoring event type: {event_type}")
+            return {"status": "ignored", "event": event_type}
+
         phone = payload.data.key.get("remoteJid", "unknown").replace("@s.whatsapp.net", "")
         message_body = payload.data.message.messageBody or "[non-text message]"
 
@@ -45,11 +51,6 @@ async def webhook_messages(
             f"🔔 Webhook received: event={event_type}, phone={phone}, "
             f"message={message_body[:50]}"
         )
-
-        # Ignore non-message events
-        if payload.event != "messages.upsert":
-            logger.debug(f"⏭️ Ignoring event type: {event_type}")
-            return {"status": "ignored", "event": event_type}
 
         # Ignore outgoing messages (fromMe=true)
         if payload.data.key.get("fromMe", False):
@@ -111,6 +112,10 @@ async def webhook_messages(
             "status": "error",
             "detail": e.detail,
         }
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Webhook error: {e}")
         # Return 200 to prevent infinite retries from Evolution API
@@ -133,6 +138,10 @@ async def webhook_health():
             "status": "ok" if is_healthy else "degraded",
             "timestamp": __import__("datetime").datetime.utcnow().isoformat(),
         }
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Webhook health check failed: {e}")
         return {
@@ -153,6 +162,10 @@ async def webhook_whatsapp(request: Request):
         body = await request.json()
         logger.info(f"📨 Legacy webhook received: {body.get('event', 'unknown')}")
         return {"status": "ok", "message": "Webhook received"}
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Legacy webhook error: {e}")
         return {"status": "error", "detail": str(e)}

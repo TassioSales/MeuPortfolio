@@ -62,8 +62,12 @@ class TestMemoryServiceCacheHitMiss:
         ]
 
         db = AsyncMock(spec=AsyncSession)
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = messages
+        mock_result = MagicMock()
+        # A query usa ORDER BY timestamp DESC; o mock ordena igual ao banco
+        # em vez de confiar na ordem em que as mensagens foram escritas aqui.
+        mock_result.scalars.return_value.all.return_value = sorted(
+            messages, key=lambda m: m.timestamp, reverse=True
+        )
         db.execute = AsyncMock(return_value=mock_result)
 
         with patch.object(service.redis, "get") as mock_get:
@@ -97,8 +101,12 @@ class TestMemoryServiceCacheHitMiss:
         ]
 
         db = AsyncMock(spec=AsyncSession)
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = messages
+        mock_result = MagicMock()
+        # A query usa ORDER BY timestamp DESC; o mock ordena igual ao banco
+        # em vez de confiar na ordem em que as mensagens foram escritas aqui.
+        mock_result.scalars.return_value.all.return_value = sorted(
+            messages, key=lambda m: m.timestamp, reverse=True
+        )
         db.execute = AsyncMock(return_value=mock_result)
 
         with patch.object(service.redis, "get") as mock_get:
@@ -159,8 +167,12 @@ class TestMemoryServiceCacheInvalidation:
         ]
 
         db = AsyncMock(spec=AsyncSession)
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = messages
+        mock_result = MagicMock()
+        # A query usa ORDER BY timestamp DESC; o mock ordena igual ao banco
+        # em vez de confiar na ordem em que as mensagens foram escritas aqui.
+        mock_result.scalars.return_value.all.return_value = sorted(
+            messages, key=lambda m: m.timestamp, reverse=True
+        )
         db.execute = AsyncMock(return_value=mock_result)
 
         with patch.object(service.redis, "get") as mock_get:
@@ -236,7 +248,7 @@ class TestMemoryServiceExpiredConversations:
             agent_id="agent-123",
             phone_number="5561999887234",
             status="ativa",
-            data_criacao=old_date,
+            data_inicio=old_date,
             data_ultima_msg=old_date,
         )
 
@@ -245,12 +257,12 @@ class TestMemoryServiceExpiredConversations:
             agent_id="agent-123",
             phone_number="5561999887234",
             status="ativa",
-            data_criacao=datetime.utcnow(),
+            data_inicio=datetime.utcnow(),
             data_ultima_msg=datetime.utcnow(),
         )
 
         db = AsyncMock(spec=AsyncSession)
-        mock_result = AsyncMock()
+        mock_result = MagicMock()
         mock_result.scalars.return_value.all.return_value = [old_conv]
         db.execute = AsyncMock(return_value=mock_result)
 
@@ -268,7 +280,7 @@ class TestMemoryServiceExpiredConversations:
         service = MemoryService(cache_ttl=3600)
 
         db = AsyncMock(spec=AsyncSession)
-        mock_result = AsyncMock()
+        mock_result = MagicMock()
         mock_result.scalars.return_value.all.return_value = []
         db.execute = AsyncMock(return_value=mock_result)
 
@@ -287,7 +299,7 @@ class TestMemoryServiceEmptyHistory:
         conversation_id = "conv-empty"
 
         db = AsyncMock(spec=AsyncSession)
-        mock_result = AsyncMock()
+        mock_result = MagicMock()
         mock_result.scalars.return_value.all.return_value = []
         db.execute = AsyncMock(return_value=mock_result)
 
@@ -338,8 +350,12 @@ class TestMemoryServiceMessageOrder:
         ]
 
         db = AsyncMock(spec=AsyncSession)
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = messages
+        mock_result = MagicMock()
+        # A query usa ORDER BY timestamp DESC; o mock ordena igual ao banco
+        # em vez de confiar na ordem em que as mensagens foram escritas aqui.
+        mock_result.scalars.return_value.all.return_value = sorted(
+            messages, key=lambda m: m.timestamp, reverse=True
+        )
         db.execute = AsyncMock(return_value=mock_result)
 
         with patch.object(service.redis, "get") as mock_get:
@@ -376,8 +392,12 @@ class TestMemoryServiceIntegration:
         ]
 
         db = AsyncMock(spec=AsyncSession)
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = messages
+        mock_result = MagicMock()
+        # A query usa ORDER BY timestamp DESC; o mock ordena igual ao banco
+        # em vez de confiar na ordem em que as mensagens foram escritas aqui.
+        mock_result.scalars.return_value.all.return_value = sorted(
+            messages, key=lambda m: m.timestamp, reverse=True
+        )
         db.execute = AsyncMock(return_value=mock_result)
 
         call_count = 0

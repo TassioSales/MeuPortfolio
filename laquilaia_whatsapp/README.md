@@ -22,70 +22,111 @@ Uma plataforma SaaS omnichannel para gerenciamento de agentes virtuais inteligen
 
 ## 🚀 Quick Start
 
-### 1. Clone e Configure
+### Opção 1: Scripts Launcher (Recomendado)
+
+#### Windows
+```bash
+cd laquilaia_whatsapp
+
+# Setup inicial (criar .env)
+setup.bat
+
+# Editar .env com suas chaves API
+notepad .env
+
+# Iniciar todos os serviços
+run.bat
+
+# Outros comandos
+run.bat logs    # Ver logs em tempo real
+run.bat stop    # Parar serviços
+run.bat clean   # Resetar volumes Docker
+```
+
+#### Linux/Mac
+```bash
+cd laquilaia_whatsapp
+
+# Tornar scripts executáveis
+chmod +x setup.sh run.sh
+
+# Setup inicial (criar .env)
+./setup.sh
+
+# Editar .env com suas chaves API
+nano .env
+
+# Iniciar todos os serviços
+./run.sh
+
+# Outros comandos
+./run.sh logs   # Ver logs em tempo real
+./run.sh stop   # Parar serviços
+./run.sh clean  # Resetar volumes Docker
+```
+
+### Opção 2: Docker Compose Manual
 
 ```bash
 cd laquilaia_whatsapp
+
+# 1. Configurar variáveis de ambiente
 cp .env.example .env
+# Edite .env com suas chaves API
+
+# 2. Inicie os serviços
+docker-compose up -d
+
+# 3. Verifique a saúde
+curl http://localhost:8000/health
+
+# 4. Acesse documentação
+# Abra: http://localhost:8000/docs
 ```
 
-### 2. Configure as Variáveis de Ambiente
+### Configuração de Variáveis de Ambiente
 
 Edite o arquivo `.env`:
 
 ```env
-# Database
-DB_USER=laquilaia
-DB_PASSWORD=laquilaia_dev_pwd
-DB_NAME=laquilaia_db
+# Database (PostgreSQL)
+DATABASE_URL=postgresql://laquilaia:laquilaia_dev_pwd@postgres:5432/laquilaia_db
 
-# Redis
+# Redis Cache (com TTL para Memory Service)
 REDIS_URL=redis://redis:6379
+REDIS_CACHE_TTL=3600  # 1 hora
 
 # Security
 SECRET_KEY=your-super-secret-key-change-in-production
-ANTHROPIC_API_KEY=sk-ant-your-anthropic-api-key
+ALGORITHM=HS256
 
-# AI/LLM
+# AI/LLM (Claude)
+ANTHROPIC_API_KEY=sk-ant-your-anthropic-api-key
 CLAUDE_MODEL=claude-3-5-sonnet-20241022
 TEMPERATURE=0.7
+MAX_TOKENS=1024
+
+# Rate Limiting
+LLM_MAX_CALLS_PER_MINUTE=60
+LLM_MAX_TOKENS_PER_MINUTE=40000
 
 # WhatsApp/Evolution
 EVOLUTION_API_KEY=your-evolution-api-key
 EVOLUTION_INSTANCE_NAME=laquilaia
+EVOLUTION_WEBHOOK_URL=http://localhost:8000/api/v1/webhook/messages
+
+# Frontend
+FRONTEND_URL=http://localhost:3000
 ```
 
-### 3. Inicie os Serviços
+### Serviços Iniciados
 
-```bash
-docker-compose up -d
 ```
-
-Isso iniciará:
-- PostgreSQL em `localhost:5432`
-- Redis em `localhost:6379`
-- FastAPI Backend em `http://localhost:8000`
-
-### 4. Verifique a Saúde
-
-```bash
-curl http://localhost:8000/health
+PostgreSQL:     localhost:5432
+Redis:          localhost:6379
+FastAPI:        http://localhost:8000
+Documentation:  http://localhost:8000/docs
 ```
-
-Resposta esperada:
-```json
-{
-  "status": "ok",
-  "service": "laquilaia-backend",
-  "version": "0.1.0"
-}
-```
-
-### 5. Acesse a Documentação da API
-
-Abra no navegador:
-- **Swagger UI:** http://localhost:8000/docs
-- **ReDoc:** http://localhost:8000/redoc
 
 ## 📁 Estrutura do Projeto
 
@@ -121,39 +162,68 @@ laquilaia_whatsapp/
 ## 🔄 Fluxo de Desenvolvimento por Fase
 
 ### Fase 1: ✅ Infraestrutura & DB (COMPLETA)
-- [x] Estrutura de pastas
-- [x] Docker Compose (PostgreSQL + Redis)
+- [x] Estrutura de pastas e Docker Compose
+- [x] PostgreSQL + Redis setup
 - [x] FastAPI com logging e CORS
-- [x] Schema Prisma (11 tabelas)
+- [x] Schema com 11+ tabelas (SQLAlchemy)
 - [x] Configuração de ambiente
-- [ ] Migrações Prisma executadas
 
-**Próximo:** Fase 2 - Autenticação & Segurança
+### Fase 2: ✅ Autenticação & Segurança (COMPLETA)
+- [x] Modelo User com bcrypt
+- [x] Endpoints: `/auth/register`, `/auth/login`, `/auth/refresh`
+- [x] Middleware JWT com validação
+- [x] 22+ testes de autenticação
 
-### Fase 2: Autenticação & Segurança (TODO)
-- [ ] Modelo User com bcrypt
-- [ ] Endpoints: `/auth/register`, `/auth/login`, `/auth/refresh`
-- [ ] Middleware JWT
-- [ ] Testes de autenticação
+### Fase 3: ✅ CRUD de Agentes (COMPLETA)
+- [x] Rotas: GET/POST/PUT/DELETE `/agents`
+- [x] Modelo Agent com system_prompt e variáveis
+- [x] 32+ testes de agentes
+- [x] Ownership validation
 
-### Fase 3: CRUD de Agentes (TODO)
-- [ ] Rotas: GET/POST/PUT/DELETE `/agents`
-- [ ] Modelo Agent com system_prompt
-- [ ] Testes
+### Fase 4: ✅ Integração Claude LLM (COMPLETA)
+- [x] LLMService com Anthropic SDK
+- [x] generate_response() com contexto
+- [x] Streaming de respostas
+- [x] Token counting e rate limiting
+- [x] 31+ testes de LLM
+- [x] Documentação: GUIA_LLM.md
 
-### Fase 4: Integração Claude (TODO)
-- [ ] LLMService com Anthropic SDK
-- [ ] Suporte a temperature, max_tokens
-- [ ] Rate limiting
-- [ ] Testes unitários
+### Fase 5: ✅ Webhook WhatsApp (COMPLETA)
+- [x] Endpoint `/api/v1/webhook/messages`
+- [x] Orquestrador de fluxo end-to-end
+- [x] WhatsAppService (Evolution API)
+- [x] Suporte a conversas + histórico
+- [x] 16+ testes de webhook
+- [x] Documentação: GUIA_WEBHOOK.md
 
-### Fase 5: Webhook WhatsApp (TODO)
-- [ ] Endpoint `/webhook/whatsapp`
-- [ ] Validação de assinatura Evolution
-- [ ] Orquestrador de fluxo IA
-- [ ] Testes
+### Fase 6: ✅ Memory Service + Launcher Scripts (COMPLETA)
+- [x] MemoryService com Redis cache
+- [x] get_conversation_history() com cache
+- [x] invalidate_cache() e cleanup automático
+- [x] 14+ testes de cache/TTL/invalidação
+- [x] Scripts launcher: run.bat, run.sh
+- [x] Scripts setup: setup.bat, setup.sh
+- [x] .env.example com 40+ variáveis documentadas
+- [x] Documentação: GUIA_MEMORY_SERVICE.md
 
-**... (Fases 6-17 seguem o plano)**
+**Próximo:** Fase 7 - Lead Processing (Function Calling)
+
+### Fase 7: Lead Processing (TODO)
+- [ ] Parser JSON de respostas Claude
+- [ ] Extração de dados de qualificação
+- [ ] Movimentação automática em Kanban
+
+### Fase 8: Kanban CRM Backend (TODO)
+- [ ] CRUD de leads
+- [ ] Movimentação entre colunas
+- [ ] Timeline de mudanças
+
+### Fase 9: Dashboard de Métricas (TODO)
+- [ ] Endpoints para dados de gráficos
+- [ ] Agregações de uso
+- [ ] KPIs de performance
+
+**... (Fases 10-17: Frontend, WebSocket, Deploy)**
 
 ## 🧪 Testes
 
@@ -230,9 +300,16 @@ kill -9 <PID>  # Termine o processo
 
 ## 📚 Documentação
 
+### Guias Principais
+- **GUIA_WEBHOOK.md** - Integração Evolution API & Webhook WhatsApp (Fase 5)
+- **GUIA_LLM.md** - Integração Claude LLM & Chat Endpoints (Fase 4)
+- **GUIA_MEMORY_SERVICE.md** - Memory Service & Cache Redis (Fase 6)
+
+### Referência Técnica
 - **Plano Geral:** Ver `/root/.claude/plans/preciso-que-me-explique-deep-duckling.md`
 - **Schema do DB:** `backend/app/schemas/schema.prisma`
 - **Configuração:** `backend/app/config.py`
+- **Docker:** `docker-compose.yml`
 
 ## 🚢 Deploy para Produção
 

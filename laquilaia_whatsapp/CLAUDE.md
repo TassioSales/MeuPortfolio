@@ -35,7 +35,11 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **231 testes no backend, 101 no frontend.**
+Estado atual: **243 testes no backend, 101 no frontend.**
+
+Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
+`docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
+falha — na CI o serviço existe, então um pulo significa conexão quebrada.
 
 ---
 
@@ -44,7 +48,7 @@ Estado atual: **231 testes no backend, 101 no frontend.**
 ```
 backend/app/
   routers/     auth, agents, chat (+conversations), webhook, kanban, metrics
-  services/    llm, memory, whatsapp, lead_processor, message_orchestrator, metrics, agent, auth
+  services/    llm, rate_limiter, memory, whatsapp, lead_processor, message_orchestrator, metrics, agent, auth
   db/          models.py (SQLAlchemy), database.py, redis_client.py
   ws/          manager.py — canal de tempo real por agente
   jobs/        metrics_aggregator.py (APScheduler)
@@ -117,6 +121,9 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | E-mail de teste em `.local` ou `.test` | O seed grava direto pelo SQLAlchemy e aceita, mas o `EmailStr` recusa como TLD de uso especial: o usuário existe e não consegue logar (422) |
 | `--locale=pt_BR.UTF-8` em imagem alpine | musl não traz locales além de C/C.UTF-8; o `initdb` morre e o healthcheck nunca passa |
 | Variável no `.env` que o compose não repassa | O container não a enxerga e cai no default do `config.py` — foi o que deixou o webhook em 503 |
+| Cliente de infra criado mas nunca conectado | `redis_client.connect()` não era chamado no lifespan: `self.redis` ficava `None`, todo cache estourava `AttributeError` e o `except` de cada método engolia. O Redis existia no compose e nunca foi usado |
+| `aclose()` no redis-py 5.0.0 | Só existe a partir do 5.0.1. Dentro de um `except Exception` vira "Redis indisponível" e os testes se pulam em silêncio |
+| Passar `user_id` opcional e esquecer de passá-lo | `get_rate_limit_status()` sem argumento lia o balde compartilhado e devolvia sempre zero |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)
 só apareceram quando o cliente que consome o endpoint foi construído. Ao
@@ -143,8 +150,8 @@ exige mudar o outro. O mesmo vale para os nomes de evento em `ws/manager.py` e
    a IA respeita a pausa, mas não há UI.
 3. **`anthropic==0.7.0`** desatualizado — atualizar quebra os testes de erro,
    que dependem das assinaturas de exceção da versão atual.
-4. **Rate limiting é por conta, mas em memória** — com mais de uma réplica
-   do backend cada uma tem seu próprio balde. Mover para o Redis resolveria.
+4. **`stream_response` não tem consumidor.** Virou gerador assíncrono junto
+   com o limitador, mas nenhum endpoint o usa — só os testes.
 
 `GUIA_DEPLOY.md` tem o checklist de produção completo.
 

@@ -32,6 +32,17 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      # Sem Redis, os testes do limite de uso se pulam sozinhos e a garantia
+      # de balde compartilhado entre réplicas ficaria sem cobertura nenhuma.
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -60,9 +71,28 @@ jobs:
         working-directory: laquilaia_whatsapp/backend
         env:
           DATABASE_URL: postgresql://laquilaia:laquilaia_dev_pwd@localhost:5432/laquilaia_test_db
+          REDIS_URL: redis://localhost:6379
           SECRET_KEY: ci-secret-key
           ANTHROPIC_API_KEY: sk-ant-ci-placeholder
         run: pytest tests/ -v
+
+      # Os testes do Redis se pulam quando ele não responde. Como aqui o
+      # serviço existe, um pulo significa que a conexão quebrou — e passaria
+      # por suíte verde sem ter exercitado o balde compartilhado.
+      - name: Conferir que nada foi pulado
+        working-directory: laquilaia_whatsapp/backend
+        env:
+          DATABASE_URL: postgresql://laquilaia:laquilaia_dev_pwd@localhost:5432/laquilaia_test_db
+          REDIS_URL: redis://localhost:6379
+          SECRET_KEY: ci-secret-key
+          ANTHROPIC_API_KEY: sk-ant-ci-placeholder
+        run: |
+          saida=$(pytest tests/test_rate_limit_por_conta.py -q -rs --no-header)
+          echo "$saida"
+          if echo "$saida" | grep -q "skipped"; then
+            echo "::error::Testes de Redis pulados, mas o serviço está no ar na CI"
+            exit 1
+          fi
 
   frontend:
     name: Frontend (jest + build)

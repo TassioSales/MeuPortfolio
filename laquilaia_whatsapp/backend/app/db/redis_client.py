@@ -14,14 +14,28 @@ class RedisClient:
         self.redis: Optional[redis.Redis] = None
 
     async def connect(self):
-        """Connect to Redis."""
+        """
+        Conecta ao Redis.
+
+        Não levanta quando o Redis está fora: o cache de histórico e o de
+        métricas são opcionais e o limite de uso cai para a memória do
+        processo, então derrubar o boot inteiro por causa deles seria pior.
+        O cliente fica guardado mesmo se o `ping` falhar — o redis-py
+        reconecta sozinho na próxima operação, e assim um Redis que sobe
+        depois do backend passa a ser usado sem precisar reiniciar.
+        """
         try:
-            self.redis = await redis.from_url(settings.redis_url)
+            self.redis = redis.from_url(settings.redis_url)
             await self.redis.ping()
             logger.info("✅ Redis connection successful")
+            return True
         except Exception as e:
-            logger.error(f"❌ Redis connection failed: {e}")
-            raise
+            logger.error(
+                f"❌ Redis indisponível ({e}). Seguindo sem cache: o histórico e "
+                "as métricas vão ao banco, e o limite de uso passa a valer por "
+                "processo em vez de por conta."
+            )
+            return False
 
     async def disconnect(self):
         """Disconnect from Redis."""

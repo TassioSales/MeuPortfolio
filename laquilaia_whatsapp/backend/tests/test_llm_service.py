@@ -1,13 +1,26 @@
 """Tests for LLM service."""
 
+import time
+
 import httpx
 import pytest
 from datetime import datetime, timedelta
 from unittest.mock import patch, MagicMock, AsyncMock
 from app.config import settings
 from app.services.llm_service import llm_service, LLMService
+from app.services.rate_limiter import MemoryRateLimitBackend, RateLimiter
 from app.db.models import Agent
 from app.utils.exceptions import ValidationException
+
+
+class _SemRedis:
+    """Backend que falha sempre, para o limitador contar em memória."""
+
+    async def add(self, *args):
+        raise ConnectionError("sem Redis")
+
+    async def counts(self, *args):
+        raise ConnectionError("sem Redis")
 
 
 class TestTokenCounting:
@@ -44,68 +57,90 @@ class TestRateLimiting:
     """Test rate limiting functionality."""
 
     def setup_method(self):
-        """Reset LLM service before each test."""
-        self.service = LLMService()
+        """
+        Reset LLM service before each test.
 
-    def test_rate_limit_initial_status(self):
+        O limitador é trocado por um só de memória: estes casos verificam a
+        contagem, não a ida ao Redis (que tem cobertura própria em
+        `test_rate_limit_por_conta.py`), e assim não dependem do serviço estar
+        no ar nem sujam o banco de teste.
+        """
+        self.service = LLMService()
+        self.service.rate_limiter = RateLimiter(
+            max_calls_per_minute=60,
+            max_tokens_per_minute=40000,
+            redis_backend=_SemRedis(),
+        )
+
+    async def test_rate_limit_initial_status(self):
         """Test initial rate limit status."""
-        status = self.service.get_rate_limit_status()
+        status = await self.service.get_rate_limit_status()
         assert status["calls_used"] == 0
         assert status["tokens_used"] == 0
         assert status["calls_remaining"] == self.service.max_calls_per_minute
         assert status["tokens_remaining"] == self.service.max_tokens_per_minute
 
-    def test_rate_limit_after_usage(self):
+    async def test_rate_limit_after_usage(self):
         """Test rate limit status after tracking usage."""
-        self.service._track_usage(100)
-        status = self.service.get_rate_limit_status()
+        await self.service._track_usage(100)
+        status = await self.service.get_rate_limit_status()
         assert status["calls_used"] == 1
         assert status["tokens_used"] == 100
         assert status["calls_remaining"] == self.service.max_calls_per_minute - 1
         assert status["tokens_remaining"] == self.service.max_tokens_per_minute - 100
 
-    def test_rate_limit_multiple_calls(self):
+    async def test_rate_limit_multiple_calls(self):
         """Test rate limit with multiple calls."""
         for _ in range(5):
-            self.service._track_usage(500)
-        status = self.service.get_rate_limit_status()
+            await self.service._track_usage(500)
+        status = await self.service.get_rate_limit_status()
         assert status["calls_used"] == 5
         assert status["tokens_used"] == 2500
 
-    def test_rate_limit_exceeded_calls(self):
+    async def test_rate_limit_exceeded_calls(self):
         """Test that rate limit exception is raised for too many calls."""
         self.service.max_calls_per_minute = 3
-        self.service._track_usage(100)
-        self.service._track_usage(100)
-        self.service._track_usage(100)
+        await self.service._track_usage(100)
+        await self.service._track_usage(100)
+        await self.service._track_usage(100)
 
         with pytest.raises(ValidationException) as exc_info:
-            self.service._check_rate_limits()
+            await self.service._check_rate_limits()
         assert "Rate limit exceeded" in str(exc_info.value)
 
-    def test_rate_limit_exceeded_tokens(self):
+    async def test_rate_limit_exceeded_tokens(self):
         """Test that rate limit exception is raised for too many tokens."""
         self.service.max_tokens_per_minute = 1000
-        self.service._track_usage(600)
-        self.service._track_usage(500)
+        await self.service._track_usage(600)
+        await self.service._track_usage(500)
 
         with pytest.raises(ValidationException) as exc_info:
-            self.service._check_rate_limits()
+            await self.service._check_rate_limits()
         assert "Rate limit exceeded" in str(exc_info.value)
 
-    def test_rate_limit_cleanup_old_entries(self):
-        """Test that old entries are cleaned up."""
-        now = datetime.utcnow()
-        # Add old timestamp (3 minutes ago)
-        old_time = now - timedelta(minutes=3)
-        self.service.call_timestamps.append(old_time)
+    async def test_rate_limit_ignora_uso_fora_da_janela(self):
+        """
+        Uso antigo não conta.
 
-        # Track new usage
-        self.service._track_usage(100)
+        A entrada velha é plantada direto no backend porque a janela é de um
+        minuto e o teste não vai esperar sessenta segundos.
+        """
+        backend = MemoryRateLimitBackend()
+        self.service.rate_limiter = RateLimiter(
+            max_calls_per_minute=60,
+            max_tokens_per_minute=40000,
+            redis_backend=_SemRedis(),
+            memory_backend=backend,
+        )
 
-        # Old entry should be cleaned up
-        status = self.service.get_rate_limit_status()
-        assert status["calls_used"] == 1  # Only the new one
+        antigo = time.time() - 180  # três minutos atrás
+        backend._entries[LLMService.SHARED_BUCKET].append((antigo, 999))
+
+        await self.service._track_usage(100)
+
+        status = await self.service.get_rate_limit_status()
+        assert status["calls_used"] == 1
+        assert status["tokens_used"] == 100
 
 
 class TestGenerateResponse:
@@ -281,7 +316,7 @@ class TestStreamResponse:
         )
 
     @patch("app.services.llm_service.Anthropic")
-    def test_stream_response_yields_text(self, mock_anthropic):
+    async def test_stream_response_yields_text(self, mock_anthropic):
         """Test that stream response yields text chunks."""
         mock_stream = MagicMock()
         mock_stream.__enter__ = MagicMock(return_value=mock_stream)
@@ -295,11 +330,11 @@ class TestStreamResponse:
         mock_client.messages.stream.return_value = mock_stream
         self.service.client = mock_client
 
-        chunks = list(self.service.stream_response(self.agent, "Hi"))
+        chunks = [chunk async for chunk in self.service.stream_response(self.agent, "Hi")]
         assert chunks == ["Hello", " ", "world", "!"]
 
     @patch("app.services.llm_service.Anthropic")
-    def test_stream_response_error_handling(self, mock_anthropic):
+    async def test_stream_response_error_handling(self, mock_anthropic):
         """Test error handling in stream response."""
         from anthropic import RateLimitError
 
@@ -312,7 +347,7 @@ class TestStreamResponse:
         self.service.client = mock_client
 
         with pytest.raises(ValidationException):
-            list(self.service.stream_response(self.agent, "Hi"))
+            [chunk async for chunk in self.service.stream_response(self.agent, "Hi")]
 
 
 class TestBuildMessages:
@@ -354,39 +389,43 @@ class TestRateLimitTracking:
     def setup_method(self):
         """Setup test fixtures."""
         self.service = LLMService()
+        self.backend = MemoryRateLimitBackend()
+        self.service.rate_limiter = RateLimiter(
+            max_calls_per_minute=60,
+            max_tokens_per_minute=40000,
+            redis_backend=_SemRedis(),
+            memory_backend=self.backend,
+        )
 
-    def test_track_usage_adds_timestamp(self):
+    async def test_track_usage_adds_timestamp(self):
         """Test that tracking usage adds timestamp."""
-        initial_count = len(self.service.call_timestamps)
-        self.service._track_usage(100)
-        assert len(self.service.call_timestamps) == initial_count + 1
+        await self.service._track_usage(100)
+        assert (await self.service.get_rate_limit_status())["calls_used"] == 1
 
-    def test_track_usage_records_tokens(self):
+    async def test_track_usage_records_tokens(self):
         """Test that tracking usage records tokens."""
-        initial_count = len(self.service.token_timestamps)
-        self.service._track_usage(500)
-        assert len(self.service.token_timestamps) == initial_count + 1
-        assert self.service.token_timestamps[-1][1] == 500
+        await self.service._track_usage(500)
+        assert (await self.service.get_rate_limit_status())["tokens_used"] == 500
 
-    def test_track_usage_multiple_calls(self):
+    async def test_track_usage_multiple_calls(self):
         """Test tracking multiple calls."""
         for i in range(3):
-            self.service._track_usage(i * 100)
-        assert len(self.service.call_timestamps) == 3
-        assert len(self.service.token_timestamps) == 3
+            await self.service._track_usage(i * 100)
 
-    def test_track_usage_old_entries_removed(self):
-        """Test that old entries are eventually removed."""
-        # Add an old entry manually
-        old_time = datetime.utcnow() - timedelta(minutes=3)
-        self.service.call_timestamps.append(old_time)
+        status = await self.service.get_rate_limit_status()
+        assert status["calls_used"] == 3
+        assert status["tokens_used"] == 300
 
-        # Track new usage
-        self.service._track_usage(100)
+    async def test_track_usage_old_entries_removed(self):
+        """Entradas fora do período de retenção saem do balde."""
+        bucket = LLMService.SHARED_BUCKET
+        # Além dos 120s de retenção, para o registro seguinte varrer a entrada.
+        self.backend._entries[bucket].append((time.time() - 300, 999))
 
-        # The old entry should be removed during cleanup
-        status = self.service.get_rate_limit_status()
-        assert status["calls_used"] == 1
+        await self.service._track_usage(100)
+
+        assert len(self.backend._entries[bucket]) == 1
+        assert (await self.service.get_rate_limit_status())["calls_used"] == 1
 
 
 class TestServiceInitialization:

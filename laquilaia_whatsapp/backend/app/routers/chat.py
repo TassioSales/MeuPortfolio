@@ -394,7 +394,10 @@ async def get_rate_limit_status(
         if not agent:
             raise NotFoundException("Agent")
 
-        return llm_service.get_rate_limit_status()
+        # Com o user_id, e não sem: sem ele a resposta vinha do balde
+        # compartilhado e mostrava sempre zero, qualquer que fosse o uso da
+        # conta — o limite é por conta desde que deixou de ser do processo.
+        return await llm_service.get_rate_limit_status(user_id)
 
     except NotFoundException as e:
         logger.warning(f"⚠️ {e.detail}")

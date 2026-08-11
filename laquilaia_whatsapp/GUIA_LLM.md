@@ -160,7 +160,15 @@ User Request
 
 ## ⚡ Rate Limiting
 
-Sistema inteligente de rate limiting com dupla verificação:
+Janela deslizante de 60 segundos, em duas dimensões, **por conta**
+(`agent.user_id`) — o uso de um cliente não consome a cota de outro.
+
+O estado fica no **Redis** (`app/services/rate_limiter.py`), não no processo:
+com mais de uma réplica do backend, contadores em memória dariam a cada uma o
+seu balde e o limite efetivo seria `N × limite`. São dois sorted sets por
+conta, `ratelimit:calls:{user_id}` e `ratelimit:tokens:{user_id}`, com o
+instante da chamada como score — assim o corte da janela é um
+`ZREMRANGEBYSCORE`, sem varrer o conjunto.
 
 ### Limite 1: Chamadas por Minuto
 - **Default:** 60 chamadas/minuto
@@ -171,6 +179,25 @@ Sistema inteligente de rate limiting com dupla verificação:
 - **Default:** 40.000 tokens/minuto
 - **Config:** `LLM_MAX_TOKENS_PER_MINUTE`
 - **Erro:** `ValidationException` se ultrapassado
+
+### Sem Redis
+
+O limitador cai para a memória do processo e registra um `WARNING`. Isso é
+exatamente o comportamento antigo — cada réplica com o seu balde —, escolhido
+por ser melhor tanto que recusar todas as chamadas quanto que deixá-las passar
+sem medição. `GET /health` traz `"redis": "unavailable"` nesse estado.
+
+A queda é por chamada, não definitiva: o cliente do redis-py reconecta
+sozinho, então uma instabilidade momentânea não condena o processo a contar em
+memória até reiniciar.
+
+### Precisão
+
+`check` roda antes da chamada e `track` depois, quando o total de tokens
+finalmente é conhecido. Duas requisições simultâneas podem, portanto, passar
+pela verificação antes de qualquer uma registrar o seu uso, e a janela estoura
+um pouco. Não há como reservar antecipadamente o que ainda não se sabe quanto
+vai custar; o objetivo é conter o uso, não cravar o teto no token exato.
 
 ### Exemplo de Limite Atingido
 ```json

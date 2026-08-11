@@ -91,6 +91,7 @@ Documentadas em `.env.example`. As que precisam de atenção:
 | `DATABASE_URL` | Sim | Usada pela aplicação **e** pelo Alembic |
 | `CLAUDE_MODEL` | Não | Default `claude-sonnet-5` |
 | `EVOLUTION_API_KEY` | Só com WhatsApp | Integração da Evolution API |
+| `WEBHOOK_SECRET` | **Sim** em produção | HMAC do webhook. Sem ele o endpoint recusa tudo quando `DEBUG=False` |
 | `FRONTEND_URL` / `ALLOWED_ORIGINS` | Sim em produção | CORS |
 | `NEXT_PUBLIC_API_URL` | Sim | Lida pelo **browser**, então é o endereço público da API, não o host interno do container |
 
@@ -105,7 +106,7 @@ Itens que o setup de desenvolvimento deixa em aberto:
 - [ ] Restringir `ALLOWED_ORIGINS` ao domínio real
 - [ ] HTTPS: os cookies de sessão só ganham a flag `secure` sob TLS
 - [ ] Backup do PostgreSQL — não há rotina configurada
-- [ ] Validar a assinatura do webhook da Evolution API (`validate_webhook_signature` ainda é um stub que devolve `True`)
+- [ ] Definir `WEBHOOK_SECRET` e configurar o mesmo valor na Evolution API
 - [ ] Trocar os `Dockerfile` de desenvolvimento por builds de produção (o frontend usa `next dev`; produção quer `next build` + `next start`)
 
 ---
@@ -131,15 +132,40 @@ O primeiro `docker compose up` numa máquina com Docker é o teste que falta.
 
 ---
 
-## 7. Pendências conhecidas
+## 7. Segurança do webhook
+
+`POST /api/v1/webhook/messages` exige HMAC-SHA256 do corpo no cabeçalho
+`x-hub-signature-256`, no formato `sha256=<hex>`, com a chave `WEBHOOK_SECRET`.
+
+| Situação | Resposta |
+|---|---|
+| Assinatura correta | 200 |
+| Assinatura ausente ou inválida | 401 |
+| Corpo alterado após assinar | 401 |
+| `WEBHOOK_SECRET` vazio e `DEBUG=False` | 503 |
+| `WEBHOOK_SECRET` vazio e `DEBUG=True` | 200, com aviso no log |
+
+A conferência é feita sobre o **corpo cru**, antes de qualquer parse: validar
+depois do Pydantic deixaria requisição não assinada exercitar o parser, e o
+HMAC é calculado sobre os bytes exatos que chegaram. A comparação usa
+`hmac.compare_digest`, porque `==` sai no primeiro byte diferente e esse tempo
+vaza quanto do prefixo estava certo.
+
+Sem segredo configurado o endpoint fica aberto **apenas em `DEBUG=true`**. Em
+produção ele recusa, para um deploy que esqueceu de definir a variável falhar
+de forma visível em vez de aceitar tudo em silêncio.
+
+`GET /api/v1/webhook/health` informa se a validação está ligada. Antes ele
+chamava um stub que devolvia `True` sempre, então dizia "ok" mesmo sem
+proteção nenhuma.
+
+---
+
+## 8. Pendências conhecidas
 
 **SDK Anthropic desatualizado.** `anthropic==0.7.0` é bem antigo. O modelo
 default já é `claude-sonnet-5`, mas atualizar o SDK é mudança maior: os testes
 de tratamento de erro dependem das assinaturas de exceção da versão atual.
-
-**Assinatura do webhook não validada.** `validate_webhook_signature` devolve
-`True` sempre. Em produção, qualquer um que descubra a URL do webhook consegue
-injetar mensagens.
 
 **Fase 16 (pausa humana) não implementada.** Estava marcada como opcional no
 plano — o operador ainda não consegue assumir uma conversa e pausar a IA.

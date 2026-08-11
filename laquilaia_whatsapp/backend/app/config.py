@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     evolution_api_key: str = os.getenv("EVOLUTION_API_KEY", "")
     evolution_instance_name: str = os.getenv("EVOLUTION_INSTANCE_NAME", "laquilaia")
     evolution_webhook_url: str = os.getenv("EVOLUTION_WEBHOOK_URL", "http://localhost:8000/webhook/whatsapp")
+    # Segredo compartilhado do HMAC do webhook. Vazio deixa o endpoint
+    # aberto, o que só é tolerado com DEBUG=true (ver webhook_security.py).
+    webhook_secret: str = os.getenv("WEBHOOK_SECRET", "")
 
     # Frontend
     frontend_url: str = os.getenv("FRONTEND_URL", "http://localhost:3000")

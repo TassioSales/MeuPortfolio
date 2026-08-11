@@ -10,13 +10,14 @@ from app.models.llm_models import (
     ChatHistoryMessage,
     ChatHistoryResponse,
 )
-from app.db.models import Agent, Conversation, Message
+from app.db.models import Agent, Conversation, Lead, Message
 from app.services.llm_service import llm_service
 from app.utils.auth_middleware import get_current_user
 from app.utils.exceptions import ValidationException, NotFoundException
 from app.utils.logger import logger
 from sqlalchemy import select
 from datetime import datetime
+from typing import List, Optional
 from pydantic import BaseModel
 
 router = APIRouter(
@@ -435,6 +436,114 @@ class ConversationStatusResponse(BaseModel):
     ia_ativa: bool
 
 
+class ConversationListItem(BaseModel):
+    """Uma conversa na lista do operador."""
+    id: str
+    phone_number: str
+    status: str
+    ia_ativa: bool
+    lead_nome: Optional[str] = None
+    lead_status_funil: Optional[str] = None
+    data_ultima_msg: Optional[datetime] = None
+    total_mensagens: int = 0
+    ultima_mensagem: Optional[str] = None
+    ultimo_remetente: Optional[str] = None
+
+
+class ConversationMessagesResponse(BaseModel):
+    """Transcrição de uma conversa, da mais antiga para a mais recente."""
+    conversation_id: str
+    status: str
+    ia_ativa: bool
+    phone_number: str
+    lead_nome: Optional[str] = None
+    messages: List[ChatHistoryMessage] = []
+
+
+@router.get("/{agent_id}/conversations", response_model=List[ConversationListItem])
+async def list_agent_conversations(
+    agent_id: str,
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Conversas reais do agente, da mais recente para a mais antiga.
+
+    Sem esta listagem os endpoints de pausa eram inalcançáveis pelo painel: os
+    três recebem um `conversation_id` que o operador não tinha por onde
+    descobrir.
+
+    A conversa do playground fica de fora — ela é do desenvolvedor testando o
+    prompt, não de um cliente esperando atendimento.
+    """
+    try:
+        await _get_agent_or_404(agent_id, user_id, db)
+
+        result = await db.execute(
+            select(Conversation)
+            .where(
+                (Conversation.agent_id == agent_id)
+                & (Conversation.phone_number != TEST_PHONE_NUMBER)
+            )
+            .order_by(Conversation.data_ultima_msg.desc())
+        )
+        conversations = result.scalars().all()
+
+        if not conversations:
+            return []
+
+        ids = [c.id for c in conversations]
+
+        # As mensagens de todas as conversas de uma vez: uma query por conversa
+        # transformaria uma lista de 50 atendimentos em 50 idas ao banco.
+        mensagens_result = await db.execute(
+            select(Message)
+            .where(Message.conversation_id.in_(ids))
+            .order_by(Message.timestamp)
+        )
+        por_conversa: dict[str, list[Message]] = {}
+        for mensagem in mensagens_result.scalars().all():
+            por_conversa.setdefault(mensagem.conversation_id, []).append(mensagem)
+
+        leads_result = await db.execute(select(Lead).where(Lead.conversation_id.in_(ids)))
+        leads = {lead.conversation_id: lead for lead in leads_result.scalars().all()}
+
+        itens = []
+        for conversation in conversations:
+            mensagens = por_conversa.get(conversation.id, [])
+            ultima = mensagens[-1] if mensagens else None
+            lead = leads.get(conversation.id)
+
+            itens.append(
+                ConversationListItem(
+                    id=conversation.id,
+                    phone_number=conversation.phone_number,
+                    status=conversation.status,
+                    ia_ativa=conversation.status != "pausada",
+                    lead_nome=lead.nome if lead else None,
+                    lead_status_funil=lead.status_funil if lead else None,
+                    data_ultima_msg=conversation.data_ultima_msg,
+                    total_mensagens=len(mensagens),
+                    ultima_mensagem=ultima.conteudo if ultima else None,
+                    ultimo_remetente=ultima.remetente if ultima else None,
+                )
+            )
+
+        return itens
+
+    except NotFoundException as e:
+        logger.warning(f"⚠️ {e.detail}")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Erro ao listar conversas: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error listing conversations",
+        )
+
+
 async def _get_owned_conversation(
     conversation_id: str, user_id: str, db: AsyncSession
 ) -> Conversation:
@@ -470,6 +579,67 @@ async def _set_conversation_status(
         status=novo_status,
         ia_ativa=novo_status != "pausada",
     )
+
+
+@conversations_router.get(
+    "/{conversation_id}/messages",
+    response_model=ConversationMessagesResponse,
+)
+async def get_conversation_messages(
+    conversation_id: str,
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Transcrição da conversa, da mensagem mais antiga para a mais recente.
+
+    O operador precisa ler o que já foi dito antes de assumir; pausar às cegas
+    faria o humano repetir o que a IA acabou de perguntar.
+
+    O estado da automação vem junto para a tela não precisar de uma segunda
+    chamada só para saber se o botão mostra "pausar" ou "retomar".
+    """
+    try:
+        conversation = await _get_owned_conversation(conversation_id, user_id, db)
+
+        result = await db.execute(
+            select(Message)
+            .where(Message.conversation_id == conversation.id)
+            .order_by(Message.timestamp)
+        )
+
+        lead_result = await db.execute(
+            select(Lead).where(Lead.conversation_id == conversation.id)
+        )
+        lead = lead_result.scalars().first()
+
+        return ConversationMessagesResponse(
+            conversation_id=conversation.id,
+            status=conversation.status,
+            ia_ativa=conversation.status != "pausada",
+            phone_number=conversation.phone_number,
+            lead_nome=lead.nome if lead else None,
+            messages=[
+                ChatHistoryMessage(
+                    id=message.id,
+                    remetente=message.remetente,
+                    conteudo=message.conteudo,
+                    timestamp=message.timestamp,
+                )
+                for message in result.scalars().all()
+            ],
+        )
+
+    except NotFoundException as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Erro ao buscar mensagens da conversa: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error getting conversation messages",
+        )
 
 
 @conversations_router.post(

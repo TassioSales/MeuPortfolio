@@ -119,6 +119,40 @@ export interface ChatBubble {
   tokens?: number;
 }
 
+// ========== Atendimentos / pausa humana ==========
+
+/** Uma conversa na fila do operador (`ConversationListItem` no backend). */
+export interface ConversationSummary {
+  id: string;
+  phone_number: string;
+  status: string;
+  /** false quando a conversa está pausada e um humano assumiu. */
+  ia_ativa: boolean;
+  lead_nome: string | null;
+  lead_status_funil: string | null;
+  data_ultima_msg: string | null;
+  total_mensagens: number;
+  ultima_mensagem: string | null;
+  ultimo_remetente: string | null;
+}
+
+/** Transcrição de `GET /api/v1/conversations/{id}/messages`. */
+export interface ConversationTranscript {
+  conversation_id: string;
+  status: string;
+  ia_ativa: boolean;
+  phone_number: string;
+  lead_nome: string | null;
+  messages: ChatHistoryMessage[];
+}
+
+/** Resposta de `pause`, `resume` e `status`. */
+export interface ConversationStatus {
+  conversation_id: string;
+  status: string;
+  ia_ativa: boolean;
+}
+
 // ========== Kanban ==========
 
 /** Card de lead no board (`LeadCardResponse` no backend). */

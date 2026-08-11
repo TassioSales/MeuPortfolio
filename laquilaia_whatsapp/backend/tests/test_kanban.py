@@ -42,8 +42,16 @@ class TestKanbanBoard:
         )
         self.agent_id = create_response.json()["id"]
 
-    def test_get_kanban_board_empty(self):
-        """Test getting Kanban board with no columns."""
+    def test_board_de_agente_novo_ja_vem_com_o_funil(self):
+        """
+        O agente nasce com as colunas padrão.
+
+        Este teste afirmava `columns == []` e passava — mas o que ele
+        documentava era um defeito: sem coluna nenhuma, um lead qualificado
+        era gravado e nunca aparecia no board, porque não havia onde pôr o
+        card. Só o `POST /kanban/columns/init` criava as colunas, e nada o
+        chamava.
+        """
         response = client.get(
             f"/api/v1/agents/{self.agent_id}/kanban",
             headers=self.headers,
@@ -52,7 +60,17 @@ class TestKanbanBoard:
         assert response.status_code == 200
         data = response.json()
         assert data["agent_id"] == self.agent_id
-        assert data["columns"] == []
+        assert [c["nome"] for c in data["columns"]] == [
+            "Novo Lead",
+            "Em Qualificação",
+            "Lead Qualificado",
+            "Agendado",
+            "Arquivado",
+        ]
+        assert all(c["cards"] == [] for c in data["columns"])
+        # A paleta é a validada, não os hexes crus do Tailwind que o endpoint
+        # de init usava por conta própria.
+        assert data["columns"][0]["cor_hex"] == "#3164ff"
 
     def test_get_kanban_board_agent_not_found(self):
         """Test getting board for non-existent agent."""
@@ -64,7 +82,12 @@ class TestKanbanBoard:
         assert response.status_code == 404
 
     def test_initialize_kanban_columns(self):
-        """Test initializing default Kanban columns."""
+        """
+        O init virou idempotente na prática: as colunas já vêm com o agente.
+
+        O endpoint continua existindo para agentes criados antes desta
+        mudança, que estão no banco sem funil nenhum.
+        """
         response = client.post(
             f"/api/v1/agents/{self.agent_id}/kanban/columns/init",
             headers=self.headers,
@@ -72,8 +95,8 @@ class TestKanbanBoard:
 
         assert response.status_code == 200
         data = response.json()
-        assert data["success"] is True
-        assert len(data["columns"]) == 5  # Default 5 columns
+        assert data["success"] is False
+        assert "already initialized" in data["message"]
 
     def test_initialize_kanban_columns_already_exist(self):
         """Test initializing columns when already present."""

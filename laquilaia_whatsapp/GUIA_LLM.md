@@ -24,6 +24,77 @@ editável no formulário, mas **é inerte enquanto o modelo for o default**.
 Aponte `CLAUDE_MODEL` para uma família que aceite (`claude-sonnet-4-6`,
 `claude-haiku-4-5`, `claude-3-*`) se precisar dele. `max_tokens` vai sempre.
 
+### Provedor de reserva: Gemini
+
+`GEMINI_API_KEY` liga uma reserva. A ordem é:
+
+| Situação | Quem responde |
+|---|---|
+| As duas chaves configuradas | Claude; o Gemini assume se ele falhar |
+| Só `GEMINI_API_KEY` | Gemini, direto — o Claude nem é chamado |
+| Só `ANTHROPIC_API_KEY` | Claude; erro sobe como sempre subiu |
+| Nenhuma | `ValidationException` dizendo qual variável falta |
+
+Sem chave da Anthropic o Claude é **pulado de propósito**: chamá-lo seria um
+401 garantido por mensagem, latência e log de erro em troca de nada. Mas o
+pulo só acontece havendo reserva — sem ela a chamada segue e o erro de
+autenticação sobe, que é o diagnóstico correto.
+
+**O erro que sobe é sempre o do provedor principal.** Se o Claude cai e o
+Gemini também, quem aparece no log é o Claude: ver "GEMINI_API_KEY inválida"
+quando o problema é um 529 da Anthropic manda investigar o lado errado.
+
+A queda é registrada com `WARNING` e a resposta da API informa o modelo que de
+fato respondeu, no campo `model` — não o que está configurado. O painel mostra
+esse valor.
+
+O cliente é HTTP direto (`app/services/gemini_client.py`), sem o SDK
+`google-generativeai`: o backend já carrega `httpx` pinado em 0.25.0, e trazer
+outro SDK significaria mais um pacote com faixa própria de httpx para
+conciliar, em troca de um POST e um parse de JSON.
+
+Dois detalhes de formato que não dão erro quando errados — só respostas piores:
+o papel do assistente no Gemini é `model`, não `assistant`, e o texto vai em
+`parts`, não em `content`. Mandar no formato do Claude faz o Gemini ignorar o
+turno e responder sem contexto. Por isso os testes conferem o corpo HTTP real,
+com `httpx.MockTransport`.
+
+E, ao contrário dos modelos novos do Claude, **o Gemini aceita `temperature`** —
+quando ele responde, o valor do agente volta a valer.
+
+#### O raciocínio sai do mesmo orçamento da resposta
+
+`gemini-flash-latest` resolve hoje para `gemini-3.6-flash`, que raciocina antes
+de responder — e `maxOutputTokens` limita **raciocínio e resposta juntos**.
+Desligar não é opção: `thinkingConfig: {"thinkingBudget": 0}` é recusado com
+400.
+
+Medido contra a API real:
+
+| Pergunta | Raciocínio | Resposta |
+|---|---|---|
+| "Diga apenas: a integração funcionou" | ~120 tokens | 5 tokens |
+| Classificar um lead e justificar | **565 tokens** | 80 tokens |
+
+Com `max_tokens=256` cru, a primeira chamada de verdade voltou
+`finishReason: MAX_TOKENS` e a frase cortada em *"A integração funcion"* — 93
+dos 100 tokens tinham ido para o raciocínio.
+
+Por isso o cliente soma `FOLGA_DE_RACIOCINIO` (1024) ao `max_tokens` do agente
+antes de enviar. Somar, e não fixar um piso, preserva a intenção de quem
+configurou: a resposta ainda pode usar os tokens pedidos, e o raciocínio sai
+da folga.
+
+Duas consequências no relatório de uso:
+
+- **os tokens de raciocínio entram na conta** (`output_tokens` inclui
+  `thoughtsTokenCount`). Eles são cobrados; ignorá-los faria o limitador
+  contar 5 onde a API cobrou 174, e o painel mostraria três números que não
+  somam;
+- **texto truncado ainda é devolvido**, com `WARNING` no log. Meia resposta é
+  melhor que nenhuma — mas sem o aviso ninguém liga o "atendente que fala pela
+  metade" ao limite de tokens.
+
 ## 📋 Endpoints de Chat
 
 Todos os endpoints estão sob `/api/v1/agents/{agent_id}` e requerem autenticação Bearer token.

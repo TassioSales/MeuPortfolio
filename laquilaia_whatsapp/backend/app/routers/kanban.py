@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from app.db.database import get_db_session
 from app.db.models import Agent, KanbanColumn, KanbanCard, Lead, LeadDetails
+from app.services.kanban_defaults import COLUNAS_PADRAO, criar_colunas_padrao
 from app.utils.auth_middleware import get_current_user
 from app.ws.manager import notify_lead_moved
 from app.utils.logger import logger
@@ -401,25 +402,12 @@ async def initialize_kanban_columns(
                 "message": "Columns already initialized",
             }
 
-        # Create default columns
-        default_columns = [
-            ("Novo Lead", 1, "#ef4444"),
-            ("Em Qualificação", 2, "#f97316"),
-            ("Lead Qualificado", 3, "#eab308"),
-            ("Agendado", 4, "#22c55e"),
-            ("Arquivado", 5, "#6b7280"),
-        ]
-
-        created_columns = []
-        for nome, ordem, cor in default_columns:
-            column = KanbanColumn(
-                agent_id=agent_id,
-                nome=nome,
-                ordem=ordem,
-                cor_hex=cor,
-            )
-            db.add(column)
-            created_columns.append((nome, cor))
+        # As colunas vêm de `kanban_defaults`, a mesma fonte usada na criação
+        # do agente e no seed. Aqui havia uma segunda lista, com hexes crus do
+        # Tailwind: quem passasse por este endpoint ficava com um board de
+        # cores que nunca passaram pelo validador de contraste.
+        await criar_colunas_padrao(agent_id, db)
+        created_columns = [(nome, cor) for nome, _status, cor in COLUNAS_PADRAO]
 
         await db.commit()
 

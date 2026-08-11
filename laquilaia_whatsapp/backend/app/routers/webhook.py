@@ -2,14 +2,18 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.config import settings
 from app.db.database import get_db_session
 from app.models.webhook_models import WebhookPayload
 from app.services.message_orchestrator import orchestrator
 from pydantic import ValidationError
 from app.utils.logger import logger
-from app.utils.webhook_security import SIGNATURE_HEADER, verify_webhook_request
+from app.utils.webhook_security import (
+    SIGNATURE_HEADER,
+    STATIC_TOKEN_HEADER,
+    verify_webhook_request,
+)
 from app.utils.exceptions import NotFoundException, ValidationException
-from app.config import settings
 from datetime import datetime
 
 router = APIRouter(
@@ -43,7 +47,11 @@ async def webhook_messages(
     # validar depois do Pydantic deixaria requisição não assinada mexer no
     # parser, e o HMAC é calculado sobre os bytes exatos que chegaram.
     body = await request.body()
-    verify_webhook_request(body, request.headers.get(SIGNATURE_HEADER))
+    verify_webhook_request(
+        body,
+        request.headers.get(SIGNATURE_HEADER),
+        request.headers.get(STATIC_TOKEN_HEADER),
+    )
 
     try:
         payload = WebhookPayload.model_validate_json(body)
@@ -93,14 +101,22 @@ async def webhook_messages(
         remote_jid = payload.data.key.get("remoteJid", "")
         phone_number = remote_jid.replace("@s.whatsapp.net", "")
 
-        # TODO: In production, extract agent_id from:
-        # - Webhook metadata
-        # - Phone number mapping in DB
-        # - Environment variable
-        # For now, we'll use a default or require it in metadata
-        agent_id = payload.data.key.get("agentId")
+        # Qual agente responde.
+        #
+        # O `agentId` dentro de `key` é conveniência para teste: a Evolution
+        # real nunca o envia — ela não sabe que agentes existem. Sem a queda
+        # para a variável de ambiente, plugar a Evolution de verdade dava
+        # "Missing agent_id" em toda mensagem recebida.
+        #
+        # Uma instalação com vários agentes precisa de mapeamento por
+        # instância do WhatsApp, que ainda não existe; enquanto isso, uma
+        # instância atende por um agente só.
+        agent_id = payload.data.key.get("agentId") or settings.evolution_default_agent_id
         if not agent_id:
-            logger.error("❌ No agent_id in webhook payload")
+            logger.error(
+                "❌ Sem agente para atender: defina EVOLUTION_DEFAULT_AGENT_ID "
+                "ou mande `agentId` em data.key"
+            )
             raise ValidationException("Missing agent_id in webhook")
 
         # Process message

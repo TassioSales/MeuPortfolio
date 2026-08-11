@@ -170,7 +170,7 @@ async def chat_with_agent(
                 total_tokens=token_usage["total_tokens"],
             ),
             timestamp=datetime.utcnow(),
-            model=llm_service.model,
+            model=token_usage.get("model", llm_service.model),
         )
 
     except NotFoundException as e:
@@ -339,7 +339,7 @@ async def test_agent(
                 total_tokens=token_usage["total_tokens"],
             ),
             timestamp=datetime.utcnow(),
-            model=llm_service.model,
+            model=token_usage.get("model", llm_service.model),
         )
 
     except NotFoundException as e:

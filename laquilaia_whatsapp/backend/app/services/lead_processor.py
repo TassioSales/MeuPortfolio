@@ -121,6 +121,25 @@ class LeadProcessor:
             await db.rollback()
             raise ValidationException(f"Failed to process lead: {str(e)}")
 
+    # O mesmo padrão usado para extrair, reaproveitado para limpar.
+    BLOCO_JSON = re.compile(r"```json\s*[\s\S]*?\s*```", re.IGNORECASE)
+
+    @classmethod
+    def texto_para_o_cliente(cls, response_text: str) -> str:
+        """
+        A resposta sem o bloco de qualificação.
+
+        O prompt documentado manda o modelo anexar um bloco ```json com nome,
+        e-mail, score e recomendações internas — e esse texto era enviado
+        inteiro ao WhatsApp. O cliente recebia o próprio dossiê, incluindo o
+        score que a empresa deu a ele e as objeções detectadas.
+
+        Só o bloco cercado é removido. JSON solto no meio da frase fica: pode
+        ser conteúdo legítimo da conversa, e recortar por chaves soltas
+        arriscaria comer a resposta.
+        """
+        return cls.BLOCO_JSON.sub("", response_text).strip()
+
     def _extract_json(self, response_text: str) -> Optional[Dict[str, Any]]:
         """
         Extract JSON from Claude response.
@@ -264,10 +283,17 @@ class LeadProcessor:
         db: AsyncSession,
     ) -> None:
         """Create or update LeadDetails."""
-        # Get existing details
-        if lead.lead_details:
-            details = lead.lead_details
-        else:
+        # A busca é explícita porque `lead.lead_details` é relacionamento com
+        # carga preguiçosa: no SQLAlchemy async, tocar um atributo que ainda
+        # não veio do banco exige IO onde o greenlet não alcança, e o erro é
+        # `greenlet_spawn has not been called`. Um lead recém-criado nunca tem
+        # o relacionamento carregado, então este era o caminho garantido.
+        resultado = await db.execute(
+            select(LeadDetails).where(LeadDetails.lead_id == lead.id)
+        )
+        details = resultado.scalars().first()
+
+        if details is None:
             details = LeadDetails(lead_id=lead.id)
             db.add(details)
             await db.flush()
@@ -322,9 +348,17 @@ class LeadProcessor:
                 logger.warning(f"⚠️ Kanban column not found for status {status}")
                 return
 
-            # Remove existing card if any
-            if lead.kanban_card:
-                await db.delete(lead.kanban_card)
+            # Mesmo motivo de `_update_lead_details`: `lead.kanban_card` é
+            # relacionamento preguiçoso e não pode ser tocado direto aqui.
+            resultado = await db.execute(
+                select(KanbanCard).where(KanbanCard.lead_id == lead.id)
+            )
+            card_atual = resultado.scalars().first()
+            if card_atual is not None:
+                await db.delete(card_atual)
+                # O flush é necessário antes de inserir o novo: a tabela tem
+                # unicidade por lead, e o DELETE só vai ao banco no commit.
+                await db.flush()
 
             # Create new card in target column
             max_order = 0

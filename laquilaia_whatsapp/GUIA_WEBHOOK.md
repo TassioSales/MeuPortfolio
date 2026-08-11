@@ -477,3 +477,76 @@ Cada um tem seu histórico isolado
 
 **Última Atualização:** 2026-08-10  
 **Status:** Fase 5 - Webhook WhatsApp Integration ✅
+
+---
+
+## Plugando a Evolution API de verdade
+
+A Evolution é *self-hosted* e open source: não se contrata, se hospeda. O
+`docker-compose.yml` já traz o serviço, num profile próprio — `docker compose
+up` sobe a aplicação sem ela; incluí-la é `--profile whatsapp`. A separação é
+proposital: ela exige parear um número de WhatsApp real por QR code, e isso
+não pode ser pré-requisito para ver o painel funcionando.
+
+### Três coisas que precisam bater
+
+**1. A chave é sua, você inventa.** `AUTHENTICATION_API_KEY` (dentro da
+Evolution) e `EVOLUTION_API_KEY` (aqui) são o mesmo valor, e não vêm de
+lugar nenhum — é um segredo que você escolhe. O compose já liga os dois à
+mesma variável.
+
+**2. A Evolution não assina o corpo.** O webhook aqui valida HMAC-SHA256, o
+que pressupõe um emissor que assina — e ela não faz isso, só repassa
+cabeçalhos fixos configurados na instância. Com HMAC puro, **toda** mensagem
+dela seria recusada com 401. Por isso existe o `WEBHOOK_STATIC_TOKEN`: defina
+o mesmo valor aqui e no cabeçalho `x-webhook-token` da instância.
+
+É mais fraco que o HMAC, e a diferença importa: prova que quem chamou conhece
+o segredo, mas não que o corpo chegou íntegro nem que a requisição não é uma
+repetição de outra capturada antes. Fica em variável separada justamente para
+que ligar esse modo seja uma escolha, não um efeito colateral.
+
+**3. A Evolution não sabe que agentes existem.** Ela manda a mensagem e
+pronto; o `agentId` dentro de `data.key` só existe nos payloads que forjamos
+para teste. Sem `EVOLUTION_DEFAULT_AGENT_ID`, todo webhook real morre com
+"Missing agent_id". Pegue o id do agente em `/dashboard/agents`.
+
+Uma instância atende por **um** agente. Vários agentes exigiriam mapear
+instância → agente, que ainda não existe.
+
+### O passo a passo
+
+```bash
+docker compose --profile whatsapp up -d
+```
+
+1. Abra o Manager da Evolution em `http://localhost:8080` (a v2 costuma
+   servi-lo em `/manager`) e entre com a `EVOLUTION_API_KEY`.
+2. Crie uma instância com o mesmo nome de `EVOLUTION_INSTANCE_NAME`.
+3. **Leia o QR code com o WhatsApp do celular** — é assim que ela conecta.
+4. Na instância, configure o cabeçalho `x-webhook-token` com o valor de
+   `WEBHOOK_STATIC_TOKEN`. A URL do webhook já vem do `WEBHOOK_GLOBAL_URL`
+   do compose (`http://backend:8000/...`, nome do serviço na rede — não
+   `localhost`, que ali seria o próprio container da Evolution).
+5. Mande uma mensagem para o número pareado e acompanhe
+   `docker compose logs -f backend`.
+
+### O que conferir antes de culpar o código
+
+| Sintoma | Onde olhar |
+|---|---|
+| 401 no webhook | `WEBHOOK_STATIC_TOKEN` diferente do cabeçalho da instância |
+| 503 no webhook | Nenhum segredo definido e `DEBUG=False` |
+| "Missing agent_id" | `EVOLUTION_DEFAULT_AGENT_ID` vazio |
+| A IA responde e o cliente não recebe | O envio: veja a ressalva do DDI abaixo |
+
+### A ressalva do DDI
+
+`whatsapp_service.send_message` **remove o `55`** do número antes de enviar,
+enquanto a Evolution entrega o `remoteJid` **com** o DDI
+(`5511988887777@s.whatsapp.net`). O payload sai para `11988887777`.
+
+Isso nunca foi exercitado contra a Evolution real — a validação aqui foi feita
+com um dublê que aceita qualquer coisa. Se a resposta não chegar ao cliente,
+**é o primeiro lugar a olhar**. O mesmo trecho mutila números de DDD 55
+(Santa Maria/RS) enviados sem DDI.

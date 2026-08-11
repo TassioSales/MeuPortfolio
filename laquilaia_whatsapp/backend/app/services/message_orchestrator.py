@@ -115,11 +115,16 @@ class MessageOrchestrator:
             )
             db.add(user_msg)
 
+            # O bloco de qualificação é para o CRM, não para o cliente: sai do
+            # texto antes de ser gravado e enviado. O `response_text` cru
+            # segue para o lead_processor, que precisa do JSON.
+            texto_para_o_cliente = lead_processor.texto_para_o_cliente(response_text)
+
             # Step 6: Save assistant response
             assistant_msg = Message(
                 conversation_id=conversation.id,
                 remetente="assistant",
-                conteudo=response_text,
+                conteudo=texto_para_o_cliente,
                 timestamp=datetime.utcnow(),
             )
             db.add(assistant_msg)
@@ -153,7 +158,7 @@ class MessageOrchestrator:
             # Step 8: Send reply via WhatsApp
             send_result = await whatsapp_service.send_message(
                 phone_number=phone_number,
-                message_text=response_text,
+                message_text=texto_para_o_cliente,
             )
 
             logger.info(
@@ -165,7 +170,7 @@ class MessageOrchestrator:
                 "success": True,
                 "conversation_id": conversation.id,
                 "phone_number": phone_number,
-                "response": response_text,
+                "response": texto_para_o_cliente,
                 "tokens_used": token_usage["total_tokens"],
                 "sent_message_id": send_result.get("message_id"),
                 "lead_qualification": lead_result,

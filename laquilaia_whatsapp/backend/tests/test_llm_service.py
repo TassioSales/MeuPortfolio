@@ -1,0 +1,448 @@
+"""Tests for LLM service."""
+
+import pytest
+from datetime import datetime, timedelta
+from unittest.mock import patch, MagicMock, AsyncMock
+from app.services.llm_service import llm_service, LLMService
+from app.db.models import Agent
+from app.utils.exceptions import ValidationException
+
+
+class TestTokenCounting:
+    """Test token counting functionality."""
+
+    def test_count_tokens_short_text(self):
+        """Test counting tokens in short text."""
+        text = "Hello"
+        tokens = llm_service.count_tokens(text)
+        assert tokens >= 1
+        assert isinstance(tokens, int)
+
+    def test_count_tokens_long_text(self):
+        """Test counting tokens in long text."""
+        text = "This is a much longer text " * 100
+        tokens = llm_service.count_tokens(text)
+        assert tokens > 100
+        assert isinstance(tokens, int)
+
+    def test_count_tokens_empty_string(self):
+        """Test counting tokens in empty string."""
+        tokens = llm_service.count_tokens("")
+        assert tokens >= 1  # Minimum of 1 token
+
+    def test_count_tokens_special_characters(self):
+        """Test counting tokens with special characters."""
+        text = "Hello! @#$%^&*() 你好 🎉"
+        tokens = llm_service.count_tokens(text)
+        assert tokens >= 1
+        assert isinstance(tokens, int)
+
+
+class TestRateLimiting:
+    """Test rate limiting functionality."""
+
+    def setup_method(self):
+        """Reset LLM service before each test."""
+        self.service = LLMService()
+
+    def test_rate_limit_initial_status(self):
+        """Test initial rate limit status."""
+        status = self.service.get_rate_limit_status()
+        assert status["calls_used"] == 0
+        assert status["tokens_used"] == 0
+        assert status["calls_remaining"] == self.service.max_calls_per_minute
+        assert status["tokens_remaining"] == self.service.max_tokens_per_minute
+
+    def test_rate_limit_after_usage(self):
+        """Test rate limit status after tracking usage."""
+        self.service._track_usage(100)
+        status = self.service.get_rate_limit_status()
+        assert status["calls_used"] == 1
+        assert status["tokens_used"] == 100
+        assert status["calls_remaining"] == self.service.max_calls_per_minute - 1
+        assert status["tokens_remaining"] == self.service.max_tokens_per_minute - 100
+
+    def test_rate_limit_multiple_calls(self):
+        """Test rate limit with multiple calls."""
+        for _ in range(5):
+            self.service._track_usage(500)
+        status = self.service.get_rate_limit_status()
+        assert status["calls_used"] == 5
+        assert status["tokens_used"] == 2500
+
+    def test_rate_limit_exceeded_calls(self):
+        """Test that rate limit exception is raised for too many calls."""
+        self.service.max_calls_per_minute = 3
+        self.service._track_usage(100)
+        self.service._track_usage(100)
+        self.service._track_usage(100)
+
+        with pytest.raises(ValidationException) as exc_info:
+            self.service._check_rate_limits()
+        assert "Rate limit exceeded" in str(exc_info.value)
+
+    def test_rate_limit_exceeded_tokens(self):
+        """Test that rate limit exception is raised for too many tokens."""
+        self.service.max_tokens_per_minute = 1000
+        self.service._track_usage(600)
+        self.service._track_usage(500)
+
+        with pytest.raises(ValidationException) as exc_info:
+            self.service._check_rate_limits()
+        assert "Rate limit exceeded" in str(exc_info.value)
+
+    def test_rate_limit_cleanup_old_entries(self):
+        """Test that old entries are cleaned up."""
+        now = datetime.utcnow()
+        # Add old timestamp (3 minutes ago)
+        old_time = now - timedelta(minutes=3)
+        self.service.call_timestamps.append(old_time)
+
+        # Track new usage
+        self.service._track_usage(100)
+
+        # Old entry should be cleaned up
+        status = self.service.get_rate_limit_status()
+        assert status["calls_used"] == 1  # Only the new one
+
+
+class TestGenerateResponse:
+    """Test response generation with Claude."""
+
+    def setup_method(self):
+        """Setup test fixtures."""
+        self.service = LLMService()
+        self.agent = Agent(
+            id="test-agent",
+            user_id="test-user",
+            nome="Test Agent",
+            descricao="A test agent",
+            system_prompt="You are a helpful assistant.",
+            temperatura=0.7,
+            max_tokens=1024,
+            status="ativo",
+        )
+
+    @patch("app.services.llm_service.Anthropic")
+    async def test_generate_response_success(self, mock_anthropic):
+        """Test successful response generation."""
+        # Mock Claude response
+        mock_message = MagicMock()
+        mock_message.content = [MagicMock(text="Hello! How can I help?")]
+        mock_message.usage = MagicMock(
+            input_tokens=10, output_tokens=5
+        )
+
+        mock_client = MagicMock()
+        mock_client.messages.create.return_value = mock_message
+        self.service.client = mock_client
+
+        response, tokens = await self.service.generate_response(
+            self.agent, "Hello"
+        )
+
+        assert response == "Hello! How can I help?"
+        assert tokens["input_tokens"] == 10
+        assert tokens["output_tokens"] == 5
+        assert tokens["total_tokens"] == 15
+
+    @patch("app.services.llm_service.Anthropic")
+    async def test_generate_response_with_history(self, mock_anthropic):
+        """Test response generation with conversation history."""
+        mock_message = MagicMock()
+        mock_message.content = [MagicMock(text="Response with history")]
+        mock_message.usage = MagicMock(
+            input_tokens=20, output_tokens=8
+        )
+
+        mock_client = MagicMock()
+        mock_client.messages.create.return_value = mock_message
+        self.service.client = mock_client
+
+        history = [
+            {"role": "user", "content": "Previous message"},
+            {"role": "assistant", "content": "Previous response"},
+        ]
+
+        response, tokens = await self.service.generate_response(
+            self.agent, "New message", history
+        )
+
+        assert response == "Response with history"
+        assert tokens["total_tokens"] == 28
+        # Verify history was included
+        call_args = mock_client.messages.create.call_args
+        assert len(call_args[1]["messages"]) == 3
+
+    @patch("app.services.llm_service.Anthropic")
+    async def test_generate_response_rate_limit_error(self, mock_anthropic):
+        """Test rate limit error handling."""
+        from anthropic import RateLimitError
+
+        mock_client = MagicMock()
+        mock_client.messages.create.side_effect = RateLimitError(
+            message="Rate limit exceeded",
+            response=MagicMock(status_code=429),
+            body={}
+        )
+        self.service.client = mock_client
+
+        with pytest.raises(ValidationException) as exc_info:
+            await self.service.generate_response(self.agent, "Hello")
+        assert "Rate limit exceeded" in str(exc_info.value)
+
+    @patch("app.services.llm_service.Anthropic")
+    async def test_generate_response_connection_error(self, mock_anthropic):
+        """Test connection error handling."""
+        from anthropic import APIConnectionError
+
+        mock_client = MagicMock()
+        mock_client.messages.create.side_effect = APIConnectionError(
+            message="Connection failed"
+        )
+        self.service.client = mock_client
+
+        with pytest.raises(ValidationException) as exc_info:
+            await self.service.generate_response(self.agent, "Hello")
+        assert "Connection error" in str(exc_info.value)
+
+    @patch("app.services.llm_service.Anthropic")
+    async def test_generate_response_api_error(self, mock_anthropic):
+        """Test API error handling."""
+        from anthropic import APIError
+
+        mock_client = MagicMock()
+        mock_client.messages.create.side_effect = APIError(
+            message="API error",
+            response=MagicMock(status_code=500),
+            body={}
+        )
+        self.service.client = mock_client
+
+        with pytest.raises(ValidationException) as exc_info:
+            await self.service.generate_response(self.agent, "Hello")
+        assert "API error" in str(exc_info.value)
+
+    @patch("app.services.llm_service.Anthropic")
+    async def test_generate_response_uses_agent_temperature(self, mock_anthropic):
+        """Test that agent temperature is used in API call."""
+        mock_message = MagicMock()
+        mock_message.content = [MagicMock(text="Response")]
+        mock_message.usage = MagicMock(input_tokens=5, output_tokens=3)
+
+        mock_client = MagicMock()
+        mock_client.messages.create.return_value = mock_message
+        self.service.client = mock_client
+
+        self.agent.temperatura = 1.5
+
+        await self.service.generate_response(self.agent, "Hello")
+
+        call_kwargs = mock_client.messages.create.call_args[1]
+        assert call_kwargs["temperature"] == 1.5
+
+    @patch("app.services.llm_service.Anthropic")
+    async def test_generate_response_uses_agent_max_tokens(self, mock_anthropic):
+        """Test that agent max_tokens is used in API call."""
+        mock_message = MagicMock()
+        mock_message.content = [MagicMock(text="Response")]
+        mock_message.usage = MagicMock(input_tokens=5, output_tokens=3)
+
+        mock_client = MagicMock()
+        mock_client.messages.create.return_value = mock_message
+        self.service.client = mock_client
+
+        self.agent.max_tokens = 2048
+
+        await self.service.generate_response(self.agent, "Hello")
+
+        call_kwargs = mock_client.messages.create.call_args[1]
+        assert call_kwargs["max_tokens"] == 2048
+
+
+class TestStreamResponse:
+    """Test streaming response functionality."""
+
+    def setup_method(self):
+        """Setup test fixtures."""
+        self.service = LLMService()
+        self.agent = Agent(
+            id="test-agent",
+            user_id="test-user",
+            nome="Test Agent",
+            system_prompt="You are helpful.",
+            temperatura=0.7,
+            max_tokens=1024,
+            status="ativo",
+        )
+
+    @patch("app.services.llm_service.Anthropic")
+    def test_stream_response_yields_text(self, mock_anthropic):
+        """Test that stream response yields text chunks."""
+        mock_stream = MagicMock()
+        mock_stream.__enter__ = MagicMock(return_value=mock_stream)
+        mock_stream.__exit__ = MagicMock(return_value=None)
+        mock_stream.text_stream = ["Hello", " ", "world", "!"]
+        mock_stream.get_final_message.return_value = MagicMock(
+            usage=MagicMock(input_tokens=10, output_tokens=4)
+        )
+
+        mock_client = MagicMock()
+        mock_client.messages.stream.return_value = mock_stream
+        self.service.client = mock_client
+
+        chunks = list(self.service.stream_response(self.agent, "Hi"))
+        assert chunks == ["Hello", " ", "world", "!"]
+
+    @patch("app.services.llm_service.Anthropic")
+    def test_stream_response_error_handling(self, mock_anthropic):
+        """Test error handling in stream response."""
+        from anthropic import RateLimitError
+
+        mock_client = MagicMock()
+        mock_client.messages.stream.side_effect = RateLimitError(
+            message="Rate limit",
+            response=MagicMock(status_code=429),
+            body={}
+        )
+        self.service.client = mock_client
+
+        with pytest.raises(ValidationException):
+            list(self.service.stream_response(self.agent, "Hi"))
+
+
+class TestBuildMessages:
+    """Test message building functionality."""
+
+    def setup_method(self):
+        """Setup test fixtures."""
+        self.service = LLMService()
+
+    def test_build_messages_no_history(self):
+        """Test building messages without history."""
+        messages = self.service._build_messages(None, "Hello")
+        assert len(messages) == 1
+        assert messages[0]["role"] == "user"
+        assert messages[0]["content"] == "Hello"
+
+    def test_build_messages_with_history(self):
+        """Test building messages with history."""
+        history = [
+            {"role": "user", "content": "Hi"},
+            {"role": "assistant", "content": "Hello"},
+        ]
+        messages = self.service._build_messages(history, "How are you?")
+        assert len(messages) == 3
+        assert messages[0]["role"] == "user"
+        assert messages[1]["role"] == "assistant"
+        assert messages[2] == {"role": "user", "content": "How are you?"}
+
+    def test_build_messages_empty_history(self):
+        """Test building messages with empty history list."""
+        messages = self.service._build_messages([], "Hello")
+        assert len(messages) == 1
+        assert messages[0]["content"] == "Hello"
+
+
+class TestRateLimitTracking:
+    """Test rate limit tracking functionality."""
+
+    def setup_method(self):
+        """Setup test fixtures."""
+        self.service = LLMService()
+
+    def test_track_usage_adds_timestamp(self):
+        """Test that tracking usage adds timestamp."""
+        initial_count = len(self.service.call_timestamps)
+        self.service._track_usage(100)
+        assert len(self.service.call_timestamps) == initial_count + 1
+
+    def test_track_usage_records_tokens(self):
+        """Test that tracking usage records tokens."""
+        initial_count = len(self.service.token_timestamps)
+        self.service._track_usage(500)
+        assert len(self.service.token_timestamps) == initial_count + 1
+        assert self.service.token_timestamps[-1][1] == 500
+
+    def test_track_usage_multiple_calls(self):
+        """Test tracking multiple calls."""
+        for i in range(3):
+            self.service._track_usage(i * 100)
+        assert len(self.service.call_timestamps) == 3
+        assert len(self.service.token_timestamps) == 3
+
+    def test_track_usage_old_entries_removed(self):
+        """Test that old entries are eventually removed."""
+        # Add an old entry manually
+        old_time = datetime.utcnow() - timedelta(minutes=3)
+        self.service.call_timestamps.append(old_time)
+
+        # Track new usage
+        self.service._track_usage(100)
+
+        # The old entry should be removed during cleanup
+        status = self.service.get_rate_limit_status()
+        assert status["calls_used"] == 1
+
+
+class TestServiceInitialization:
+    """Test LLM service initialization."""
+
+    def test_service_initialization(self):
+        """Test that service initializes correctly."""
+        service = LLMService()
+        assert service.client is not None
+        assert service.model == "claude-3-5-sonnet-20241022"
+        assert service.max_calls_per_minute > 0
+        assert service.max_tokens_per_minute > 0
+
+    def test_service_singleton(self):
+        """Test that global service instance exists."""
+        from app.services.llm_service import llm_service as global_service
+        assert global_service is not None
+        assert isinstance(global_service, LLMService)
+
+
+class TestConversationHistoryRetrieval:
+    """Test conversation history retrieval."""
+
+    @pytest.mark.asyncio
+    async def test_get_conversation_history_empty(self):
+        """Test retrieving history from empty conversation."""
+        service = LLMService()
+        mock_db = AsyncMock()
+        mock_db.execute = AsyncMock()
+        mock_db.execute.return_value.scalars.return_value.all.return_value = []
+
+        history = await service.get_conversation_history(
+            "nonexistent-convo", mock_db
+        )
+        assert history == []
+
+    @pytest.mark.asyncio
+    async def test_get_conversation_history_with_messages(self):
+        """Test retrieving history with messages."""
+        service = LLMService()
+
+        mock_message1 = MagicMock()
+        mock_message1.remetente = "user"
+        mock_message1.conteudo = "Hello"
+
+        mock_message2 = MagicMock()
+        mock_message2.remetente = "assistant"
+        mock_message2.conteudo = "Hi there!"
+
+        mock_db = AsyncMock()
+        mock_db.execute = AsyncMock()
+        mock_result = AsyncMock()
+        mock_result.scalars.return_value.all.return_value = [mock_message1, mock_message2]
+        mock_db.execute.return_value = mock_result
+
+        history = await service.get_conversation_history(
+            "test-convo", mock_db
+        )
+        assert len(history) == 2
+        assert history[0]["role"] == "user"
+        assert history[0]["content"] == "Hello"
+        assert history[1]["role"] == "assistant"
+        assert history[1]["content"] == "Hi there!"

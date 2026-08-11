@@ -1,6 +1,7 @@
 """LLM service for Claude integration."""
 
-from typing import List, Optional, Iterator, Tuple
+from typing import Dict, List, Optional, Iterator, Tuple
+from collections import defaultdict
 from datetime import datetime, timedelta
 from anthropic import Anthropic, APIError, APIConnectionError, RateLimitError
 from app.config import settings
@@ -21,8 +22,30 @@ class LLMService:
         self.model = settings.claude_model
         self.max_calls_per_minute = 60
         self.max_tokens_per_minute = 40000
-        self.call_timestamps: List[datetime] = []
-        self.token_timestamps: List[Tuple[datetime, int]] = []
+        # Um balde por conta: com contadores únicos no processo, um usuário
+        # sozinho esgotava a cota de todos os outros.
+        self._calls_by_user: Dict[str, List[datetime]] = defaultdict(list)
+        self._tokens_by_user: Dict[str, List[Tuple[datetime, int]]] = defaultdict(list)
+
+    # Chave usada quando não há usuário no contexto (testes, chamadas internas).
+    SHARED_BUCKET = "__shared__"
+
+    @property
+    def call_timestamps(self) -> List[datetime]:
+        """Balde compartilhado — mantido para chamadas sem usuário."""
+        return self._calls_by_user[self.SHARED_BUCKET]
+
+    @call_timestamps.setter
+    def call_timestamps(self, value: List[datetime]) -> None:
+        self._calls_by_user[self.SHARED_BUCKET] = value
+
+    @property
+    def token_timestamps(self) -> List[Tuple[datetime, int]]:
+        return self._tokens_by_user[self.SHARED_BUCKET]
+
+    @token_timestamps.setter
+    def token_timestamps(self, value: List[Tuple[datetime, int]]) -> None:
+        self._tokens_by_user[self.SHARED_BUCKET] = value
 
     async def generate_response(
         self,
@@ -46,7 +69,7 @@ class LLMService:
         """
         try:
             # Check rate limits
-            self._check_rate_limits()
+            self._check_rate_limits(agent.user_id)
 
             # Build messages array
             messages = self._build_messages(conversation_history, user_message)
@@ -69,7 +92,7 @@ class LLMService:
             }
 
             # Track usage
-            self._track_usage(token_usage["total_tokens"])
+            self._track_usage(token_usage["total_tokens"], agent.user_id)
 
             logger.info(
                 f"✅ Claude response generated for agent {agent.id} "
@@ -110,7 +133,7 @@ class LLMService:
         """
         try:
             # Check rate limits
-            self._check_rate_limits()
+            self._check_rate_limits(agent.user_id)
 
             # Build messages array
             messages = self._build_messages(conversation_history, user_message)
@@ -133,7 +156,7 @@ class LLMService:
                     total_tokens = (
                         final.usage.input_tokens + final.usage.output_tokens
                     )
-                    self._track_usage(total_tokens)
+                    self._track_usage(total_tokens, agent.user_id)
                     logger.info(
                         f"✅ Claude stream completed for agent {agent.id} "
                         f"(tokens: {total_tokens})"
@@ -224,18 +247,19 @@ class LLMService:
 
         return messages
 
-    def _check_rate_limits(self) -> None:
+    def _check_rate_limits(self, user_id: Optional[str] = None) -> None:
         """
         Check if rate limits are exceeded.
 
         Raises:
             ValidationException: If rate limit exceeded
         """
+        bucket = user_id or self.SHARED_BUCKET
         now = datetime.utcnow()
         one_minute_ago = now - timedelta(minutes=1)
 
         # Check calls per minute
-        recent_calls = [ts for ts in self.call_timestamps if ts > one_minute_ago]
+        recent_calls = [ts for ts in self._calls_by_user[bucket] if ts > one_minute_ago]
         if len(recent_calls) >= self.max_calls_per_minute:
             raise ValidationException(
                 f"Rate limit exceeded: {self.max_calls_per_minute} calls per minute"
@@ -243,49 +267,57 @@ class LLMService:
 
         # Check tokens per minute
         recent_tokens = sum(
-            tokens for ts, tokens in self.token_timestamps if ts > one_minute_ago
+            tokens for ts, tokens in self._tokens_by_user[bucket] if ts > one_minute_ago
         )
         if recent_tokens >= self.max_tokens_per_minute:
             raise ValidationException(
                 f"Rate limit exceeded: {self.max_tokens_per_minute} tokens per minute"
             )
 
-    def _track_usage(self, total_tokens: int) -> None:
+    def _track_usage(self, total_tokens: int, user_id: Optional[str] = None) -> None:
         """
         Track API usage for rate limiting.
 
         Args:
             total_tokens: Total tokens used in this request
         """
+        bucket = user_id or self.SHARED_BUCKET
         now = datetime.utcnow()
-        self.call_timestamps.append(now)
-        self.token_timestamps.append((now, total_tokens))
+        self._calls_by_user[bucket].append(now)
+        self._tokens_by_user[bucket].append((now, total_tokens))
 
         # Clean up old entries (older than 2 minutes)
         two_minutes_ago = now - timedelta(minutes=2)
-        self.call_timestamps = [ts for ts in self.call_timestamps if ts > two_minutes_ago]
-        self.token_timestamps = [
-            (ts, tokens) for ts, tokens in self.token_timestamps if ts > two_minutes_ago
+        self._calls_by_user[bucket] = [
+            ts for ts in self._calls_by_user[bucket] if ts > two_minutes_ago
+        ]
+        self._tokens_by_user[bucket] = [
+            (ts, tokens)
+            for ts, tokens in self._tokens_by_user[bucket]
+            if ts > two_minutes_ago
         ]
 
         logger.debug(
-            f"📊 Usage tracked: {len(self.call_timestamps)} calls, "
-            f"{sum(t[1] for t in self.token_timestamps)} tokens in last minute"
+            f"📊 Uso registrado ({bucket}): {len(self._calls_by_user[bucket])} chamadas, "
+            f"{sum(t[1] for t in self._tokens_by_user[bucket])} tokens no último minuto"
         )
 
-    def get_rate_limit_status(self) -> dict:
+    def get_rate_limit_status(self, user_id: Optional[str] = None) -> dict:
         """
         Get current rate limit status.
 
         Returns:
             Dict with usage statistics
         """
+        bucket = user_id or self.SHARED_BUCKET
         now = datetime.utcnow()
         one_minute_ago = now - timedelta(minutes=1)
 
-        recent_calls = len([ts for ts in self.call_timestamps if ts > one_minute_ago])
+        recent_calls = len(
+            [ts for ts in self._calls_by_user[bucket] if ts > one_minute_ago]
+        )
         recent_tokens = sum(
-            tokens for ts, tokens in self.token_timestamps if ts > one_minute_ago
+            tokens for ts, tokens in self._tokens_by_user[bucket] if ts > one_minute_ago
         )
 
         return {

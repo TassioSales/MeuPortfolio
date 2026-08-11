@@ -137,7 +137,8 @@ exige mudar o outro. O mesmo vale para os nomes de evento em `ws/manager.py` e
    a IA respeita a pausa, mas não há UI.
 3. **`anthropic==0.7.0`** desatualizado — atualizar quebra os testes de erro,
    que dependem das assinaturas de exceção da versão atual.
-4. **Rate limiting é do processo**, não por conta.
+4. **Rate limiting é por conta, mas em memória** — com mais de uma réplica
+   do backend cada uma tem seu próprio balde. Mover para o Redis resolveria.
 
 `GUIA_DEPLOY.md` tem o checklist de produção completo.
 

@@ -72,9 +72,10 @@ services:
       # Sem repassar, o container não enxergava o valor do .env e o webhook
       # nascia recusando tudo com 503 (o endpoint exige HMAC quando DEBUG=False).
       WEBHOOK_SECRET: ${WEBHOOK_SECRET}
-      # A origem liberada no CORS. O default do config.py é localhost:3000,
-      # que só serve para desenvolvimento.
+      # As origens liberadas no CORS. Sem repasse, customizar a variável no
+      # `.env` não teria efeito nenhum dentro do container.
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       DEBUG: ${DEBUG:-False}
     ports:

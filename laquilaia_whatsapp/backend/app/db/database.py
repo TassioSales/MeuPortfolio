@@ -54,13 +54,11 @@ async def init_db():
             await conn.execute(text("SELECT 1"))
         logger.info("✅ Database connection successful")
 
-        # Sem migrações Alembic ainda, o schema nasce dos próprios models.
-        # create_all é idempotente: só cria o que ainda não existe.
-        from app.db.models import Base
-
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        logger.info("✅ Database schema ready")
+        # O schema é responsabilidade do Alembic (`alembic upgrade head`),
+        # não da aplicação: `create_all` cria o que falta mas nunca altera
+        # tabela existente, então mascararia migração pendente até alguma
+        # query quebrar em produção.
+        logger.info("ℹ️ Schema gerenciado pelo Alembic — rode 'alembic upgrade head'")
     except Exception as e:
         logger.error(f"❌ Database initialization failed: {e}")
         raise

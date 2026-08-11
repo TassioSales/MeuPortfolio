@@ -47,6 +47,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # O conftest recria o schema por sessão, mas rodar a migração aqui
+      # garante que ela continua aplicável — um autogenerate quebrado passaria
+      # despercebido se só os models fossem usados.
+      - name: Conferir migrações
+        working-directory: laquilaia_whatsapp/backend
+        env:
+          DATABASE_URL: postgresql://laquilaia:laquilaia_dev_pwd@localhost:5432/laquilaia_test_db
+        run: alembic upgrade head
+
       - name: Rodar testes
         working-directory: laquilaia_whatsapp/backend
         env:

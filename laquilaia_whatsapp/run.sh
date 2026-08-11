@@ -82,13 +82,15 @@ fi
 echo "[INFO] Starting services with docker-compose..."
 echo ""
 
-# Start services
-docker compose -f docker-compose.yml up -d
-
-if [ $? -ne 0 ]; then
+# Start services.
+#
+# O `if [ $? -ne 0 ]` que havia aqui nunca rodava: com `set -e` o script já
+# tinha morrido na linha anterior, e o usuário ficava sem a mensagem. O `||`
+# desarma o `set -e` para o diagnóstico sair antes da saída com erro.
+if ! docker compose -f docker-compose.yml up -d; then
     echo ""
     echo "[ERROR] Failed to start services"
-    echo "Check Docker daemon and docker-compose logs above"
+    echo "Is the Docker daemon running? Try: docker info"
     echo ""
     exit 1
 fi

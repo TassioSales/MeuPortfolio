@@ -1,0 +1,22 @@
+# O `COPY . .` do Dockerfile levava tudo o que estivesse na pasta, inclusive
+# um virtualenv local: além de inflar a imagem, o .venv carrega caminhos
+# absolutos da máquina de origem e não serve dentro do container.
+.venv/
+venv/
+ENV/
+env/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Segredos não entram na imagem; as variáveis vêm do docker-compose.
+.env
+.env.local
+
+logs/
+*.log
+*.db
+*.sqlite3

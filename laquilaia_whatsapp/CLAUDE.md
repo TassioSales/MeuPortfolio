@@ -113,6 +113,10 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Criar conversa de teste com telefone fixo | Há `UniqueConstraint(agent_id, phone_number)`; reaproveite |
 | `Number("")` em campo numérico do formulário | Vira `0` e envia valor que o usuário não escolheu |
 | Passar argumento posicional em `_generate_cache_key` | Cai no slot de `custom_range` e tenta desempacotar |
+| Padrão de `.gitignore` sem barra inicial | `lib/` (do template Python) casa em qualquer profundidade e engoliu `frontend/lib/` inteiro — o clone limpo não tinha o cliente HTTP |
+| E-mail de teste em `.local` ou `.test` | O seed grava direto pelo SQLAlchemy e aceita, mas o `EmailStr` recusa como TLD de uso especial: o usuário existe e não consegue logar (422) |
+| `--locale=pt_BR.UTF-8` em imagem alpine | musl não traz locales além de C/C.UTF-8; o `initdb` morre e o healthcheck nunca passa |
+| Variável no `.env` que o compose não repassa | O container não a enxerga e cai no default do `config.py` — foi o que deixou o webhook em 503 |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)
 só apareceram quando o cliente que consome o endpoint foi construído. Ao
@@ -131,8 +135,10 @@ exige mudar o outro. O mesmo vale para os nomes de evento em `ws/manager.py` e
 
 ## 6. Pendências
 
-1. **A stack completa nunca subiu junta** — não houve `docker compose up` de
-   ponta a ponta. É o teste que mais falta.
+1. **A stack em container nunca subiu.** Fora de container ela já rodou
+   inteira (ver `GUIA_DEPLOY.md` §6), mas falta o `docker compose up`: os
+   `Dockerfile`, o healthcheck do `depends_on` e a rede do compose seguem sem
+   exercício.
 2. **Tela da pausa humana** — os endpoints existem (`/api/v1/conversations/{id}/pause`),
    a IA respeita a pausa, mas não há UI.
 3. **`anthropic==0.7.0`** desatualizado — atualizar quebra os testes de erro,

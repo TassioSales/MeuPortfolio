@@ -3,6 +3,7 @@
 from app.db.models import Agent, Conversation, Message
 from app.services.llm_service import llm_service
 from app.services.whatsapp_service import whatsapp_service
+from app.services.lead_processor import lead_processor
 from app.utils.logger import logger
 from app.utils.exceptions import NotFoundException, ValidationException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -31,8 +32,9 @@ class MessageOrchestrator:
         4. Call Claude LLM
         5. Save user message
         6. Save assistant response
-        7. Send reply via WhatsApp
-        8. Return result
+        7. Process lead qualification (if JSON present)
+        8. Send reply via WhatsApp
+        9. Return result
 
         Args:
             agent_id: Agent ID
@@ -105,7 +107,19 @@ class MessageOrchestrator:
                 f"(tokens: {token_usage['total_tokens']})"
             )
 
-            # Step 7: Send reply via WhatsApp
+            # Step 7: Process lead qualification (extract JSON if present)
+            lead_result = await lead_processor.process_response(
+                response_text=response_text,
+                phone_number=phone_number,
+                conversation_id=conversation.id,
+                agent_id=agent_id,
+                db=db,
+            )
+
+            if lead_result.get("success"):
+                logger.info(f"🎯 Lead qualified: {lead_result.get('lead_id')}")
+
+            # Step 8: Send reply via WhatsApp
             send_result = await whatsapp_service.send_message(
                 phone_number=phone_number,
                 message_text=response_text,
@@ -123,6 +137,7 @@ class MessageOrchestrator:
                 "response": response_text,
                 "tokens_used": token_usage["total_tokens"],
                 "sent_message_id": send_result.get("message_id"),
+                "lead_qualification": lead_result,
             }
 
         except NotFoundException as e:

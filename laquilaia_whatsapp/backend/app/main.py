@@ -7,7 +7,7 @@ import os
 
 from app.config import settings
 from app.db.database import init_db, close_db
-from app.routers import auth, agents, chat, webhook
+from app.routers import auth, agents, chat, webhook, kanban
 
 # Configure logger
 logger.remove()
@@ -140,6 +140,7 @@ app.include_router(auth.router)
 app.include_router(agents.router)
 app.include_router(chat.router)
 app.include_router(webhook.router)
+app.include_router(kanban.router)
 
 
 # ========== WEBSOCKET ENDPOINTS ==========

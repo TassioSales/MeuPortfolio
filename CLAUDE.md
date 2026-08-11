@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a portfolio of 12 independent full-stack projects, each self-contained with its own dependencies, tooling, and deployment. There is no shared root-level `package.json`, `requirements.txt`, or build system. All commands must be run from within the specific project directory.
+This is a portfolio of 13 independent full-stack projects, each self-contained with its own dependencies, tooling, and deployment. There is no shared root-level `package.json`, `requirements.txt`, or build system. All commands must be run from within the specific project directory.
 
 Projects use one of three primary stacks:
 - **Next.js + TypeScript + TailwindCSS** (frontend) + **Go** (backend API)
@@ -25,6 +25,7 @@ Projects use one of three primary stacks:
 | `encurtador_url/` | URL shortener + analytics | Go + Next.js + SQLite |
 | `finanças/` | Personal ERP (finance, POS, inventory) | Django + SQLite + Bootstrap 5 |
 | `gerador_roteiros/` | AI travel itinerary generator | Python + Streamlit + Mistral/Gemini |
+| `laquilaia_whatsapp/` | Agentes de IA no WhatsApp + CRM Kanban + métricas | FastAPI + Next.js + PostgreSQL + Redis + Claude |
 | `neon_drift/` | Game backend + frontend | Go + Frontend |
 | `neon_snake/` | Arcade game | Go + Frontend |
 | `plataforma_rifas/` | Raffle management system | Python + Streamlit + SQLite + Docker |
@@ -150,6 +151,13 @@ bandit -r src/       # security scan
 ```
 
 ### GitHub Actions
+
+- `.github/workflows/laquilaia-ci.yml` (**na raiz**): backend com serviço PostgreSQL + frontend (typecheck, jest, build), disparado por mudanças em `laquilaia_whatsapp/**`.
+
+**Atenção:** os dois workflows abaixo estão dentro da pasta do próprio projeto,
+e o GitHub só executa workflows em `.github/workflows/` **na raiz** do
+repositório — ou seja, nunca rodaram. Movê-los para a raiz (com filtro de
+`paths`, como o do laquilaia) resolveria.
 
 - `gerador_roteiros/.github/workflows/ci.yml`: tests across Python 3.8–3.12 matrix, lint/format/type-check/security, pytest with coverage, Docker build+push on `main`.
 - `plataforma_rifas/.github/workflows/ci.yml`: ruff + black + isort + Docker build.

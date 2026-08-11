@@ -315,12 +315,15 @@ class DailyStats(Base):
     """Daily statistics model."""
     __tablename__ = "daily_stats"
     __table_args__ = (
-        UniqueConstraint("data", name="uix_daily_stats_data"),
+        # A unicidade é por (data, agente): o job de agregação grava uma linha
+        # por agente e por dia, então unicidade só na data faria o segundo
+        # agente estourar chave duplicada todo dia.
+        UniqueConstraint("data", "agent_id", name="uix_daily_stats_data_agent"),
         Index("idx_daily_stats_data", "data"),
     )
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    data = Column(DateTime, nullable=False, unique=True)
+    data = Column(DateTime, nullable=False)
     agent_id = Column(String(36), nullable=True)
     mensagens_recebidas = Column(Integer, default=0)
     mensagens_enviadas = Column(Integer, default=0)

@@ -125,14 +125,15 @@ além, para reproduzir o que o container enxerga.
 
 | Item | Como |
 |---|---|
-| 243 testes do backend | PostgreSQL e Redis reais, incluindo os de autorização |
-| 101 testes do frontend | Jest, com typecheck e `next build` de produção |
+| 253 testes do backend | PostgreSQL e Redis reais, incluindo os de autorização |
+| 117 testes do frontend | Jest, com typecheck e `next build` de produção |
 | Migração Alembic | Banco recriado do zero, `alembic upgrade head` limpo |
 | Seed | Rodado sobre o banco migrado; o usuário criado entra pela tela de login |
 | Boot do backend | Lifespan, conexão com o banco e com o Redis, scheduler de métricas |
 | API | Auth, agentes, Kanban, 6 endpoints de métricas, chat, pausa humana |
 | Autorização cruzada | Agente e conversa de outro dono respondem 404 |
 | UI ponta a ponta | Login → dashboard → agentes, Kanban, métricas e playground, com dados do seed |
+| Pausa humana pela tela | Assumir e devolver no painel, conferindo o `status` da conversa direto no PostgreSQL |
 | WebSocket | Conecta e autentica: o Kanban mostra "atualizando em tempo real" |
 | Limite de uso entre processos | Um processo separado registrou uso e o backend leu os mesmos números pelo endpoint |
 | Queda e volta do Redis | Com o Redis parado o serviço segue respondendo, `/health` acusa `unavailable` e o log avisa; ao voltar, reconecta sem reiniciar |
@@ -193,18 +194,26 @@ proteção nenhuma.
 default já é `claude-sonnet-5`, mas atualizar o SDK é mudança maior: os testes
 de tratamento de erro dependem das assinaturas de exceção da versão atual.
 
-**Fase 16: só o backend.** O operador já consegue pausar e retomar uma
-conversa pelos endpoints abaixo, e a IA respeita a pausa. Falta a tela para
-fazer isso pelo painel — hoje só via API.
+**Pausa humana: a tela existe** em `/dashboard/conversations`. O operador vê a
+fila de atendimentos, lê a conversa e assume; a IA para de responder e as
+mensagens do cliente continuam sendo registradas.
 
 | Endpoint | Método | Efeito |
 |---|---|---|
+| `/api/v1/agents/{id}/conversations` | GET | Fila de atendimentos, da mais recente para a mais antiga |
+| `/api/v1/conversations/{id}/messages` | GET | Transcrição, com o estado da automação junto |
 | `/api/v1/conversations/{id}/pause` | POST | Humano assume; a IA para de responder |
 | `/api/v1/conversations/{id}/resume` | POST | Devolve a conversa à IA |
 | `/api/v1/conversations/{id}/status` | GET | Se a IA está respondendo |
 
-Com a conversa pausada a mensagem do cliente **continua sendo registrada** — o
-operador precisa vê-la; o que para é a resposta automática.
+Os dois primeiros nasceram com a tela: os de pausa recebem um
+`conversation_id` que o operador não tinha por onde descobrir, então eram
+inalcançáveis pelo painel.
+
+**O que a tela ainda não faz: responder ao cliente.** Assumir a conversa só
+cala a IA — mandar a mensagem continua sendo fora do sistema, porque não há
+endpoint de envio avulso pela Evolution API. É a continuação natural do
+trabalho.
 
 **`stream_response` sem consumidor.** Virou gerador assíncrono junto com o
 limitador de uso, mas nenhum endpoint o chama — só os testes. Se o streaming

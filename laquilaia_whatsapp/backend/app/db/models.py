@@ -136,7 +136,7 @@ class Message(Base):
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     conversation_id = Column(String(36), ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False)
-    remetente = Column(String(20), nullable=False)  # "user" ou "agent"
+    remetente = Column(String(20), nullable=False)  # "user" ou "assistant"
     conteudo = Column(Text, nullable=False)
     tokens_usados = Column(Integer, nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow)

@@ -1,0 +1,312 @@
+/**
+ * Testes dos atendimentos e da pausa humana: camada de API, hook e painel.
+ *
+ * O que mais importa aqui é o estado da automação nunca mentir — quem lê a
+ * tela decide se vai escrever para o cliente, e mostrar "humano assumiu" antes
+ * de o backend confirmar faria o operador falar junto com a IA.
+ */
+import { render, screen, waitFor } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import * as conversationsApi from "@/lib/conversations";
+import { useConversations } from "@/hooks/useConversations";
+import { ConversationsPanel } from "@/components/ConversationsPanel";
+import { setStoredToken, clearStoredTokens } from "@/lib/tokens";
+import type { ConversationSummary, ConversationTranscript } from "@/types";
+
+const mockFetch = global.fetch as jest.Mock;
+
+function jsonResponse(body: unknown, status = 200): Response {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    json: async () => body,
+  } as Response;
+}
+
+const CONVERSA: ConversationSummary = {
+  id: "conv-1",
+  phone_number: "5561999990001",
+  status: "ativa",
+  ia_ativa: true,
+  lead_nome: "Maria Silva",
+  lead_status_funil: "qualificado",
+  data_ultima_msg: "2026-08-11T12:00:00Z",
+  total_mensagens: 2,
+  ultima_mensagem: "Claro! Me conta o que você precisa.",
+  ultimo_remetente: "assistant",
+};
+
+const PAUSADA: ConversationSummary = {
+  ...CONVERSA,
+  id: "conv-2",
+  phone_number: "5561999990002",
+  lead_nome: "João Souza",
+  status: "pausada",
+  ia_ativa: false,
+};
+
+const TRANSCRICAO: ConversationTranscript = {
+  conversation_id: "conv-1",
+  status: "ativa",
+  ia_ativa: true,
+  phone_number: "5561999990001",
+  lead_nome: "Maria Silva",
+  messages: [
+    {
+      id: "m1",
+      remetente: "user",
+      conteudo: "Olá, queria saber mais.",
+      timestamp: "2026-08-11T11:58:00Z",
+    },
+    {
+      id: "m2",
+      remetente: "assistant",
+      conteudo: "Claro! Me conta o que você precisa.",
+      timestamp: "2026-08-11T12:00:00Z",
+    },
+  ],
+};
+
+// O painel abre um WebSocket pelo useAgentEvents; o jsdom não o implementa.
+class FakeWebSocket {
+  static instances: FakeWebSocket[] = [];
+  onopen: (() => void) | null = null;
+  onmessage: ((e: { data: string }) => void) | null = null;
+  onclose: ((e: { code: number }) => void) | null = null;
+  onerror: (() => void) | null = null;
+  close = jest.fn();
+
+  constructor(public url: string) {
+    FakeWebSocket.instances.push(this);
+  }
+}
+
+beforeEach(() => {
+  setStoredToken("token-abc");
+  FakeWebSocket.instances = [];
+  (global as unknown as { WebSocket: unknown }).WebSocket = FakeWebSocket;
+});
+afterEach(() => clearStoredTokens());
+
+describe("lib/conversations", () => {
+  it("listConversations busca as conversas do agente", async () => {
+    mockFetch.mockResolvedValueOnce(jsonResponse([CONVERSA]));
+
+    await conversationsApi.listConversations("agent-1");
+
+    const [url, init] = mockFetch.mock.calls[0];
+    expect(url).toContain("/api/v1/agents/agent-1/conversations");
+    expect(init.method).toBe("GET");
+  });
+
+  it("getTranscript busca as mensagens da conversa", async () => {
+    mockFetch.mockResolvedValueOnce(jsonResponse(TRANSCRICAO));
+
+    await conversationsApi.getTranscript("conv-1");
+
+    const [url, init] = mockFetch.mock.calls[0];
+    expect(url).toContain("/api/v1/conversations/conv-1/messages");
+    expect(init.method).toBe("GET");
+  });
+
+  it("pauseConversation faz POST em /pause", async () => {
+    mockFetch.mockResolvedValueOnce(
+      jsonResponse({ conversation_id: "conv-1", status: "pausada", ia_ativa: false }),
+    );
+
+    await conversationsApi.pauseConversation("conv-1");
+
+    const [url, init] = mockFetch.mock.calls[0];
+    expect(url).toContain("/api/v1/conversations/conv-1/pause");
+    expect(init.method).toBe("POST");
+  });
+
+  it("resumeConversation faz POST em /resume", async () => {
+    mockFetch.mockResolvedValueOnce(
+      jsonResponse({ conversation_id: "conv-1", status: "ativa", ia_ativa: true }),
+    );
+
+    await conversationsApi.resumeConversation("conv-1");
+
+    expect(mockFetch.mock.calls[0][0]).toContain("/api/v1/conversations/conv-1/resume");
+  });
+});
+
+describe("useConversations", () => {
+  it("carrega a fila do agente", async () => {
+    mockFetch.mockResolvedValueOnce(jsonResponse([CONVERSA, PAUSADA]));
+
+    const { result } = renderHook(() => useConversations("agent-1"));
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.conversations).toHaveLength(2);
+  });
+
+  it("abrir uma conversa traz a transcrição", async () => {
+    mockFetch
+      .mockResolvedValueOnce(jsonResponse([CONVERSA]))
+      .mockResolvedValueOnce(jsonResponse(TRANSCRICAO));
+
+    const { result } = renderHook(() => useConversations("agent-1"));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => {
+      await result.current.openConversation("conv-1");
+    });
+
+    expect(result.current.transcript?.messages).toHaveLength(2);
+    expect(result.current.selectedId).toBe("conv-1");
+  });
+
+  it("assumir a conversa marca a IA como parada na transcrição e na fila", async () => {
+    mockFetch
+      .mockResolvedValueOnce(jsonResponse([CONVERSA]))
+      .mockResolvedValueOnce(jsonResponse(TRANSCRICAO))
+      .mockResolvedValueOnce(
+        jsonResponse({ conversation_id: "conv-1", status: "pausada", ia_ativa: false }),
+      );
+
+    const { result } = renderHook(() => useConversations("agent-1"));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    await act(async () => {
+      await result.current.openConversation("conv-1");
+    });
+
+    await act(async () => {
+      await result.current.togglePause();
+    });
+
+    expect(result.current.transcript?.ia_ativa).toBe(false);
+    // A lista precisa acompanhar, senão o selo dela continuaria o antigo.
+    expect(result.current.conversations[0].ia_ativa).toBe(false);
+  });
+
+  it("conversa já pausada chama resume, não pause", async () => {
+    mockFetch
+      .mockResolvedValueOnce(jsonResponse([PAUSADA]))
+      .mockResolvedValueOnce(
+        jsonResponse({ ...TRANSCRICAO, conversation_id: "conv-2", ia_ativa: false }),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({ conversation_id: "conv-2", status: "ativa", ia_ativa: true }),
+      );
+
+    const { result } = renderHook(() => useConversations("agent-1"));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    await act(async () => {
+      await result.current.openConversation("conv-2");
+    });
+    await act(async () => {
+      await result.current.togglePause();
+    });
+
+    expect(mockFetch.mock.calls[2][0]).toContain("/resume");
+    expect(result.current.transcript?.ia_ativa).toBe(true);
+  });
+
+  it("se o backend recusa a pausa, o estado não muda", async () => {
+    mockFetch
+      .mockResolvedValueOnce(jsonResponse([CONVERSA]))
+      .mockResolvedValueOnce(jsonResponse(TRANSCRICAO))
+      .mockResolvedValueOnce(jsonResponse({ detail: "Conversation not found" }, 404));
+
+    const { result } = renderHook(() => useConversations("agent-1"));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    await act(async () => {
+      await result.current.openConversation("conv-1");
+    });
+    await act(async () => {
+      await result.current.togglePause();
+    });
+
+    // Sem atualização otimista: mostrar "assumido" sem confirmação faria o
+    // operador escrever achando que a IA parou.
+    expect(result.current.transcript?.ia_ativa).toBe(true);
+    expect(result.current.error).toBe("Conversation not found");
+  });
+
+  it("guarda o erro quando a fila não carrega", async () => {
+    mockFetch.mockResolvedValueOnce(jsonResponse({ detail: "Agent not found" }, 404));
+
+    const { result } = renderHook(() => useConversations("agent-1"));
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.error).toBe("Agent not found");
+    expect(result.current.conversations).toEqual([]);
+  });
+});
+
+describe("ConversationsPanel", () => {
+  it("lista os atendimentos com nome do lead e prévia da última mensagem", async () => {
+    mockFetch.mockResolvedValueOnce(jsonResponse([CONVERSA, PAUSADA]));
+
+    render(<ConversationsPanel agentId="agent-1" />);
+
+    expect(await screen.findByText("Maria Silva")).toBeInTheDocument();
+    expect(screen.getByText("João Souza")).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/Claro! Me conta o que você precisa/).length,
+    ).toBeGreaterThan(0);
+  });
+
+  it("mostra por escrito quem está respondendo, não só pela cor", async () => {
+    mockFetch.mockResolvedValueOnce(jsonResponse([PAUSADA]));
+
+    render(<ConversationsPanel agentId="agent-1" />);
+
+    expect(await screen.findByText("Humano assumiu")).toBeInTheDocument();
+  });
+
+  it("abrir um atendimento mostra a conversa e o botão de assumir", async () => {
+    mockFetch
+      .mockResolvedValueOnce(jsonResponse([CONVERSA]))
+      .mockResolvedValueOnce(jsonResponse(TRANSCRICAO));
+
+    render(<ConversationsPanel agentId="agent-1" />);
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    expect(await screen.findByText("Olá, queria saber mais.")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Assumir conversa" }),
+    ).toBeInTheDocument();
+  });
+
+  it("assumir troca o botão para devolver e avisa que a IA parou", async () => {
+    mockFetch
+      .mockResolvedValueOnce(jsonResponse([CONVERSA]))
+      .mockResolvedValueOnce(jsonResponse(TRANSCRICAO))
+      .mockResolvedValueOnce(
+        jsonResponse({ conversation_id: "conv-1", status: "pausada", ia_ativa: false }),
+      );
+
+    render(<ConversationsPanel agentId="agent-1" />);
+    await userEvent.click(await screen.findByText("Maria Silva"));
+    await userEvent.click(await screen.findByRole("button", { name: "Assumir conversa" }));
+
+    expect(
+      await screen.findByRole("button", { name: "Devolver para a IA" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/A IA parou de responder/)).toBeInTheDocument();
+  });
+
+  it("avisa quando ainda não há atendimentos", async () => {
+    mockFetch.mockResolvedValueOnce(jsonResponse([]));
+
+    render(<ConversationsPanel agentId="agent-1" />);
+
+    expect(await screen.findByText("Nenhum atendimento ainda")).toBeInTheDocument();
+  });
+
+  it("mostra erro e botão de tentar de novo quando a fila falha", async () => {
+    mockFetch.mockResolvedValueOnce(jsonResponse({ detail: "Agent not found" }, 404));
+
+    render(<ConversationsPanel agentId="agent-1" />);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Agent not found");
+    expect(
+      screen.getByRole("button", { name: "Tentar novamente" }),
+    ).toBeInTheDocument();
+  });
+});

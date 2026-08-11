@@ -35,7 +35,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **243 testes no backend, 101 no frontend.**
+Estado atual: **253 testes no backend, 117 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -56,10 +56,10 @@ backend/app/
   alembic/     migrações — o schema é daqui, não da aplicação
 
 frontend/
-  app/dashboard/  agents · chat-test · kanban · metrics
+  app/dashboard/  agents · conversations (pausa humana) · chat-test · kanban · metrics
   components/     + charts/ (theme.ts tem a paleta validada)
-  hooks/          useAuth, useAgents, useChat, useKanban, useMetrics, useAgentEvents
-  lib/            api.ts (refresh em 401), auth, agents, chat, kanban, metrics, tokens
+  hooks/          useAuth, useAgents, useChat, useConversations, useKanban, useMetrics, useAgentEvents
+  lib/            api.ts (refresh em 401), auth, agents, chat, conversations, kanban, metrics, tokens
   middleware.ts   proteção de rotas no edge
 ```
 
@@ -146,10 +146,11 @@ exige mudar o outro. O mesmo vale para os nomes de evento em `ws/manager.py` e
    inteira (ver `GUIA_DEPLOY.md` §6), mas falta o `docker compose up`: os
    `Dockerfile`, o healthcheck do `depends_on` e a rede do compose seguem sem
    exercício.
-2. **Tela da pausa humana** — os endpoints existem (`/api/v1/conversations/{id}/pause`),
-   a IA respeita a pausa, mas não há UI.
-3. **`anthropic==0.7.0`** desatualizado — atualizar quebra os testes de erro,
+2. **`anthropic==0.7.0`** desatualizado — atualizar quebra os testes de erro,
    que dependem das assinaturas de exceção da versão atual.
+3. **O operador não responde pelo painel.** Ele assume a conversa e a IA para,
+   mas mandar a mensagem ao cliente ainda é fora do sistema — não há endpoint
+   de envio avulso pela Evolution API.
 4. **`stream_response` não tem consumidor.** Virou gerador assíncrono junto
    com o limitador, mas nenhum endpoint o usa — só os testes.
 

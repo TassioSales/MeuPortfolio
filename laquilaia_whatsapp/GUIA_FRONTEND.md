@@ -73,6 +73,7 @@ frontend/
 │       ├── layout.tsx          # Navbar + Sidebar + guarda de sessão
 │       ├── page.tsx            # Home do painel
 │       ├── agents/page.tsx     # Painel de agentes (Fase 11)
+│       ├── conversations/page.tsx  # Atendimentos + pausa humana
 │       ├── chat-test/page.tsx  # Chat de teste (Fase 12)
 │       ├── kanban/page.tsx     # Kanban CRM (Fase 13)
 │       └── metrics/page.tsx    # Dashboard de métricas (Fase 14)
@@ -107,6 +108,7 @@ frontend/
 │   ├── auth.ts                 # login / register / logout / getCurrentUser
 │   ├── agents.ts               # CRUD de agentes
 │   ├── chat.ts                 # Chat, histórico e reset
+│   ├── conversations.ts        # Fila de atendimentos, transcrição, pausa/retomada
 │   ├── kanban.ts               # Board, colunas padrão e movimentação
 │   ├── metrics.ts              # Resumo, tempo de resposta, série diária
 │   ├── constants.ts            # Nomes de cookie (sem dependências)
@@ -340,6 +342,7 @@ cd frontend && npm test
 | `__tests__/ChatPlayground.test.tsx` | 10 | Estado vazio, carga de histórico, envio, tokens, continuidade da conversa, reset, recuperação de erro |
 | `__tests__/kanban.test.tsx` | 11 | Verbos da API, criação das colunas padrão, movimentação otimista, rollback quando o backend recusa, render do board |
 | `__tests__/metrics.test.tsx` | 15 | Verbos e query params, carga paralela das três chamadas, janela por período, render do funil e dos tiles, formatação |
+| `__tests__/conversations.test.tsx` | 16 | Verbos da API, carga da fila, abertura da transcrição, pausa e retomada sem atualização otimista, estado intacto quando o backend recusa, render do painel |
 | `__tests__/agentEvents.test.tsx` | 12 | URL e token na query, entrega do evento, frame malformado, reconexão com espera crescente, desistência no 1008, limpeza ao desmontar |
 
 `middleware.test.ts` roda com `@jest-environment node` porque `next/server`

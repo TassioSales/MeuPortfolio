@@ -195,3 +195,227 @@ class TestPauseEndpoints:
         r = client.post("/api/v1/conversations/nao-existe/pause", headers=headers)
 
         assert r.status_code == 404
+
+
+class TestListagemDeConversas:
+    """
+    Sem listagem, os endpoints de pausa eram inalcançáveis pelo painel: os três
+    recebem um `conversation_id` que o operador não tinha por onde descobrir.
+    """
+
+    async def _conversa_real(self, agent_id: str, telefone: str, nome_lead: str | None):
+        """Cria uma conversa como as que chegam do WhatsApp, com mensagens."""
+        from datetime import datetime, timedelta
+
+        from app.db.models import Lead
+
+        conv_id = f"conv-{telefone}"
+        async with AsyncSessionLocal() as db:
+            db.add(
+                Conversation(
+                    id=conv_id,
+                    agent_id=agent_id,
+                    phone_number=telefone,
+                    status="ativa",
+                    data_ultima_msg=datetime.utcnow(),
+                )
+            )
+            await db.flush()
+            db.add(
+                Message(
+                    conversation_id=conv_id,
+                    remetente="user",
+                    conteudo="Primeira",
+                    timestamp=datetime.utcnow() - timedelta(minutes=2),
+                )
+            )
+            db.add(
+                Message(
+                    conversation_id=conv_id,
+                    remetente="assistant",
+                    conteudo="Resposta da IA",
+                    timestamp=datetime.utcnow() - timedelta(minutes=1),
+                )
+            )
+            if nome_lead:
+                db.add(
+                    Lead(
+                        phone_number=telefone,
+                        conversation_id=conv_id,
+                        nome=nome_lead,
+                        status_funil="qualificado",
+                    )
+                )
+            await db.commit()
+        return conv_id
+
+    def _agente(self, headers: dict) -> str:
+        return client.post(
+            "/api/v1/agents",
+            headers=headers,
+            json={"nome": "A", "system_prompt": "p", "temperatura": 0.7,
+                  "max_tokens": 1024},
+        ).json()["id"]
+
+    async def test_lista_traz_nome_do_lead_e_ultima_mensagem(self):
+        headers = _login("lista")
+        agent_id = self._agente(headers)
+        await self._conversa_real(agent_id, "5561900002222", "Maria Silva")
+
+        r = client.get(f"/api/v1/agents/{agent_id}/conversations", headers=headers)
+
+        assert r.status_code == 200
+        item = r.json()[0]
+        assert item["lead_nome"] == "Maria Silva"
+        assert item["total_mensagens"] == 2
+        assert item["ultima_mensagem"] == "Resposta da IA"
+        assert item["ultimo_remetente"] == "assistant"
+        assert item["ia_ativa"] is True
+
+    async def test_conversa_do_playground_fica_de_fora(self):
+        """
+        O playground é o desenvolvedor testando o prompt, não um cliente
+        esperando atendimento — misturá-lo na fila do operador seria ruído.
+        """
+        headers = _login("playground")
+        agent_id = self._agente(headers)
+
+        # Cria a conversa do playground pelo caminho normal.
+        with patch(
+            "app.services.llm_service.llm_service.generate_response",
+            new_callable=AsyncMock,
+        ) as mock_llm:
+            mock_llm.return_value = ("oi", {"input_tokens": 1, "output_tokens": 1,
+                                            "total_tokens": 2})
+            client.post(
+                f"/api/v1/agents/{agent_id}/chat", headers=headers,
+                json={"message": "Oi"},
+            )
+
+        await self._conversa_real(agent_id, "5561900003333", "Cliente Real")
+
+        corpo = client.get(
+            f"/api/v1/agents/{agent_id}/conversations", headers=headers
+        ).json()
+
+        assert [c["phone_number"] for c in corpo] == ["5561900003333"]
+
+    async def test_lista_ordena_da_mais_recente_para_a_mais_antiga(self):
+        from datetime import datetime, timedelta
+
+        headers = _login("ordem")
+        agent_id = self._agente(headers)
+        antiga = await self._conversa_real(agent_id, "5561900004444", "Antiga")
+        recente = await self._conversa_real(agent_id, "5561900005555", "Recente")
+
+        async with AsyncSessionLocal() as db:
+            conv = (await db.execute(
+                select(Conversation).where(Conversation.id == antiga)
+            )).scalars().first()
+            conv.data_ultima_msg = datetime.utcnow() - timedelta(days=2)
+            await db.commit()
+
+        corpo = client.get(
+            f"/api/v1/agents/{agent_id}/conversations", headers=headers
+        ).json()
+
+        assert [c["id"] for c in corpo] == [recente, antiga]
+
+    async def test_lead_ausente_nao_quebra_a_lista(self):
+        """Conversa sem lead ainda extraído aparece, só sem nome."""
+        headers = _login("sem-lead")
+        agent_id = self._agente(headers)
+        await self._conversa_real(agent_id, "5561900006666", None)
+
+        item = client.get(
+            f"/api/v1/agents/{agent_id}/conversations", headers=headers
+        ).json()[0]
+
+        assert item["lead_nome"] is None
+        assert item["phone_number"] == "5561900006666"
+
+    async def test_lista_de_agente_alheio_e_404(self):
+        dono = _login("dono-lista")
+        agent_id = self._agente(dono)
+        await self._conversa_real(agent_id, "5561900007777", "X")
+        intruso = _login("intruso-lista")
+
+        r = client.get(f"/api/v1/agents/{agent_id}/conversations", headers=intruso)
+
+        assert r.status_code == 404
+
+    def test_lista_exige_autenticacao(self):
+        r = client.get("/api/v1/agents/qualquer/conversations")
+
+        assert r.status_code in (401, 403)
+
+
+class TestMensagensDaConversa:
+    """O operador precisa ler o que já foi dito antes de assumir."""
+
+    async def _conversa_com_mensagens(self, headers: dict) -> str:
+        from datetime import datetime, timedelta
+
+        agent_id = client.post(
+            "/api/v1/agents", headers=headers,
+            json={"nome": "A", "system_prompt": "p", "temperatura": 0.7,
+                  "max_tokens": 1024},
+        ).json()["id"]
+
+        conv_id = f"conv-msgs-{agent_id[:8]}"
+        base = datetime.utcnow()
+        async with AsyncSessionLocal() as db:
+            db.add(
+                Conversation(id=conv_id, agent_id=agent_id,
+                             phone_number="5561900008888", status="ativa")
+            )
+            await db.flush()
+            # Inseridas fora de ordem de propósito: a ordenação é do banco.
+            db.add(Message(conversation_id=conv_id, remetente="assistant",
+                           conteudo="Segunda", timestamp=base))
+            db.add(Message(conversation_id=conv_id, remetente="user",
+                           conteudo="Primeira", timestamp=base - timedelta(minutes=5)))
+            await db.commit()
+        return conv_id
+
+    async def test_transcricao_vem_da_mais_antiga_para_a_mais_recente(self):
+        headers = _login("msgs")
+        conv_id = await self._conversa_com_mensagens(headers)
+
+        corpo = client.get(
+            f"/api/v1/conversations/{conv_id}/messages", headers=headers
+        ).json()
+
+        assert [m["conteudo"] for m in corpo["messages"]] == ["Primeira", "Segunda"]
+
+    async def test_traz_o_estado_da_automacao_junto(self):
+        """
+        Evita uma segunda chamada só para o botão saber se mostra "pausar" ou
+        "retomar".
+        """
+        headers = _login("msgs-estado")
+        conv_id = await self._conversa_com_mensagens(headers)
+        client.post(f"/api/v1/conversations/{conv_id}/pause", headers=headers)
+
+        corpo = client.get(
+            f"/api/v1/conversations/{conv_id}/messages", headers=headers
+        ).json()
+
+        assert corpo["status"] == "pausada"
+        assert corpo["ia_ativa"] is False
+
+    async def test_mensagens_de_conversa_alheia_sao_404(self):
+        dono = _login("dono-msgs")
+        conv_id = await self._conversa_com_mensagens(dono)
+        intruso = _login("intruso-msgs")
+
+        r = client.get(
+            f"/api/v1/conversations/{conv_id}/messages", headers=intruso
+        )
+
+        assert r.status_code == 404
+
+    def test_mensagens_exigem_autenticacao(self):
+        r = client.get("/api/v1/conversations/qualquer/messages")
+
+        assert r.status_code in (401, 403)

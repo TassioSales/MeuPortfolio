@@ -106,6 +106,7 @@ Itens que o setup de desenvolvimento deixa em aberto:
 - [ ] Restringir `ALLOWED_ORIGINS` ao domínio real
 - [ ] HTTPS: os cookies de sessão só ganham a flag `secure` sob TLS
 - [ ] Backup do PostgreSQL — não há rotina configurada
+- [ ] Conferir `"redis": "ok"` em `GET /health`: sem Redis o serviço sobe, mas sem cache e com o limite de uso valendo por réplica
 - [ ] Definir `WEBHOOK_SECRET` e configurar o mesmo valor na Evolution API
 - [ ] Trocar os `Dockerfile` de desenvolvimento por builds de produção (o frontend usa `next dev`; produção quer `next build` + `next start`)
 
@@ -124,15 +125,17 @@ além, para reproduzir o que o container enxerga.
 
 | Item | Como |
 |---|---|
-| 231 testes do backend | PostgreSQL real, incluindo os de autorização |
+| 243 testes do backend | PostgreSQL e Redis reais, incluindo os de autorização |
 | 101 testes do frontend | Jest, com typecheck e `next build` de produção |
 | Migração Alembic | Banco recriado do zero, `alembic upgrade head` limpo |
 | Seed | Rodado sobre o banco migrado; o usuário criado entra pela tela de login |
-| Boot do backend | Lifespan, conexão com o banco e scheduler de métricas |
+| Boot do backend | Lifespan, conexão com o banco e com o Redis, scheduler de métricas |
 | API | Auth, agentes, Kanban, 6 endpoints de métricas, chat, pausa humana |
 | Autorização cruzada | Agente e conversa de outro dono respondem 404 |
 | UI ponta a ponta | Login → dashboard → agentes, Kanban, métricas e playground, com dados do seed |
 | WebSocket | Conecta e autentica: o Kanban mostra "atualizando em tempo real" |
+| Limite de uso entre processos | Um processo separado registrou uso e o backend leu os mesmos números pelo endpoint |
+| Queda e volta do Redis | Com o Redis parado o serviço segue respondendo, `/health` acusa `unavailable` e o log avisa; ao voltar, reconecta sem reiniciar |
 
 ### O que continua sem verificação
 
@@ -203,6 +206,6 @@ fazer isso pelo painel — hoje só via API.
 Com a conversa pausada a mensagem do cliente **continua sendo registrada** — o
 operador precisa vê-la; o que para é a resposta automática.
 
-**Rate limiting em memória.** Já é por conta (`agent.user_id`), mas os
-contadores vivem no processo: com mais de uma réplica do backend, cada uma tem
-seu próprio balde. Mover para o Redis resolveria.
+**`stream_response` sem consumidor.** Virou gerador assíncrono junto com o
+limitador de uso, mas nenhum endpoint o chama — só os testes. Se o streaming
+for para a interface, o caminho ainda precisa ser construído.

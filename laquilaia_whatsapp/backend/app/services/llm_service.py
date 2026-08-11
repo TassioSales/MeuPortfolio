@@ -1,12 +1,11 @@
 """LLM service for Claude integration."""
 
-from typing import Dict, List, Optional, Iterator, Tuple
-from collections import defaultdict
-from datetime import datetime, timedelta
+from typing import AsyncIterator, Dict, List, Optional, Tuple
 from anthropic import Anthropic, APIError, APIConnectionError, RateLimitError
 from app.config import settings
 from app.utils.logger import logger
 from app.utils.exceptions import ValidationException
+from app.services.rate_limiter import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.db.models import Agent, Message, Conversation
@@ -20,32 +19,31 @@ class LLMService:
         """Initialize LLM service with Anthropic client."""
         self.client = Anthropic(api_key=settings.anthropic_api_key)
         self.model = settings.claude_model
-        self.max_calls_per_minute = 60
-        self.max_tokens_per_minute = 40000
-        # Um balde por conta: com contadores únicos no processo, um usuário
-        # sozinho esgotava a cota de todos os outros.
-        self._calls_by_user: Dict[str, List[datetime]] = defaultdict(list)
-        self._tokens_by_user: Dict[str, List[Tuple[datetime, int]]] = defaultdict(list)
+        # Um balde por conta, guardado no Redis para valer entre réplicas.
+        # Ver `rate_limiter.py` para a janela e o comportamento sem Redis.
+        self.rate_limiter = RateLimiter(
+            max_calls_per_minute=settings.llm_max_calls_per_minute,
+            max_tokens_per_minute=settings.llm_max_tokens_per_minute,
+        )
 
     # Chave usada quando não há usuário no contexto (testes, chamadas internas).
     SHARED_BUCKET = "__shared__"
 
     @property
-    def call_timestamps(self) -> List[datetime]:
-        """Balde compartilhado — mantido para chamadas sem usuário."""
-        return self._calls_by_user[self.SHARED_BUCKET]
+    def max_calls_per_minute(self) -> int:
+        return self.rate_limiter.max_calls_per_minute
 
-    @call_timestamps.setter
-    def call_timestamps(self, value: List[datetime]) -> None:
-        self._calls_by_user[self.SHARED_BUCKET] = value
+    @max_calls_per_minute.setter
+    def max_calls_per_minute(self, value: int) -> None:
+        self.rate_limiter.max_calls_per_minute = value
 
     @property
-    def token_timestamps(self) -> List[Tuple[datetime, int]]:
-        return self._tokens_by_user[self.SHARED_BUCKET]
+    def max_tokens_per_minute(self) -> int:
+        return self.rate_limiter.max_tokens_per_minute
 
-    @token_timestamps.setter
-    def token_timestamps(self, value: List[Tuple[datetime, int]]) -> None:
-        self._tokens_by_user[self.SHARED_BUCKET] = value
+    @max_tokens_per_minute.setter
+    def max_tokens_per_minute(self, value: int) -> None:
+        self.rate_limiter.max_tokens_per_minute = value
 
     async def generate_response(
         self,
@@ -69,7 +67,7 @@ class LLMService:
         """
         try:
             # Check rate limits
-            self._check_rate_limits(agent.user_id)
+            await self._check_rate_limits(agent.user_id)
 
             # Build messages array
             messages = self._build_messages(conversation_history, user_message)
@@ -92,7 +90,7 @@ class LLMService:
             }
 
             # Track usage
-            self._track_usage(token_usage["total_tokens"], agent.user_id)
+            await self._track_usage(token_usage["total_tokens"], agent.user_id)
 
             logger.info(
                 f"✅ Claude response generated for agent {agent.id} "
@@ -114,14 +112,17 @@ class LLMService:
             logger.error(f"❌ Error generating response: {e}")
             raise
 
-    def stream_response(
+    async def stream_response(
         self,
         agent: Agent,
         user_message: str,
         conversation_history: Optional[List[dict]] = None,
-    ) -> Iterator[str]:
+    ) -> AsyncIterator[str]:
         """
         Stream response from Claude (generator).
+
+        Assíncrono porque a contagem de uso passou a viver no Redis: um
+        gerador `def` não tem como esperar o `await` do limitador.
 
         Args:
             agent: Agent model instance
@@ -133,7 +134,7 @@ class LLMService:
         """
         try:
             # Check rate limits
-            self._check_rate_limits(agent.user_id)
+            await self._check_rate_limits(agent.user_id)
 
             # Build messages array
             messages = self._build_messages(conversation_history, user_message)
@@ -156,7 +157,7 @@ class LLMService:
                     total_tokens = (
                         final.usage.input_tokens + final.usage.output_tokens
                     )
-                    self._track_usage(total_tokens, agent.user_id)
+                    await self._track_usage(total_tokens, agent.user_id)
                     logger.info(
                         f"✅ Claude stream completed for agent {agent.id} "
                         f"(tokens: {total_tokens})"
@@ -247,34 +248,18 @@ class LLMService:
 
         return messages
 
-    def _check_rate_limits(self, user_id: Optional[str] = None) -> None:
+    async def _check_rate_limits(self, user_id: Optional[str] = None) -> None:
         """
         Check if rate limits are exceeded.
 
         Raises:
             ValidationException: If rate limit exceeded
         """
-        bucket = user_id or self.SHARED_BUCKET
-        now = datetime.utcnow()
-        one_minute_ago = now - timedelta(minutes=1)
+        await self.rate_limiter.check(user_id or self.SHARED_BUCKET)
 
-        # Check calls per minute
-        recent_calls = [ts for ts in self._calls_by_user[bucket] if ts > one_minute_ago]
-        if len(recent_calls) >= self.max_calls_per_minute:
-            raise ValidationException(
-                f"Rate limit exceeded: {self.max_calls_per_minute} calls per minute"
-            )
-
-        # Check tokens per minute
-        recent_tokens = sum(
-            tokens for ts, tokens in self._tokens_by_user[bucket] if ts > one_minute_ago
-        )
-        if recent_tokens >= self.max_tokens_per_minute:
-            raise ValidationException(
-                f"Rate limit exceeded: {self.max_tokens_per_minute} tokens per minute"
-            )
-
-    def _track_usage(self, total_tokens: int, user_id: Optional[str] = None) -> None:
+    async def _track_usage(
+        self, total_tokens: int, user_id: Optional[str] = None
+    ) -> None:
         """
         Track API usage for rate limiting.
 
@@ -282,52 +267,17 @@ class LLMService:
             total_tokens: Total tokens used in this request
         """
         bucket = user_id or self.SHARED_BUCKET
-        now = datetime.utcnow()
-        self._calls_by_user[bucket].append(now)
-        self._tokens_by_user[bucket].append((now, total_tokens))
+        await self.rate_limiter.track(bucket, total_tokens)
+        logger.debug(f"📊 Uso registrado ({bucket}): +1 chamada, {total_tokens} tokens")
 
-        # Clean up old entries (older than 2 minutes)
-        two_minutes_ago = now - timedelta(minutes=2)
-        self._calls_by_user[bucket] = [
-            ts for ts in self._calls_by_user[bucket] if ts > two_minutes_ago
-        ]
-        self._tokens_by_user[bucket] = [
-            (ts, tokens)
-            for ts, tokens in self._tokens_by_user[bucket]
-            if ts > two_minutes_ago
-        ]
-
-        logger.debug(
-            f"📊 Uso registrado ({bucket}): {len(self._calls_by_user[bucket])} chamadas, "
-            f"{sum(t[1] for t in self._tokens_by_user[bucket])} tokens no último minuto"
-        )
-
-    def get_rate_limit_status(self, user_id: Optional[str] = None) -> dict:
+    async def get_rate_limit_status(self, user_id: Optional[str] = None) -> dict:
         """
         Get current rate limit status.
 
         Returns:
             Dict with usage statistics
         """
-        bucket = user_id or self.SHARED_BUCKET
-        now = datetime.utcnow()
-        one_minute_ago = now - timedelta(minutes=1)
-
-        recent_calls = len(
-            [ts for ts in self._calls_by_user[bucket] if ts > one_minute_ago]
-        )
-        recent_tokens = sum(
-            tokens for ts, tokens in self._tokens_by_user[bucket] if ts > one_minute_ago
-        )
-
-        return {
-            "calls_used": recent_calls,
-            "calls_limit": self.max_calls_per_minute,
-            "tokens_used": recent_tokens,
-            "tokens_limit": self.max_tokens_per_minute,
-            "calls_remaining": max(0, self.max_calls_per_minute - recent_calls),
-            "tokens_remaining": max(0, self.max_tokens_per_minute - recent_tokens),
-        }
+        return await self.rate_limiter.status(user_id or self.SHARED_BUCKET)
 
 
 # Global instance

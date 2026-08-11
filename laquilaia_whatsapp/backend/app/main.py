@@ -8,6 +8,7 @@ import os
 from app.config import settings
 from sqlalchemy import select
 from app.db.database import init_db, close_db, AsyncSessionLocal
+from app.db.redis_client import redis_client
 from app.db.models import Agent
 from app.services.auth_service import auth_service
 from app.ws.manager import connection_manager
@@ -48,6 +49,11 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"❌ Database initialization failed: {e}")
         raise
+
+    # Sem esta chamada o cliente ficava em None e toda operação de cache
+    # estourava AttributeError, engolido pelo `except` de cada método: o
+    # Redis estava configurado, aparecia no compose e nunca era usado.
+    await redis_client.connect()
 
     # Initialize metrics scheduler
     scheduler = AsyncIOScheduler()
@@ -90,6 +96,7 @@ async def lifespan(app: FastAPI):
         logger.error(f"⚠️ Error stopping scheduler: {e}")
 
     logger.info("🛑 Shutting down L'Aquila AI Backend")
+    await redis_client.disconnect()
     await close_db()
 
 
@@ -118,11 +125,18 @@ app.add_middleware(
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
+    """
+    Health check endpoint.
+
+    O estado do Redis aparece aqui porque a falta dele não derruba o boot: sem
+    este campo, um deploy sem cache — e com o limite de uso valendo por
+    processo — passaria por saudável sem nenhum sinal.
+    """
     return {
         "status": "ok",
         "service": "laquilaia-backend",
         "version": "0.1.0",
+        "redis": "ok" if await redis_client.health_check() else "unavailable",
     }
 
 

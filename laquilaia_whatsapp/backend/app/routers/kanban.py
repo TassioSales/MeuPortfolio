@@ -6,6 +6,7 @@ from sqlalchemy import select, func
 from app.db.database import get_db_session
 from app.db.models import Agent, KanbanColumn, KanbanCard, Lead, LeadDetails
 from app.utils.auth_middleware import get_current_user
+from app.ws.manager import notify_lead_moved
 from app.utils.logger import logger
 from app.utils.exceptions import NotFoundException, ValidationException
 from typing import List, Dict, Any
@@ -256,6 +257,13 @@ async def move_lead_card(
         logger.info(
             f"✅ Lead {move_request.lead_id} moved: "
             f"{old_status} → {lead.status_funil}"
+        )
+
+        # Avisa quem está com o board aberto. Depois do commit: um evento sobre
+        # uma transação que ainda pode falhar mostraria um estado inexistente.
+        await notify_lead_moved(
+            agent_id, move_request.lead_id, move_request.target_column_id,
+            lead.status_funil,
         )
 
         return {

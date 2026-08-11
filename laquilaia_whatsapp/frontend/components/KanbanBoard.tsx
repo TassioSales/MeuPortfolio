@@ -22,6 +22,7 @@ import { KanbanCardItem } from "./KanbanCard";
 import { Button } from "./Button";
 import { FullPageLoader } from "./LoadingSpinner";
 import { useKanban } from "@/hooks/useKanban";
+import { useAgentEvents } from "@/hooks/useAgentEvents";
 import type { KanbanCard, KanbanColumn } from "@/types";
 
 interface KanbanBoardProps {
@@ -83,6 +84,16 @@ function Column({ column }: { column: KanbanColumn }) {
 export function KanbanBoard({ agentId }: KanbanBoardProps) {
   const { board, isLoading, error, moveCard, reload } = useKanban(agentId);
   const [dragging, setDragging] = useState<KanbanCard | null>(null);
+
+  // Tempo real: um lead qualificado pelo agente no WhatsApp aparece no board
+  // sem precisar recarregar. Recarrega o board inteiro em vez de aplicar o
+  // evento na mão — o evento diz o que mudou, não o estado final de todas as
+  // colunas, e refazer a leitura evita divergir do backend.
+  const { isConnected } = useAgentEvents(agentId, (event) => {
+    if (event.type === "lead_moved" || event.type === "new_message") {
+      void reload();
+    }
+  });
 
   const sensors = useSensors(
     // A distância mínima evita que um clique simples vire arrasto.
@@ -152,6 +163,18 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
           {error}
         </p>
       )}
+
+      <p className="mb-4 flex items-center gap-2 text-xs text-gray-500">
+        <span
+          aria-hidden="true"
+          className={
+            "h-2 w-2 rounded-full " + (isConnected ? "bg-green-500" : "bg-gray-300")
+          }
+        />
+        {isConnected
+          ? "Atualizando em tempo real"
+          : "Sem conexão em tempo real — recarregue para ver novidades"}
+      </p>
 
       {totalCards === 0 && (
         <p className="mb-4 rounded-lg border border-surface-border bg-white px-4 py-3 text-sm text-gray-600">

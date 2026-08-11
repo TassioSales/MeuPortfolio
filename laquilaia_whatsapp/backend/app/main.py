@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Query, WebSocket, WebSocketDisconnect, status
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from loguru import logger
@@ -6,7 +6,11 @@ import sys
 import os
 
 from app.config import settings
-from app.db.database import init_db, close_db
+from sqlalchemy import select
+from app.db.database import init_db, close_db, AsyncSessionLocal
+from app.db.models import Agent
+from app.services.auth_service import auth_service
+from app.ws.manager import connection_manager
 from app.routers import auth, agents, chat, webhook, kanban, metrics
 from app.jobs.metrics_aggregator import MetricsAggregator
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -132,48 +136,6 @@ async def root():
     }
 
 
-# ========== WEBSOCKET CONNECTION MANAGER ==========
-
-class ConnectionManager:
-    """Manage WebSocket connections for real-time updates."""
-
-    def __init__(self):
-        self.active_connections: dict[str, list[WebSocket]] = {}
-
-    async def connect(self, connection_id: str, websocket: WebSocket):
-        """Register a new WebSocket connection."""
-        await websocket.accept()
-        if connection_id not in self.active_connections:
-            self.active_connections[connection_id] = []
-        self.active_connections[connection_id].append(websocket)
-        logger.info(f"✅ WebSocket connected: {connection_id}")
-
-    def disconnect(self, connection_id: str, websocket: WebSocket):
-        """Remove a WebSocket connection."""
-        if connection_id in self.active_connections:
-            self.active_connections[connection_id].remove(websocket)
-            if not self.active_connections[connection_id]:
-                del self.active_connections[connection_id]
-        logger.info(f"❌ WebSocket disconnected: {connection_id}")
-
-    async def broadcast(self, connection_id: str, message: dict):
-        """Send message to all connections for a given ID."""
-        if connection_id in self.active_connections:
-            for connection in self.active_connections[connection_id]:
-                try:
-                    await connection.send_json(message)
-                except Exception as e:
-                    logger.error(f"❌ Error sending WebSocket message: {e}")
-
-    async def broadcast_all(self, message: dict):
-        """Send message to all active connections."""
-        for connection_id in self.active_connections:
-            await self.broadcast(connection_id, message)
-
-
-connection_manager = ConnectionManager()
-
-
 # ========== INCLUDE ROUTERS ==========
 
 app.include_router(auth.router)
@@ -186,25 +148,45 @@ app.include_router(metrics.router)
 
 # ========== WEBSOCKET ENDPOINTS ==========
 
-@app.websocket("/ws/{conversation_id}")
-async def websocket_endpoint(websocket: WebSocket, conversation_id: str):
-    """WebSocket endpoint for real-time conversation updates."""
-    await connection_manager.connect(conversation_id, websocket)
+@app.websocket("/ws/agents/{agent_id}")
+async def agent_events(websocket: WebSocket, agent_id: str, token: str = Query(None)):
+    """
+    Live updates for one agent: lead movements and incoming messages.
+
+    O token vem na query porque o navegador não permite definir cabeçalhos ao
+    abrir um WebSocket. A conexão é recusada antes do `accept()` se o token
+    faltar, for inválido ou o agente não for do usuário — do contrário o socket
+    seria um caminho paralelo para ler dados de agente alheio, sem passar pela
+    checagem de dono que os endpoints REST fazem.
+    """
+    user_id = auth_service.verify_token(token) if token else None
+    if not user_id:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Unauthorized")
+        return
+
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(
+            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
+        )
+        if result.scalars().first() is None:
+            logger.warning(f"⚠️ WebSocket recusado: agente {agent_id} não é de {user_id}")
+            await websocket.close(
+                code=status.WS_1008_POLICY_VIOLATION, reason="Agent not found"
+            )
+            return
+
+    await connection_manager.connect(agent_id, websocket)
     try:
         while True:
-            data = await websocket.receive_text()
-            # Echo back for now; will be enhanced with real data flow
-            await connection_manager.broadcast(
-                conversation_id,
-                {"type": "message", "content": data, "conversation_id": conversation_id}
-            )
+            # O canal é só de saída. Ficamos lendo apenas para detectar a
+            # desconexão; o que o cliente mandar é descartado, e não
+            # retransmitido como na versão anterior.
+            await websocket.receive_text()
     except WebSocketDisconnect:
-        connection_manager.disconnect(conversation_id, websocket)
+        connection_manager.disconnect(agent_id, websocket)
     except Exception as e:
-        logger.error(f"WebSocket error: {e}")
-        connection_manager.disconnect(conversation_id, websocket)
-
-
+        logger.error(f"❌ Erro no WebSocket: {e}")
+        connection_manager.disconnect(agent_id, websocket)
 
 
 # ========== ERROR HANDLING ==========

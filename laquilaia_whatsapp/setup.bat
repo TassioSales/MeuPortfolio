@@ -25,10 +25,11 @@ if %errorlevel% neq 0 (
 
 echo [OK] Docker is installed
 
-REM Check if docker-compose is available
-where docker-compose >nul 2>nul
+REM Check if docker compose is available (mesmo motivo do run.bat: o binario
+REM com hifen e o shim antigo, nao o que os scripts usam).
+docker compose version >nul 2>nul
 if %errorlevel% neq 0 (
-    echo [WARNING] docker-compose not found, will try docker compose
+    echo [WARNING] docker compose not available - update Docker Desktop
 )
 
 echo [OK] Docker setup verified
@@ -47,8 +48,8 @@ if exist .env (
         echo [ACTION REQUIRED] Please update .env with your configuration:
         echo   - ANTHROPIC_API_KEY: Your Anthropic API key
         echo   - EVOLUTION_API_KEY: Your Evolution API key
-        echo   - DATABASE_URL: PostgreSQL connection string (or use default)
-        echo   - REDIS_URL: Redis connection string (or use default)
+        echo   - DATABASE_URL: PostgreSQL connection string ^(or use default^)
+        echo   - REDIS_URL: Redis connection string ^(or use default^)
         echo.
         echo You can edit .env now with your text editor
     ) else (
@@ -64,18 +65,24 @@ if exist .env (
 echo.
 echo [INFO] Checking required environment variables...
 
-REM Check if .env exists and has required keys
+REM Check if .env exists and has required keys.
+REM
+REM Aqui vai `!errorlevel!`, e nao `%errorlevel%`: o cmd expande o bloco `( )`
+REM inteiro de uma vez, antes de executar qualquer linha dele, entao o
+REM `%errorlevel%` traria o valor de antes do findstr: o resultado do proprio
+REM findstr nunca era lido. E por isso que o script abre com
+REM `setlocal enabledelayedexpansion`.
 if exist .env (
     findstr /i "ANTHROPIC_API_KEY" .env >nul
-    if %errorlevel% neq 0 (
+    if !errorlevel! neq 0 (
         echo [WARNING] ANTHROPIC_API_KEY not configured
     ) else (
         echo [OK] ANTHROPIC_API_KEY is configured
     )
 
     findstr /i "DATABASE_URL" .env >nul
-    if %errorlevel% neq 0 (
-        echo [WARNING] DATABASE_URL not configured (will use defaults)
+    if !errorlevel! neq 0 (
+        echo [WARNING] DATABASE_URL not configured ^(will use defaults^)
     ) else (
         echo [OK] DATABASE_URL is configured
     )

@@ -5,8 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db_session
 from app.models.webhook_models import WebhookPayload
 from app.services.message_orchestrator import orchestrator
+from pydantic import ValidationError
 from app.utils.logger import logger
+from app.utils.webhook_security import SIGNATURE_HEADER, verify_webhook_request
 from app.utils.exceptions import NotFoundException, ValidationException
+from app.config import settings
+from datetime import datetime
 
 router = APIRouter(
     prefix="/api/v1",
@@ -16,7 +20,7 @@ router = APIRouter(
 
 @router.post("/webhook/messages")
 async def webhook_messages(
-    payload: WebhookPayload,
+    request: Request,
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -35,6 +39,21 @@ async def webhook_messages(
     - Dead letter queue for failed messages
     - Async task processing
     """
+    # A assinatura é conferida sobre o corpo CRU, antes de qualquer parse:
+    # validar depois do Pydantic deixaria requisição não assinada mexer no
+    # parser, e o HMAC é calculado sobre os bytes exatos que chegaram.
+    body = await request.body()
+    verify_webhook_request(body, request.headers.get(SIGNATURE_HEADER))
+
+    try:
+        payload = WebhookPayload.model_validate_json(body)
+    except ValidationError as e:
+        logger.warning(f"⚠️ Webhook com corpo inválido: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Invalid webhook payload",
+        )
+
     try:
         event_type = payload.event
 
@@ -133,10 +152,14 @@ async def webhook_health():
     Returns status of Evolution API connectivity.
     """
     try:
-        is_healthy = await orchestrator.validate_webhook_signature("", None)
+        # Reporta se o webhook está protegido — antes isto chamava um stub que
+        # devolvia True sempre, então dizia "ok" mesmo sem proteção nenhuma.
+        protegido = bool(settings.webhook_secret)
         return {
-            "status": "ok" if is_healthy else "degraded",
-            "timestamp": __import__("datetime").datetime.utcnow().isoformat(),
+            "status": "ok" if protegido else "degraded",
+            "signature_validation": "enabled" if protegido else "disabled",
+            "detail": None if protegido else "WEBHOOK_SECRET não configurado",
+            "timestamp": datetime.utcnow().isoformat(),
         }
     # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
     # o catch-all abaixo os transformaria em 500.

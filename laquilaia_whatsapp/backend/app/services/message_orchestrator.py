@@ -204,28 +204,8 @@ class MessageOrchestrator:
         logger.info(f"✅ New conversation created: {conversation.id}")
         return conversation
 
-    async def validate_webhook_signature(
-        self,
-        payload: str,
-        signature: Optional[str],
-    ) -> bool:
-        """
-        Validate webhook signature (stub for future implementation).
-
-        In production, validate using Evolution API's signature method.
-        For now, returns True to allow testing.
-
-        Args:
-            payload: Request body
-            signature: X-API-Signature header value
-
-        Returns:
-            True if valid, False otherwise
-        """
-        # TODO: Implement signature validation
-        # For MVP, we trust all requests
-        logger.debug("⏭️ Webhook signature validation skipped (MVP mode)")
-        return True
-
+    # `validate_webhook_signature` foi removido: era um stub que devolvia
+    # True sempre, dando a impressão de que havia validação. A conferência
+    # real vive em `app/utils/webhook_security.py`.
 
 orchestrator = MessageOrchestrator()

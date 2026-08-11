@@ -12,7 +12,13 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.config import settings
-from app.utils.webhook_security import SIGNATURE_HEADER, compute_signature
+from app.utils.webhook_security import (
+    SIGNATURE_HEADER,
+    compute_signature,
+    verify_webhook_request,
+)
+from fastapi import HTTPException
+from unittest.mock import patch
 
 client = TestClient(app)
 
@@ -129,3 +135,52 @@ class TestInvalidPayload:
         )
 
         assert response.status_code == 422
+
+
+class TestTokenEstatico:
+    """
+    A alternativa ao HMAC, para emissores que não assinam.
+
+    A Evolution API não calcula HMAC do corpo: ela só repassa cabeçalhos fixos
+    configurados na instância. Sem este modo, o esquema de assinatura recusaria
+    toda mensagem vinda dela.
+    """
+
+    def test_token_correto_passa(self):
+        with patch.object(settings, "webhook_static_token", "tok-123"), patch.object(
+            settings, "webhook_secret", "hmac-secret"
+        ), patch.object(settings, "debug", False):
+            # Sem assinatura nenhuma, só o token.
+            verify_webhook_request(b'{"a":1}', None, "tok-123")
+
+    def test_token_errado_nao_passa(self):
+        with patch.object(settings, "webhook_static_token", "tok-123"), patch.object(
+            settings, "webhook_secret", "hmac-secret"
+        ), patch.object(settings, "debug", False):
+            with pytest.raises(HTTPException) as exc:
+                verify_webhook_request(b'{"a":1}', None, "errado")
+            assert exc.value.status_code == 401
+
+    def test_modo_desligado_nao_autoriza_por_ausencia(self):
+        """
+        Token vazio dos dois lados não pode virar "confere".
+
+        É o erro clássico de comparar sem checar antes: `"" == ""` autorizaria
+        qualquer requisição sem cabeçalho nenhum.
+        """
+        with patch.object(settings, "webhook_static_token", ""), patch.object(
+            settings, "webhook_secret", "hmac-secret"
+        ), patch.object(settings, "debug", False):
+            with pytest.raises(HTTPException):
+                verify_webhook_request(b'{"a":1}', None, "")
+            with pytest.raises(HTTPException):
+                verify_webhook_request(b'{"a":1}', None, None)
+
+    def test_hmac_continua_valendo_com_o_modo_ligado(self):
+        corpo = b'{"evento":"teste"}'
+        with patch.object(settings, "webhook_static_token", "tok-123"), patch.object(
+            settings, "webhook_secret", "hmac-secret"
+        ), patch.object(settings, "debug", False):
+            verify_webhook_request(
+                corpo, compute_signature(corpo, "hmac-secret"), None
+            )

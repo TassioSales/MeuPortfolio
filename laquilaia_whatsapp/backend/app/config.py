@@ -39,13 +39,25 @@ class Settings(BaseSettings):
     gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
 
     # WhatsApp / Evolution API
-    evolution_api_url: str = os.getenv("EVOLUTION_API_URL", "http://evolution:4000")
+    # A Evolution v2 escuta na 8080 (SERVER_PORT do .env.example dela). O default
+    # anterior, 4000, não corresponde a nenhuma versão.
+    evolution_api_url: str = os.getenv("EVOLUTION_API_URL", "http://evolution:8080")
     evolution_api_key: str = os.getenv("EVOLUTION_API_KEY", "")
     evolution_instance_name: str = os.getenv("EVOLUTION_INSTANCE_NAME", "laquilaia")
+    # Agente que atende as mensagens vindas da Evolution.
+    #
+    # A Evolution não sabe que agentes existem: ela manda a mensagem e pronto.
+    # Sem este valor, todo webhook real morre com "Missing agent_id" — o
+    # `agentId` dentro de `key` só existe nos payloads que nós mesmos
+    # forjamos para teste. Uma instância atende por um agente.
+    evolution_default_agent_id: str = os.getenv("EVOLUTION_DEFAULT_AGENT_ID", "")
     evolution_webhook_url: str = os.getenv("EVOLUTION_WEBHOOK_URL", "http://localhost:8000/webhook/whatsapp")
     # Segredo compartilhado do HMAC do webhook. Vazio deixa o endpoint
     # aberto, o que só é tolerado com DEBUG=true (ver webhook_security.py).
     webhook_secret: str = os.getenv("WEBHOOK_SECRET", "")
+    # Alternativa ao HMAC para emissores que não assinam o corpo — a Evolution
+    # API é um deles. Ver `webhook_security.py` para o que se perde.
+    webhook_static_token: str = os.getenv("WEBHOOK_STATIC_TOKEN", "")
 
     # Frontend
     frontend_url: str = os.getenv("FRONTEND_URL", "http://localhost:3000")

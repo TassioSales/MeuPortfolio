@@ -31,7 +31,7 @@ const QUICK_LINKS: QuickLink[] = [
     title: "Kanban CRM",
     description: "Acompanhe os leads pelo funil de qualificação.",
     icon: "🗂️",
-    available: false,
+    available: true,
   },
   {
     href: "/dashboard/metrics",

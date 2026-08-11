@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from app.db.database import get_db_session
 from app.db.models import Agent, KanbanColumn, KanbanCard, Lead, LeadDetails
+from app.utils.auth_middleware import get_current_user
 from app.utils.logger import logger
 from app.utils.exceptions import NotFoundException, ValidationException
 from typing import List, Dict, Any
@@ -72,6 +73,7 @@ class UpdateCardOrderRequest(BaseModel):
 @router.get("/agents/{agent_id}/kanban", response_model=KanbanBoardResponse)
 async def get_kanban_board(
     agent_id: str,
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -89,7 +91,7 @@ async def get_kanban_board(
     try:
         # Verify agent exists
         result = await db.execute(
-            select(Agent).where(Agent.id == agent_id)
+            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
         )
         agent = result.scalars().first()
 
@@ -174,6 +176,7 @@ async def get_kanban_board(
 async def move_lead_card(
     agent_id: str,
     move_request: MoveCardRequest,
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -192,7 +195,7 @@ async def move_lead_card(
     try:
         # Verify agent exists
         result = await db.execute(
-            select(Agent).where(Agent.id == agent_id)
+            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
         )
         agent = result.scalars().first()
 
@@ -285,6 +288,7 @@ async def move_lead_card(
 @router.get("/agents/{agent_id}/kanban/columns")
 async def list_kanban_columns(
     agent_id: str,
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -300,7 +304,7 @@ async def list_kanban_columns(
     try:
         # Verify agent exists
         result = await db.execute(
-            select(Agent).where(Agent.id == agent_id)
+            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
         )
         agent = result.scalars().first()
 
@@ -349,6 +353,7 @@ async def list_kanban_columns(
 @router.post("/agents/{agent_id}/kanban/columns/init")
 async def initialize_kanban_columns(
     agent_id: str,
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -366,7 +371,7 @@ async def initialize_kanban_columns(
     try:
         # Verify agent exists
         result = await db.execute(
-            select(Agent).where(Agent.id == agent_id)
+            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
         )
         agent = result.scalars().first()
 
@@ -442,6 +447,7 @@ async def initialize_kanban_columns(
 @router.get("/agents/{agent_id}/kanban/stats")
 async def get_kanban_stats(
     agent_id: str,
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -459,7 +465,7 @@ async def get_kanban_stats(
     try:
         # Verify agent exists
         result = await db.execute(
-            select(Agent).where(Agent.id == agent_id)
+            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
         )
         agent = result.scalars().first()
 

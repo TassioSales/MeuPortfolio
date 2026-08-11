@@ -1,0 +1,22 @@
+# DADOS PESSOAIS / SENSIVEIS - nunca versionar nem publicar
+dados/
+*.opus
+*.ogg
+*.m4a
+*.mp3
+*.wav
+conversa_whatsapp.txt
+transcricoes.txt
+transcricoes.json
+relatorio_analise.txt
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Modelos baixados
+models/
+*.bin

@@ -30,6 +30,7 @@ Projects use one of three primary stacks:
 | `plataforma_rifas/` | Raffle management system | Python + Streamlit + SQLite + Docker |
 | `pricetrack-ai/` | E-commerce price tracker with AI | Python + Streamlit + Gemini + SQLAlchemy |
 | `wealthmap_analytics/` | Wealth / portfolio management | Go + Next.js |
+| `transcritor_whatsapp/` | Local WhatsApp audio transcription + content triage | Python + faster-whisper + Streamlit |
 
 ---
 

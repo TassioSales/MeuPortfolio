@@ -118,3 +118,36 @@ export interface ChatBubble {
   pending?: boolean;
   tokens?: number;
 }
+
+// ========== Kanban ==========
+
+/** Card de lead no board (`LeadCardResponse` no backend). */
+export interface KanbanCard {
+  id: string;
+  nome: string;
+  email: string | null;
+  phone_number: string;
+  score_qualificacao: number;
+  status_funil: string;
+  ordem: number;
+}
+
+export interface KanbanColumn {
+  id: string;
+  nome: string;
+  ordem: number;
+  cor_hex: string;
+  cards: KanbanCard[];
+}
+
+export interface KanbanBoard {
+  agent_id: string;
+  columns: KanbanColumn[];
+}
+
+/** Corpo de `POST /agents/{id}/kanban/move`. */
+export interface MoveCardRequest {
+  lead_id: string;
+  target_column_id: string;
+  new_order: number;
+}

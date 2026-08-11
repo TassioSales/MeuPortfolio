@@ -1,10 +1,11 @@
-# Guia do Frontend — Fases 10 a 12
+# Guia do Frontend — Fases 10 a 13
 
 Painel web da L'Aquila AI: Next.js 14 (App Router) + TypeScript + TailwindCSS.
 
 - **Fase 10** — base, autenticação JWT, renovação automática de token e proteção de rotas.
 - **Fase 11** — painel de agentes (listar, criar, editar, excluir).
 - **Fase 12** — chat de teste (playground) com histórico e reset.
+- **Fase 13** — Kanban CRM com arrastar e soltar.
 
 ---
 
@@ -70,7 +71,8 @@ frontend/
 │       ├── layout.tsx          # Navbar + Sidebar + guarda de sessão
 │       ├── page.tsx            # Home do painel
 │       ├── agents/page.tsx     # Painel de agentes (Fase 11)
-│       └── chat-test/page.tsx  # Chat de teste (Fase 12)
+│       ├── chat-test/page.tsx  # Chat de teste (Fase 12)
+│       └── kanban/page.tsx     # Kanban CRM (Fase 13)
 ├── components/
 │   ├── Button.tsx              # 4 variantes + estado de loading
 │   ├── Input.tsx               # Label, erro e hint acessíveis
@@ -81,23 +83,27 @@ frontend/
 │   ├── AgentForm.tsx           # Formulário de criar/editar agente
 │   ├── AgentCard.tsx           # Card de agente na listagem
 │   ├── ChatPlayground.tsx      # Conversa de teste com o agente
+│   ├── KanbanBoard.tsx         # Board com colunas e drag-and-drop
+│   ├── KanbanCard.tsx          # Card de lead arrastável
 │   ├── LoadingSpinner.tsx      # Spinner + FullPageLoader
 │   ├── Navbar.tsx              # Identificação do usuário + logout
 │   └── Sidebar.tsx             # Navegação (itens de fases futuras desabilitados)
 ├── hooks/
 │   ├── useAuth.ts              # Store Zustand + hook useAuth()
 │   ├── useAgents.ts            # Store Zustand do CRUD de agentes
-│   └── useChat.ts              # Estado local da conversa de teste
+│   ├── useChat.ts              # Estado local da conversa de teste
+│   └── useKanban.ts            # Board + movimentação otimista
 ├── lib/
 │   ├── api.ts                  # Cliente HTTP com refresh automático
 │   ├── auth.ts                 # login / register / logout / getCurrentUser
 │   ├── agents.ts               # CRUD de agentes
 │   ├── chat.ts                 # Chat, histórico e reset
+│   ├── kanban.ts               # Board, colunas padrão e movimentação
 │   ├── constants.ts            # Nomes de cookie (sem dependências)
 │   ├── tokens.ts               # Leitura/escrita dos cookies
 │   └── utils.ts                # cn() — merge de classes Tailwind
 ├── types/index.ts              # Tipos espelhando os schemas do backend
-├── __tests__/                  # 63 testes
+├── __tests__/                  # 74 testes
 ├── middleware.ts               # Proteção de rotas no edge
 └── Dockerfile                  # Imagem de desenvolvimento
 ```
@@ -148,6 +154,28 @@ entre 1 e 4096, `system_prompt` não vazio, `nome` até 255 caracteres.
 
 A conversa do playground fica separada das reais pelo telefone reservado
 `test_api` (constante `TEST_PHONE_NUMBER` no router).
+
+### Kanban (Fase 13)
+
+| Endpoint | Método | Corpo | Resposta |
+|---|---|---|---|
+| `/api/v1/agents/{id}/kanban` | GET | — | `{agent_id, columns[]}` com os cards |
+| `/api/v1/agents/{id}/kanban/columns/init` | POST | — | Colunas padrão do funil |
+| `/api/v1/agents/{id}/kanban/move` | POST | `{lead_id, target_column_id, new_order}` | `{detail}` |
+
+> **Falha de autorização corrigida nesta fase.** Os routers `kanban.py` e
+> `metrics.py` foram escritos **sem nenhuma dependência de autenticação** — os
+> 11 endpoints eram públicos. Qualquer requisição anônima lia (e movia) os
+> leads de qualquer agente, incluindo nome, e-mail e telefone dos clientes.
+>
+> Todos passaram a exigir o token e a escopar o agente pelo dono
+> (`Agent.user_id == user_id`), respondendo 404 em vez de 403 para não revelar
+> que o agente existe. Em métricas a checagem é explícita no router: o
+> `metrics_service` valida apenas que o agente existe, então autenticar sem
+> conferir o dono ainda deixaria um usuário ler as métricas de outro.
+>
+> `tests/test_authorization.py` cobre os 11 endpoints em três cenários:
+> anônimo, usuário logado tentando agente alheio, e dono legítimo.
 
 > **Duas correções no backend nesta fase.**
 >
@@ -244,7 +272,7 @@ No Windows: `run.bat`.
 cd frontend && npm test
 ```
 
-**63 testes, 7 suítes:**
+**74 testes, 8 suítes:**
 
 | Suíte | Testes | Cobre |
 |---|---|---|
@@ -255,26 +283,43 @@ cd frontend && npm test
 | `__tests__/AgentForm.test.tsx` | 9 | Preenchimento na edição, padrões na criação, normalização do payload, validações, erro do backend |
 | `__tests__/chat.test.ts` | 7 | Verbos e corpos do chat, envio do `conversation_id` só quando há conversa |
 | `__tests__/ChatPlayground.test.tsx` | 10 | Estado vazio, carga de histórico, envio, tokens, continuidade da conversa, reset, recuperação de erro |
+| `__tests__/kanban.test.tsx` | 11 | Verbos da API, criação das colunas padrão, movimentação otimista, rollback quando o backend recusa, render do board |
 
 `middleware.test.ts` roda com `@jest-environment node` porque `next/server`
 depende dos globais `Request`/`Response`, que o jsdom não implementa — é o mesmo
 ambiente do edge runtime.
 
+O arrastar em si não é exercitado no Jest: depende de eventos de ponteiro que
+o jsdom não simula fielmente. O que importa e é testável está coberto — a
+chamada de movimentação, a atualização otimista e o rollback. O arrasto real
+foi verificado no navegador.
+
 ### Verificação end-to-end
 
-Além dos testes automatizados, o fluxo da Fase 11 foi percorrido no Chromium
-contra um backend simulado, cobrindo: proteção de rota → login com senha errada
-→ login correto voltando para `?next=` → criação, edição e exclusão de agente →
-persistência após reload → logout. Os scripts ficaram fora do repositório
-por dependerem do Playwright, que não é dependência do projeto.
+Cada fase foi percorrida no Chromium contra um backend simulado:
+
+- **Fase 11** — proteção de rota, login com senha errada, login correto voltando para `?next=`, criação/edição/exclusão de agente, persistência após reload, logout.
+- **Fase 12** — playground sem agentes, envio, tokens, segunda mensagem mantendo contexto, Enter para enviar, persistência após reload, reset.
+- **Fase 13** — board com colunas e cards, **arrasto real** de um card entre colunas com o mouse, e conferência de que o movimento persiste após reload (ou seja, chegou ao backend).
+
+Os scripts ficaram fora do repositório por dependerem do Playwright, que não é
+dependência do projeto.
 
 ---
 
 ## 7. Decisões e limitações
 
-**Itens de navegação desabilitados.** Sidebar e cards do dashboard listam
-Kanban e Métricas marcados como "Em breve". As rotas não existem ainda; são
-entregues nas fases 13–14.
+**Itens de navegação desabilitados.** Só Métricas segue marcada como "Em
+breve"; a rota chega na Fase 14.
+
+**`@dnd-kit` em vez de `react-beautiful-dnd`.** O plano original citava
+`react-beautiful-dnd`, mas a Atlassian arquivou a biblioteca e ela tem
+problemas conhecidos com o StrictMode do React 18. O `@dnd-kit` é mantido e
+traz suporte a teclado e toque, que a alternativa nativa de HTML5 não tem.
+
+**Movimentação otimista com rollback.** O card muda de coluna antes da resposta
+do backend — arrastar precisa parecer instantâneo. Se a chamada falhar, o board
+anterior é restaurado e o erro aparece acima das colunas.
 
 **O playground não usa Zustand.** Diferente de `useAgents`, o estado da conversa
 é local à página (`useChat`). Uma store global só criaria risco de a conversa de
@@ -332,5 +377,4 @@ fora do escopo desta fase.
 
 | Fase | Entrega | Reaproveita daqui |
 |---|---|---|
-| 13 | Kanban CRM | `api`, `Modal`, `ConfirmDialog`, `EmptyState` |
 | 14 | Dashboards & gráficos | `api` + endpoints da Fase 9 |

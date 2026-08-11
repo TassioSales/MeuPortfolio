@@ -3,9 +3,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from datetime import datetime
 from typing import Optional
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db_session
+from app.db.models import Agent
 from app.services.metrics_service import metrics_service
+from app.utils.auth_middleware import get_current_user
 from app.utils.logger import logger
 from app.utils.exceptions import NotFoundException, ValidationException
 from pydantic import BaseModel, Field
@@ -89,12 +92,33 @@ class KPIResponse(BaseModel):
         from_attributes = True
 
 
+# ========== AUTORIZAÇÃO ==========
+
+async def _assert_agent_ownership(agent_id: str, user_id: str, db: AsyncSession) -> None:
+    """
+    Garante que o agente pertence ao usuário do token.
+
+    O `metrics_service` valida apenas que o agente existe, então sem esta
+    checagem qualquer usuário autenticado leria as métricas de qualquer outro.
+    Responde 404 (e não 403) para não revelar que o agente existe.
+    """
+    result = await db.execute(
+        select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
+    )
+    if result.scalars().first() is None:
+        logger.warning(f"⚠️ Agent not found or not owned: {agent_id} (user: {user_id})")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Agent not found"
+        )
+
+
 # ========== ENDPOINTS ==========
 
 @router.get("/agents/{agent_id}/metrics", response_model=dict)
 async def get_metrics_summary(
     agent_id: str,
-    period: str = Query("day", regex="^(day|week|month)$"),
+    period: str = Query("day", pattern="^(day|week|month)$"),
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -111,6 +135,8 @@ async def get_metrics_summary(
         Dict with total_atendimentos, taxa_qualificacao, tempo_medio_min, etc
     """
     try:
+        await _assert_agent_ownership(agent_id, user_id, db)
+
         stats = await metrics_service.calculate_period_stats(
             agent_id, db, period, use_cache=True
         )
@@ -157,6 +183,7 @@ async def get_period_stats(
     period: str = Query("day"),
     start_date: Optional[datetime] = Query(None),
     end_date: Optional[datetime] = Query(None),
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -173,6 +200,8 @@ async def get_period_stats(
         Detailed period statistics
     """
     try:
+        await _assert_agent_ownership(agent_id, user_id, db)
+
         stats = await metrics_service.calculate_period_stats(
             agent_id, db, period, start_date, end_date, use_cache=True
         )
@@ -199,6 +228,7 @@ async def get_period_stats(
 async def get_qualification_metrics(
     agent_id: str,
     period: str = Query("day"),
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -213,6 +243,8 @@ async def get_qualification_metrics(
         Qualification rate with trend and status
     """
     try:
+        await _assert_agent_ownership(agent_id, user_id, db)
+
         data = await metrics_service.get_qualification_rate(
             agent_id, db, period, use_cache=True
         )
@@ -239,6 +271,7 @@ async def get_qualification_metrics(
 async def get_response_time_metrics(
     agent_id: str,
     period: str = Query("day"),
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -255,6 +288,8 @@ async def get_response_time_metrics(
         Response time statistics with percentiles
     """
     try:
+        await _assert_agent_ownership(agent_id, user_id, db)
+
         data = await metrics_service.get_avg_response_time(
             agent_id, db, period, use_cache=True
         )
@@ -280,6 +315,7 @@ async def get_response_time_metrics(
 @router.get("/agents/{agent_id}/metrics/lead-distribution", response_model=LeadDistributionResponse)
 async def get_lead_distribution(
     agent_id: str,
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -293,6 +329,8 @@ async def get_lead_distribution(
         Counts for each status: novo, em_qualificacao, qualificado, agendado, arquivado
     """
     try:
+        await _assert_agent_ownership(agent_id, user_id, db)
+
         data = await metrics_service.get_lead_distribution(
             agent_id, db, use_cache=True
         )
@@ -319,6 +357,7 @@ async def get_lead_distribution(
 async def get_kpis(
     agent_id: str,
     comparison: bool = Query(True),
+    user_id: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -333,6 +372,8 @@ async def get_kpis(
         KPIs with current/previous period data and variation percentages
     """
     try:
+        await _assert_agent_ownership(agent_id, user_id, db)
+
         data = await metrics_service.get_kpis(
             agent_id, db, use_cache=True
         )

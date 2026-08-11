@@ -53,6 +53,15 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = False
+        # O `.env` é compartilhado com o compose e com o frontend, então tem
+        # variáveis que não são deste Settings: DB_USER e DB_PORT servem ao
+        # container do Postgres, NEXT_PUBLIC_* ao Next.js, ALLOWED_ORIGINS ao
+        # proxy. O padrão do pydantic-settings v2 é recusar o que não conhece,
+        # e o backend morria no boot com dez erros de `extra_forbidden` — só
+        # quando o processo enxergava o arquivo, o que depende do diretório de
+        # onde se sobe o uvicorn. Ignorar é o comportamento certo aqui: quem
+        # define o contrato é esta classe, não o arquivo.
+        extra = "ignore"
 
 
 settings = Settings()

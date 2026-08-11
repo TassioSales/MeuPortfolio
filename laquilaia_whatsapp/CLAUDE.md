@@ -35,7 +35,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **226 testes no backend, 101 no frontend.**
+Estado atual: **231 testes no backend, 101 no frontend.**
 
 ---
 

@@ -1,4 +1,4 @@
-# Guia do Frontend — Fases 10 a 13
+# Guia do Frontend — Fases 10 a 14
 
 Painel web da L'Aquila AI: Next.js 14 (App Router) + TypeScript + TailwindCSS.
 
@@ -6,6 +6,7 @@ Painel web da L'Aquila AI: Next.js 14 (App Router) + TypeScript + TailwindCSS.
 - **Fase 11** — painel de agentes (listar, criar, editar, excluir).
 - **Fase 12** — chat de teste (playground) com histórico e reset.
 - **Fase 13** — Kanban CRM com arrastar e soltar.
+- **Fase 14** — dashboard de métricas com gráficos.
 
 ---
 
@@ -72,7 +73,8 @@ frontend/
 │       ├── page.tsx            # Home do painel
 │       ├── agents/page.tsx     # Painel de agentes (Fase 11)
 │       ├── chat-test/page.tsx  # Chat de teste (Fase 12)
-│       └── kanban/page.tsx     # Kanban CRM (Fase 13)
+│       ├── kanban/page.tsx     # Kanban CRM (Fase 13)
+│       └── metrics/page.tsx    # Dashboard de métricas (Fase 14)
 ├── components/
 │   ├── Button.tsx              # 4 variantes + estado de loading
 │   ├── Input.tsx               # Label, erro e hint acessíveis
@@ -85,6 +87,10 @@ frontend/
 │   ├── ChatPlayground.tsx      # Conversa de teste com o agente
 │   ├── KanbanBoard.tsx         # Board com colunas e drag-and-drop
 │   ├── KanbanCard.tsx          # Card de lead arrastável
+│   ├── charts/theme.ts         # Paleta validada + formatadores
+│   ├── charts/StatTile.tsx     # Número de destaque com variação
+│   ├── charts/AtendimentosChart.tsx  # Linha: atendimentos x qualificados
+│   ├── charts/FunilChart.tsx   # Barras horizontais do funil
 │   ├── LoadingSpinner.tsx      # Spinner + FullPageLoader
 │   ├── Navbar.tsx              # Identificação do usuário + logout
 │   └── Sidebar.tsx             # Navegação (itens de fases futuras desabilitados)
@@ -92,18 +98,20 @@ frontend/
 │   ├── useAuth.ts              # Store Zustand + hook useAuth()
 │   ├── useAgents.ts            # Store Zustand do CRUD de agentes
 │   ├── useChat.ts              # Estado local da conversa de teste
-│   └── useKanban.ts            # Board + movimentação otimista
+│   ├── useKanban.ts            # Board + movimentação otimista
+│   └── useMetrics.ts           # Resumo, tempo de resposta e série diária
 ├── lib/
 │   ├── api.ts                  # Cliente HTTP com refresh automático
 │   ├── auth.ts                 # login / register / logout / getCurrentUser
 │   ├── agents.ts               # CRUD de agentes
 │   ├── chat.ts                 # Chat, histórico e reset
 │   ├── kanban.ts               # Board, colunas padrão e movimentação
+│   ├── metrics.ts              # Resumo, tempo de resposta, série diária
 │   ├── constants.ts            # Nomes de cookie (sem dependências)
 │   ├── tokens.ts               # Leitura/escrita dos cookies
 │   └── utils.ts                # cn() — merge de classes Tailwind
 ├── types/index.ts              # Tipos espelhando os schemas do backend
-├── __tests__/                  # 74 testes
+├── __tests__/                  # 89 testes
 ├── middleware.ts               # Proteção de rotas no edge
 └── Dockerfile                  # Imagem de desenvolvimento
 ```
@@ -176,6 +184,26 @@ A conversa do playground fica separada das reais pelo telefone reservado
 >
 > `tests/test_authorization.py` cobre os 11 endpoints em três cenários:
 > anônimo, usuário logado tentando agente alheio, e dono legítimo.
+
+### Métricas (Fase 14)
+
+| Endpoint | Método | Query | Resposta |
+|---|---|---|---|
+| `/api/v1/agents/{id}/metrics` | GET | `period` | Resumo com KPIs e distribuição |
+| `/api/v1/agents/{id}/metrics/response-time` | GET | `period` | Média, p50, p95, min, max |
+| `/api/v1/agents/{id}/metrics/timeseries` | GET | `dias` (1–90) | Um ponto por dia |
+
+> **`/metrics/timeseries` foi criado nesta fase.** Nenhum endpoint existente
+> devolvia série temporal, então o gráfico de linha previsto no plano não teria
+> de onde tirar dados. Ele lê direto das tabelas transacionais, e não de
+> `daily_stats`: a agregação noturna pode não ter rodado, e um gráfico com
+> buracos seria pior que uma query um pouco mais cara. Dias sem movimento entram
+> zerados, para a linha não pular datas.
+
+> **Bug de schema corrigido.** `DailyStats` tinha `UniqueConstraint("data")` —
+> unicidade só na data. Como o job de agregação grava uma linha por agente e por
+> dia, o segundo agente estouraria chave duplicada toda noite. Passou a ser
+> `(data, agent_id)`.
 
 > **Duas correções no backend nesta fase.**
 >
@@ -272,7 +300,7 @@ No Windows: `run.bat`.
 cd frontend && npm test
 ```
 
-**74 testes, 8 suítes:**
+**89 testes, 9 suítes:**
 
 | Suíte | Testes | Cobre |
 |---|---|---|
@@ -284,6 +312,7 @@ cd frontend && npm test
 | `__tests__/chat.test.ts` | 7 | Verbos e corpos do chat, envio do `conversation_id` só quando há conversa |
 | `__tests__/ChatPlayground.test.tsx` | 10 | Estado vazio, carga de histórico, envio, tokens, continuidade da conversa, reset, recuperação de erro |
 | `__tests__/kanban.test.tsx` | 11 | Verbos da API, criação das colunas padrão, movimentação otimista, rollback quando o backend recusa, render do board |
+| `__tests__/metrics.test.tsx` | 15 | Verbos e query params, carga paralela das três chamadas, janela por período, render do funil e dos tiles, formatação |
 
 `middleware.test.ts` roda com `@jest-environment node` porque `next/server`
 depende dos globais `Request`/`Response`, que o jsdom não implementa — é o mesmo
@@ -301,6 +330,7 @@ Cada fase foi percorrida no Chromium contra um backend simulado:
 - **Fase 11** — proteção de rota, login com senha errada, login correto voltando para `?next=`, criação/edição/exclusão de agente, persistência após reload, logout.
 - **Fase 12** — playground sem agentes, envio, tokens, segunda mensagem mantendo contexto, Enter para enviar, persistência após reload, reset.
 - **Fase 13** — board com colunas e cards, **arrasto real** de um card entre colunas com o mouse, e conferência de que o movimento persiste após reload (ou seja, chegou ao backend).
+- **Fase 14** — dashboard renderizado e **inspecionado visualmente** (o validador confere cor, não layout): sem erros de JS, sem overflow horizontal, e foi assim que apareceu o eixo indo a −3.
 
 Os scripts ficaram fora do repositório por dependerem do Playwright, que não é
 dependência do projeto.
@@ -320,6 +350,28 @@ traz suporte a teclado e toque, que a alternativa nativa de HTML5 não tem.
 **Movimentação otimista com rollback.** O card muda de coluna antes da resposta
 do backend — arrastar precisa parecer instantâneo. Se a chamada falhar, o board
 anterior é restaurado e o erro aparece acima das colunas.
+
+**As cores dos gráficos foram validadas, não escolhidas a olho.** Os hex em
+`components/charts/theme.ts` passaram pelo validador da paleta de referência
+(banda de luminosidade, piso de croma, separação para daltonismo e contraste com
+a superfície) nos modos claro e escuro. Trocar um hex isolado exige revalidar o
+conjunto — a ordem dos slots é o mecanismo de segurança para CVD, não estética.
+
+**Cada forma foi escolhida pelo trabalho do dado**, não por variedade:
+
+| Dado | Forma | Por quê |
+|---|---|---|
+| 4 números de destaque | Stat tiles | Um valor isolado se lê mais rápido como número do que como barra sem comparação |
+| Atendimentos ao longo do tempo | Linha, 2 séries, **um eixo** | Ambas contam leads; um segundo eixo Y tornaria a comparação visual mentirosa |
+| Distribuição pelo funil | Barras horizontais, rampa de um hue | Os rótulos são longos e comparar comprimentos é mais preciso que ângulos; as etapas têm ordem, então mais adiante é mais escuro — não cinco cores sem relação |
+
+**Eixo Y travado em zero.** Contagem não pode ser negativa. Sem travar o
+domínio, o Recharts estende o eixo para valores negativos e desenha a linha
+abaixo da base — descoberto ao olhar a tela renderizada, não nos testes.
+
+**A leitura nunca depende só de cor.** Cada barra do funil traz o número ao
+lado, a variação nos tiles vem com ▲/▼ além da cor, e a página inteira tem uma
+tabela com os mesmos dados.
 
 **O playground não usa Zustand.** Diferente de `useAgents`, o estado da conversa
 é local à página (`useChat`). Uma store global só criaria risco de a conversa de

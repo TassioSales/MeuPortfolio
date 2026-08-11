@@ -151,3 +151,48 @@ export interface MoveCardRequest {
   target_column_id: string;
   new_order: number;
 }
+
+// ========== Métricas ==========
+
+export interface MetricsSummary {
+  agent_id: string;
+  periodo: string;
+  atendimentos_totais: number;
+  taxa_qualificacao: number;
+  tempo_medio_resposta_seg: number;
+  leads_por_status: LeadDistribution;
+  timestamp: string;
+}
+
+export interface LeadDistribution {
+  novo: number;
+  em_qualificacao: number;
+  qualificado: number;
+  agendado: number;
+  arquivado: number;
+  total: number;
+}
+
+export interface ResponseTimeMetrics {
+  tempo_medio_seg: number;
+  p50_seg: number;
+  p95_seg: number;
+  min_seg: number;
+  max_seg: number;
+  total_trocas: number;
+  timestamp: string;
+}
+
+export interface TimeseriesPoint {
+  data: string;
+  atendimentos: number;
+  leads_qualificados: number;
+}
+
+export interface TimeseriesResponse {
+  agent_id: string;
+  dias: number;
+  pontos: TimeseriesPoint[];
+}
+
+export type MetricsPeriod = "day" | "week" | "month";

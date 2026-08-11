@@ -1,12 +1,12 @@
 """Metrics routes for dashboard data endpoints."""
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
-from datetime import datetime
-from typing import Optional
-from sqlalchemy import select
+from datetime import datetime, timedelta
+from typing import List, Optional
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db_session
-from app.db.models import Agent
+from app.db.models import Agent, Conversation, Lead
 from app.services.metrics_service import metrics_service
 from app.utils.auth_middleware import get_current_user
 from app.utils.logger import logger
@@ -393,4 +393,89 @@ async def get_kpis(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve KPIs",
+        )
+
+
+class TimeseriesPoint(BaseModel):
+    """One day of the time series."""
+    data: str
+    atendimentos: int
+    leads_qualificados: int
+
+
+class TimeseriesResponse(BaseModel):
+    """Daily series for the dashboard line chart."""
+    agent_id: str
+    dias: int
+    pontos: List[TimeseriesPoint]
+
+
+@router.get("/agents/{agent_id}/metrics/timeseries", response_model=TimeseriesResponse)
+async def get_metrics_timeseries(
+    agent_id: str,
+    dias: int = Query(14, ge=1, le=90),
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Daily counts of conversations and qualified leads.
+
+    Lê direto das tabelas transacionais, e não de `daily_stats`: a agregação
+    noturna pode não ter rodado ainda, e um gráfico com buracos seria pior que
+    uma query um pouco mais cara.
+
+    Dias sem movimento entram com zero, para a linha não pular datas.
+    """
+    try:
+        await _assert_agent_ownership(agent_id, user_id, db)
+
+        hoje = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        inicio = hoje - timedelta(days=dias - 1)
+
+        conversas = await db.execute(
+            select(
+                func.date(Conversation.data_inicio).label("dia"),
+                func.count(Conversation.id),
+            )
+            .where(
+                (Conversation.agent_id == agent_id)
+                & (Conversation.data_inicio >= inicio)
+            )
+            .group_by(func.date(Conversation.data_inicio))
+        )
+        por_dia = {str(dia): total for dia, total in conversas.all()}
+
+        qualificados = await db.execute(
+            select(func.date(Lead.data_criacao).label("dia"), func.count(Lead.id))
+            .select_from(Lead)
+            .join(Conversation, Lead.conversation_id == Conversation.id)
+            .where(
+                (Conversation.agent_id == agent_id)
+                & (Lead.data_criacao >= inicio)
+                & (Lead.status_funil == "qualificado")
+            )
+            .group_by(func.date(Lead.data_criacao))
+        )
+        qualificados_por_dia = {str(dia): total for dia, total in qualificados.all()}
+
+        pontos = []
+        for offset in range(dias):
+            dia = (inicio + timedelta(days=offset)).date().isoformat()
+            pontos.append(
+                TimeseriesPoint(
+                    data=dia,
+                    atendimentos=por_dia.get(dia, 0),
+                    leads_qualificados=qualificados_por_dia.get(dia, 0),
+                )
+            )
+
+        return TimeseriesResponse(agent_id=agent_id, dias=dias, pontos=pontos)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error building timeseries: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error building timeseries",
         )

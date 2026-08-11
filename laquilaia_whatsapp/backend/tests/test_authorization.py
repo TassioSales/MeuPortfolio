@@ -132,3 +132,47 @@ class TestOwnerAccessStillWorks:
         response = client.get("/api/v1/agents/nao-existe/kanban", headers=headers)
 
         assert response.status_code == 404
+
+
+class TestTimeseriesEndpoint:
+    """A série temporal alimenta o gráfico de linha do dashboard."""
+
+    def test_requires_authentication(self):
+        response = client.get("/api/v1/agents/qualquer/metrics/timeseries")
+
+        assert response.status_code in (401, 403)
+
+    def test_cannot_reach_another_users_agent(self):
+        owner = _register_and_login("ts-owner")
+        agent_id = _create_agent(owner)
+        intruder = _register_and_login("ts-intruder")
+
+        response = client.get(
+            f"/api/v1/agents/{agent_id}/metrics/timeseries", headers=intruder
+        )
+
+        assert response.status_code == 404
+
+    def test_returns_one_point_per_day_including_empty_days(self):
+        headers = _register_and_login("ts-shape")
+        agent_id = _create_agent(headers)
+
+        response = client.get(
+            f"/api/v1/agents/{agent_id}/metrics/timeseries?dias=7", headers=headers
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        # Dias sem movimento entram zerados, para a linha não pular datas.
+        assert len(body["pontos"]) == 7
+        assert all(p["atendimentos"] == 0 for p in body["pontos"])
+
+    def test_rejects_range_over_90_days(self):
+        headers = _register_and_login("ts-range")
+        agent_id = _create_agent(headers)
+
+        response = client.get(
+            f"/api/v1/agents/{agent_id}/metrics/timeseries?dias=200", headers=headers
+        )
+
+        assert response.status_code == 422

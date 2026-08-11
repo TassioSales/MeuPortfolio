@@ -38,7 +38,7 @@ const QUICK_LINKS: QuickLink[] = [
     title: "Métricas",
     description: "Taxa de qualificação, tempo de resposta e KPIs.",
     icon: "📈",
-    available: false,
+    available: true,
   },
 ];
 

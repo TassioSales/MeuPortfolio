@@ -21,6 +21,10 @@ def test_env_com_variaveis_de_outros_servicos_nao_derruba_o_boot(tmp_path, monke
         encoding="utf-8",
     )
     monkeypatch.chdir(tmp_path)
+    # Variável de ambiente vence o env_file no pydantic-settings, e a CI
+    # define SECRET_KEY. Sem limpar, o teste afirmaria sobre o ambiente do
+    # runner em vez do arquivo — passava na minha máquina e falhava lá.
+    monkeypatch.delenv("SECRET_KEY", raising=False)
 
     from app.config import Settings
 

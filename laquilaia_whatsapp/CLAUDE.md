@@ -124,6 +124,8 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Cliente de infra criado mas nunca conectado | `redis_client.connect()` não era chamado no lifespan: `self.redis` ficava `None`, todo cache estourava `AttributeError` e o `except` de cada método engolia. O Redis existia no compose e nunca foi usado |
 | `aclose()` no redis-py 5.0.0 | Só existe a partir do 5.0.1. Dentro de um `except Exception` vira "Redis indisponível" e os testes se pulam em silêncio |
 | Passar `user_id` opcional e esquecer de passá-lo | `get_rate_limit_status()` sem argumento lia o balde compartilhado e devolvia sempre zero |
+| `docker compose` sem `.env` | Não falha: substitui cada `${VAR}` por string vazia e sobe uma stack sem chave de API nem segredo de webhook. O aviso passa despercebido no meio do log |
+| Checar o binário e não o daemon | `where docker` passa com o Docker Desktop fechado; o erro só aparece depois, disfarçado de falha ao baixar imagem |
 | Mandar `temperature` para modelo novo | Sonnet 5, Opus 5 e Opus 4.7+ recusam parâmetro de amostragem com **400**. Com o default `claude-sonnet-5`, *nenhuma* chamada ao Claude podia dar certo. Ver `MODELOS_QUE_ACEITAM_TEMPERATURA` |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)

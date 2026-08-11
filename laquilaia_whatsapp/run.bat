@@ -22,12 +22,45 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-REM Check if docker-compose is available
-where docker-compose >nul 2>nul
+REM Check if docker compose is available.
+REM
+REM A checagem era `where docker-compose`, com hifen: um binario que este
+REM script nao usa em lugar nenhum. Onde o Docker moderno nao instala o shim
+REM de compatibilidade, ele mandava atualizar um Docker que ja estava certo.
+docker compose version >nul 2>nul
 if %errorlevel% neq 0 (
     echo.
-    echo [ERROR] docker-compose is not available
+    echo [ERROR] docker compose is not available
     echo Modern Docker includes docker compose. Please update Docker.
+    echo.
+    pause
+    exit /b 1
+)
+
+REM Check if the Docker daemon is actually running.
+REM
+REM Ter o binario nao quer dizer que o Docker Desktop esta no ar. Sem isto o
+REM erro so aparecia la embaixo, como falha ao baixar uma imagem qualquer.
+docker info >nul 2>nul
+if %errorlevel% neq 0 (
+    echo.
+    echo [ERROR] Docker is installed but the daemon is not responding
+    echo Start Docker Desktop and wait for the whale icon to stop animating,
+    echo then run this script again.
+    echo.
+    pause
+    exit /b 1
+)
+
+REM Check for .env.
+REM
+REM Sem ele o docker compose nao falha: substitui cada variavel por string
+REM vazia e sobe uma stack sem chave de API e sem segredo de webhook.
+if not exist .env (
+    echo.
+    echo [ERROR] .env not found
+    echo Run setup.bat first — it creates .env from .env.example.
+    echo Then fill in ANTHROPIC_API_KEY, EVOLUTION_API_KEY and WEBHOOK_SECRET.
     echo.
     pause
     exit /b 1

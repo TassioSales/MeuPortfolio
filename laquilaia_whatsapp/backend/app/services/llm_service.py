@@ -171,34 +171,29 @@ class LLMService:
         conversation_id: str,
         db: AsyncSession,
         limit: int = 10,
+        use_cache: bool = True,
     ) -> List[dict]:
         """
-        Retrieve conversation history from database.
+        Retrieve conversation history with Redis caching.
+
+        First tries memory service cache (Redis), then falls back to database.
+        Cache is automatically invalidated after TTL.
 
         Args:
             conversation_id: Conversation ID
             db: Database session
             limit: Maximum number of messages to retrieve
+            use_cache: Whether to use Redis cache (default True)
 
         Returns:
             List of conversation messages
         """
         try:
-            result = await db.execute(
-                select(Message)
-                .where(Message.conversation_id == conversation_id)
-                .order_by(Message.timestamp.desc())
-                .limit(limit)
+            from app.services.memory_service import memory_service
+
+            return await memory_service.get_conversation_history(
+                conversation_id, db, limit=limit, use_cache=use_cache
             )
-            messages = result.scalars().all()
-
-            # Reverse to get chronological order
-            messages.reverse()
-
-            return [
-                {"role": msg.remetente, "content": msg.conteudo}
-                for msg in messages
-            ]
         except Exception as e:
             logger.error(f"❌ Error retrieving conversation history: {e}")
             return []

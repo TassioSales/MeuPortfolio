@@ -22,6 +22,19 @@ from app.utils.logger import logger
 
 BASE_URL = "https://generativelanguage.googleapis.com/v1beta"
 
+# Folga somada ao `max_tokens` do agente ao falar com o Gemini.
+#
+# `maxOutputTokens` limita raciocínio **e** resposta no mesmo orçamento, e os
+# modelos da série 3 raciocinam sempre — `thinkingBudget: 0` é recusado com
+# 400. Medido contra a API real: uma saudação gasta ~120 tokens de raciocínio
+# e uma pergunta de qualificação de lead chegou a 565. Sem folga, um agente
+# com `max_tokens=256` recebe `finishReason: MAX_TOKENS` e uma frase cortada
+# no meio — foi o que aconteceu no primeiro teste de verdade.
+#
+# Somar em vez de fixar um piso preserva a intenção de quem configurou: a
+# resposta ainda pode usar os `max_tokens` pedidos, e o raciocínio sai daqui.
+FOLGA_DE_RACIOCINIO = 1024
+
 
 class GeminiIndisponivel(RuntimeError):
     """Gemini não está configurado, ou não devolveu uma resposta usável."""
@@ -117,7 +130,7 @@ class GeminiClient:
 
         config = {}
         if max_tokens is not None:
-            config["maxOutputTokens"] = max_tokens
+            config["maxOutputTokens"] = max_tokens + FOLGA_DE_RACIOCINIO
         if temperature is not None:
             # Ao contrário dos modelos novos do Claude, o Gemini aceita
             # `temperature` — quando ele responde, o valor do agente vale.
@@ -159,22 +172,40 @@ class GeminiClient:
             )
 
         primeiro = candidatos[0]
+        motivo = primeiro.get("finishReason")
         partes = (primeiro.get("content") or {}).get("parts") or []
+        # Nem toda parte tem texto: as da série 3 vêm com `thoughtSignature`
+        # ao lado, e uma parte só de assinatura não contribui nada.
         texto = "".join(parte.get("text", "") for parte in partes)
-
-        if not texto:
-            # Acontece quando o filtro de segurança corta a resposta: vem um
-            # candidato com finishReason e sem parts.
-            raise GeminiIndisponivel(
-                f"resposta sem texto (finishReason={primeiro.get('finishReason')})"
-            )
 
         uso = dados.get("usageMetadata") or {}
         entrada = uso.get("promptTokenCount", 0)
-        saida = uso.get("candidatesTokenCount", 0)
+        resposta = uso.get("candidatesTokenCount", 0)
+        raciocinio = uso.get("thoughtsTokenCount", 0)
 
+        if not texto:
+            if motivo == "MAX_TOKENS":
+                raise GeminiIndisponivel(
+                    f"o orçamento acabou antes da resposta: {raciocinio} tokens "
+                    "foram para o raciocínio. Aumente o max_tokens do agente"
+                )
+            # Sem texto e sem MAX_TOKENS é o filtro de segurança cortando.
+            raise GeminiIndisponivel(f"resposta sem texto (finishReason={motivo})")
+
+        if motivo == "MAX_TOKENS":
+            # Há texto, mas cortado no meio da frase. Não é erro — devolver
+            # meia resposta é melhor que nenhuma —, e sem aviso ninguém liga
+            # o "atendente que fala pela metade" ao limite de tokens.
+            logger.warning(
+                f"⚠️ Resposta do Gemini truncada por maxOutputTokens "
+                f"({raciocinio} tokens de raciocínio, {resposta} de resposta)"
+            )
+
+        # O raciocínio entra no total e é cobrado, então precisa entrar na
+        # conta do limitador. Some-o à saída para que entrada + saída bata com
+        # o total — senão o painel mostra três números que não fecham.
         return texto, {
             "input_tokens": entrada,
-            "output_tokens": saida,
-            "total_tokens": uso.get("totalTokenCount", entrada + saida),
+            "output_tokens": resposta + raciocinio,
+            "total_tokens": uso.get("totalTokenCount", entrada + resposta + raciocinio),
         }

@@ -62,6 +62,39 @@ com `httpx.MockTransport`.
 E, ao contrário dos modelos novos do Claude, **o Gemini aceita `temperature`** —
 quando ele responde, o valor do agente volta a valer.
 
+#### O raciocínio sai do mesmo orçamento da resposta
+
+`gemini-flash-latest` resolve hoje para `gemini-3.6-flash`, que raciocina antes
+de responder — e `maxOutputTokens` limita **raciocínio e resposta juntos**.
+Desligar não é opção: `thinkingConfig: {"thinkingBudget": 0}` é recusado com
+400.
+
+Medido contra a API real:
+
+| Pergunta | Raciocínio | Resposta |
+|---|---|---|
+| "Diga apenas: a integração funcionou" | ~120 tokens | 5 tokens |
+| Classificar um lead e justificar | **565 tokens** | 80 tokens |
+
+Com `max_tokens=256` cru, a primeira chamada de verdade voltou
+`finishReason: MAX_TOKENS` e a frase cortada em *"A integração funcion"* — 93
+dos 100 tokens tinham ido para o raciocínio.
+
+Por isso o cliente soma `FOLGA_DE_RACIOCINIO` (1024) ao `max_tokens` do agente
+antes de enviar. Somar, e não fixar um piso, preserva a intenção de quem
+configurou: a resposta ainda pode usar os tokens pedidos, e o raciocínio sai
+da folga.
+
+Duas consequências no relatório de uso:
+
+- **os tokens de raciocínio entram na conta** (`output_tokens` inclui
+  `thoughtsTokenCount`). Eles são cobrados; ignorá-los faria o limitador
+  contar 5 onde a API cobrou 174, e o painel mostraria três números que não
+  somam;
+- **texto truncado ainda é devolvido**, com `WARNING` no log. Meia resposta é
+  melhor que nenhuma — mas sem o aviso ninguém liga o "atendente que fala pela
+  metade" ao limite de tokens.
+
 ## 📋 Endpoints de Chat
 
 Todos os endpoints estão sob `/api/v1/agents/{agent_id}` e requerem autenticação Bearer token.

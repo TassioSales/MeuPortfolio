@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **274 testes no backend, 117 no frontend.**
+Estado atual: **278 testes no backend, 117 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -133,6 +133,8 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | `if cond set X=1 & shift` | O `&` separa a linha, não o `if`: o `shift` roda sempre. Quebrou `run.bat stop/logs/clean` |
 | Checar o binário e não o daemon | `where docker` passa com o Docker Desktop fechado; o erro só aparece depois, disfarçado de falha ao baixar imagem |
 | Mandar histórico no formato do Claude para o Gemini | Não dá erro: o papel é `model` e o texto vai em `parts`, então o turno é ignorado em silêncio e a resposta vem sem contexto |
+| `maxOutputTokens` do Gemini sem folga | O raciocínio da série 3 sai do mesmo orçamento e não é desligável (`thinkingBudget: 0` dá 400). Com 100 tokens, 93 foram pensar e a frase saiu cortada |
+| Ignorar `thoughtsTokenCount` | É cobrado e entra no total: o limitador contaria 5 onde a API cobrou 174 |
 | Relançar o erro da reserva no lugar do erro do principal | "GEMINI_API_KEY inválida" quando a causa é um 529 da Anthropic manda investigar o lado errado |
 | Mandar `temperature` para modelo novo | Sonnet 5, Opus 5 e Opus 4.7+ recusam parâmetro de amostragem com **400**. Com o default `claude-sonnet-5`, *nenhuma* chamada ao Claude podia dar certo. Ver `MODELOS_QUE_ACEITAM_TEMPERATURA` |
 

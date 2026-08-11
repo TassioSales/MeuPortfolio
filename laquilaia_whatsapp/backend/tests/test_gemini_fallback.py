@@ -14,7 +14,11 @@ from anthropic import APIConnectionError, APIError, RateLimitError
 
 from app.config import settings
 from app.db.models import Agent
-from app.services.gemini_client import GeminiClient, GeminiIndisponivel
+from app.services.gemini_client import (
+    FOLGA_DE_RACIOCINIO,
+    GeminiClient,
+    GeminiIndisponivel,
+)
 from app.services.llm_service import LLMService
 from app.utils.exceptions import ValidationException
 
@@ -101,7 +105,9 @@ class TestFormatoDaRequisicao:
         )
 
         config = registrado["body"]["generationConfig"]
-        assert config["maxOutputTokens"] == 512
+        # O orçamento é compartilhado com o raciocínio, então vai com folga —
+        # ver FOLGA_DE_RACIOCINIO.
+        assert config["maxOutputTokens"] == 512 + FOLGA_DE_RACIOCINIO
         # Diferente do Claude novo, aqui a temperatura vale.
         assert config["temperature"] == 0.9
 
@@ -144,6 +150,110 @@ class TestLeituraDaResposta:
             await cliente.generate(system_prompt=None, user_message="Oi")
         assert "400" in str(exc.value)
         assert "API key not valid" in str(exc.value)
+
+    async def test_raciocinio_entra_na_conta_de_tokens(self):
+        """
+        Os números são de uma resposta real do gemini-3.6-flash.
+
+        `candidatesTokenCount` conta só o texto; o raciocínio vem à parte e é
+        cobrado. Ignorá-lo faria o limitador contar 5 tokens onde a API cobrou
+        174, e o painel mostraria três números que não somam.
+        """
+        transporte, _ = _captura(
+            {
+                "candidates": [
+                    {
+                        "content": {"parts": [{"text": "A integração funcionou."}]},
+                        "finishReason": "STOP",
+                    }
+                ],
+                "usageMetadata": {
+                    "promptTokenCount": 23,
+                    "candidatesTokenCount": 5,
+                    "thoughtsTokenCount": 146,
+                    "totalTokenCount": 174,
+                },
+            }
+        )
+        cliente = GeminiClient(api_key="k", transport=transporte)
+
+        _, uso = await cliente.generate(system_prompt=None, user_message="Oi")
+
+        assert uso["input_tokens"] + uso["output_tokens"] == uso["total_tokens"]
+        assert uso["total_tokens"] == 174
+
+    async def test_orcamento_consumido_pelo_raciocinio_diz_o_que_fazer(self):
+        """Candidato sem texto e com MAX_TOKENS: o raciocínio comeu tudo."""
+        transporte, _ = _captura(
+            {
+                "candidates": [{"finishReason": "MAX_TOKENS", "content": {}}],
+                "usageMetadata": {
+                    "promptTokenCount": 23,
+                    "candidatesTokenCount": 0,
+                    "thoughtsTokenCount": 44,
+                    "totalTokenCount": 67,
+                },
+            }
+        )
+        cliente = GeminiClient(api_key="k", transport=transporte)
+
+        with pytest.raises(GeminiIndisponivel) as exc:
+            await cliente.generate(system_prompt=None, user_message="Oi")
+        assert "raciocínio" in str(exc.value)
+        assert "max_tokens" in str(exc.value)
+
+    async def test_texto_truncado_ainda_e_devolvido(self):
+        """
+        Meia resposta é melhor que nenhuma — mas com aviso.
+
+        Este corpo é o da primeira chamada real que fizemos: a frase saiu
+        cortada em "A integração funcion".
+        """
+        transporte, _ = _captura(
+            {
+                "candidates": [
+                    {
+                        "content": {"parts": [{"text": "A integração funcion"}]},
+                        "finishReason": "MAX_TOKENS",
+                    }
+                ],
+                "usageMetadata": {
+                    "promptTokenCount": 23,
+                    "candidatesTokenCount": 3,
+                    "thoughtsTokenCount": 93,
+                    "totalTokenCount": 119,
+                },
+            }
+        )
+        cliente = GeminiClient(api_key="k", transport=transporte)
+
+        texto, uso = await cliente.generate(system_prompt=None, user_message="Oi")
+
+        assert texto == "A integração funcion"
+        assert uso["total_tokens"] == 119
+
+    async def test_parte_so_com_assinatura_nao_quebra(self):
+        """A série 3 manda `thoughtSignature` junto; parte sem `text` é normal."""
+        transporte, _ = _captura(
+            {
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [
+                                {"thoughtSignature": "EtYDCtMD..."},
+                                {"text": "Resposta."},
+                            ]
+                        },
+                        "finishReason": "STOP",
+                    }
+                ],
+                "usageMetadata": {"promptTokenCount": 1, "candidatesTokenCount": 2},
+            }
+        )
+        cliente = GeminiClient(api_key="k", transport=transporte)
+
+        texto, _ = await cliente.generate(system_prompt=None, user_message="Oi")
+        assert texto == "Resposta."
 
     async def test_sem_chave_nao_faz_requisicao(self):
         cliente = GeminiClient(api_key="")

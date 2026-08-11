@@ -1,4 +1,4 @@
-# Guia do Frontend — Fases 10 a 14
+# Guia do Frontend — Fases 10 a 15
 
 Painel web da L'Aquila AI: Next.js 14 (App Router) + TypeScript + TailwindCSS.
 
@@ -7,6 +7,7 @@ Painel web da L'Aquila AI: Next.js 14 (App Router) + TypeScript + TailwindCSS.
 - **Fase 12** — chat de teste (playground) com histórico e reset.
 - **Fase 13** — Kanban CRM com arrastar e soltar.
 - **Fase 14** — dashboard de métricas com gráficos.
+- **Fase 15** — atualizações em tempo real por WebSocket.
 
 ---
 
@@ -99,7 +100,8 @@ frontend/
 │   ├── useAgents.ts            # Store Zustand do CRUD de agentes
 │   ├── useChat.ts              # Estado local da conversa de teste
 │   ├── useKanban.ts            # Board + movimentação otimista
-│   └── useMetrics.ts           # Resumo, tempo de resposta e série diária
+│   ├── useMetrics.ts           # Resumo, tempo de resposta e série diária
+│   └── useAgentEvents.ts       # WebSocket com reconexão (Fase 15)
 ├── lib/
 │   ├── api.ts                  # Cliente HTTP com refresh automático
 │   ├── auth.ts                 # login / register / logout / getCurrentUser
@@ -111,7 +113,7 @@ frontend/
 │   ├── tokens.ts               # Leitura/escrita dos cookies
 │   └── utils.ts                # cn() — merge de classes Tailwind
 ├── types/index.ts              # Tipos espelhando os schemas do backend
-├── __tests__/                  # 89 testes
+├── __tests__/                  # 101 testes
 ├── middleware.ts               # Proteção de rotas no edge
 └── Dockerfile                  # Imagem de desenvolvimento
 ```
@@ -204,6 +206,31 @@ A conversa do playground fica separada das reais pelo telefone reservado
 > unicidade só na data. Como o job de agregação grava uma linha por agente e por
 > dia, o segundo agente estouraria chave duplicada toda noite. Passou a ser
 > `(data, agent_id)`.
+
+### Tempo real (Fase 15)
+
+`WS /ws/agents/{agent_id}?token=<jwt>` — um canal por agente.
+
+| Evento | Campos | Quando |
+|---|---|---|
+| `lead_moved` | `lead_id`, `column_id`, `status_funil` | Card movido no Kanban ou lead requalificado pelo agente |
+| `new_message` | `conversation_id`, `phone_number` | Mensagem processada vinda do WhatsApp |
+
+> **Duas falhas corrigidas no WebSocket.** A versão anterior:
+>
+> 1. **Não tinha autenticação** — qualquer conexão anônima entrava em qualquer
+>    canal, como acontecia nos routers de Kanban e métricas.
+> 2. **Retransmitia o que o cliente enviava.** Uma conexão qualquer podia
+>    injetar conteúdo falso no painel de todo mundo no mesmo canal.
+>
+> Agora o token vai na query (o navegador não permite cabeçalhos ao abrir um
+> WebSocket), a conexão é recusada **antes do `accept()`** se o token faltar,
+> for inválido ou o agente não for do usuário, e o canal é só de saída — o que
+> o cliente manda é descartado.
+
+O evento de mensagem **não carrega o conteúdo**: quem precisa dele busca pela
+API, que aplica a checagem de dono. Assim o socket não vira um caminho paralelo
+para ler conversa alheia.
 
 > **Duas correções no backend nesta fase.**
 >
@@ -300,7 +327,7 @@ No Windows: `run.bat`.
 cd frontend && npm test
 ```
 
-**89 testes, 9 suítes:**
+**101 testes, 10 suítes:**
 
 | Suíte | Testes | Cobre |
 |---|---|---|
@@ -313,6 +340,7 @@ cd frontend && npm test
 | `__tests__/ChatPlayground.test.tsx` | 10 | Estado vazio, carga de histórico, envio, tokens, continuidade da conversa, reset, recuperação de erro |
 | `__tests__/kanban.test.tsx` | 11 | Verbos da API, criação das colunas padrão, movimentação otimista, rollback quando o backend recusa, render do board |
 | `__tests__/metrics.test.tsx` | 15 | Verbos e query params, carga paralela das três chamadas, janela por período, render do funil e dos tiles, formatação |
+| `__tests__/agentEvents.test.tsx` | 12 | URL e token na query, entrega do evento, frame malformado, reconexão com espera crescente, desistência no 1008, limpeza ao desmontar |
 
 `middleware.test.ts` roda com `@jest-environment node` porque `next/server`
 depende dos globais `Request`/`Response`, que o jsdom não implementa — é o mesmo
@@ -372,6 +400,15 @@ abaixo da base — descoberto ao olhar a tela renderizada, não nos testes.
 **A leitura nunca depende só de cor.** Cada barra do funil traz o número ao
 lado, a variação nos tiles vem com ▲/▼ além da cor, e a página inteira tem uma
 tabela com os mesmos dados.
+
+**O evento recarrega o board, não o remenda.** Ao receber `lead_moved`, o
+Kanban refaz a leitura em vez de aplicar a mudança na mão: o evento diz o que
+mudou, não o estado final de todas as colunas, e refazer a leitura evita
+divergir do backend.
+
+**Reconexão com espera crescente**, com teto de 30s. A exceção é o código 1008
+(recusa por autorização): insistir só repetiria a recusa, então o cliente
+desiste e mostra o aviso de "sem conexão em tempo real".
 
 **O playground não usa Zustand.** Diferente de `useAgents`, o estado da conversa
 é local à página (`useChat`). Uma store global só criaria risco de a conversa de

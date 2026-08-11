@@ -5,6 +5,7 @@ from app.services.llm_service import llm_service
 from app.services.whatsapp_service import whatsapp_service
 from app.services.lead_processor import lead_processor
 from app.utils.logger import logger
+from app.ws.manager import notify_new_message
 from app.utils.exceptions import NotFoundException, ValidationException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -106,6 +107,10 @@ class MessageOrchestrator:
                 f"✅ Messages saved for conversation {conversation.id} "
                 f"(tokens: {token_usage['total_tokens']})"
             )
+
+            # Avisa o painel depois do commit — antes dele o evento poderia
+            # anunciar uma mensagem que a transação ainda vai desfazer.
+            await notify_new_message(agent_id, conversation.id, phone_number)
 
             # Step 7: Process lead qualification (extract JSON if present)
             lead_result = await lead_processor.process_response(

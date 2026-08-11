@@ -30,6 +30,7 @@ start "" /B cmd /C "timeout /t 2 >nul && start http://localhost:8504"
 echo.
 echo  ==========================================
 echo   Acesso:  http://localhost:8504
+
 echo  ==========================================
 echo.
 echo   Usuarios:
@@ -41,3 +42,4 @@ echo   Pressione Ctrl+C para encerrar.
 echo.
 
 python run.py
+

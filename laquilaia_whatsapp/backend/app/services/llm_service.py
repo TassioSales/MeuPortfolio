@@ -6,6 +6,7 @@ from app.config import settings
 from app.utils.logger import logger
 from app.utils.exceptions import ValidationException
 from app.services.rate_limiter import RateLimiter
+from app.services.gemini_client import GeminiClient, GeminiIndisponivel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.db.models import Agent, Message, Conversation
@@ -44,6 +45,9 @@ class LLMService:
         """Initialize LLM service with Anthropic client."""
         self.client = Anthropic(api_key=settings.anthropic_api_key)
         self.model = settings.claude_model
+        # Reserva. Sem GEMINI_API_KEY ele fica inerte e o erro do Claude sobe
+        # como sempre subiu.
+        self.gemini = GeminiClient()
         # Um balde por conta, guardado no Redis para valer entre réplicas.
         # Ver `rate_limiter.py` para a janela e o comportamento sem Redis.
         self.rate_limiter = RateLimiter(
@@ -91,6 +95,80 @@ class LLMService:
 
         return params
 
+    def _tentar_claude_primeiro(self) -> bool:
+        """
+        Se vale a pena chamar o Claude antes da reserva.
+
+        Sem chave da Anthropic, chamar mesmo assim é um 401 garantido por
+        mensagem — latência e log de erro em troca de nada. Só pulamos o
+        Claude quando há reserva configurada para assumir; sem ela, a chamada
+        segue e o erro de autenticação sobe, que é o diagnóstico correto.
+        """
+        if settings.anthropic_api_key:
+            return True
+        return not self.gemini.configured
+
+    def _chamar_claude(self, agent: Agent, messages: List[dict]) -> Tuple[str, dict]:
+        response = self.client.messages.create(
+            model=self.model,
+            system=agent.system_prompt,
+            messages=messages,
+            **self._parametros_do_modelo(agent),
+        )
+
+        entrada = response.usage.input_tokens
+        saida = response.usage.output_tokens
+
+        return response.content[0].text, {
+            "input_tokens": entrada,
+            "output_tokens": saida,
+            "total_tokens": entrada + saida,
+            "model": self.model,
+        }
+
+    async def _chamar_reserva(
+        self,
+        agent: Agent,
+        user_message: str,
+        conversation_history: Optional[List[dict]],
+        causa: Optional[Exception],
+    ) -> Tuple[str, dict]:
+        """
+        Tenta o provedor de reserva.
+
+        Se a reserva não estiver configurada ou também falhar, relança a falha
+        original do Claude — nunca a da reserva. Quem lê o log precisa saber
+        que o provedor principal caiu; "GEMINI_API_KEY não configurada" no
+        lugar de um 529 da Anthropic manda investigar o problema errado.
+        """
+        if not self.gemini.configured:
+            if causa is not None:
+                raise causa
+            raise ValidationException(
+                "Nenhum provedor de LLM configurado: defina ANTHROPIC_API_KEY "
+                "ou GEMINI_API_KEY."
+            )
+
+        if causa is not None:
+            logger.warning(f"⚠️ Claude falhou ({causa}); tentando o Gemini")
+
+        try:
+            texto, uso = await self.gemini.generate(
+                system_prompt=agent.system_prompt,
+                user_message=user_message,
+                conversation_history=conversation_history,
+                max_tokens=agent.max_tokens or settings.max_tokens,
+                temperature=agent.temperatura or settings.temperature,
+            )
+        except GeminiIndisponivel as e:
+            logger.error(f"❌ A reserva também falhou: {e}")
+            if causa is not None:
+                raise causa
+            raise ValidationException(f"Erro no provedor de reserva: {e}")
+
+        uso["model"] = self.gemini.model
+        return texto, uso
+
     async def generate_response(
         self,
         agent: Agent,
@@ -118,28 +196,26 @@ class LLMService:
             # Build messages array
             messages = self._build_messages(conversation_history, user_message)
 
-            # Call Claude API
-            response = self.client.messages.create(
-                model=self.model,
-                system=agent.system_prompt,
-                messages=messages,
-                **self._parametros_do_modelo(agent),
-            )
-
-            # Extract response and token usage
-            response_text = response.content[0].text
-            token_usage = {
-                "input_tokens": response.usage.input_tokens,
-                "output_tokens": response.usage.output_tokens,
-                "total_tokens": response.usage.input_tokens + response.usage.output_tokens,
-            }
+            if self._tentar_claude_primeiro():
+                try:
+                    response_text, token_usage = self._chamar_claude(agent, messages)
+                except (RateLimitError, APIConnectionError, APIError) as e:
+                    # A reserva devolve a falha original se não puder assumir,
+                    # para o tratamento lá embaixo continuar valendo.
+                    response_text, token_usage = await self._chamar_reserva(
+                        agent, user_message, conversation_history, causa=e
+                    )
+            else:
+                response_text, token_usage = await self._chamar_reserva(
+                    agent, user_message, conversation_history, causa=None
+                )
 
             # Track usage
             await self._track_usage(token_usage["total_tokens"], agent.user_id)
 
             logger.info(
-                f"✅ Claude response generated for agent {agent.id} "
-                f"(tokens: {token_usage['total_tokens']})"
+                f"✅ Resposta gerada para o agente {agent.id} por "
+                f"{token_usage['model']} (tokens: {token_usage['total_tokens']})"
             )
 
             return response_text, token_usage

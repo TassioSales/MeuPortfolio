@@ -55,6 +55,10 @@ services:
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       CLAUDE_MODEL: ${CLAUDE_MODEL:-claude-sonnet-5}
+      # Provedor de reserva. Sem repasse, o container não enxerga a chave e a
+      # reserva fica desligada sem ninguém perceber.
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-flash-latest}
       TEMPERATURE: ${TEMPERATURE:-0.7}
       MAX_TOKENS: ${MAX_TOKENS:-1024}
       LLM_MAX_CALLS_PER_MINUTE: ${LLM_MAX_CALLS_PER_MINUTE:-60}

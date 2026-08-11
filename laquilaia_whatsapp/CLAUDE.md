@@ -5,7 +5,8 @@ Orientações para trabalhar neste projeto. Leia antes de mexer no código.
 Plataforma SaaS de agentes de IA no WhatsApp: qualificação automática de leads,
 CRM Kanban e dashboard de métricas.
 
-**Stack:** FastAPI + SQLAlchemy 2.x async + PostgreSQL + Redis + Anthropic SDK ·
+**Stack:** FastAPI + SQLAlchemy 2.x async + PostgreSQL + Redis + Anthropic SDK
+(com Gemini de reserva) ·
 Next.js 14 (App Router) + TypeScript + TailwindCSS + Zustand · Evolution API.
 
 ---
@@ -35,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **259 testes no backend, 117 no frontend.**
+Estado atual: **274 testes no backend, 117 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -48,7 +49,8 @@ falha — na CI o serviço existe, então um pulo significa conexão quebrada.
 ```
 backend/app/
   routers/     auth, agents, chat (+conversations), webhook, kanban, metrics
-  services/    llm, rate_limiter, memory, whatsapp, lead_processor, message_orchestrator, metrics, agent, auth
+  services/    llm (+ gemini_client, reserva), rate_limiter, memory, whatsapp,
+               lead_processor, message_orchestrator, metrics, agent, auth
   db/          models.py (SQLAlchemy), database.py, redis_client.py
   ws/          manager.py — canal de tempo real por agente
   jobs/        metrics_aggregator.py (APScheduler)
@@ -130,6 +132,8 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | `%errorlevel%` dentro de bloco `( )` | O bloco é expandido inteiro antes de executar: traz o valor de *antes* do comando. Use `!errorlevel!` com `enabledelayedexpansion` |
 | `if cond set X=1 & shift` | O `&` separa a linha, não o `if`: o `shift` roda sempre. Quebrou `run.bat stop/logs/clean` |
 | Checar o binário e não o daemon | `where docker` passa com o Docker Desktop fechado; o erro só aparece depois, disfarçado de falha ao baixar imagem |
+| Mandar histórico no formato do Claude para o Gemini | Não dá erro: o papel é `model` e o texto vai em `parts`, então o turno é ignorado em silêncio e a resposta vem sem contexto |
+| Relançar o erro da reserva no lugar do erro do principal | "GEMINI_API_KEY inválida" quando a causa é um 529 da Anthropic manda investigar o lado errado |
 | Mandar `temperature` para modelo novo | Sonnet 5, Opus 5 e Opus 4.7+ recusam parâmetro de amostragem com **400**. Com o default `claude-sonnet-5`, *nenhuma* chamada ao Claude podia dar certo. Ver `MODELOS_QUE_ACEITAM_TEMPERATURA` |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)

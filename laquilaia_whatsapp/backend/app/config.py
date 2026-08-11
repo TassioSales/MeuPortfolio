@@ -33,6 +33,11 @@ class Settings(BaseSettings):
     llm_max_tokens_per_minute: int = int(os.getenv("LLM_MAX_TOKENS_PER_MINUTE", "40000"))
     llm_max_calls_per_minute: int = int(os.getenv("LLM_MAX_CALLS_PER_MINUTE", "60"))
 
+    # Provedor de reserva (Gemini). Vazio desliga a reserva: o erro do Claude
+    # sobe como antes, em vez de virar uma resposta de outro modelo em silêncio.
+    gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
+    gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
+
     # WhatsApp / Evolution API
     evolution_api_url: str = os.getenv("EVOLUTION_API_URL", "http://evolution:4000")
     evolution_api_key: str = os.getenv("EVOLUTION_API_KEY", "")

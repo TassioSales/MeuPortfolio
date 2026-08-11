@@ -24,6 +24,44 @@ editável no formulário, mas **é inerte enquanto o modelo for o default**.
 Aponte `CLAUDE_MODEL` para uma família que aceite (`claude-sonnet-4-6`,
 `claude-haiku-4-5`, `claude-3-*`) se precisar dele. `max_tokens` vai sempre.
 
+### Provedor de reserva: Gemini
+
+`GEMINI_API_KEY` liga uma reserva. A ordem é:
+
+| Situação | Quem responde |
+|---|---|
+| As duas chaves configuradas | Claude; o Gemini assume se ele falhar |
+| Só `GEMINI_API_KEY` | Gemini, direto — o Claude nem é chamado |
+| Só `ANTHROPIC_API_KEY` | Claude; erro sobe como sempre subiu |
+| Nenhuma | `ValidationException` dizendo qual variável falta |
+
+Sem chave da Anthropic o Claude é **pulado de propósito**: chamá-lo seria um
+401 garantido por mensagem, latência e log de erro em troca de nada. Mas o
+pulo só acontece havendo reserva — sem ela a chamada segue e o erro de
+autenticação sobe, que é o diagnóstico correto.
+
+**O erro que sobe é sempre o do provedor principal.** Se o Claude cai e o
+Gemini também, quem aparece no log é o Claude: ver "GEMINI_API_KEY inválida"
+quando o problema é um 529 da Anthropic manda investigar o lado errado.
+
+A queda é registrada com `WARNING` e a resposta da API informa o modelo que de
+fato respondeu, no campo `model` — não o que está configurado. O painel mostra
+esse valor.
+
+O cliente é HTTP direto (`app/services/gemini_client.py`), sem o SDK
+`google-generativeai`: o backend já carrega `httpx` pinado em 0.25.0, e trazer
+outro SDK significaria mais um pacote com faixa própria de httpx para
+conciliar, em troca de um POST e um parse de JSON.
+
+Dois detalhes de formato que não dão erro quando errados — só respostas piores:
+o papel do assistente no Gemini é `model`, não `assistant`, e o texto vai em
+`parts`, não em `content`. Mandar no formato do Claude faz o Gemini ignorar o
+turno e responder sem contexto. Por isso os testes conferem o corpo HTTP real,
+com `httpx.MockTransport`.
+
+E, ao contrário dos modelos novos do Claude, **o Gemini aceita `temperature`** —
+quando ele responde, o valor do agente volta a valer.
+
 ## 📋 Endpoints de Chat
 
 Todos os endpoints estão sob `/api/v1/agents/{agent_id}` e requerem autenticação Bearer token.

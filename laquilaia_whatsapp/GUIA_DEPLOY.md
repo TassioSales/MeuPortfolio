@@ -180,5 +180,6 @@ fazer isso pelo painel — hoje só via API.
 Com a conversa pausada a mensagem do cliente **continua sendo registrada** — o
 operador precisa vê-la; o que para é a resposta automática.
 
-**Sem rate limiting por usuário na API.** O `llm_service` limita chamadas ao
-Claude no processo inteiro, não por conta.
+**Rate limiting em memória.** Já é por conta (`agent.user_id`), mas os
+contadores vivem no processo: com mais de uma réplica do backend, cada uma tem
+seu próprio balde. Mover para o Redis resolveria.

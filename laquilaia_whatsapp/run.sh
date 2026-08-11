@@ -30,6 +30,27 @@ if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/
     exit 1
 fi
 
+# Ter o binário não quer dizer que o daemon está no ar. Sem esta checagem o
+# erro só aparecia lá embaixo, disfarçado de falha ao baixar uma imagem.
+if ! docker info &> /dev/null; then
+    echo ""
+    echo "[ERROR] Docker is installed but the daemon is not responding"
+    echo "Start Docker (or Docker Desktop) and run this script again."
+    echo ""
+    exit 1
+fi
+
+# Sem .env o docker compose não falha: substitui cada variável por string
+# vazia e sobe uma stack sem chave de API e sem segredo de webhook.
+if [ ! -f .env ]; then
+    echo ""
+    echo "[ERROR] .env not found"
+    echo "Run ./setup.sh first — it creates .env from .env.example."
+    echo "Then fill in ANTHROPIC_API_KEY, EVOLUTION_API_KEY and WEBHOOK_SECRET."
+    echo ""
+    exit 1
+fi
+
 # Parse command line arguments
 MODE="dev"
 

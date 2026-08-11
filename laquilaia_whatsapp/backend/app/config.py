@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     # Redis
     redis_url: str = os.getenv("REDIS_URL", "redis://localhost:6379")
     redis_cache_ttl: int = int(os.getenv("REDIS_CACHE_TTL", "3600"))
+    metrics_cache_ttl: int = int(os.getenv("METRICS_CACHE_TTL", "900"))
 
     # Security
     secret_key: str = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")

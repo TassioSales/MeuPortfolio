@@ -14,7 +14,7 @@ pydantic==2.5.0
 pydantic-settings==2.1.0
 
 # Authentication & Security
-pyjwt==2.8.1
+pyjwt==2.8.0
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.1.1
@@ -33,9 +33,10 @@ requests==2.31.0
 # Logging
 loguru==0.7.2
 
-# Async
+# Async & Scheduling
 asyncio==3.4.3
 aiofiles==23.2.1
+apscheduler==3.10.4
 
 # Environment
 python-dotenv==1.0.0
@@ -44,7 +45,6 @@ python-dotenv==1.0.0
 pytest==7.4.3
 pytest-asyncio==0.21.1
 pytest-cov==4.1.0
-httpx-mock==0.3.1
 
 # Utilities
 python-dateutil==2.8.2

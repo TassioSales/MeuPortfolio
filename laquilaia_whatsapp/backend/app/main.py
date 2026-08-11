@@ -7,7 +7,9 @@ import os
 
 from app.config import settings
 from app.db.database import init_db, close_db
-from app.routers import auth, agents, chat, webhook, kanban
+from app.routers import auth, agents, chat, webhook, kanban, metrics
+from app.jobs.metrics_aggregator import MetricsAggregator
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 # Configure logger
 logger.remove()
@@ -43,7 +45,45 @@ async def lifespan(app: FastAPI):
         logger.error(f"❌ Database initialization failed: {e}")
         raise
 
+    # Initialize metrics scheduler
+    scheduler = AsyncIOScheduler()
+    aggregator = MetricsAggregator()
+
+    try:
+        scheduler.add_job(
+            aggregator.aggregate_hourly_metrics,
+            "interval",
+            hours=1,
+            id="metrics_hourly",
+            misfire_grace_time=600,  # Tolerate up to 10 min delay
+        )
+        scheduler.add_job(
+            aggregator.aggregate_daily_stats,
+            "cron",
+            hour=0,
+            minute=0,  # 00:00 UTC
+            id="metrics_daily",
+        )
+        scheduler.add_job(
+            aggregator.cleanup_old_cache,
+            "cron",
+            hour=2,
+            minute=0,  # 02:00 UTC nightly
+            id="metrics_cleanup",
+        )
+        scheduler.start()
+        logger.info("✅ Metrics scheduler started (hourly, daily, cleanup jobs)")
+    except Exception as e:
+        logger.error(f"❌ Failed to start metrics scheduler: {e}")
+        raise
+
     yield
+
+    try:
+        scheduler.shutdown()
+        logger.info("🛑 Metrics scheduler stopped")
+    except Exception as e:
+        logger.error(f"⚠️ Error stopping scheduler: {e}")
 
     logger.info("🛑 Shutting down L'Aquila AI Backend")
     await close_db()
@@ -141,6 +181,7 @@ app.include_router(agents.router)
 app.include_router(chat.router)
 app.include_router(webhook.router)
 app.include_router(kanban.router)
+app.include_router(metrics.router)
 
 
 # ========== WEBSOCKET ENDPOINTS ==========

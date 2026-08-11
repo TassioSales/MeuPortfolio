@@ -206,21 +206,32 @@ laquilaia_whatsapp/
 - [x] .env.example com 40+ variáveis documentadas
 - [x] Documentação: GUIA_MEMORY_SERVICE.md
 
-**Próximo:** Fase 7 - Lead Processing (Function Calling)
+### Fase 7: ✅ Lead Processing com Function Calling (COMPLETA)
+- [x] LeadProcessor com extração de JSON
+- [x] Validação de schema de qualificação
+- [x] Criação automática de Lead no DB
+- [x] Rastreamento em LeadTimeline
+- [x] Movimentação automática em Kanban
+- [x] 20+ testes de qualificação
+- [x] Integração no Message Orchestrator
+- [x] Documentação: GUIA_LEAD_PROCESSING.md
 
-### Fase 7: Lead Processing (TODO)
-- [ ] Parser JSON de respostas Claude
-- [ ] Extração de dados de qualificação
-- [ ] Movimentação automática em Kanban
+### Fase 8: ✅ Kanban CRM Backend (COMPLETA)
+- [x] CRUD completo de leads via Kanban
+- [x] 5 endpoints REST (board, move, columns, init, stats)
+- [x] 5 colunas padrão (Novo, Qualificação, Qualificado, Agendado, Arquivado)
+- [x] Movimentação entre colunas com atualização de status
+- [x] Timeline de mudanças para auditoria
+- [x] Estatísticas e métricas por coluna
+- [x] 15+ testes de board e movimentação
+- [x] Documentação: GUIA_KANBAN.md
 
-### Fase 8: Kanban CRM Backend (TODO)
-- [ ] CRUD de leads
-- [ ] Movimentação entre colunas
-- [ ] Timeline de mudanças
+**Próximo:** Fase 9 - Dashboard de Métricas
 
 ### Fase 9: Dashboard de Métricas (TODO)
-- [ ] Endpoints para dados de gráficos
-- [ ] Agregações de uso
+- [ ] Endpoints para gráficos
+- [ ] Taxa de qualificação por período
+- [ ] Tempo médio no funnel
 - [ ] KPIs de performance
 
 **... (Fases 10-17: Frontend, WebSocket, Deploy)**
@@ -300,10 +311,12 @@ kill -9 <PID>  # Termine o processo
 
 ## 📚 Documentação
 
-### Guias Principais
-- **GUIA_WEBHOOK.md** - Integração Evolution API & Webhook WhatsApp (Fase 5)
+### Guias Principais (Fases 4-8)
 - **GUIA_LLM.md** - Integração Claude LLM & Chat Endpoints (Fase 4)
+- **GUIA_WEBHOOK.md** - Integração Evolution API & Webhook WhatsApp (Fase 5)
 - **GUIA_MEMORY_SERVICE.md** - Memory Service & Cache Redis (Fase 6)
+- **GUIA_LEAD_PROCESSING.md** - Qualificação de Leads com JSON (Fase 7)
+- **GUIA_KANBAN.md** - CRM Kanban com Drag-and-Drop Backend (Fase 8)
 
 ### Referência Técnica
 - **Plano Geral:** Ver `/root/.claude/plans/preciso-que-me-explique-deep-duckling.md`

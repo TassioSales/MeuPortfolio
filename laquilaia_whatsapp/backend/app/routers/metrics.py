@@ -139,6 +139,10 @@ async def get_metrics_summary(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except ValidationException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error getting metrics summary: {e}")
         raise HTTPException(
@@ -179,6 +183,10 @@ async def get_period_stats(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agent not found")
     except ValidationException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error getting period stats: {e}")
         raise HTTPException(
@@ -215,6 +223,10 @@ async def get_qualification_metrics(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agent not found")
     except ValidationException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error getting qualification metrics: {e}")
         raise HTTPException(
@@ -253,6 +265,10 @@ async def get_response_time_metrics(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agent not found")
     except ValidationException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error getting response time: {e}")
         raise HTTPException(
@@ -287,6 +303,10 @@ async def get_lead_distribution(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agent not found")
     except ValidationException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error getting lead distribution: {e}")
         raise HTTPException(
@@ -323,6 +343,10 @@ async def get_kpis(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agent not found")
     except ValidationException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error getting KPIs: {e}")
         raise HTTPException(

@@ -51,7 +51,7 @@ model Agent {
   nome                  String
   descricao             String?
   system_prompt         String      @db.Text
-  modelo                String      @default("claude-3-5-sonnet-20241022")
+  modelo                String      @default("claude-sonnet-5")
   temperatura           Float       @default(0.7)
   max_tokens            Int         @default(1024)
   status                String      @default("ativo") // ativo, inativo, em_teste

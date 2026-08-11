@@ -28,6 +28,10 @@ async def create_agent(
     except ValidationException as e:
         logger.warning(f"⚠️ Validation error: {e.detail}")
         raise
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error creating agent: {e}")
         raise HTTPException(
@@ -47,6 +51,10 @@ async def get_agent(
         return await agent_service.get_agent(agent_id, user_id, db)
     except NotFoundException as e:
         logger.warning(f"⚠️ {e.detail}")
+        raise
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
         raise
     except Exception as e:
         logger.error(f"❌ Error getting agent: {e}")
@@ -71,6 +79,10 @@ async def list_agents(
         return await agent_service.list_agents(
             user_id, db, skip=skip, limit=limit, status=status_filter
         )
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error listing agents: {e}")
         raise HTTPException(
@@ -95,6 +107,10 @@ async def update_agent(
     except ValidationException as e:
         logger.warning(f"⚠️ Validation error: {e.detail}")
         raise
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error updating agent: {e}")
         raise HTTPException(
@@ -114,6 +130,10 @@ async def delete_agent(
         return await agent_service.delete_agent(agent_id, user_id, db)
     except NotFoundException as e:
         logger.warning(f"⚠️ {e.detail}")
+        raise
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
         raise
     except Exception as e:
         logger.error(f"❌ Error deleting agent: {e}")
@@ -136,6 +156,10 @@ async def add_agent_variable(
     except NotFoundException as e:
         logger.warning(f"⚠️ {e.detail}")
         raise
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error adding variable: {e}")
         raise HTTPException(
@@ -155,6 +179,10 @@ async def get_agent_variables(
         return await agent_service.get_variables(agent_id, user_id, db)
     except NotFoundException as e:
         logger.warning(f"⚠️ {e.detail}")
+        raise
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
         raise
     except Exception as e:
         logger.error(f"❌ Error getting variables: {e}")

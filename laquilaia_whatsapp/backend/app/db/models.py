@@ -57,7 +57,7 @@ class Agent(Base):
     nome = Column(String(255), nullable=False)
     descricao = Column(Text, nullable=True)
     system_prompt = Column(Text, nullable=False)
-    modelo = Column(String(100), default="claude-3-5-sonnet-20241022")
+    modelo = Column(String(100), default="claude-sonnet-5")
     temperatura = Column(Float, default=0.7)
     max_tokens = Column(Integer, default=1024)
     status = Column(String(50), default="ativo")  # ativo, inativo, em_teste
@@ -112,7 +112,9 @@ class Conversation(Base):
     status = Column(String(50), default="ativa")  # ativa, pausada, encerrada
     data_inicio = Column(DateTime, default=datetime.utcnow)
     data_ultima_msg = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    metadata = Column(Text, nullable=True)
+    # `metadata` é reservado pelo Declarative API do SQLAlchemy; o atributo
+    # Python muda de nome, a coluna no banco continua sendo "metadata".
+    metadados = Column("metadata", Text, nullable=True)
 
     # Relationships
     agent = relationship("Agent", back_populates="conversations")
@@ -138,7 +140,8 @@ class Message(Base):
     conteudo = Column(Text, nullable=False)
     tokens_usados = Column(Integer, nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
-    metadata = Column(Text, nullable=True)
+    # Ver nota em Conversation.metadados.
+    metadados = Column("metadata", Text, nullable=True)
 
     # Relationships
     conversation = relationship("Conversation", back_populates="messages")

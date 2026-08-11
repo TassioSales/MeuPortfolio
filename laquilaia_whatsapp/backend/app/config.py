@@ -27,7 +27,7 @@ class Settings(BaseSettings):
 
     # AI / LLM
     anthropic_api_key: str = os.getenv("ANTHROPIC_API_KEY", "")
-    claude_model: str = os.getenv("CLAUDE_MODEL", "claude-3-5-sonnet-20241022")
+    claude_model: str = os.getenv("CLAUDE_MODEL", "claude-sonnet-5")
     temperature: float = float(os.getenv("TEMPERATURE", "0.7"))
     max_tokens: int = int(os.getenv("MAX_TOKENS", "1024"))
     llm_max_tokens_per_minute: int = int(os.getenv("LLM_MAX_TOKENS_PER_MINUTE", "40000"))

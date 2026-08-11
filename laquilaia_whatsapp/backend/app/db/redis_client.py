@@ -49,10 +49,34 @@ class RedisClient:
             logger.error(f"❌ Redis set error: {e}")
             return False
 
-    async def delete(self, key: str) -> bool:
-        """Delete key from Redis."""
+    async def setex(self, key: str, ttl: int, value: str) -> bool:
+        """
+        Set a raw (already serialized) value with TTL.
+
+        Difference from `set()`: this does not run `json.dumps`. Services that
+        serialize their own payload use this; `set()` is for plain objects.
+        """
         try:
-            await self.redis.delete(key)
+            await self.redis.setex(key, ttl, value)
+            return True
+        except Exception as e:
+            logger.error(f"❌ Redis setex error: {e}")
+            return False
+
+    async def keys(self, pattern: str) -> list:
+        """List keys matching a glob pattern (used for cache invalidation)."""
+        try:
+            return await self.redis.keys(pattern)
+        except Exception as e:
+            logger.error(f"❌ Redis keys error: {e}")
+            return []
+
+    async def delete(self, *keys: str) -> bool:
+        """Delete one or more keys from Redis."""
+        if not keys:
+            return True
+        try:
+            await self.redis.delete(*keys)
             return True
         except Exception as e:
             logger.error(f"❌ Redis delete error: {e}")

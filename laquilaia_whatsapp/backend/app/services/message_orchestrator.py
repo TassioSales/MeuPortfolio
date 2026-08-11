@@ -188,7 +188,9 @@ class MessageOrchestrator:
             agent_id=agent_id,
             phone_number=phone_number,
             status="ativa",
-            data_criacao=datetime.utcnow(),
+            # O campo em Conversation chama-se `data_inicio`; `data_criacao`
+            # não existe no modelo e fazia toda mensagem recebida falhar.
+            data_inicio=datetime.utcnow(),
             data_ultima_msg=datetime.utcnow(),
         )
         db.add(conversation)

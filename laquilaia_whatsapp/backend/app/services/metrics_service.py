@@ -556,7 +556,11 @@ class MetricsService:
             if not result.scalars().first():
                 raise NotFoundException("Agent")
 
-            cache_key = self._generate_cache_key(agent_id, "problem_analysis", period, limit)
+            # `limit=` nomeado: na posição seguinte fica `custom_range`, e o
+            # int cairia no `start, end = custom_range` lá dentro.
+            cache_key = self._generate_cache_key(
+                agent_id, "problem_analysis", period, limit=limit
+            )
             if use_cache:
                 cached = await self._get_from_cache(cache_key)
                 if cached:

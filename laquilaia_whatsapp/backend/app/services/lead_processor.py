@@ -198,7 +198,14 @@ class LeadProcessor:
 
             # Validate status
             status = data.get("status_proposto", "em_qualificacao")
-            valid_statuses = ["qualificado", "nao_qualificado", "com_duvidas"]
+            # "em_qualificacao" é o default acima e precisa constar aqui, senão
+            # todo payload que omite `status_proposto` seria rejeitado.
+            valid_statuses = [
+                "em_qualificacao",
+                "qualificado",
+                "nao_qualificado",
+                "com_duvidas",
+            ]
             if status not in valid_statuses:
                 logger.warning(f"Invalid status: {status}")
                 return False

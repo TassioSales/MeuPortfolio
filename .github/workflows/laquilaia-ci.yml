@@ -1,0 +1,85 @@
+name: CI - L'Aquila AI
+
+# Só roda quando este projeto muda: o repositório é um portfólio com vários
+# projetos independentes, e cada um tem o seu próprio pipeline.
+on:
+  push:
+    branches: [main]
+    paths: ["laquilaia_whatsapp/**"]
+  pull_request:
+    paths: ["laquilaia_whatsapp/**"]
+
+defaults:
+  run:
+    working-directory: laquilaia_whatsapp
+
+jobs:
+  backend:
+    name: Backend (pytest)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: laquilaia
+          POSTGRES_PASSWORD: laquilaia_dev_pwd
+          POSTGRES_DB: laquilaia_test_db
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: laquilaia_whatsapp/backend/requirements.txt
+
+      - name: Instalar dependências
+        working-directory: laquilaia_whatsapp/backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Rodar testes
+        working-directory: laquilaia_whatsapp/backend
+        env:
+          DATABASE_URL: postgresql://laquilaia:laquilaia_dev_pwd@localhost:5432/laquilaia_test_db
+          SECRET_KEY: ci-secret-key
+          ANTHROPIC_API_KEY: sk-ant-ci-placeholder
+        run: pytest tests/ -v
+
+  frontend:
+    name: Frontend (jest + build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: laquilaia_whatsapp/frontend/package-lock.json
+
+      - name: Instalar dependências
+        working-directory: laquilaia_whatsapp/frontend
+        run: npm ci
+
+      - name: Checar tipos
+        working-directory: laquilaia_whatsapp/frontend
+        run: npm run typecheck
+
+      - name: Rodar testes
+        working-directory: laquilaia_whatsapp/frontend
+        run: npm test
+
+      - name: Build de produção
+        working-directory: laquilaia_whatsapp/frontend
+        run: npm run build

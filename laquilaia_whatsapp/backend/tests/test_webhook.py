@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from unittest.mock import patch, AsyncMock, MagicMock
 from app.main import app
 from app.models.webhook_models import WebhookPayload
-from app.db.models import Conversation, Message
+from app.db.models import Agent, Conversation, Message, User
 
 client = TestClient(app)
 
@@ -360,6 +360,18 @@ class TestMessageOrchestration:
         from app.db.models import Agent
 
         async with AsyncSessionLocal() as db:
+            # O agente tem FK para users: sem criar o dono antes, o INSERT
+            # falha por violação de chave estrangeira.
+            owner = User(
+                id="test-orch-user",
+                email="test-orch-user@example.com",
+                nome="Orchestrator Owner",
+                senha_hash="x",
+                status="ativo",
+            )
+            db.add(owner)
+            await db.flush()
+
             # Create test agent
             agent = Agent(
                 id="test-orch-agent",

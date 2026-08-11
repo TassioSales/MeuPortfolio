@@ -133,6 +133,10 @@ async def chat_with_agent(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=e.detail,
         )
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error in chat: {e}")
         await db.rollback()
@@ -205,6 +209,10 @@ async def test_agent(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=e.detail,
         )
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error in agent test: {e}")
         raise HTTPException(
@@ -250,6 +258,10 @@ async def get_rate_limit_status(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=e.detail,
         )
+    # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
+    # o catch-all abaixo os transformaria em 500.
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"❌ Error getting rate limit status: {e}")
         raise HTTPException(

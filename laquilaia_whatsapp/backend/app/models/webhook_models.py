@@ -24,8 +24,11 @@ class SenderModel(BaseModel):
 
 class MessageModel(BaseModel):
     """Message data from Evolution webhook."""
-    messageTimestamp: int
-    messageType: str  # "textMessage", "imageMessage", "documentMessage", etc
+    # Opcionais porque eventos que não são de mensagem (connection.update,
+    # qrcode.updated...) chegam sem esses campos — exigi-los faria o webhook
+    # devolver 422 para tráfego legítimo da Evolution API.
+    messageTimestamp: Optional[int] = None
+    messageType: Optional[str] = None  # "textMessage", "imageMessage", ...
     messageBody: Optional[str] = None
     mimetype: Optional[str] = None
     fileName: Optional[str] = None
@@ -35,11 +38,12 @@ class MessageModel(BaseModel):
 
 class DataModel(BaseModel):
     """Data payload from Evolution webhook."""
-    key: dict = Field(..., description="Message key (id, remoteJid, fromMe, etc)")
+    # Ver nota em MessageModel: cada tipo de evento traz um `data` diferente.
+    key: dict = Field(default_factory=dict, description="Message key (id, remoteJid, fromMe, etc)")
     pushName: Optional[str] = None
     instanceData: Optional[InstanceDataModel] = None
-    message: MessageModel
-    owner: str
+    message: MessageModel = Field(default_factory=MessageModel)
+    owner: Optional[str] = None
     senderKeyDistributionMessage: Optional[dict] = None
 
 

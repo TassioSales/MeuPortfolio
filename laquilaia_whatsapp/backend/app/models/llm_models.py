@@ -28,7 +28,7 @@ class MessageResponse(BaseModel):
 
 class LLMConfig(BaseModel):
     """LLM configuration for agent."""
-    model: str = Field(default="claude-3-5-sonnet-20241022")
+    model: str = Field(default="claude-sonnet-5")
     temperature: float = Field(default=0.7, ge=0, le=2)
     max_tokens: int = Field(default=1024, ge=1, le=4096)
 

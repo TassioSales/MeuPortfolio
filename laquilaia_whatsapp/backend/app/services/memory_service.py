@@ -97,9 +97,12 @@ class MemoryService:
         """
         try:
             cache_key = self._get_cache_key(conversation_id)
-            await self._save_to_cache(cache_key, history)
-            logger.debug(f"✅ Cached {len(history)} messages for {conversation_id}")
-            return True
+            # `_save_to_cache` trata a exceção internamente e devolve False —
+            # ignorar esse retorno faria reportar sucesso numa gravação falha.
+            saved = await self._save_to_cache(cache_key, history)
+            if saved:
+                logger.debug(f"✅ Cached {len(history)} messages for {conversation_id}")
+            return saved
         except Exception as e:
             logger.warning(f"⚠️ Failed to cache conversation: {e}")
             return False

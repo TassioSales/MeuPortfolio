@@ -27,3 +27,39 @@ def test_env_com_variaveis_de_outros_servicos_nao_derruba_o_boot(tmp_path, monke
     s = Settings()
     assert s.secret_key == "abc"
     assert not hasattr(s, "db_user")
+
+
+def test_origens_permitidas_sao_origens_de_verdade():
+    """
+    `localhost` e `127.0.0.1` soltos não são origens.
+
+    O middleware trazia essas duas na lista fixa, e elas nunca casavam: o
+    navegador manda sempre `esquema://host:porta`. Na prática só o
+    `frontend_url` valia, e abrir o painel por 127.0.0.1 dava CORS no login.
+    A variável `ALLOWED_ORIGINS`, documentada no `.env.example`, não era lida
+    por ninguém.
+    """
+    from app.config import Settings
+
+    s = Settings(
+        allowed_origins="http://localhost:3000,http://127.0.0.1:3000",
+        frontend_url="http://localhost:3000",
+    )
+
+    assert s.origens_permitidas == [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+    assert all("://" in origem for origem in s.origens_permitidas)
+
+
+def test_frontend_url_entra_mesmo_fora_da_lista():
+    """Quem muda só o FRONTEND_URL não pode perder o próprio painel."""
+    from app.config import Settings
+
+    s = Settings(
+        allowed_origins="http://localhost:3000",
+        frontend_url="https://painel.exemplo.com",
+    )
+
+    assert "https://painel.exemplo.com" in s.origens_permitidas

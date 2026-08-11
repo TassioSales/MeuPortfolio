@@ -50,6 +50,29 @@ class Settings(BaseSettings):
     # Frontend
     frontend_url: str = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
+    # Origens aceitas pelo CORS, separadas por vírgula.
+    #
+    # A variável estava documentada no `.env.example` e não era lida por
+    # ninguém — o `Settings` não a declarava. A lista do middleware era fixa e
+    # trazia "localhost" e "127.0.0.1" soltos, que não são origens válidas:
+    # o navegador sempre manda `esquema://host:porta`, então essas entradas
+    # nunca casavam e abrir o painel por 127.0.0.1 dava CORS no login.
+    allowed_origins: str = os.getenv(
+        "ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000"
+    )
+
+    @property
+    def origens_permitidas(self) -> list:
+        """`allowed_origins` como lista, sempre com o `frontend_url` junto."""
+        origens = [
+            item.strip()
+            for item in self.allowed_origins.split(",")
+            if item.strip()
+        ]
+        if self.frontend_url and self.frontend_url not in origens:
+            origens.append(self.frontend_url)
+        return origens
+
     class Config:
         env_file = ".env"
         case_sensitive = False

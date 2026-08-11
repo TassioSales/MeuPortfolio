@@ -1,9 +1,10 @@
-# Guia do Frontend — Fases 10 e 11
+# Guia do Frontend — Fases 10 a 12
 
 Painel web da L'Aquila AI: Next.js 14 (App Router) + TypeScript + TailwindCSS.
 
 - **Fase 10** — base, autenticação JWT, renovação automática de token e proteção de rotas.
 - **Fase 11** — painel de agentes (listar, criar, editar, excluir).
+- **Fase 12** — chat de teste (playground) com histórico e reset.
 
 ---
 
@@ -68,7 +69,8 @@ frontend/
 │   └── dashboard/
 │       ├── layout.tsx          # Navbar + Sidebar + guarda de sessão
 │       ├── page.tsx            # Home do painel
-│       └── agents/page.tsx     # Painel de agentes (Fase 11)
+│       ├── agents/page.tsx     # Painel de agentes (Fase 11)
+│       └── chat-test/page.tsx  # Chat de teste (Fase 12)
 ├── components/
 │   ├── Button.tsx              # 4 variantes + estado de loading
 │   ├── Input.tsx               # Label, erro e hint acessíveis
@@ -78,21 +80,24 @@ frontend/
 │   ├── EmptyState.tsx          # Estado vazio reutilizável
 │   ├── AgentForm.tsx           # Formulário de criar/editar agente
 │   ├── AgentCard.tsx           # Card de agente na listagem
+│   ├── ChatPlayground.tsx      # Conversa de teste com o agente
 │   ├── LoadingSpinner.tsx      # Spinner + FullPageLoader
 │   ├── Navbar.tsx              # Identificação do usuário + logout
 │   └── Sidebar.tsx             # Navegação (itens de fases futuras desabilitados)
 ├── hooks/
 │   ├── useAuth.ts              # Store Zustand + hook useAuth()
-│   └── useAgents.ts            # Store Zustand do CRUD de agentes
+│   ├── useAgents.ts            # Store Zustand do CRUD de agentes
+│   └── useChat.ts              # Estado local da conversa de teste
 ├── lib/
 │   ├── api.ts                  # Cliente HTTP com refresh automático
 │   ├── auth.ts                 # login / register / logout / getCurrentUser
 │   ├── agents.ts               # CRUD de agentes
+│   ├── chat.ts                 # Chat, histórico e reset
 │   ├── constants.ts            # Nomes de cookie (sem dependências)
 │   ├── tokens.ts               # Leitura/escrita dos cookies
 │   └── utils.ts                # cn() — merge de classes Tailwind
 ├── types/index.ts              # Tipos espelhando os schemas do backend
-├── __tests__/                  # 46 testes (api, auth, middleware, agents, AgentForm)
+├── __tests__/                  # 63 testes
 ├── middleware.ts               # Proteção de rotas no edge
 └── Dockerfile                  # Imagem de desenvolvimento
 ```
@@ -128,10 +133,31 @@ Limites validados pelo backend (`agent_service.create_agent`) e espelhados em
 `AGENT_LIMITS` no frontend: `temperatura` entre 0 e 2, `max_tokens` inteiro
 entre 1 e 4096, `system_prompt` não vazio, `nome` até 255 caracteres.
 
-> **Correção no backend nesta fase.** Em `GET /api/v1/agents` o parâmetro de
+> **Correção no backend na Fase 11.** Em `GET /api/v1/agents` o parâmetro de
 > query `status` sombreava o módulo `status` do FastAPI, então qualquer exceção
 > no endpoint estourava `AttributeError` em vez de devolver 500. Passou a usar
 > `status_filter` com `alias="status"` — a URL pública não mudou.
+
+### Chat / playground (Fase 12)
+
+| Endpoint | Método | Corpo | Resposta |
+|---|---|---|---|
+| `/api/v1/agents/{id}/chat` | POST | `{message, conversation_id?}` | `{response, conversation_id, tokens_used, timestamp, model}` |
+| `/api/v1/agents/{id}/chat/history` | GET | — | `{conversation_id, messages[]}` |
+| `/api/v1/agents/{id}/chat/history` | DELETE | — | `{detail, deleted}` |
+
+A conversa do playground fica separada das reais pelo telefone reservado
+`test_api` (constante `TEST_PHONE_NUMBER` no router).
+
+> **Duas correções no backend nesta fase.**
+>
+> 1. `MessageResponse` não devolvia `conversation_id`. Como o cliente não tinha
+>    como saber o id da conversa criada, cada mensagem começaria um contexto
+>    novo — justamente o que um playground precisa evitar.
+> 2. Existe uma constraint única `(agent_id, phone_number)` em `conversations`,
+>    e o endpoint criava a conversa de teste com telefone fixo `test_api`. A
+>    segunda conversa de teste do mesmo agente violaria a constraint. Agora a
+>    conversa é reaproveitada em vez de recriada.
 
 ---
 
@@ -218,7 +244,7 @@ No Windows: `run.bat`.
 cd frontend && npm test
 ```
 
-**46 testes, 5 suítes:**
+**63 testes, 7 suítes:**
 
 | Suíte | Testes | Cobre |
 |---|---|---|
@@ -227,6 +253,8 @@ cd frontend && npm test
 | `__tests__/middleware.test.ts` | 6 | Redirecionamento de rota privada, parâmetro `?next=`, rota pública, usuário logado em `/login` |
 | `__tests__/agents.test.ts` | 12 | Verbos e corpos do CRUD, ordenação otimista da lista, lista intacta quando a API falha |
 | `__tests__/AgentForm.test.tsx` | 9 | Preenchimento na edição, padrões na criação, normalização do payload, validações, erro do backend |
+| `__tests__/chat.test.ts` | 7 | Verbos e corpos do chat, envio do `conversation_id` só quando há conversa |
+| `__tests__/ChatPlayground.test.tsx` | 10 | Estado vazio, carga de histórico, envio, tokens, continuidade da conversa, reset, recuperação de erro |
 
 `middleware.test.ts` roda com `@jest-environment node` porque `next/server`
 depende dos globais `Request`/`Response`, que o jsdom não implementa — é o mesmo
@@ -244,9 +272,21 @@ por dependerem do Playwright, que não é dependência do projeto.
 
 ## 7. Decisões e limitações
 
-**Itens de navegação desabilitados.** Sidebar e cards do dashboard listam Chat,
+**Itens de navegação desabilitados.** Sidebar e cards do dashboard listam
 Kanban e Métricas marcados como "Em breve". As rotas não existem ainda; são
-entregues nas fases 12–14. Agentes foi liberado na Fase 11.
+entregues nas fases 13–14.
+
+**O playground não usa Zustand.** Diferente de `useAgents`, o estado da conversa
+é local à página (`useChat`). Uma store global só criaria risco de a conversa de
+um agente aparecer na tela de outro — a página remonta o componente com `key`
+ao trocar de agente, pelo mesmo motivo.
+
+**Agente selecionado vive na URL** (`?agent=<id>`), para o link do playground
+ser compartilhável e sobreviver a um reload.
+
+**Mensagem falha não some.** Se o envio dá erro, os balões temporários são
+removidos e o texto volta para a caixa, em vez de o usuário perder o que
+escreveu.
 
 **Validação duplicada no formulário de agente.** `AgentForm` repete as regras de
 `agent_service.create_agent` para dar retorno imediato, mas o backend continua
@@ -292,6 +332,5 @@ fora do escopo desta fase.
 
 | Fase | Entrega | Reaproveita daqui |
 |---|---|---|
-| 12 | Chat de teste | `api`, `useAgents` (seletor de agente), layout do dashboard |
 | 13 | Kanban CRM | `api`, `Modal`, `ConfirmDialog`, `EmptyState` |
 | 14 | Dashboards & gráficos | `api` + endpoints da Fase 9 |

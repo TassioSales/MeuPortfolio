@@ -24,7 +24,7 @@ const QUICK_LINKS: QuickLink[] = [
     title: "Chat de teste",
     description: "Converse com o agente antes de publicá-lo no WhatsApp.",
     icon: "💬",
-    available: false,
+    available: true,
   },
   {
     href: "/dashboard/kanban",

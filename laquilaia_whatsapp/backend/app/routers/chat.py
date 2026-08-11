@@ -3,7 +3,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db_session
-from app.models.llm_models import MessageRequest, MessageResponse, TokenUsage, ChatHistoryRequest
+from app.models.llm_models import (
+    MessageRequest,
+    MessageResponse,
+    TokenUsage,
+    ChatHistoryMessage,
+    ChatHistoryResponse,
+)
 from app.db.models import Agent, Conversation, Message
 from app.services.llm_service import llm_service
 from app.utils.auth_middleware import get_current_user
@@ -16,6 +22,53 @@ router = APIRouter(
     prefix="/api/v1/agents",
     tags=["chat"],
 )
+
+# Telefone usado pelas conversas criadas pelo playground, para distingui-las
+# das conversas reais vindas do WhatsApp.
+TEST_PHONE_NUMBER = "test_api"
+
+
+async def _get_agent_or_404(agent_id: str, user_id: str, db: AsyncSession) -> Agent:
+    """Fetch an agent owned by the user, or raise NotFound."""
+    result = await db.execute(
+        select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
+    )
+    agent = result.scalars().first()
+
+    if not agent:
+        logger.warning(f"⚠️ Agent not found: {agent_id} (user: {user_id})")
+        raise NotFoundException("Agent")
+
+    return agent
+
+
+async def _find_test_conversation(agent_id: str, db: AsyncSession) -> Conversation | None:
+    """Return the playground conversation of an agent, if it already exists."""
+    result = await db.execute(
+        select(Conversation).where(
+            (Conversation.agent_id == agent_id)
+            & (Conversation.phone_number == TEST_PHONE_NUMBER)
+        )
+    )
+    return result.scalars().first()
+
+
+async def _get_or_create_test_conversation(
+    agent_id: str, db: AsyncSession
+) -> Conversation:
+    """Reuse the agent's playground conversation, creating it on first use."""
+    conversation = await _find_test_conversation(agent_id, db)
+
+    if conversation is None:
+        conversation = Conversation(
+            agent_id=agent_id,
+            phone_number=TEST_PHONE_NUMBER,
+            status="ativa",
+        )
+        db.add(conversation)
+        await db.flush()  # Get conversation ID without committing
+
+    return conversation
 
 
 @router.post("/{agent_id}/chat", response_model=MessageResponse)
@@ -61,14 +114,10 @@ async def chat_with_agent(
             if not conversation:
                 raise NotFoundException("Conversation")
         else:
-            # Create new conversation (phone is optional for API testing)
-            conversation = Conversation(
-                agent_id=agent_id,
-                phone_number="test_api",
-                status="ativa",
-            )
-            db.add(conversation)
-            await db.flush()  # Get conversation ID without committing
+            # A conversa de teste é reaproveitada, não recriada: existe uma
+            # constraint única (agent_id, phone_number) e o telefone aqui é
+            # fixo, então um segundo INSERT com o mesmo agente estouraria.
+            conversation = await _get_or_create_test_conversation(agent_id, db)
 
         # Get conversation history for context
         history = await llm_service.get_conversation_history(
@@ -112,6 +161,7 @@ async def chat_with_agent(
 
         return MessageResponse(
             response=response_text,
+            conversation_id=conversation.id,
             tokens_used=TokenUsage(
                 input_tokens=token_usage["input_tokens"],
                 output_tokens=token_usage["output_tokens"],
@@ -143,6 +193,99 @@ async def chat_with_agent(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error processing chat message",
+        )
+
+
+@router.get("/{agent_id}/chat/history", response_model=ChatHistoryResponse)
+async def get_chat_history(
+    agent_id: str,
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """Return the playground conversation history, oldest message first."""
+    try:
+        await _get_agent_or_404(agent_id, user_id, db)
+
+        conversation = await _find_test_conversation(agent_id, db)
+        if conversation is None:
+            # Agente que ainda não foi testado: histórico vazio, não é erro.
+            return ChatHistoryResponse(conversation_id=None, messages=[])
+
+        result = await db.execute(
+            select(Message)
+            .where(Message.conversation_id == conversation.id)
+            .order_by(Message.timestamp)
+        )
+
+        return ChatHistoryResponse(
+            conversation_id=conversation.id,
+            messages=[
+                ChatHistoryMessage(
+                    id=message.id,
+                    remetente=message.remetente,
+                    conteudo=message.conteudo,
+                    timestamp=message.timestamp,
+                )
+                for message in result.scalars().all()
+            ],
+        )
+
+    except NotFoundException as e:
+        logger.warning(f"⚠️ {e.detail}")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error getting chat history: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error getting chat history",
+        )
+
+
+@router.delete("/{agent_id}/chat/history", status_code=status.HTTP_200_OK)
+async def reset_chat_history(
+    agent_id: str,
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Clear the playground conversation.
+
+    Apaga as mensagens e a própria conversa: como o telefone de teste é fixo,
+    manter a conversa vazia serviria só para ocupar a constraint única.
+    """
+    try:
+        await _get_agent_or_404(agent_id, user_id, db)
+
+        conversation = await _find_test_conversation(agent_id, db)
+        if conversation is None:
+            return {"detail": "No test conversation to reset", "deleted": 0}
+
+        result = await db.execute(
+            select(Message).where(Message.conversation_id == conversation.id)
+        )
+        messages = result.scalars().all()
+        for message in messages:
+            await db.delete(message)
+
+        await db.delete(conversation)
+        await db.commit()
+
+        logger.info(f"🧹 Playground conversation reset: agent={agent_id}")
+        return {"detail": "Test conversation reset", "deleted": len(messages)}
+
+    except NotFoundException as e:
+        logger.warning(f"⚠️ {e.detail}")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error resetting chat history: {e}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error resetting chat history",
         )
 
 

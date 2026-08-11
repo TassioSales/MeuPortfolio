@@ -75,3 +75,46 @@ export interface ApiErrorBody {
   detail?: string;
   error_code?: string;
 }
+
+// ========== Chat / Playground ==========
+
+export interface TokenUsage {
+  input_tokens: number;
+  output_tokens: number;
+  total_tokens: number;
+}
+
+/** Resposta de `POST /api/v1/agents/{id}/chat`. */
+export interface ChatResponse {
+  response: string;
+  conversation_id: string | null;
+  tokens_used: TokenUsage;
+  timestamp: string;
+  model: string;
+}
+
+/** Mensagem persistida, como vem de `GET .../chat/history`. */
+export interface ChatHistoryMessage {
+  id: string;
+  remetente: "user" | "assistant";
+  conteudo: string;
+  timestamp: string;
+}
+
+export interface ChatHistoryResponse {
+  conversation_id: string | null;
+  messages: ChatHistoryMessage[];
+}
+
+/**
+ * Mensagem na tela. Difere de `ChatHistoryMessage` porque o balão do usuário
+ * aparece antes de o backend responder e ainda não tem id nem timestamp.
+ */
+export interface ChatBubble {
+  id: string;
+  remetente: "user" | "assistant";
+  conteudo: string;
+  /** true enquanto a resposta do agente não chegou. */
+  pending?: boolean;
+  tokens?: number;
+}

@@ -17,6 +17,7 @@ from app.utils.exceptions import ValidationException, NotFoundException
 from app.utils.logger import logger
 from sqlalchemy import select
 from datetime import datetime
+from pydantic import BaseModel
 
 router = APIRouter(
     prefix="/api/v1/agents",
@@ -410,4 +411,143 @@ async def get_rate_limit_status(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving rate limit status",
+        )
+
+
+# ========== PAUSA HUMANA (Fase 16) ==========
+#
+# Router próprio: o `router` deste módulo tem prefixo /api/v1/agents, o que
+# faria a URL virar /agents/conversations/... — a conversa não é subrecurso
+# do agente nesta operação.
+
+conversations_router = APIRouter(
+    prefix="/api/v1/conversations",
+    tags=["conversations"],
+)
+
+class ConversationStatusResponse(BaseModel):
+    """Estado de automação de uma conversa."""
+    conversation_id: str
+    status: str
+    ia_ativa: bool
+
+
+async def _get_owned_conversation(
+    conversation_id: str, user_id: str, db: AsyncSession
+) -> Conversation:
+    """
+    Fetch a conversation, ensuring it belongs to an agent of this user.
+
+    O join com Agent é o que impede um usuário pausar a conversa de outro:
+    sem ele, bastaria adivinhar o id.
+    """
+    result = await db.execute(
+        select(Conversation)
+        .join(Agent, Conversation.agent_id == Agent.id)
+        .where((Conversation.id == conversation_id) & (Agent.user_id == user_id))
+    )
+    conversation = result.scalars().first()
+
+    if not conversation:
+        raise NotFoundException("Conversation")
+
+    return conversation
+
+
+async def _set_conversation_status(
+    conversation_id: str, user_id: str, novo_status: str, db: AsyncSession
+) -> ConversationStatusResponse:
+    conversation = await _get_owned_conversation(conversation_id, user_id, db)
+    conversation.status = novo_status
+    await db.commit()
+
+    logger.info(f"🔄 Conversa {conversation_id} agora está '{novo_status}'")
+    return ConversationStatusResponse(
+        conversation_id=conversation.id,
+        status=novo_status,
+        ia_ativa=novo_status != "pausada",
+    )
+
+
+@conversations_router.post(
+    "/{conversation_id}/pause",
+    response_model=ConversationStatusResponse,
+)
+async def pause_conversation(
+    conversation_id: str,
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Hand the conversation over to a human.
+
+    As mensagens do cliente continuam sendo registradas; a IA é que para de
+    responder, para operador e agente não falarem juntos com o cliente.
+    """
+    try:
+        return await _set_conversation_status(conversation_id, user_id, "pausada", db)
+    except NotFoundException as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Erro ao pausar conversa: {e}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error pausing conversation",
+        )
+
+
+@conversations_router.post(
+    "/{conversation_id}/resume",
+    response_model=ConversationStatusResponse,
+)
+async def resume_conversation(
+    conversation_id: str,
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """Give the conversation back to the AI."""
+    try:
+        return await _set_conversation_status(conversation_id, user_id, "ativa", db)
+    except NotFoundException as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Erro ao retomar conversa: {e}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error resuming conversation",
+        )
+
+
+@conversations_router.get(
+    "/{conversation_id}/status",
+    response_model=ConversationStatusResponse,
+)
+async def get_conversation_status(
+    conversation_id: str,
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """Whether the AI is answering this conversation."""
+    try:
+        conversation = await _get_owned_conversation(conversation_id, user_id, db)
+        return ConversationStatusResponse(
+            conversation_id=conversation.id,
+            status=conversation.status,
+            ia_ativa=conversation.status != "pausada",
+        )
+    except NotFoundException as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Erro ao consultar conversa: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error getting conversation status",
         )

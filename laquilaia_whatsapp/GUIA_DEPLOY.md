@@ -167,8 +167,18 @@ proteção nenhuma.
 default já é `claude-sonnet-5`, mas atualizar o SDK é mudança maior: os testes
 de tratamento de erro dependem das assinaturas de exceção da versão atual.
 
-**Fase 16 (pausa humana) não implementada.** Estava marcada como opcional no
-plano — o operador ainda não consegue assumir uma conversa e pausar a IA.
+**Fase 16: só o backend.** O operador já consegue pausar e retomar uma
+conversa pelos endpoints abaixo, e a IA respeita a pausa. Falta a tela para
+fazer isso pelo painel — hoje só via API.
+
+| Endpoint | Método | Efeito |
+|---|---|---|
+| `/api/v1/conversations/{id}/pause` | POST | Humano assume; a IA para de responder |
+| `/api/v1/conversations/{id}/resume` | POST | Devolve a conversa à IA |
+| `/api/v1/conversations/{id}/status` | GET | Se a IA está respondendo |
+
+Com a conversa pausada a mensagem do cliente **continua sendo registrada** — o
+operador precisa vê-la; o que para é a resposta automática.
 
 **Sem rate limiting por usuário na API.** O `llm_service` limita chamadas ao
 Claude no processo inteiro, não por conta.

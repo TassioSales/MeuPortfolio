@@ -68,6 +68,32 @@ class MessageOrchestrator:
                 agent_id, phone_number, db
             )
 
+            # Conversa assumida por um humano: a mensagem é registrada, mas a
+            # IA não responde. Sem esta checagem o agente responderia por cima
+            # do operador, com os dois falando ao mesmo tempo com o cliente.
+            if conversation.status == "pausada":
+                user_msg = Message(
+                    conversation_id=conversation.id,
+                    remetente="user",
+                    conteudo=message_text,
+                    timestamp=datetime.utcnow(),
+                )
+                db.add(user_msg)
+                conversation.data_ultima_msg = datetime.utcnow()
+                await db.commit()
+
+                await notify_new_message(agent_id, conversation.id, phone_number)
+                logger.info(
+                    f"⏸️ Conversa {conversation.id} pausada — mensagem salva sem resposta da IA"
+                )
+                return {
+                    "success": True,
+                    "paused": True,
+                    "conversation_id": conversation.id,
+                    "phone_number": phone_number,
+                    "response": None,
+                }
+
             # Step 3: Get conversation history
             history = await llm_service.get_conversation_history(
                 conversation.id, db, limit=5

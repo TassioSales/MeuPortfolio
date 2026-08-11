@@ -141,6 +141,7 @@ async def root():
 app.include_router(auth.router)
 app.include_router(agents.router)
 app.include_router(chat.router)
+app.include_router(chat.conversations_router)
 app.include_router(webhook.router)
 app.include_router(kanban.router)
 app.include_router(metrics.router)

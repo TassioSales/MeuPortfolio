@@ -21,9 +21,29 @@ class TokenUsage(BaseModel):
 class MessageResponse(BaseModel):
     """Response model for chat endpoint."""
     response: str = Field(..., description="Claude response")
+    # Sem devolver o id, o cliente não consegue continuar a mesma conversa e
+    # cada mensagem começaria um contexto novo. É opcional porque o endpoint
+    # /test é stateless de propósito e não cria conversa.
+    conversation_id: Optional[str] = Field(
+        None, description="Conversation this message belongs to"
+    )
     tokens_used: TokenUsage
     timestamp: datetime
     model: str = Field(..., description="Model used")
+
+
+class ChatHistoryMessage(BaseModel):
+    """One message of a conversation, as returned by the history endpoint."""
+    id: str
+    remetente: str  # "user" ou "assistant"
+    conteudo: str
+    timestamp: datetime
+
+
+class ChatHistoryResponse(BaseModel):
+    """Playground conversation history."""
+    conversation_id: Optional[str] = None
+    messages: List[ChatHistoryMessage] = []
 
 
 class LLMConfig(BaseModel):

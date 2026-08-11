@@ -33,6 +33,23 @@ Backend recebe via Webhook
 
 ---
 
+## ⚠️ O bloco JSON não chega ao cliente
+
+O `message_orchestrator` remove o bloco ```json antes de gravar a mensagem e
+de enviá-la pelo WhatsApp — só o texto conversacional segue. Antes ia tudo, e
+o cliente recebia o próprio dossiê: o score que a empresa deu a ele, as
+inconsistências e as objeções detectadas.
+
+Quem faz a limpeza é `lead_processor.texto_para_o_cliente()`. Só o bloco
+cercado por ```` ```json ```` sai; JSON solto no meio de uma frase fica, porque
+pode ser conteúdo legítimo da conversa.
+
+O **chat de teste** (`/dashboard/chat-test`) continua mostrando a resposta
+inteira, com o bloco: é a ferramenta de validar o prompt, e esconder o JSON ali
+tiraria justamente o que se quer conferir.
+
+---
+
 ## 🤖 System Prompt com Instrução de JSON
 
 Para que o Claude retorne dados estruturados de qualificação, o system_prompt do agente deve incluir uma instrução especial:

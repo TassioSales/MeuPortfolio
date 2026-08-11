@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 from app.db.models import Agent, AgentVariable
 from app.models.schemas import AgentCreate, AgentUpdate, AgentResponse
+from app.services.kanban_defaults import criar_colunas_padrao
 from app.utils.exceptions import NotFoundException, ValidationException
 from app.utils.logger import logger
 
@@ -43,6 +44,16 @@ class AgentService:
             )
 
             db.add(new_agent)
+            # O id é gerado na aplicação, mas o flush garante que a linha do
+            # agente exista antes das colunas que a referenciam.
+            await db.flush()
+
+            # O funil nasce junto com o agente. Antes ele só existia via
+            # `POST /kanban/columns/init`, que nada chamava: um lead
+            # qualificado por agente criado pela tela era gravado e nunca
+            # aparecia no board, porque não havia coluna para receber o card.
+            await criar_colunas_padrao(new_agent.id, db)
+
             await db.commit()
             await db.refresh(new_agent)
 

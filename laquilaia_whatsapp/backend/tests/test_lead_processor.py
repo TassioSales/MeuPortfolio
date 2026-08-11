@@ -210,7 +210,15 @@ class TestLeadProcessorLeadManagement:
 
     @pytest.mark.asyncio
     async def test_update_lead_details(self):
-        """Test creating/updating LeadDetails."""
+        """
+        Cria o LeadDetails buscando por consulta, não pelo relacionamento.
+
+        O acesso a `lead.lead_details` estourava
+        `greenlet_spawn has not been called` no runtime async — e este teste
+        não pegava porque o mock respondia ao atributo sem tocar no banco. O
+        `result.scalars()` precisa ser `MagicMock`: no SQLAlchemy real ele é
+        síncrono, e com `AsyncMock` vira corrotina.
+        """
         lead = Lead(
             id="lead-123",
             phone_number="5561999887234",
@@ -219,6 +227,9 @@ class TestLeadProcessorLeadManagement:
 
         db = AsyncMock(spec=AsyncSession)
         db.flush = AsyncMock()
+        sem_detalhes = MagicMock()
+        sem_detalhes.scalars.return_value.first.return_value = None
+        db.execute = AsyncMock(return_value=sem_detalhes)
 
         qualification = {
             "nome_cliente": "João",
@@ -230,7 +241,11 @@ class TestLeadProcessorLeadManagement:
 
         await lead_processor._update_lead_details(lead, qualification, db)
 
-        assert lead.lead_details is not None or db.add.called
+        db.execute.assert_awaited_once()
+        assert db.add.called
+        criado = db.add.call_args[0][0]
+        assert criado.lead_id == "lead-123"
+        assert criado.score_qualificacao == 85
 
 
 class TestLeadProcessorTimeline:
@@ -424,3 +439,54 @@ class TestLeadProcessorStatusMapping:
 
         for status in expected_statuses:
             assert status in lead_processor.COLUMN_MAPPING
+
+
+class TestTextoParaOCliente:
+    """
+    O bloco de qualificação não pode chegar ao cliente.
+
+    O prompt documentado manda o modelo anexar um JSON com nome, e-mail,
+    score e objeções detectadas — e esse texto era enviado inteiro pelo
+    WhatsApp. O cliente recebia o próprio dossiê, com a nota que a empresa
+    deu a ele.
+    """
+
+    def test_remove_o_bloco_json(self):
+        resposta = (
+            "Perfeito, Roberto! Consigo te ajudar.\n\n"
+            "```json\n"
+            '{"nome_cliente": "Roberto", "score_qualificacao": 95,\n'
+            ' "problemas_detectados": "Cliente ansioso, pode pressionar preço"}\n'
+            "```"
+        )
+
+        limpo = lead_processor.texto_para_o_cliente(resposta)
+
+        assert "Perfeito, Roberto!" in limpo
+        assert "score_qualificacao" not in limpo
+        assert "pode pressionar preço" not in limpo
+        assert "```" not in limpo
+
+    def test_resposta_sem_bloco_fica_intacta(self):
+        resposta = "Bom dia! Como posso ajudar?"
+        assert lead_processor.texto_para_o_cliente(resposta) == resposta
+
+    def test_json_solto_na_frase_nao_e_recortado(self):
+        """
+        Só o bloco cercado sai.
+
+        Recortar por chaves soltas comeria conteúdo legítimo — uma resposta
+        que cite um exemplo de configuração, por exemplo.
+        """
+        resposta = 'Use o formato {"chave": "valor"} no arquivo de config.'
+        assert lead_processor.texto_para_o_cliente(resposta) == resposta
+
+    def test_o_json_extraido_continua_disponivel(self):
+        """A limpeza é só do texto: o processador ainda enxerga os dados."""
+        resposta = (
+            "Ótimo!\n```json\n"
+            '{"nome_cliente": "Ana", "score_qualificacao": 70}\n```'
+        )
+
+        assert lead_processor._extract_json(resposta)["nome_cliente"] == "Ana"
+        assert "Ana" not in lead_processor.texto_para_o_cliente(resposta)

@@ -23,6 +23,21 @@ compilarem e abre `http://localhost:3000`.
 
 `./run.sh stop` derruba; `./run.sh clean` derruba e apaga os volumes.
 
+### No Windows, não deixe o repositório dentro do OneDrive
+
+O compose faz bind mount de `./backend` e `./frontend` para dentro dos
+containers. Numa pasta sincronizada isso significa três coisas:
+
+- o OneDrive tenta subir tudo que os containers escrevem (`.next`, `__pycache__`,
+  logs), e o `frontend/node_modules` sozinho são dezenas de milhares de arquivos;
+- com o *Files On-Demand* ligado, o Docker pode receber um marcador de arquivo
+  "somente na nuvem" no lugar do conteúdo;
+- o `.env` — que guarda as chaves de API — passa a ser sincronizado.
+
+Funciona na maior parte do tempo, e é justamente isso que torna difícil ligar
+um erro à causa. O caminho curto é clonar fora, por exemplo em `C:\dev`. O
+`run.bat` avisa quando detecta OneDrive no caminho, mas não bloqueia.
+
 ---
 
 ## 2. Migrações

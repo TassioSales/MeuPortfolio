@@ -66,6 +66,26 @@ if not exist .env (
     exit /b 1
 )
 
+REM Warn when the project lives inside OneDrive.
+REM
+REM O compose faz bind mount de ./backend e ./frontend para dentro dos
+REM containers. Numa pasta sincronizada isso significa que o OneDrive tenta
+REM subir tudo que os containers escrevem, e que o Docker pode receber um
+REM arquivo "somente na nuvem" no lugar do conteudo. Aviso, nao bloqueio:
+REM funciona, mas quando quebra e dificil de ligar a causa.
+echo "%CD%" | findstr /i "OneDrive" >nul
+if %errorlevel% equ 0 (
+    echo.
+    echo [WARNING] The project is inside a OneDrive folder.
+    echo Docker bind-mounts ./backend and ./frontend into the containers,
+    echo so OneDrive will sync everything they write, and may hand Docker a
+    echo cloud-only placeholder instead of the real file.
+    echo If the stack misbehaves, move the repository out of OneDrive
+    echo - for example to C:\dev\MeuPortfolio - and clone it there.
+    echo Also note that .env holds API keys and is being synced to the cloud.
+    echo.
+)
+
 REM Parse command line arguments
 set MODE=dev
 set ACTION=start

@@ -71,7 +71,7 @@ etapas e pelos últimos dias — o suficiente para o Kanban e os gráficos terem
 que mostrar sem uma instância do WhatsApp.
 
 ```
-e-mail: demo@laquilaia.local
+e-mail: demo@example.com
 senha:  demo12345
 ```
 
@@ -111,24 +111,47 @@ Itens que o setup de desenvolvimento deixa em aberto:
 
 ---
 
-## 6. O que não foi verificado
+## 6. O que foi e o que não foi verificado
 
-**A stack completa nunca subiu junta.** Backend e frontend foram verificados
-separadamente, e cada fase do frontend foi percorrida no Chromium contra um
-backend simulado. Não houve um `docker compose up` de ponta a ponta — o
-ambiente onde o projeto foi desenvolvido não tem Docker.
+A stack **já subiu junta**, com backend, frontend, PostgreSQL 16 e Redis 7 ao
+mesmo tempo, e o fluxo foi percorrido no Chromium contra o backend real. Isso
+derrubou três bugs que a verificação em separado não pegava (o `lib/` fora do
+repositório, o locale do initdb e o e-mail do seed).
 
-O que **foi** verificado de verdade:
+Foi feito **fora de container**, com as versões que o compose declara e
+injetando exatamente as variáveis que ele passa ao serviço `backend` — nada
+além, para reproduzir o que o container enxerga.
 
 | Item | Como |
 |---|---|
-| 208 testes do backend | PostgreSQL real, incluindo os de autorização |
-| 101 testes do frontend | Jest, com typecheck e build de produção |
-| Migração Alembic | Aplicada num banco limpo; `autogenerate` seguinte não detectou diferença, ou seja, cobre os models |
-| Seed | Executado contra o banco migrado; login com o usuário criado confere |
-| Fluxos da UI | Chromium contra backend simulado (agentes, chat, arrasto no Kanban, dashboard) |
+| 231 testes do backend | PostgreSQL real, incluindo os de autorização |
+| 101 testes do frontend | Jest, com typecheck e `next build` de produção |
+| Migração Alembic | Banco recriado do zero, `alembic upgrade head` limpo |
+| Seed | Rodado sobre o banco migrado; o usuário criado entra pela tela de login |
+| Boot do backend | Lifespan, conexão com o banco e scheduler de métricas |
+| API | Auth, agentes, Kanban, 6 endpoints de métricas, chat, pausa humana |
+| Autorização cruzada | Agente e conversa de outro dono respondem 404 |
+| UI ponta a ponta | Login → dashboard → agentes, Kanban, métricas e playground, com dados do seed |
+| WebSocket | Conecta e autentica: o Kanban mostra "atualizando em tempo real" |
 
-O primeiro `docker compose up` numa máquina com Docker é o teste que falta.
+### O que continua sem verificação
+
+**A camada de container.** Não houve `docker compose up`: o ambiente usado
+tinha Docker, mas a política de egress bloqueia o CDN de blobs do Docker Hub
+(`production.cloudfront.docker.com` responde 403), então nenhuma imagem pôde
+ser puxada. Segue em aberto, e com ele:
+
+- os `Dockerfile` de fato construírem;
+- o `depends_on: service_healthy` esperando o healthcheck de verdade;
+- os bind mounts e o volume anônimo de `node_modules`;
+- a resolução de `postgres`/`redis` por nome de serviço na rede do compose.
+
+**A integração com a Evolution API e o Claude** — não houve chave real nem
+instância de WhatsApp. O webhook foi exercitado apenas nas respostas de
+recusa (401/503), não num fluxo de mensagem completo.
+
+**O arrastar do Kanban** — a movimentação é coberta por teste na camada do
+hook, mas o gesto com `@dnd-kit` não foi feito no browser.
 
 ---
 

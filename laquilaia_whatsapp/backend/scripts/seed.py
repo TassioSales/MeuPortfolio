@@ -33,7 +33,11 @@ from app.db.models import (
 )
 from app.services.auth_service import auth_service
 
-DEMO_EMAIL = "demo@laquilaia.local"
+# `example.com` é reservado pela RFC 2606 e nunca vai existir de verdade.
+# Não use `.local` nem `.test`: o seed grava direto pelo SQLAlchemy e aceita,
+# mas o `EmailStr` do schema recusa esses TLDs como de uso especial — o
+# usuário era criado e depois não conseguia entrar pelo /auth/login (422).
+DEMO_EMAIL = "demo@example.com"
 DEMO_SENHA = "demo12345"
 
 COLUNAS = [

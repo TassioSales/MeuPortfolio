@@ -125,6 +125,10 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | `aclose()` no redis-py 5.0.0 | Só existe a partir do 5.0.1. Dentro de um `except Exception` vira "Redis indisponível" e os testes se pulam em silêncio |
 | Passar `user_id` opcional e esquecer de passá-lo | `get_rate_limit_status()` sem argumento lia o balde compartilhado e devolvia sempre zero |
 | `docker compose` sem `.env` | Não falha: substitui cada `${VAR}` por string vazia e sobe uma stack sem chave de API nem segredo de webhook. O aviso passa despercebido no meio do log |
+| Caractere não-ASCII em `.bat` | O `cmd.exe` lê em cp850, não em UTF-8: um travessão vira `ÔÇö` na tela |
+| `)` sem `^` dentro de bloco `( )` no batch | Fecha o bloco antes da hora; o resto vira erro de sintaxe ou roda sem condição |
+| `%errorlevel%` dentro de bloco `( )` | O bloco é expandido inteiro antes de executar: traz o valor de *antes* do comando. Use `!errorlevel!` com `enabledelayedexpansion` |
+| `if cond set X=1 & shift` | O `&` separa a linha, não o `if`: o `shift` roda sempre. Quebrou `run.bat stop/logs/clean` |
 | Checar o binário e não o daemon | `where docker` passa com o Docker Desktop fechado; o erro só aparece depois, disfarçado de falha ao baixar imagem |
 | Mandar `temperature` para modelo novo | Sonnet 5, Opus 5 e Opus 4.7+ recusam parâmetro de amostragem com **400**. Com o default `claude-sonnet-5`, *nenhuma* chamada ao Claude podia dar certo. Ver `MODELOS_QUE_ACEITAM_TEMPERATURA` |
 

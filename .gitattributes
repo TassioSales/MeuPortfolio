@@ -1,0 +1,20 @@
+# Terminações de linha por tipo de arquivo.
+#
+# Sem isto, o que chega ao disco depende do `core.autocrlf` de cada máquina.
+# Quem clona com `autocrlf=false` (a opção "checkout as-is" do instalador do
+# Git para Windows) recebe os `.bat` com LF, e o cmd.exe lida mal com eles:
+# o sintoma típico é `goto` não achar um rótulo que está logo ali.
+#
+# O oposto também morde: um `.sh` com CRLF faz o kernel procurar o
+# interpretador "/bin/bash\r" e responder "bad interpreter".
+#
+# Os arquivos continuam em LF dentro do repositório; isto governa só o
+# checkout.
+
+* text=auto
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+*.sh text eol=lf

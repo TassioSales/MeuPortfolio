@@ -59,7 +59,7 @@ REM vazia e sobe uma stack sem chave de API e sem segredo de webhook.
 if not exist .env (
     echo.
     echo [ERROR] .env not found
-    echo Run setup.bat first — it creates .env from .env.example.
+    echo Run setup.bat first - it creates .env from .env.example.
     echo Then fill in ANTHROPIC_API_KEY, EVOLUTION_API_KEY and WEBHOOK_SECRET.
     echo.
     pause
@@ -74,10 +74,23 @@ if "%1"=="" (
     goto :start_services
 )
 
-if /i "%1"=="dev" set MODE=dev & shift
-if /i "%1"=="prod" set MODE=prod & shift
+REM `if cond set X=1 & shift` nao faz o que parece: o cmd trata o `&` como
+REM separador de comandos da linha inteira, entao o `shift` roda sempre, com
+REM ou sem a condicao. Como havia dois, %1 chegava vazio nas comparacoes
+REM abaixo e `run.bat logs`, `stop` e `clean` caiam todos no start_services.
+REM De quebra, o valor de MODE ficava com um espaco no fim.
+if /i "%1"=="dev" (
+    set MODE=dev
+    shift
+)
+if /i "%1"=="prod" (
+    set MODE=prod
+    shift
+)
+REM Os parenteses do texto precisam de escape: dentro de um bloco `( )` o
+REM primeiro `)` sem `^` fecha o bloco antes da hora.
 if /i "%1"=="logs" (
-    echo Showing logs... (Press Ctrl+C to stop)
+    echo Showing logs... ^(Press Ctrl+C to stop^)
     docker compose -f docker-compose.yml logs -f backend
     exit /b 0
 )
@@ -144,7 +157,7 @@ if %errorlevel% equ 0 (
 
 set /a retry=retry+1
 if %retry% lss %max_retries% (
-    echo [INFO] Waiting for API... (attempt %retry%/%max_retries%)
+    echo [INFO] Waiting for API... ^(attempt %retry%/%max_retries%^)
     goto :health_check
 )
 
@@ -165,7 +178,7 @@ if %errorlevel% equ 0 (
 timeout /t 2 /nobreak >nul
 set /a retry=retry+1
 if %retry% lss %max_retries% (
-    echo [INFO] Waiting for frontend... (attempt %retry%/%max_retries%)
+    echo [INFO] Waiting for frontend... ^(attempt %retry%/%max_retries%^)
     goto :frontend_loop
 )
 

@@ -21,7 +21,9 @@ pydantic-settings==2.1.0
 pyjwt==2.8.0
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
-bcrypt==4.1.1
+# passlib 1.7.4 não lê a versão do bcrypt >= 4.1 e cai num backend de
+# fallback, cuspindo traceback a cada hash. 4.0.1 é a última compatível.
+bcrypt==4.0.1
 
 # AI/LLM
 anthropic==0.7.0

@@ -64,7 +64,11 @@ services:
       - ./backend:/app
     networks:
       - laquilaia_network
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    # As migrações rodam antes do servidor: a aplicação não cria mais o
+    # schema sozinha, então subir sem `alembic upgrade` deixaria o banco vazio.
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
   frontend:
     build:

@@ -120,11 +120,31 @@ if [ $retry -ge $max_retries ]; then
     echo "[WARNING] API health check timed out, but services may still be starting"
 fi
 
+# Wait for the Next.js dev server (first boot compiles, so it lags the API)
+retry=0
+max_retries=30
+
+while [ $retry -lt $max_retries ]; do
+    if curl -s http://localhost:3000 &> /dev/null; then
+        echo "[OK] Frontend is ready at http://localhost:3000"
+        break
+    fi
+
+    sleep 2
+    retry=$((retry + 1))
+    echo "[INFO] Waiting for frontend... (attempt $retry/$max_retries)"
+done
+
+if [ $retry -ge $max_retries ]; then
+    echo "[WARNING] Frontend check timed out, but it may still be compiling"
+fi
+
 echo ""
 echo "========================================"
 echo " Ready!"
 echo "========================================"
 echo ""
+echo "Dashboard:        http://localhost:3000"
 echo "Backend API:      http://localhost:8000"
 echo "Documentation:    http://localhost:8000/docs"
 echo "Database:         PostgreSQL on localhost:5432"
@@ -135,12 +155,12 @@ sleep 3
 
 # Try to open browser (works on most Linux/Mac systems)
 if command -v xdg-open &> /dev/null; then
-    xdg-open http://localhost:8000/docs &
+    xdg-open http://localhost:3000 &
 elif command -v open &> /dev/null; then
-    open http://localhost:8000/docs &
+    open http://localhost:3000 &
 else
     echo "[INFO] Manual browser opening not supported on this system"
-    echo "[INFO] Please visit http://localhost:8000/docs manually"
+    echo "[INFO] Please visit http://localhost:3000 manually"
 fi
 
 echo ""

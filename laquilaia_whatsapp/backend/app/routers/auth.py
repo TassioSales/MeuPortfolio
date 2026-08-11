@@ -7,6 +7,7 @@ from app.db.database import get_db_session
 from app.db.models import User
 from app.models.schemas import UserCreate, UserLogin, UserResponse, TokenResponse
 from app.services.auth_service import auth_service
+from app.utils.auth_middleware import get_current_user
 from app.utils.exceptions import UserAlreadyExistsException, InvalidCredentialsException
 from app.utils.logger import logger
 
@@ -156,6 +157,41 @@ async def refresh_token(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error during token refresh",
+        )
+
+
+@router.get("/me", response_model=UserResponse)
+async def get_me(
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """Return the profile of the user owning the current access token."""
+    try:
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalars().first()
+
+        if not user:
+            logger.warning(f"⚠️ Token valid but user not found: {user_id}")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found",
+            )
+
+        return UserResponse(
+            id=user.id,
+            email=user.email,
+            nome=user.nome,
+            status=user.status,
+            data_criacao=user.data_criacao,
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error fetching current user: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error fetching current user",
         )
 
 

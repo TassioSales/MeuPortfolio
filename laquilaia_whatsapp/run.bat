@@ -106,7 +106,7 @@ timeout /t 2 /nobreak >nul
 curl -s http://localhost:8000/health >nul 2>&1
 if %errorlevel% equ 0 (
     echo [OK] Backend API is ready at http://localhost:8000
-    goto :open_browser
+    goto :frontend_check
 )
 
 set /a retry=retry+1
@@ -118,12 +118,34 @@ if %retry% lss %max_retries% (
 echo [WARNING] API health check timed out, but services may still be starting
 echo.
 
+REM Wait for the Next.js dev server (first boot compiles, so it lags the API)
+:frontend_check
+set retry=0
+
+:frontend_loop
+curl -s http://localhost:3000 >nul 2>&1
+if %errorlevel% equ 0 (
+    echo [OK] Frontend is ready at http://localhost:3000
+    goto :open_browser
+)
+
+timeout /t 2 /nobreak >nul
+set /a retry=retry+1
+if %retry% lss %max_retries% (
+    echo [INFO] Waiting for frontend... (attempt %retry%/%max_retries%)
+    goto :frontend_loop
+)
+
+echo [WARNING] Frontend check timed out, but it may still be compiling
+echo.
+
 :open_browser
 echo.
 echo ========================================
 echo  Ready!
 echo ========================================
 echo.
+echo Dashboard:        http://localhost:3000
 echo Backend API:      http://localhost:8000
 echo Documentation:    http://localhost:8000/docs
 echo Database:         PostgreSQL on localhost:5432
@@ -133,7 +155,7 @@ echo [INFO] Opening browser...
 timeout /t 3 /nobreak >nul
 
 REM Try to open browser
-start http://localhost:8000/docs
+start http://localhost:3000
 
 echo.
 echo [INFO] Services running in the background

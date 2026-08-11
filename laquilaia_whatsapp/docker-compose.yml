@@ -66,6 +66,26 @@ services:
       - laquilaia_network
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: laquilaia_frontend
+    environment:
+      # URL usada pelo browser, por isso é localhost e não o host do serviço.
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      # Mantém o node_modules da imagem, senão o bind mount o esconde.
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - laquilaia_network
+
 volumes:
   postgres_data:
   redis_data:

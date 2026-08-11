@@ -190,9 +190,13 @@ proteção nenhuma.
 
 ## 8. Pendências conhecidas
 
-**SDK Anthropic desatualizado.** `anthropic==0.7.0` é bem antigo. O modelo
-default já é `claude-sonnet-5`, mas atualizar o SDK é mudança maior: os testes
-de tratamento de erro dependem das assinaturas de exceção da versão atual.
+**Nenhuma chamada real ao Claude foi feita.** O SDK está em
+`anthropic==0.121.0` e o corpo da requisição foi conferido byte a byte com
+`httpx.MockTransport`, mas sem `ANTHROPIC_API_KEY` de verdade nada chegou à
+API da Anthropic. A lista de modelos que aceitam `temperature`
+(`MODELOS_QUE_ACEITAM_TEMPERATURA`, em `app/services/llm_service.py`) vem da
+documentação, não de uma consulta à Models API — se o primeiro deploy com
+chave devolver 400 de parâmetro, é ali que se ajusta.
 
 **Pausa humana: a tela existe** em `/dashboard/conversations`. O operador vê a
 fila de atendimentos, lê a conversa e assume; a IA para de responder e as

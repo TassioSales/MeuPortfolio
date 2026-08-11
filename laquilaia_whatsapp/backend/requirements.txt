@@ -26,7 +26,7 @@ passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 
 # AI/LLM
-anthropic==0.7.0
+anthropic==0.121.0
 
 # Cache & Message Queue
 redis==5.0.0

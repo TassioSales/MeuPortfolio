@@ -35,7 +35,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **253 testes no backend, 117 no frontend.**
+Estado atual: **259 testes no backend, 117 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -124,6 +124,7 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Cliente de infra criado mas nunca conectado | `redis_client.connect()` não era chamado no lifespan: `self.redis` ficava `None`, todo cache estourava `AttributeError` e o `except` de cada método engolia. O Redis existia no compose e nunca foi usado |
 | `aclose()` no redis-py 5.0.0 | Só existe a partir do 5.0.1. Dentro de um `except Exception` vira "Redis indisponível" e os testes se pulam em silêncio |
 | Passar `user_id` opcional e esquecer de passá-lo | `get_rate_limit_status()` sem argumento lia o balde compartilhado e devolvia sempre zero |
+| Mandar `temperature` para modelo novo | Sonnet 5, Opus 5 e Opus 4.7+ recusam parâmetro de amostragem com **400**. Com o default `claude-sonnet-5`, *nenhuma* chamada ao Claude podia dar certo. Ver `MODELOS_QUE_ACEITAM_TEMPERATURA` |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)
 só apareceram quando o cliente que consome o endpoint foi construído. Ao
@@ -146,8 +147,10 @@ exige mudar o outro. O mesmo vale para os nomes de evento em `ws/manager.py` e
    inteira (ver `GUIA_DEPLOY.md` §6), mas falta o `docker compose up`: os
    `Dockerfile`, o healthcheck do `depends_on` e a rede do compose seguem sem
    exercício.
-2. **`anthropic==0.7.0`** desatualizado — atualizar quebra os testes de erro,
-   que dependem das assinaturas de exceção da versão atual.
+2. **Nenhuma chamada real ao Claude.** O SDK está em `anthropic==0.121.0` e o
+   corpo da requisição foi conferido com `httpx.MockTransport`, mas sem chave
+   de verdade nada chegou à API. A lista de modelos que aceitam `temperature`
+   veio da documentação, não da Models API.
 3. **O operador não responde pelo painel.** Ele assume a conversa e a IA para,
    mas mandar a mensagem ao cliente ainda é fora do sistema — não há endpoint
    de envio avulso pela Evolution API.

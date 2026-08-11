@@ -1,8 +1,28 @@
 # Guia de Integração Claude LLM - L'Aquila AI
 
-## 🤖 Integração Claude 3.5 Sonnet
+## 🤖 Integração Claude
 
-O backend integra o modelo Claude 3.5 Sonnet via API oficial da Anthropic. Cada mensagem é processada com o prompt específico do agente e contexto de conversa.
+O backend fala com a API oficial da Anthropic pelo SDK `anthropic` (pinado em
+`0.121.0`). Cada mensagem é processada com o prompt específico do agente e o
+contexto da conversa. O modelo vem de `CLAUDE_MODEL`, default
+`claude-sonnet-5`.
+
+### Parâmetros de amostragem dependem do modelo
+
+`temperature` **não** é enviado com o modelo default. Os modelos mais novos
+(Sonnet 5, Opus 5, Opus 4.7 em diante) recusam parâmetros de amostragem com
+**400**, então mandar sempre derrubaria toda chamada.
+
+Quem decide é `MODELOS_QUE_ACEITAM_TEMPERATURA`, em
+`app/services/llm_service.py`. A lista é de quem **aceita**, não de quem
+recusa: omitir `temperature` funciona em qualquer modelo, então um modelo
+lançado depois deste código cai sozinho no caminho seguro em vez de quebrar até
+alguém lembrar de atualizar uma lista de bloqueio.
+
+Consequência prática: o campo `temperatura` do agente continua gravado e
+editável no formulário, mas **é inerte enquanto o modelo for o default**.
+Aponte `CLAUDE_MODEL` para uma família que aceite (`claude-sonnet-4-6`,
+`claude-haiku-4-5`, `claude-3-*`) se precisar dele. `max_tokens` vai sempre.
 
 ## 📋 Endpoints de Chat
 
@@ -329,7 +349,8 @@ docker-compose exec backend pytest tests/test_llm_service.py --cov=app.services.
 - ❌ Não inclua histórico completo (economia de tokens é crítica)
 - ❌ Não ignore rate limits
 - ❌ Não coloque API key no código
-- ❌ Não use temperatura 2.0 sem testar
+- ❌ Não use temperatura 2.0 sem testar — e confira antes se o modelo
+  configurado sequer aceita o parâmetro (ver a seção de amostragem no topo)
 - ❌ Não faça requisições concorrentes sem limite
 - ❌ Não guarde conversas completas sem limpeza periódica
 

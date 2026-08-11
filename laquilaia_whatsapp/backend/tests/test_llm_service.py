@@ -264,7 +264,11 @@ class TestGenerateResponse:
 
     @patch("app.services.llm_service.Anthropic")
     async def test_generate_response_uses_agent_temperature(self, mock_anthropic):
-        """Test that agent temperature is used in API call."""
+        """A temperatura do agente chega à API — nos modelos que a aceitam.
+
+        O modelo é fixado aqui porque o default (`claude-sonnet-5`) recusa o
+        parâmetro; quem cobre esse recorte é `TestParametrosDeAmostragem`.
+        """
         mock_message = MagicMock()
         mock_message.content = [MagicMock(text="Response")]
         mock_message.usage = MagicMock(input_tokens=5, output_tokens=3)
@@ -272,6 +276,7 @@ class TestGenerateResponse:
         mock_client = MagicMock()
         mock_client.messages.create.return_value = mock_message
         self.service.client = mock_client
+        self.service.model = "claude-sonnet-4-6"
 
         self.agent.temperatura = 1.5
 
@@ -426,6 +431,104 @@ class TestRateLimitTracking:
 
         assert len(self.backend._entries[bucket]) == 1
         assert (await self.service.get_rate_limit_status())["calls_used"] == 1
+
+
+class TestParametrosDeAmostragem:
+    """
+    `temperature` só vai para os modelos que o aceitam.
+
+    Os modelos novos (Opus 4.7 em diante, Sonnet 5, Opus 5, Fable 5) recusam
+    parâmetros de amostragem com 400. O default do projeto é
+    `claude-sonnet-5`, então mandar sempre — como o código fazia — derrubaria
+    toda chamada ao Claude. Os testes olham o corpo HTTP de verdade, e não um
+    mock do cliente: o ponto é o que sai na requisição.
+    """
+
+    def _corpo_enviado(self, modelo: str, temperatura: float | None = 0.7) -> dict:
+        import json
+
+        import anthropic
+        import httpx
+
+        capturado: dict = {}
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            capturado.update(json.loads(request.content))
+            return httpx.Response(
+                200,
+                json={
+                    "id": "msg_1", "type": "message", "role": "assistant",
+                    "model": modelo, "content": [{"type": "text", "text": "ok"}],
+                    "stop_reason": "end_turn", "stop_sequence": None,
+                    "usage": {"input_tokens": 1, "output_tokens": 1},
+                },
+            )
+
+        service = LLMService()
+        service.model = modelo
+        service.rate_limiter = RateLimiter(
+            max_calls_per_minute=60, max_tokens_per_minute=40000,
+            redis_backend=_SemRedis(),
+        )
+        service.client = anthropic.Anthropic(
+            api_key="sk-ant-teste",
+            http_client=httpx.Client(transport=httpx.MockTransport(handler)),
+        )
+
+        agent = Agent(
+            id="ag", user_id="u", nome="A", system_prompt="p",
+            temperatura=temperatura, max_tokens=512, status="ativo",
+        )
+        import asyncio
+
+        asyncio.run(service.generate_response(agent, "oi"))
+        return capturado
+
+    def test_modelo_novo_nao_recebe_temperatura(self):
+        for modelo in ("claude-sonnet-5", "claude-opus-5", "claude-opus-4-7"):
+            assert "temperature" not in self._corpo_enviado(modelo), modelo
+
+    def test_modelo_antigo_ainda_recebe_temperatura(self):
+        corpo = self._corpo_enviado("claude-sonnet-4-6")
+
+        assert corpo["temperature"] == 0.7
+
+    def test_modelo_desconhecido_cai_no_caminho_seguro(self):
+        """
+        A lista é de quem aceita, não de quem recusa.
+
+        Omitir `temperature` é aceito por todos os modelos; enviá-lo quebra nos
+        novos. Um modelo lançado depois deste código precisa, portanto, cair no
+        lado que não quebra.
+        """
+        assert "temperature" not in self._corpo_enviado("claude-modelo-do-futuro-9")
+
+    def test_max_tokens_do_agente_sempre_vai(self):
+        assert self._corpo_enviado("claude-sonnet-5")["max_tokens"] == 512
+
+
+class TestExcecoesDoSDK:
+    """
+    As exceções tratadas existem e mantêm a hierarquia que o `except` assume.
+
+    O `llm_service` captura RateLimitError antes de APIError; se a herança
+    mudasse numa atualização do SDK, o primeiro `except` deixaria de pegar e o
+    erro cairia no genérico — sem quebrar teste nenhum.
+    """
+
+    def test_hierarquia_das_excecoes(self):
+        import anthropic
+
+        assert issubclass(anthropic.RateLimitError, anthropic.APIError)
+        assert issubclass(anthropic.APIConnectionError, anthropic.APIError)
+
+    def test_ordem_do_except_pega_o_mais_especifico(self):
+        import anthropic
+
+        # RateLimitError precisa ser mais específico que APIError, senão o
+        # `except APIError` de llm_service.py o engoliria primeiro.
+        assert anthropic.RateLimitError is not anthropic.APIError
+        assert issubclass(anthropic.RateLimitError, anthropic.APIStatusError)
 
 
 class TestServiceInitialization:

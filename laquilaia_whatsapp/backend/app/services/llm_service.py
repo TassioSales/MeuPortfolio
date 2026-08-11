@@ -12,6 +12,31 @@ from app.db.models import Agent, Message, Conversation
 import asyncio
 
 
+# Famílias de modelo que ainda aceitam parâmetros de amostragem.
+#
+# A lista é de quem **aceita**, e não de quem recusa, de propósito: omitir
+# `temperature` é aceito por todos os modelos, enquanto enviá-lo devolve 400
+# nos mais novos (Opus 4.7 em diante, Sonnet 5, Opus 5, Fable 5). Assim um
+# modelo lançado depois deste código cai sozinho no caminho seguro, em vez de
+# quebrar até alguém lembrar de atualizar uma lista de bloqueio.
+MODELOS_QUE_ACEITAM_TEMPERATURA = (
+    "claude-3",
+    "claude-sonnet-4-0",
+    "claude-sonnet-4-5",
+    "claude-sonnet-4-6",
+    "claude-opus-4-0",
+    "claude-opus-4-1",
+    "claude-opus-4-5",
+    "claude-opus-4-6",
+    "claude-haiku-4-5",
+)
+
+
+def aceita_temperatura(modelo: str) -> bool:
+    """Se este modelo aceita `temperature` na requisição."""
+    return modelo.startswith(MODELOS_QUE_ACEITAM_TEMPERATURA)
+
+
 class LLMService:
     """Service for managing Claude LLM interactions."""
 
@@ -45,6 +70,27 @@ class LLMService:
     def max_tokens_per_minute(self, value: int) -> None:
         self.rate_limiter.max_tokens_per_minute = value
 
+    def _parametros_do_modelo(self, agent: Agent) -> dict:
+        """
+        Parâmetros da requisição que dependem do modelo configurado.
+
+        `temperature` só entra quando o modelo aceita. Nos modelos novos ele
+        é recusado com 400 — e o agente guarda o valor porque o formulário
+        deixa escolher, então mandar sempre derrubaria toda chamada com o
+        default `claude-sonnet-5`.
+        """
+        params = {"max_tokens": agent.max_tokens or settings.max_tokens}
+
+        if aceita_temperatura(self.model):
+            params["temperature"] = agent.temperatura or settings.temperature
+        elif agent.temperatura is not None:
+            logger.debug(
+                f"🌡️ temperatura {agent.temperatura} ignorada: {self.model} "
+                "não aceita o parâmetro"
+            )
+
+        return params
+
     async def generate_response(
         self,
         agent: Agent,
@@ -75,10 +121,9 @@ class LLMService:
             # Call Claude API
             response = self.client.messages.create(
                 model=self.model,
-                max_tokens=agent.max_tokens or settings.max_tokens,
-                temperature=agent.temperatura or settings.temperature,
                 system=agent.system_prompt,
                 messages=messages,
+                **self._parametros_do_modelo(agent),
             )
 
             # Extract response and token usage
@@ -142,10 +187,9 @@ class LLMService:
             # Stream from Claude API
             with self.client.messages.stream(
                 model=self.model,
-                max_tokens=agent.max_tokens or settings.max_tokens,
-                temperature=agent.temperatura or settings.temperature,
                 system=agent.system_prompt,
                 messages=messages,
+                **self._parametros_do_modelo(agent),
             ) as stream:
                 total_tokens = 0
                 for text in stream.text_stream:

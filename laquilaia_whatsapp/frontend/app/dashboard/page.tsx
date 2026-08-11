@@ -17,7 +17,7 @@ const QUICK_LINKS: QuickLink[] = [
     title: "Agentes",
     description: "Crie e edite os prompts dos seus agentes de IA.",
     icon: "🤖",
-    available: false,
+    available: true,
   },
   {
     href: "/dashboard/chat-test",

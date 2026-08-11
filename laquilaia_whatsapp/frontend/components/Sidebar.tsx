@@ -14,7 +14,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Visão geral", icon: "📊" },
-  { href: "/dashboard/agents", label: "Agentes", icon: "🤖", disabled: true },
+  { href: "/dashboard/agents", label: "Agentes", icon: "🤖" },
   { href: "/dashboard/chat-test", label: "Chat de teste", icon: "💬", disabled: true },
   { href: "/dashboard/kanban", label: "Kanban CRM", icon: "🗂️", disabled: true },
   { href: "/dashboard/metrics", label: "Métricas", icon: "📈", disabled: true },

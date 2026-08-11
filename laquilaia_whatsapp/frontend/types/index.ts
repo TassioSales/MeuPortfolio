@@ -48,6 +48,27 @@ export interface Agent {
   data_atualizacao: string;
 }
 
+/** Corpo de `POST /api/v1/agents` (schema `AgentCreate`). */
+export interface AgentInput {
+  nome: string;
+  descricao?: string | null;
+  system_prompt: string;
+  temperatura: number;
+  max_tokens: number;
+}
+
+/** Corpo de `PUT /api/v1/agents/{id}` — todos os campos são opcionais. */
+export type AgentUpdateInput = Partial<AgentInput>;
+
+/** Limites validados pelo backend em `agent_service.create_agent`. */
+export const AGENT_LIMITS = {
+  temperaturaMin: 0,
+  temperaturaMax: 2,
+  maxTokensMin: 1,
+  maxTokensMax: 4096,
+  nomeMaxLength: 255,
+} as const;
+
 // ========== Erros ==========
 
 export interface ApiErrorBody {

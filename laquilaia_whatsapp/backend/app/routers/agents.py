@@ -62,12 +62,14 @@ async def list_agents(
     db: AsyncSession = Depends(get_db_session),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
-    status: str = Query(None),
+    # Sem o alias, o parâmetro sombreia o módulo `status` do FastAPI e o
+    # `status.HTTP_500_...` do except abaixo estoura AttributeError.
+    status_filter: str = Query(None, alias="status"),
 ):
     """List all agents for the current user."""
     try:
         return await agent_service.list_agents(
-            user_id, db, skip=skip, limit=limit, status=status
+            user_id, db, skip=skip, limit=limit, status=status_filter
         )
     except Exception as e:
         logger.error(f"❌ Error listing agents: {e}")

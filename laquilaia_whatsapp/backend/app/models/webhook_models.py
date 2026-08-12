@@ -28,12 +28,36 @@ class MessageModel(BaseModel):
     # qrcode.updated...) chegam sem esses campos — exigi-los faria o webhook
     # devolver 422 para tráfego legítimo da Evolution API.
     messageTimestamp: Optional[int] = None
-    messageType: Optional[str] = None  # "textMessage", "imageMessage", ...
+    messageType: Optional[str] = None
     messageBody: Optional[str] = None
+    # Onde a Evolution v2 põe o texto de verdade. Verificado contra a v2.3.7
+    # com WhatsApp pareado: mensagem simples chega como
+    # `message: {"conversation": "oi"}`, e mensagem com citação ou link como
+    # `extendedTextMessage: {"text": "..."}`. O `messageBody` acima não existe
+    # nesse formato — era por isso que toda mensagem real virava
+    # "[non-text message]" e era descartada.
+    conversation: Optional[str] = None
+    extendedTextMessage: Optional[dict] = None
     mimetype: Optional[str] = None
     fileName: Optional[str] = None
     caption: Optional[str] = None
     media: Optional[str] = None
+
+    @property
+    def texto(self) -> Optional[str]:
+        """O texto da mensagem, venha de onde vier."""
+        if self.conversation:
+            return self.conversation
+        if self.extendedTextMessage:
+            return self.extendedTextMessage.get("text")
+        return self.messageBody
+
+
+# Tipos que o orquestrador sabe tratar. `conversation` é o texto simples da
+# Evolution v2; `extendedTextMessage` é o texto com citação ou prévia de link;
+# `textMessage` é o nome que este projeto assumia antes de ver um payload real,
+# mantido porque os testes e as ferramentas internas o usam.
+TIPOS_DE_TEXTO = {"conversation", "extendedTextMessage", "textMessage"}
 
 
 class DataModel(BaseModel):
@@ -43,8 +67,21 @@ class DataModel(BaseModel):
     pushName: Optional[str] = None
     instanceData: Optional[InstanceDataModel] = None
     message: MessageModel = Field(default_factory=MessageModel)
+    # Na Evolution v2 o tipo é irmão de `message`, não filho. Declarado só
+    # dentro de MessageModel, ficava sempre None e o filtro de tipo do router
+    # descartava tudo.
+    messageType: Optional[str] = None
     owner: Optional[str] = None
     senderKeyDistributionMessage: Optional[dict] = None
+
+    @property
+    def tipo(self) -> Optional[str]:
+        """O tipo da mensagem, nos dois níveis em que ele pode aparecer."""
+        return self.messageType or self.message.messageType
+
+    @property
+    def e_texto(self) -> bool:
+        return self.tipo in TIPOS_DE_TEXTO
 
 
 class WebhookPayload(BaseModel):

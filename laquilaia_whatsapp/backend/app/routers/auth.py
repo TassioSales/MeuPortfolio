@@ -2,10 +2,17 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import func, select
 from app.db.database import get_db_session
 from app.db.models import User
-from app.models.schemas import UserCreate, UserLogin, UserResponse, TokenResponse
+from app.utils.auth_middleware import require_admin
+from app.models.schemas import (
+    TokenResponse,
+    UserCreate,
+    UserCreateByAdmin,
+    UserLogin,
+    UserResponse,
+)
 from app.services.auth_service import auth_service
 from app.utils.auth_middleware import get_current_user
 from app.utils.exceptions import UserAlreadyExistsException, InvalidCredentialsException
@@ -22,7 +29,17 @@ async def register(
     user_data: UserCreate,
     db: AsyncSession = Depends(get_db_session),
 ):
-    """Register a new user."""
+    """
+    Cria a conta do administrador — uma única vez.
+
+    O cadastro é aberto enquanto não existe ninguém, e fecha no primeiro
+    usuário criado. É o que resolve o ovo e a galinha sem script de bootstrap
+    nem senha em variável de ambiente: quem instala o sistema abre a tela e
+    cria a própria conta; qualquer um que chegue depois encontra a porta
+    fechada.
+
+    Operadores passam a ser criados pelo administrador, em `POST /auth/users`.
+    """
     try:
         # Check if user already exists
         result = await db.execute(
@@ -34,6 +51,17 @@ async def register(
             logger.warning(f"⚠️ Registration attempt with existing email: {user_data.email}")
             raise UserAlreadyExistsException()
 
+        total = await db.execute(select(func.count(User.id)))
+        if (total.scalar() or 0) > 0:
+            logger.warning("⚠️ Cadastro público recusado: o sistema já tem administrador")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=(
+                    "O cadastro está fechado. Peça ao administrador para criar "
+                    "o seu acesso."
+                ),
+            )
+
         # Create new user
         hashed_password = auth_service.hash_password(user_data.senha)
 
@@ -42,6 +70,8 @@ async def register(
             nome=user_data.nome,
             senha_hash=hashed_password,
             status="ativo",
+            # O primeiro é o dono do sistema.
+            papel="admin",
         )
 
         db.add(new_user)
@@ -242,3 +272,52 @@ async def verify_token(
 
 # Import settings for token expiry
 from app.config import settings
+
+
+@router.post(
+    "/users",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def criar_usuario(
+    dados: UserCreateByAdmin,
+    _admin: str = Depends(require_admin),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Cria um acesso — só o administrador.
+
+    É por aqui que entram os operadores, agora que o cadastro público fecha no
+    primeiro usuário. O papel vem do corpo e é validado pelo schema: nada de
+    string livre virando privilégio.
+    """
+    try:
+        existente = await db.execute(select(User).where(User.email == dados.email))
+        if existente.scalars().first():
+            raise UserAlreadyExistsException()
+
+        usuario = User(
+            email=dados.email,
+            nome=dados.nome,
+            senha_hash=auth_service.hash_password(dados.senha),
+            status="ativo",
+            papel=dados.papel,
+        )
+        db.add(usuario)
+        await db.commit()
+        await db.refresh(usuario)
+
+        logger.info(f"👤 Acesso criado: {usuario.email} ({usuario.papel})")
+        return UserResponse.model_validate(usuario)
+
+    except UserAlreadyExistsException:
+        raise
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Erro ao criar acesso: {e}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro ao criar acesso",
+        )

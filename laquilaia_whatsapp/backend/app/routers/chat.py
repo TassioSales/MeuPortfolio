@@ -12,7 +12,7 @@ from app.models.llm_models import (
 )
 from app.db.models import Agent, Caso, Conversation, Lead, LeadDetails, Message
 from app.services.llm_service import llm_service
-from app.utils.auth_middleware import get_current_user
+from app.utils.auth_middleware import get_current_user, require_admin
 from app.utils.exceptions import ValidationException, NotFoundException
 from app.utils.logger import logger
 from sqlalchemy import select
@@ -77,7 +77,7 @@ async def _get_or_create_test_conversation(
 async def chat_with_agent(
     agent_id: str,
     request: MessageRequest,
-    user_id: str = Depends(get_current_user),
+    user_id: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -295,7 +295,7 @@ async def reset_chat_history(
 async def test_agent(
     agent_id: str,
     request: MessageRequest,
-    user_id: str = Depends(get_current_user),
+    user_id: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """

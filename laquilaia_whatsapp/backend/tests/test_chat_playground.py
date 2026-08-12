@@ -4,6 +4,7 @@ Testes do playground de chat (Fase 12).
 Cobrem o que o frontend precisa: continuar a mesma conversa entre mensagens,
 carregar o histórico ao abrir a página e resetar a conversa.
 """
+from tests.conftest import criar_acesso
 
 import pytest
 from unittest.mock import patch, AsyncMock
@@ -27,7 +28,7 @@ def _auth_headers(suffix: str) -> dict:
         "nome": "Playground User",
         "senha": "SenhaSegura123!",
     }
-    client.post("/api/v1/auth/register", json=credentials)
+    criar_acesso(client, credentials["email"], credentials["senha"], credentials.get("nome", "Teste"))
     login = client.post(
         "/api/v1/auth/login",
         json={"email": credentials["email"], "senha": credentials["senha"]},

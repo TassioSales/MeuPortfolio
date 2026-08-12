@@ -18,6 +18,12 @@ class User(Base):
     nome = Column(String(255), nullable=False)
     senha_hash = Column(String(255), nullable=False)
     status = Column(String(50), default="ativo")  # ativo, inativo, bloqueado
+    # admin configura o sistema; operador só atende.
+    #
+    # O default é o menor privilégio: um papel que chega vazio por qualquer
+    # caminho — importação, script, migração esquecida — não pode virar
+    # administrador por omissão.
+    papel = Column(String(20), default="operador", nullable=False)
     data_criacao = Column(DateTime, default=datetime.utcnow)
     data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

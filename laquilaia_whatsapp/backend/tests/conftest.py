@@ -28,6 +28,11 @@ from sqlalchemy import text
 from fastapi.testclient import TestClient
 from app.main import app
 from app.db.database import engine
+
+
+# Credenciais do primeiro acesso criado no teste corrente. O cadastro público
+# fecha depois dele, então é por ele que os demais entram.
+_PRIMEIRO_ACESSO: dict = {}
 from app.db.models import Base
 
 
@@ -62,6 +67,8 @@ def clean_tables(database_schema):
     classes de teste roda antes das fixtures de função.
     """
     yield
+
+    _PRIMEIRO_ACESSO.clear()
 
     async def truncate():
         async with engine.begin() as conn:
@@ -108,3 +115,39 @@ def sample_conversation_data():
         "phone_number": "+5561999887234",
         "status": "ativa",
     }
+
+
+
+def criar_acesso(client, email: str, senha: str, nome: str = "Teste", papel: str = "admin"):
+    """
+    Garante um acesso utilizável no teste.
+
+    O `POST /auth/register` fecha no primeiro usuário — é a porta de entrada
+    única do produto, e os testes de autorização precisam de dois donos
+    diferentes. Este helper segue o caminho real: o primeiro se cadastra e
+    vira administrador; os demais são criados por ele, em `POST /auth/users`.
+
+    O papel padrão é `admin` porque quem cria agente nos testes é o dono do
+    sistema; para exercitar o operador, passe `papel="operador"`.
+    """
+    corpo = {"email": email, "nome": nome, "senha": senha}
+
+    resposta = client.post("/api/v1/auth/register", json=corpo)
+    if resposta.status_code == 201:
+        _PRIMEIRO_ACESSO.setdefault("email", email)
+        _PRIMEIRO_ACESSO.setdefault("senha", senha)
+        return
+
+    if not _PRIMEIRO_ACESSO:
+        raise AssertionError(
+            "Cadastro fechado e nenhum acesso conhecido neste teste — "
+            "chame criar_acesso() para o administrador antes dos demais."
+        )
+
+    admin = client.post("/api/v1/auth/login", json=_PRIMEIRO_ACESSO)
+    token = admin.json()["access_token"]
+    client.post(
+        "/api/v1/auth/users",
+        json={**corpo, "papel": papel},
+        headers={"Authorization": f"Bearer {token}"},
+    )

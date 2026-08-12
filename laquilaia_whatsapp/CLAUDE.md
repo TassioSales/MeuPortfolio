@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **331 testes no backend, 126 no frontend.**
+Estado atual: **337 testes no backend, 126 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -79,6 +79,14 @@ pelo dono (`Agent.user_id == user_id`), respondendo **404, não 403**, para não
 revelar que o agente existe. Vale também para o WebSocket, recusado antes do
 `accept()`. `tests/test_authorization.py` cobre os 12 endpoints em três
 cenários.
+
+**Papéis: admin configura, operador atende.** O cadastro público fecha no
+primeiro usuário, que vira administrador — é o que resolve o bootstrap sem
+script nem senha em variável de ambiente. Os demais acessos saem de
+`POST /auth/users`, só para admin. Criar, editar e excluir agente, e o chat de
+teste, exigem admin; listar continua liberado, porque a tela de atendimentos
+tem uma aba por agente. O papel é lido do banco a cada requisição, não do
+token: rebaixar alguém precisa valer na hora, não daqui a trinta minutos.
 
 **Schema é do Alembic.** `init_db()` não cria tabelas. `create_all` cria o que
 falta mas nunca altera tabela existente — mascararia migração pendente até uma

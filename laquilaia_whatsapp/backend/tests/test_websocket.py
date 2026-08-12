@@ -5,6 +5,7 @@ A versão anterior do WebSocket não tinha autenticação e retransmitia o que o
 cliente enviava — qualquer conexão anônima podia injetar conteúdo falso no
 painel de todo mundo no mesmo canal. Os testes abaixo fixam as duas correções.
 """
+from tests.conftest import criar_acesso
 
 import pytest
 from fastapi.testclient import TestClient
@@ -28,7 +29,7 @@ def _register_and_login(suffix: str) -> tuple[dict, str]:
         "nome": "WS User",
         "senha": "SenhaSegura123!",
     }
-    client.post("/api/v1/auth/register", json=credentials)
+    criar_acesso(client, credentials["email"], credentials["senha"], credentials.get("nome", "Teste"))
     login = client.post(
         "/api/v1/auth/login",
         json={"email": credentials["email"], "senha": credentials["senha"]},

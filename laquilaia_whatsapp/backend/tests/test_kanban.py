@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, AsyncMock
 from app.main import app
+from tests.conftest import criar_acesso
 from app.db.models import Agent, KanbanColumn, KanbanCard, Lead, LeadDetails, Conversation
 
 client = TestClient(app)
@@ -19,7 +20,7 @@ class TestKanbanBoard:
             "nome": "Kanban Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": self.user_data["email"],
@@ -164,7 +165,7 @@ class TestMoveCard:
             "nome": "Move Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": self.user_data["email"],
@@ -297,7 +298,7 @@ class TestKanbanColumns:
             "nome": "Column Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": self.user_data["email"],
@@ -364,7 +365,7 @@ class TestKanbanIntegration:
             "nome": "Integration Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": self.user_data["email"],

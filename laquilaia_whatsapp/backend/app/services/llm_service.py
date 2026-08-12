@@ -38,6 +38,27 @@ def aceita_temperatura(modelo: str) -> bool:
     return modelo.startswith(MODELOS_QUE_ACEITAM_TEMPERATURA)
 
 
+def texto_da_resposta(response) -> str:
+    """
+    O texto da resposta, ignorando os blocos que não são texto.
+
+    `content[0].text` funcionou enquanto todo modelo devolvia texto e mais
+    nada. O Opus 5 raciocina por padrão: o primeiro bloco é um `ThinkingBlock`,
+    que não tem `.text`, e a chamada morria com `AttributeError` antes de
+    qualquer resposta chegar ao cliente. Foi o que aconteceu na primeira
+    chamada real com a chave da Anthropic.
+
+    Filtrar por `type == "text"` e juntar o que sobra vale para qualquer
+    modelo, com ou sem raciocínio, hoje e quando aparecer um bloco novo.
+    """
+    partes = [
+        bloco.text
+        for bloco in response.content
+        if getattr(bloco, "type", None) == "text"
+    ]
+    return "".join(partes)
+
+
 class LLMService:
     """Service for managing Claude LLM interactions."""
 
@@ -127,7 +148,17 @@ class LLMService:
         entrada = response.usage.input_tokens
         saida = response.usage.output_tokens
 
-        return response.content[0].text, {
+        texto = texto_da_resposta(response)
+        if not texto:
+            # Acontece quando o orçamento acaba durante o raciocínio: vem um
+            # bloco de pensamento, nenhum de texto, e `stop_reason` é
+            # "max_tokens". Sem este aviso o sintoma é o atendente mudo.
+            raise ValidationException(
+                f"{modelo} não devolveu texto (stop_reason={response.stop_reason}); "
+                "o max_tokens provavelmente acabou durante o raciocínio"
+            )
+
+        return texto, {
             "input_tokens": entrada,
             "output_tokens": saida,
             "total_tokens": entrada + saida,

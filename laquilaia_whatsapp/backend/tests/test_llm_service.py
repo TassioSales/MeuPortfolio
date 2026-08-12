@@ -165,7 +165,7 @@ class TestGenerateResponse:
         """Test successful response generation."""
         # Mock Claude response
         mock_message = MagicMock()
-        mock_message.content = [MagicMock(text="Hello! How can I help?")]
+        mock_message.content = [MagicMock(type="text", text="Hello! How can I help?")]
         mock_message.usage = MagicMock(
             input_tokens=10, output_tokens=5
         )
@@ -187,7 +187,7 @@ class TestGenerateResponse:
     async def test_generate_response_with_history(self, mock_anthropic):
         """Test response generation with conversation history."""
         mock_message = MagicMock()
-        mock_message.content = [MagicMock(text="Response with history")]
+        mock_message.content = [MagicMock(type="text", text="Response with history")]
         mock_message.usage = MagicMock(
             input_tokens=20, output_tokens=8
         )
@@ -270,7 +270,7 @@ class TestGenerateResponse:
         parâmetro; quem cobre esse recorte é `TestParametrosDeAmostragem`.
         """
         mock_message = MagicMock()
-        mock_message.content = [MagicMock(text="Response")]
+        mock_message.content = [MagicMock(type="text", text="Response")]
         mock_message.usage = MagicMock(input_tokens=5, output_tokens=3)
 
         mock_client = MagicMock()
@@ -289,7 +289,7 @@ class TestGenerateResponse:
     async def test_generate_response_uses_agent_max_tokens(self, mock_anthropic):
         """Test that agent max_tokens is used in API call."""
         mock_message = MagicMock()
-        mock_message.content = [MagicMock(text="Response")]
+        mock_message.content = [MagicMock(type="text", text="Response")]
         mock_message.usage = MagicMock(input_tokens=5, output_tokens=3)
 
         mock_client = MagicMock()
@@ -431,6 +431,62 @@ class TestRateLimitTracking:
 
         assert len(self.backend._entries[bucket]) == 1
         assert (await self.service.get_rate_limit_status())["calls_used"] == 1
+
+
+class TestLeituraDaResposta:
+    """
+    `content[0].text` quebrou na primeira chamada real com chave da Anthropic.
+
+    O Opus 5 raciocina por padrão e o primeiro bloco é um `ThinkingBlock`, que
+    não tem `.text`: a chamada morria com `AttributeError` antes de qualquer
+    resposta chegar ao cliente. Filtrar por tipo vale para qualquer modelo, com
+    ou sem raciocínio.
+    """
+
+    @staticmethod
+    def _bloco(tipo, **campos):
+        b = MagicMock()
+        b.type = tipo
+        for k, v in campos.items():
+            setattr(b, k, v)
+        return b
+
+    def test_ignora_bloco_de_raciocinio_e_devolve_o_texto(self):
+        from app.services.llm_service import texto_da_resposta
+
+        resposta = MagicMock()
+        resposta.content = [
+            self._bloco("thinking", thinking="deixa eu pensar"),
+            self._bloco("text", text="## Resumo\nCliente relata demissão."),
+        ]
+
+        assert texto_da_resposta(resposta) == "## Resumo\nCliente relata demissão."
+
+    def test_junta_varios_blocos_de_texto(self):
+        from app.services.llm_service import texto_da_resposta
+
+        resposta = MagicMock()
+        resposta.content = [
+            self._bloco("text", text="parte um "),
+            self._bloco("thinking", thinking="..."),
+            self._bloco("text", text="parte dois"),
+        ]
+
+        assert texto_da_resposta(resposta) == "parte um parte dois"
+
+    def test_so_raciocinio_e_nenhum_texto_da_zero(self):
+        """
+        Acontece quando o orçamento acaba no meio do raciocínio.
+
+        Devolver string vazia daqui mandaria uma mensagem em branco ao cliente;
+        quem chama transforma isso em erro com o `stop_reason` junto.
+        """
+        from app.services.llm_service import texto_da_resposta
+
+        resposta = MagicMock()
+        resposta.content = [self._bloco("thinking", thinking="pensei e acabou o teto")]
+
+        assert texto_da_resposta(resposta) == ""
 
 
 class TestParametrosDeAmostragem:

@@ -382,7 +382,10 @@ class TestEscolhaDoProvedor:
         servico = self._servico("k", httpx.MockTransport(explode))
 
         mensagem = MagicMock()
-        mensagem.content = [MagicMock(text="resposta do claude")]
+        # `type="text"`: a resposta real vem como lista de blocos tipados, e a
+        # leitura filtra por tipo desde que o Opus 5 passou a mandar o bloco de
+        # raciocínio na frente.
+        mensagem.content = [MagicMock(type="text", text="resposta do claude")]
         mensagem.usage = MagicMock(input_tokens=3, output_tokens=4)
         cliente_claude = MagicMock()
         cliente_claude.messages.create.return_value = mensagem

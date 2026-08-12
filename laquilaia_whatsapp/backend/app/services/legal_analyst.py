@@ -48,6 +48,16 @@ justifica pressa. Se nada indicar urgência, diga.
 O que enfraquece o caso, o que o cliente pode estar omitindo, e as perguntas \
 que faltaram na triagem.
 
+## Ficha
+Duas linhas, exatamente neste formato, para o sistema arquivar o caso:
+
+Área: uma de [trabalhista, familia, consumidor, previdenciario, civel, criminal, outro]
+Titular: nome de quem é parte no caso, ou "o próprio contato" quando for quem \
+está escrevendo
+
+O titular importa: quem manda a mensagem nem sempre é a parte. Um irmão \
+perguntando pelo divórcio da irmã traz um caso que não é dele.
+
 ## Regras
 
 - **Você não tem os documentos.** Trate tudo como versão do cliente: "o cliente \

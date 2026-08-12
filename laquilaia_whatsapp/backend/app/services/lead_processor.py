@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.db.models import Lead, LeadDetails, LeadTimeline, Conversation, KanbanCard, KanbanColumn, Agent
 from app.utils.logger import logger
+from app.services.caso_service import registrar_caso
 from app.services.legal_analyst import legal_analyst
 from app.utils.exceptions import ValidationException
 
@@ -344,8 +345,14 @@ class LeadProcessor:
             return
 
         parecer = await legal_analyst.analisar(conversation_id, db)
-        if parecer:
-            details.analise_preliminar = parecer
+        if not parecer:
+            return
+
+        details.analise_preliminar = parecer
+
+        # O mesmo parecer arquiva o caso. A ficha diz de que área ele é e
+        # quem é a parte — o contato pode estar trazendo assunto de terceiro.
+        await registrar_caso(lead, parecer, details.score_qualificacao or 0, db)
 
     async def _add_timeline(
         self,

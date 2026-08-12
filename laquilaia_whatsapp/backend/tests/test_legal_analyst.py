@@ -166,16 +166,24 @@ class TestPromptDoAnalista:
         ):
             assert secao in PROMPT_ANALISTA
 
-    def test_o_resumo_e_a_primeira_secao(self):
+    def test_resumo_primeiro_e_ficha_logo_em_seguida(self):
         """
+        A ordem das duas primeiras seções é estrutural, não estética.
+
         `caso_service._resumo_do_parecer` lê a primeira seção, qualquer que
-        seja o título dela. Se outra seção subir para o topo, o resumo do caso
-        no painel vira a lista de teses.
+        seja o título — se outra subir ao topo, o resumo do caso no painel vira
+        a lista de teses.
+
+        E a Ficha vem em segundo porque é ela que classifica o caso. No fim da
+        lista, ela é a primeira coisa que se perde quando o modelo estoura o
+        teto: no primeiro parecer real no Opus 5 saíram 19 mil caracteres
+        cortados, com análise excelente e nenhuma área — caso que o sistema não
+        consegue arquivar.
         """
         from app.services.legal_analyst import PROMPT_ANALISTA
 
         secoes = [l for l in PROMPT_ANALISTA.split("\n") if l.startswith("## ")]
-        assert secoes[0] == "## Resumo"
+        assert secoes[:2] == ["## Resumo", "## Ficha"]
 
     def test_manda_descrever_o_entendimento_quando_o_numero_e_incerto(self):
         """

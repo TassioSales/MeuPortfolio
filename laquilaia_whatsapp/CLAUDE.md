@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **337 testes no backend, 126 no frontend.**
+Estado atual: **350 testes no backend, 126 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -166,6 +166,10 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Ignorar `thoughtsTokenCount` | É cobrado e entra no total: o limitador contaria 5 onde a API cobrou 174 |
 | Relançar o erro da reserva no lugar do erro do principal | "GEMINI_API_KEY inválida" quando a causa é um 529 da Anthropic manda investigar o lado errado |
 | Mandar `temperature` para modelo novo | Sonnet 5, Opus 5 e Opus 4.7+ recusam parâmetro de amostragem com **400**. Com o default `claude-sonnet-5`, *nenhuma* chamada ao Claude podia dar certo. Ver `MODELOS_QUE_ACEITAM_TEMPERATURA` |
+| Ler `response.content[0].text` | A resposta é lista de blocos **tipados**. O Opus 5 raciocina por padrão e manda um `ThinkingBlock` na frente, que não tem `.text`: `AttributeError` antes de qualquer resposta sair. Filtre por `type == "text"` — ver `texto_da_resposta()` |
+| Qualificar o lead antes de responder ao cliente | A qualificação dispara o parecer jurídico, que é outra chamada ao modelo: **2 minutos** no Opus 5, medido. O cliente ficava esperando por um texto que ele nunca vai ler |
+| Pôr a seção que classifica no fim do parecer | É a primeira coisa que se perde quando o modelo estoura o teto. O Opus 5 escreveu 19 mil caracteres, foi cortado, e devolveu análise excelente sem a `## Ficha` — caso que o sistema não consegue arquivar. Ordem por fragilidade, não por elegância |
+| Folga fixa de raciocínio no Gemini | Os 1024 tokens serviam para um turno de WhatsApp. No parecer, o modelo gastou **3433 tokens só pensando** e o texto morreu no meio da lista de documentos. A folga tem que acompanhar o tamanho do pedido |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)
 só apareceram quando o cliente que consome o endpoint foi construído. Ao
@@ -188,10 +192,12 @@ exige mudar o outro. O mesmo vale para os nomes de evento em `ws/manager.py` e
    inteira (ver `GUIA_DEPLOY.md` §6), mas falta o `docker compose up`: os
    `Dockerfile`, o healthcheck do `depends_on` e a rede do compose seguem sem
    exercício.
-2. **Nenhuma chamada real ao Claude.** O SDK está em `anthropic==0.121.0` e o
-   corpo da requisição foi conferido com `httpx.MockTransport`, mas sem chave
-   de verdade nada chegou à API. A lista de modelos que aceitam `temperature`
-   veio da documentação, não da Models API.
+2. **O Claude já respondeu de verdade** — `claude-sonnet-5` no atendimento e
+   `claude-opus-5` no parecer, os dois conferidos contra a API. O que ainda
+   não foi exercitado é a queda de provedor com chave real dos dois lados: a
+   passagem para o Gemini só rodou com `httpx.MockTransport`. A lista de
+   modelos que aceitam `temperature` continua vindo da documentação, não da
+   Models API.
 3. **O operador não responde pelo painel.** Ele assume a conversa e a IA para,
    mas mandar a mensagem ao cliente ainda é fora do sistema — não há endpoint
    de envio avulso pela Evolution API.

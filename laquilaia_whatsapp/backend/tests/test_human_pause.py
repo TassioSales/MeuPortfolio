@@ -131,6 +131,49 @@ class TestOrchestratorRespectsPause:
         assert result.get("paused") is None
         mock_llm.assert_awaited_once()
 
+    @pytest.mark.asyncio
+    async def test_o_cliente_recebe_a_resposta_antes_do_parecer(self):
+        """
+        A ordem entre enviar e qualificar é de produto, não de arrumação.
+
+        A qualificação dispara o parecer jurídico, que é uma segunda chamada ao
+        modelo: 2 minutos no Opus 5, medido contra a API real. Qualificando
+        primeiro, o cliente esperava esses 2 minutos por uma mensagem de
+        fechamento — e o parecer é um texto que ele nunca vai ler.
+        """
+        await _seed("ag-ordem", "user-ordem", "conv-ordem")
+        ordem = []
+
+        async def envio(*args, **kwargs):
+            ordem.append("envio")
+            return {"success": True, "message_id": "m1"}
+
+        async def qualificacao(*args, **kwargs):
+            ordem.append("qualificacao")
+            return {"success": False}
+
+        with patch(
+            "app.services.llm_service.llm_service.generate_response",
+            new_callable=AsyncMock,
+        ) as mock_llm, patch(
+            "app.services.whatsapp_service.whatsapp_service.send_message",
+            new=envio,
+        ), patch(
+            "app.services.lead_processor.lead_processor.process_response",
+            new=qualificacao,
+        ):
+            mock_llm.return_value = (
+                "Pronto, o advogado te procura.",
+                {"input_tokens": 1, "output_tokens": 1, "total_tokens": 2},
+            )
+
+            async with AsyncSessionLocal() as db:
+                await orchestrator.process_incoming_message(
+                    "ag-ordem", "5561900001111", "obrigado", db
+                )
+
+        assert ordem == ["envio", "qualificacao"]
+
 
 class TestPauseEndpoints:
     def _agent_and_conversation(self, headers: dict) -> str:

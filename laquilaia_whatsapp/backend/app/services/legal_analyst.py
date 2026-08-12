@@ -20,6 +20,14 @@ from app.db.models import Message
 from app.utils.logger import logger
 
 
+# A `## Ficha` vem em segundo lugar, logo depois do Resumo, e não no fim.
+#
+# É ela que classifica o caso — área e titular — e é o que o `caso_service` lê
+# para arquivar. Estando no fim, ela é a primeira coisa que se perde quando o
+# modelo estoura o teto de saída: foi o que aconteceu no primeiro parecer real
+# no Opus 5, que escreveu 19 mil caracteres, foi cortado, e devolveu um parecer
+# ótimo que o sistema não conseguiu classificar. Ordem por fragilidade, não por
+# elegância.
 PROMPT_ANALISTA = """Você é advogado sênior e está fazendo a análise preliminar \
 de um caso que chegou pelo WhatsApp do escritório.
 
@@ -33,6 +41,18 @@ Analise a conversa e responda **exatamente** nestas seções, em markdown:
 
 ## Resumo
 Dois ou três períodos: quem é, o que aconteceu, o que a pessoa quer.
+
+## Ficha
+Duas linhas, exatamente neste formato, para o sistema arquivar o caso:
+
+Área: uma de [trabalhista, familia, consumidor, previdenciario, civel, criminal, outro]
+Titular: nome de quem é parte no caso — **só** quando for outra pessoa. \
+Quando a parte for quem está escrevendo, escreva literalmente `o próprio \
+contato`, sem repetir o nome.
+
+O titular importa: quem manda a mensagem nem sempre é a parte. Um irmão \
+perguntando pelo divórcio da irmã traz um caso que não é dele — e é esse caso, \
+o de terceiro, que o campo existe para marcar.
 
 ## Área e possíveis teses
 A área do direito e **todas** as teses que o relato sustenta, da mais forte \
@@ -82,18 +102,6 @@ uma e diga por quê.
 O que enfraquece o caso, o que o cliente pode estar omitindo, e as perguntas \
 que faltaram na triagem.
 
-## Ficha
-Duas linhas, exatamente neste formato, para o sistema arquivar o caso:
-
-Área: uma de [trabalhista, familia, consumidor, previdenciario, civel, criminal, outro]
-Titular: nome de quem é parte no caso — **só** quando for outra pessoa. \
-Quando a parte for quem está escrevendo, escreva literalmente `o próprio \
-contato`, sem repetir o nome.
-
-O titular importa: quem manda a mensagem nem sempre é a parte. Um irmão \
-perguntando pelo divórcio da irmã traz um caso que não é dele — e é esse caso, \
-o de terceiro, que o campo existe para marcar.
-
 ## Regras
 
 - **Você não tem os documentos.** Trate tudo como versão do cliente: "o cliente \
@@ -106,6 +114,10 @@ como pergunta em "Pontos fracos", não como fato no resumo.
 tema e acórdão. Na dúvida sobre o número, descreva o entendimento sem ele.
 - Não estime valor de causa nem honorários.
 - Não prometa resultado. Fale em risco e probabilidade, não em certeza.
+- **Denso, não longo.** O parecer inteiro fica entre 800 e 1500 palavras. Toda \
+frase precisa carregar informação que o advogado ainda não tem: corte adjetivo, \
+repetição e explicação de conceito que qualquer advogado já sabe. Não corte \
+análise para caber — corte texto.
 - Se a conversa for curta ou confusa demais para analisar, escreva apenas o \
 Resumo e, em "Pontos fracos", o que precisa ser perguntado antes de qualquer \
 análise. Não invente para preencher seção.
@@ -122,10 +134,15 @@ class LegalAnalyst:
     # Teto de saída do parecer.
     #
     # Eram 1500, e com as seções de jurisprudência, provas e caminhos o texto
-    # passa disso — no Gemini o corte chega como resposta interrompida no meio
-    # de uma frase, sem erro nenhum. 4000 dá folga para o parecer longo sem
-    # virar convite para encher linguiça: o limite não é meta.
-    MAX_TOKENS = 4000
+    # passa disso — o corte chega como resposta interrompida no meio de uma
+    # frase, sem erro nenhum.
+    #
+    # 4000 também não bastou: o Opus 5 escreveu 19 mil caracteres e ainda foi
+    # cortado. Quem segura o tamanho agora é o prompt (800 a 1500 palavras, o
+    # que dá ~2500 tokens), e o teto é rede de segurança, não meta. Alto de
+    # propósito: teto não custa nada, só se paga o que o modelo gerar, e o
+    # preço de errar para baixo é um parecer sem a Ficha.
+    MAX_TOKENS = 8000
 
     @property
     def enabled(self) -> bool:

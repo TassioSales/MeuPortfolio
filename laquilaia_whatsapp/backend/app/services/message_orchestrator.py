@@ -154,7 +154,20 @@ class MessageOrchestrator:
             # anunciar uma mensagem que a transação ainda vai desfazer.
             await notify_new_message(agent_id, conversation.id, phone_number)
 
-            # Step 7: Process lead qualification (extract JSON if present)
+            # Step 7: Send reply via WhatsApp
+            #
+            # Antes do processamento do lead, e não depois: a qualificação
+            # dispara o parecer jurídico, que é uma segunda chamada ao modelo e
+            # leva o tempo que um parecer leva — 2 minutos no Opus 5, medido.
+            # Com a ordem invertida, o cliente ficava esperando por um texto
+            # que ele nunca vai ler, no exato momento em que a triagem fecha e
+            # ele espera um "pronto, o advogado te procura".
+            send_result = await whatsapp_service.send_message(
+                phone_number=phone_number,
+                message_text=texto_para_o_cliente,
+            )
+
+            # Step 8: Process lead qualification (extract JSON if present)
             lead_result = await lead_processor.process_response(
                 response_text=response_text,
                 phone_number=phone_number,
@@ -165,12 +178,6 @@ class MessageOrchestrator:
 
             if lead_result.get("success"):
                 logger.info(f"🎯 Lead qualified: {lead_result.get('lead_id')}")
-
-            # Step 8: Send reply via WhatsApp
-            send_result = await whatsapp_service.send_message(
-                phone_number=phone_number,
-                message_text=texto_para_o_cliente,
-            )
 
             logger.info(
                 f"✅ Message processing complete for {phone_number}: "

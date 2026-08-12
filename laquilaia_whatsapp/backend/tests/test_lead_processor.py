@@ -353,7 +353,13 @@ class TestLeadProcessorFullFlow:
             with patch.object(lead_processor, "_update_lead") as mock_update:
                 with patch.object(lead_processor, "_update_lead_details") as mock_details:
                     with patch.object(lead_processor, "_add_timeline") as mock_timeline:
-                        with patch.object(lead_processor, "_move_in_kanban") as mock_kanban:
+                        with patch.object(
+                            lead_processor, "_move_in_kanban"
+                        ) as mock_kanban, patch.object(
+                            lead_processor, "_gerar_analise"
+                        ) as mock_analise:
+                            # O parecer é acessório e tem teste próprio; aqui
+                            # ele só não pode atrapalhar o fluxo principal.
                             lead = Lead(
                                 id="lead-123",
                                 phone_number="5561999887234",

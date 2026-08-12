@@ -325,15 +325,26 @@ class LeadProcessor:
         função desligada quanto quando a chamada falha, e nenhum dos dois é
         motivo para reprovar a qualificação.
         """
-        parecer = await legal_analyst.analisar(conversation_id, db)
-        if not parecer:
-            return
-
         resultado = await db.execute(
             select(LeadDetails).where(LeadDetails.lead_id == lead.id)
         )
         details = resultado.scalars().first()
-        if details is not None:
+        if details is None:
+            return
+
+        # Um parecer por caso, não por mensagem.
+        #
+        # O modelo repete o bloco de qualificação em toda resposta depois de
+        # fechar a triagem, e sem esta guarda cada "obrigado" do cliente
+        # geraria um parecer novo — outra chamada paga, e o advogado abrindo o
+        # lead para reler o mesmo texto. Refazer a análise de um caso já
+        # analisado é decisão de quem atende, pelo painel.
+        if details.analise_preliminar:
+            logger.debug(f"⏭️ Lead {lead.id} já tem parecer; não vou refazer")
+            return
+
+        parecer = await legal_analyst.analisar(conversation_id, db)
+        if parecer:
             details.analise_preliminar = parecer
 
     async def _add_timeline(

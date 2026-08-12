@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **313 testes no backend, 120 no frontend.**
+Estado atual: **321 testes no backend, 120 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -139,6 +139,7 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Responder mensagem de grupo | O `@g.us` no remoteJid: sem filtro, o agente responde ao grupo inteiro e qualifica o grupo como lead |
 | `textMessage` no envio da Evolution | É o nome da v1. A v2 responde `instance requires property "text"` e devolve 400 — depois de a chamada ao LLM já ter sido paga |
 | Arrancar o DDI do número antes de enviar | O `remoteJid` chega com `55` e é o identificador do contato: sem ele a resposta vai para outra pessoa. E mutilava DDD 55 (Santa Maria/RS) |
+| Janela de contexto curta demais para o caso de uso | Com 5 mensagens, uma triagem perdia o relato antes de terminar, e quem voltava dias depois ouvia "seu caso é sobre o quê?" de novo. Contexto é decisão de produto, não default |
 | Deixar o parecer interno chegar ao cliente | A análise jurídica é insumo do escritório: sai por rota autenticada, nunca pelo WhatsApp. O modelo já inventou um ajuizamento que não houve — texto assim na mão do cliente é dano, não ruído |
 | Supor que o emissor do webhook assina o corpo | A Evolution API não calcula HMAC — só repassa cabeçalhos fixos. Com HMAC puro ela é recusada com 401 em toda mensagem; existe `WEBHOOK_STATIC_TOKEN` para isso |
 | Esperar `agentId` no payload da Evolution | Ela não sabe que agentes existem. Sem `EVOLUTION_DEFAULT_AGENT_ID`, todo webhook real morre com "Missing agent_id" |

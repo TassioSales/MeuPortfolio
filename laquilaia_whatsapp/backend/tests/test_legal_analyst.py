@@ -90,6 +90,51 @@ class TestIsolamento:
             assert await legal_analyst.analisar("conv-1", db) == parecer
 
 
+class TestModeloDoParecer:
+    """
+    O parecer roda no modelo dele, não no do atendimento.
+
+    São tarefas diferentes: o atendimento troca frases curtas no WhatsApp e o
+    parecer é a peça que o advogado lê antes de decidir o caso. Como é uma
+    chamada por lead qualificado, o modelo melhor sai barato aqui.
+    """
+
+    async def _analisar_capturando(self, **override):
+        db = _sessao_com_mensagens([_msg("user", "fui demitido por justa causa")])
+        chamada = AsyncMock(return_value=("## Resumo\nx", {"total_tokens": 1, "model": "m"}))
+
+        with patch.object(settings, "analise_juridica_enabled", True), patch.multiple(
+            settings, **override
+        ), patch("app.services.llm_service.llm_service.analisar_com_prompt", new=chamada):
+            await legal_analyst.analisar("conv-1", db)
+
+        return chamada.call_args.kwargs
+
+    async def test_usa_os_modelos_configurados_para_a_analise(self):
+        kwargs = await self._analisar_capturando(
+            analise_claude_model="claude-opus-5",
+            analise_gemini_model="gemini-pro-latest",
+        )
+
+        assert kwargs["modelo_claude"] == "claude-opus-5"
+        assert kwargs["modelo_gemini"] == "gemini-pro-latest"
+
+    async def test_sem_configuracao_cai_no_modelo_do_atendimento(self):
+        """
+        Vazio precisa virar `None`, e não string vazia.
+
+        String vazia chegaria como nome de modelo na URL do Gemini e daria 404
+        — no exato momento em que o Claude falhou e a reserva era a única
+        chance de o parecer sair.
+        """
+        kwargs = await self._analisar_capturando(
+            analise_claude_model="", analise_gemini_model=""
+        )
+
+        assert kwargs["modelo_claude"] is None
+        assert kwargs["modelo_gemini"] is None
+
+
 class TestPromptDoAnalista:
     """O prompt é o produto aqui — estas travas descrevem o que ele promete."""
 
@@ -111,11 +156,57 @@ class TestPromptDoAnalista:
         for secao in (
             "## Resumo",
             "## Área e possíveis teses",
+            "## Jurisprudência",
+            "## Provas e ônus",
             "## Documentos a pedir",
             "## Prazos e urgência",
+            "## Caminhos possíveis",
             "## Pontos fracos",
+            "## Ficha",
         ):
             assert secao in PROMPT_ANALISTA
+
+    def test_o_resumo_e_a_primeira_secao(self):
+        """
+        `caso_service._resumo_do_parecer` lê a primeira seção, qualquer que
+        seja o título dela. Se outra seção subir para o topo, o resumo do caso
+        no painel vira a lista de teses.
+        """
+        from app.services.legal_analyst import PROMPT_ANALISTA
+
+        secoes = [l for l in PROMPT_ANALISTA.split("\n") if l.startswith("## ")]
+        assert secoes[0] == "## Resumo"
+
+    def test_manda_descrever_o_entendimento_quando_o_numero_e_incerto(self):
+        """
+        A trava que torna a seção de jurisprudência utilizável.
+
+        Pedir súmula e tema a um modelo é convite para número inventado, e um
+        número inventado num parecer não fica no parecer: vai para a petição.
+        Descrever o entendimento sem o número é informação; o número errado é
+        armadilha.
+        """
+        from app.services.legal_analyst import PROMPT_ANALISTA
+
+        assert "(confirmar referência)" in PROMPT_ANALISTA
+        assert "Citação inventada" in PROMPT_ANALISTA
+
+    def test_pede_as_teses_todas_e_a_contraria(self):
+        """O que separa o parecer fundo do raso: não parar na primeira tese."""
+        from app.services.legal_analyst import PROMPT_ANALISTA
+
+        assert "**todas** as teses" in PROMPT_ANALISTA
+        assert "tese contrária" in PROMPT_ANALISTA
+
+    def test_o_parecer_cabe_no_orcamento_de_saida(self):
+        """
+        Com 1500 tokens o parecer novo era cortado no meio.
+
+        Medido contra a API real: 5.5k tokens de saída, dos quais ~3.4k de
+        raciocínio. Ver `folga_de_raciocinio` no cliente do Gemini — o
+        orçamento é compartilhado entre pensar e escrever.
+        """
+        assert LegalAnalyst.MAX_TOKENS >= 4000
 
 
 

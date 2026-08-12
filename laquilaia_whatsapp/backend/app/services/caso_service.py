@@ -70,6 +70,23 @@ def _sem_acento(texto: str) -> str:
     return texto.translate(trocas)
 
 
+def _e_o_proprio(titular: Optional[str], nome_do_lead: Optional[str]) -> bool:
+    """
+    Se o titular do caso é a própria pessoa que escreve.
+
+    O prompt pede "o próprio contato" nesse caso, mas o modelo tende a repetir
+    o nome — foi o que aconteceu no primeiro parecer gerado com o prompt novo.
+    Aceitar isso põe uma tarja "de Jonas Ferreira" na tela de um caso que é do
+    próprio Jonas, e a tarja existe justamente para avisar que a parte é outra
+    pessoa. Um aviso que aparece sempre deixa de ser aviso.
+    """
+    if not titular or not nome_do_lead:
+        return False
+    return _sem_acento(titular.strip().lower()) == _sem_acento(
+        nome_do_lead.strip().lower()
+    )
+
+
 def _resumo_do_parecer(parecer: str, limite: int = 600) -> Optional[str]:
     """O texto da primeira seção — o resumo do caso."""
     linhas = []
@@ -108,6 +125,8 @@ async def registrar_caso(
         return None
 
     area, titular = ler_ficha(parecer)
+    if _e_o_proprio(titular, lead.nome):
+        titular = None
     if not area:
         logger.debug(f"⏭️ Parecer sem área identificada; caso não registrado ({lead.id})")
         return None

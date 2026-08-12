@@ -15,7 +15,7 @@ from anthropic import APIConnectionError, APIError, RateLimitError
 from app.config import settings
 from app.db.models import Agent
 from app.services.gemini_client import (
-    FOLGA_DE_RACIOCINIO,
+    FOLGA_MINIMA_DE_RACIOCINIO,
     GeminiClient,
     GeminiIndisponivel,
 )
@@ -106,10 +106,25 @@ class TestFormatoDaRequisicao:
 
         config = registrado["body"]["generationConfig"]
         # O orçamento é compartilhado com o raciocínio, então vai com folga —
-        # ver FOLGA_DE_RACIOCINIO.
-        assert config["maxOutputTokens"] == 512 + FOLGA_DE_RACIOCINIO
+        # ver folga_de_raciocinio().
+        assert config["maxOutputTokens"] == 512 + FOLGA_MINIMA_DE_RACIOCINIO
         # Diferente do Claude novo, aqui a temperatura vale.
         assert config["temperature"] == 0.9
+
+    async def test_pedido_grande_ganha_folga_proporcional(self):
+        """
+        A folga fixa cortava o parecer jurídico ao meio.
+
+        Contra a API real, um pedido de 4000 tokens de resposta gastou 3433 só
+        de raciocínio: com os 1024 fixos, o texto terminava no meio da lista de
+        documentos e nada indicava erro — só um parecer que parava de repente.
+        """
+        transporte, registrado = _captura(RESPOSTA_OK)
+        cliente = GeminiClient(api_key="k", transport=transporte)
+
+        await cliente.generate(system_prompt=None, user_message="Oi", max_tokens=4000)
+
+        assert registrado["body"]["generationConfig"]["maxOutputTokens"] == 8000
 
     async def test_chave_vai_no_header_e_modelo_na_url(self):
         transporte, registrado = _captura(RESPOSTA_OK)

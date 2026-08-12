@@ -74,7 +74,7 @@ class LLMService:
     def max_tokens_per_minute(self, value: int) -> None:
         self.rate_limiter.max_tokens_per_minute = value
 
-    def _parametros_do_modelo(self, agent: Agent) -> dict:
+    def _parametros_do_modelo(self, agent: Agent, model: Optional[str] = None) -> dict:
         """
         Parâmetros da requisição que dependem do modelo configurado.
 
@@ -82,14 +82,19 @@ class LLMService:
         é recusado com 400 — e o agente guarda o valor porque o formulário
         deixa escolher, então mandar sempre derrubaria toda chamada com o
         default `claude-sonnet-5`.
+
+        O modelo é parâmetro e não `self.model` porque o parecer jurídico roda
+        num modelo próprio: a decisão sobre temperatura tem que seguir o modelo
+        da chamada, não o do atendimento.
         """
+        modelo = model or self.model
         params = {"max_tokens": agent.max_tokens or settings.max_tokens}
 
-        if aceita_temperatura(self.model):
+        if aceita_temperatura(modelo):
             params["temperature"] = agent.temperatura or settings.temperature
         elif agent.temperatura is not None:
             logger.debug(
-                f"🌡️ temperatura {agent.temperatura} ignorada: {self.model} "
+                f"🌡️ temperatura {agent.temperatura} ignorada: {modelo} "
                 "não aceita o parâmetro"
             )
 
@@ -108,12 +113,15 @@ class LLMService:
             return True
         return not self.gemini.configured
 
-    def _chamar_claude(self, agent: Agent, messages: List[dict]) -> Tuple[str, dict]:
+    def _chamar_claude(
+        self, agent: Agent, messages: List[dict], model: Optional[str] = None
+    ) -> Tuple[str, dict]:
+        modelo = model or self.model
         response = self.client.messages.create(
-            model=self.model,
+            model=modelo,
             system=agent.system_prompt,
             messages=messages,
-            **self._parametros_do_modelo(agent),
+            **self._parametros_do_modelo(agent, modelo),
         )
 
         entrada = response.usage.input_tokens
@@ -123,7 +131,7 @@ class LLMService:
             "input_tokens": entrada,
             "output_tokens": saida,
             "total_tokens": entrada + saida,
-            "model": self.model,
+            "model": modelo,
         }
 
     async def _chamar_reserva(
@@ -132,6 +140,7 @@ class LLMService:
         user_message: str,
         conversation_history: Optional[List[dict]],
         causa: Optional[Exception],
+        model: Optional[str] = None,
     ) -> Tuple[str, dict]:
         """
         Tenta o provedor de reserva.
@@ -159,6 +168,7 @@ class LLMService:
                 conversation_history=conversation_history,
                 max_tokens=agent.max_tokens or settings.max_tokens,
                 temperature=agent.temperatura or settings.temperature,
+                model=model,
             )
         except GeminiIndisponivel as e:
             logger.error(f"❌ A reserva também falhou: {e}")
@@ -166,7 +176,7 @@ class LLMService:
                 raise causa
             raise ValidationException(f"Erro no provedor de reserva: {e}")
 
-        uso["model"] = self.gemini.model
+        uso["model"] = model or self.gemini.model
         return texto, uso
 
     async def generate_response(
@@ -296,6 +306,8 @@ class LLMService:
         user_message: str,
         user_id: Optional[str] = None,
         max_tokens: int = 1500,
+        modelo_claude: Optional[str] = None,
+        modelo_gemini: Optional[str] = None,
     ) -> Tuple[str, dict]:
         """
         Uma chamada avulsa ao modelo, sem agente e sem histórico.
@@ -304,6 +316,11 @@ class LLMService:
         prompt não é o do atendimento e não existe conversa a continuar. Passa
         pelo mesmo limitador e pela mesma reserva: é a mesma cota, e a análise
         não pode furar a fila do atendimento.
+
+        O modelo vem separado por provedor porque a queda para a reserva
+        continua valendo aqui: um id de modelo da Anthropic não existe no
+        Gemini, e vice-versa. Qualquer um dos dois vazio cai no modelo do
+        atendimento.
         """
         # Um agente sintético reaproveita `_chamar_claude` e `_chamar_reserva`
         # sem duplicar a lógica de queda entre provedores.
@@ -324,11 +341,15 @@ class LLMService:
 
         if self._tentar_claude_primeiro():
             try:
-                texto, uso = self._chamar_claude(agente, messages)
+                texto, uso = self._chamar_claude(agente, messages, model=modelo_claude)
             except (RateLimitError, APIConnectionError, APIError) as e:
-                texto, uso = await self._chamar_reserva(agente, user_message, None, causa=e)
+                texto, uso = await self._chamar_reserva(
+                    agente, user_message, None, causa=e, model=modelo_gemini
+                )
         else:
-            texto, uso = await self._chamar_reserva(agente, user_message, None, causa=None)
+            texto, uso = await self._chamar_reserva(
+                agente, user_message, None, causa=None, model=modelo_gemini
+            )
 
         await self._track_usage(uso["total_tokens"], user_id)
         return texto, uso

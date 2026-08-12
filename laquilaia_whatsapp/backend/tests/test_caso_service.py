@@ -78,9 +78,10 @@ def _db(caso_existente=None):
     return db
 
 
-def _lead():
+def _lead(nome=None):
     lead = MagicMock(spec=Lead)
     lead.id = "lead-1"
+    lead.nome = nome
     return lead
 
 
@@ -112,6 +113,30 @@ class TestRegistroDoCaso:
         assert caso is existente
         assert not db.add.called
         assert caso.score_qualificacao == 90
+
+    async def test_titular_igual_ao_contato_nao_vira_caso_de_terceiro(self):
+        """
+        O modelo repete o nome em vez de escrever "o próprio contato".
+
+        Aconteceu no primeiro parecer gerado com o prompt novo: a ficha voltou
+        com "Titular: Jonas Ferreira da Silva", que é quem estava escrevendo.
+        Guardar isso põe a tarja "de Jonas Ferreira da Silva" no caso do
+        próprio Jonas — e a tarja existe para avisar que a parte é outra
+        pessoa. Aparecendo sempre, ela deixa de avisar qualquer coisa.
+        """
+        parecer = "## Resumo\nDemissão por justa causa.\n\n## Ficha\nÁrea: trabalhista\nTitular: Jonas Ferreira da Silva\n"
+        db = _db()
+
+        caso = await registrar_caso(_lead(nome="Jonas Ferreira da Silva"), parecer, 70, db)
+
+        assert caso.titular is None
+
+    async def test_titular_de_outra_pessoa_continua_marcado(self):
+        db = _db()
+
+        caso = await registrar_caso(_lead(nome="Pedro Sales"), PARECER_DE_TERCEIRO, 70, db)
+
+        assert caso.titular == "Marina Sales"
 
     async def test_sem_parecer_nao_abre_caso(self):
         db = _db()

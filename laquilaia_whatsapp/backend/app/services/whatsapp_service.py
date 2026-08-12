@@ -38,15 +38,26 @@ class WhatsAppService:
             ValidationException: If API call fails
         """
         try:
-            # Clean phone number (remove +55 if present)
+            # O número vai como a Evolution o entrega, com DDI.
+            #
+            # Havia um `if clean_phone.startswith("55"): clean_phone[2:]` aqui,
+            # que arrancava o código do país. Mas o `remoteJid` do webhook chega
+            # como `556196298484@s.whatsapp.net` — com DDI —, e é esse o
+            # identificador do contato no WhatsApp: responder para
+            # `6196298484` é responder para outra pessoa, ou para ninguém.
+            # De quebra, a regra mutilava números de DDD 55 (Santa Maria/RS)
+            # enviados sem DDI.
             clean_phone = phone_number.replace("+", "").replace(" ", "")
-            if clean_phone.startswith("55"):
-                clean_phone = clean_phone[2:]
 
-            # Build payload
+            # `text`, e não `textMessage`.
+            #
+            # A Evolution v2 respondeu, palavra por palavra:
+            # `instance requires property "text"`. O nome antigo é da v1, e
+            # com ele toda resposta morria em 400 — depois de já ter gasto a
+            # chamada ao LLM e gravado a conversa.
             payload = {
                 "number": clean_phone,
-                "textMessage": message_text,
+                "text": message_text,
             }
 
             if quoted_message_id:

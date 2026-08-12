@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **298 testes no backend, 117 no frontend.**
+Estado atual: **303 testes no backend, 117 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -136,6 +136,8 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Cabeçalho customizado no webhook da Evolution | A v2.3.7 self-hosted **grava** e não envia. Só a query string chega |
 | Deixar `WEBHOOK_GLOBAL_ENABLED=true` | O webhook global dispara antes do da instância e não repassa credencial nenhuma: 401 em tudo |
 | Responder mensagem de grupo | O `@g.us` no remoteJid: sem filtro, o agente responde ao grupo inteiro e qualifica o grupo como lead |
+| `textMessage` no envio da Evolution | É o nome da v1. A v2 responde `instance requires property "text"` e devolve 400 — depois de a chamada ao LLM já ter sido paga |
+| Arrancar o DDI do número antes de enviar | O `remoteJid` chega com `55` e é o identificador do contato: sem ele a resposta vai para outra pessoa. E mutilava DDD 55 (Santa Maria/RS) |
 | Supor que o emissor do webhook assina o corpo | A Evolution API não calcula HMAC — só repassa cabeçalhos fixos. Com HMAC puro ela é recusada com 401 em toda mensagem; existe `WEBHOOK_STATIC_TOKEN` para isso |
 | Esperar `agentId` no payload da Evolution | Ela não sabe que agentes existem. Sem `EVOLUTION_DEFAULT_AGENT_ID`, todo webhook real morre com "Missing agent_id" |
 | Comparar segredo sem checar se está vazio | `"" == ""` autorizaria qualquer requisição sem cabeçalho |

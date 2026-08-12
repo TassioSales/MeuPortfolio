@@ -54,6 +54,7 @@ const TRANSCRICAO: ConversationTranscript = {
   phone_number: "5561999990001",
   lead_nome: "Maria Silva",
   analise_preliminar: null,
+  casos: [],
   messages: [
     {
       id: "m1",
@@ -363,5 +364,88 @@ describe("Parecer preliminar", () => {
 
     expect(screen.getByText("interno")).toBeInTheDocument();
     expect(screen.getByText(/o cliente nunca a recebe/i)).toBeInTheDocument();
+  });
+});
+
+describe("Casos do contato", () => {
+  const CASO_PROPRIO = {
+    id: "caso-1",
+    area: "trabalhista",
+    resumo: "Cliente relata demissão por justa causa em maio.",
+    titular: null,
+    score_qualificacao: 90,
+    data_abertura: "2026-08-10T09:00:00Z",
+    analise_preliminar: "## Resumo\nDemissão por justa causa.",
+  };
+
+  const CASO_DE_TERCEIRO = {
+    id: "caso-2",
+    area: "familia",
+    resumo: "O contato pergunta pelo divórcio da irmã.",
+    titular: "Marina Sales",
+    score_qualificacao: 70,
+    data_abertura: "2026-08-12T09:00:00Z",
+    analise_preliminar: "## Resumo\nDivórcio com dois filhos menores.",
+  };
+
+  function abrirConversaCom(casos: unknown[]) {
+    mockFetch.mockResolvedValueOnce(jsonResponse([CONVERSA]));
+    mockFetch.mockResolvedValueOnce(jsonResponse({ ...TRANSCRICAO, casos }));
+    render(<ConversationsPanel agentId="agent-1" />);
+  }
+
+  it("lista os dois casos com a área de cada um", async () => {
+    abrirConversaCom([CASO_DE_TERCEIRO, CASO_PROPRIO]);
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    expect(await screen.findByText("Casos deste contato (2)")).toBeInTheDocument();
+    expect(screen.getByText("Família")).toBeInTheDocument();
+    expect(screen.getByText("Trabalhista")).toBeInTheDocument();
+  });
+
+  it("destaca quando a parte não é quem manda as mensagens", async () => {
+    // É o erro que a separação entre contato e caso existe para evitar: abrir
+    // o caso achando que é do titular do WhatsApp.
+    abrirConversaCom([CASO_DE_TERCEIRO]);
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    expect(await screen.findByText("de Marina Sales")).toBeInTheDocument();
+  });
+
+  it("o parecer de cada caso só abre quando o caso é aberto", async () => {
+    abrirConversaCom([CASO_PROPRIO]);
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    expect(
+      screen.queryByText("Análise preliminar do caso"),
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(await screen.findByText("Trabalhista"));
+
+    expect(screen.getByText("Análise preliminar do caso")).toBeInTheDocument();
+  });
+
+  it("sem casos, cai no parecer antigo do contato", async () => {
+    // Contatos qualificados antes da separação não têm caso arquivado, e o
+    // parecer deles não pode sumir da tela por causa disso.
+    mockFetch.mockResolvedValueOnce(jsonResponse([CONVERSA]));
+    mockFetch.mockResolvedValueOnce(
+      jsonResponse({
+        ...TRANSCRICAO,
+        casos: [],
+        analise_preliminar: "## Resumo\nCaso antigo, sem ficha.",
+      }),
+    );
+    render(<ConversationsPanel agentId="agent-1" />);
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    expect(
+      await screen.findByText("Análise preliminar do caso"),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Casos deste contato/)).not.toBeInTheDocument();
   });
 });

@@ -10,7 +10,7 @@ from app.models.llm_models import (
     ChatHistoryMessage,
     ChatHistoryResponse,
 )
-from app.db.models import Agent, Conversation, Lead, LeadDetails, Message
+from app.db.models import Agent, Caso, Conversation, Lead, LeadDetails, Message
 from app.services.llm_service import llm_service
 from app.utils.auth_middleware import get_current_user
 from app.utils.exceptions import ValidationException, NotFoundException
@@ -450,6 +450,18 @@ class ConversationListItem(BaseModel):
     ultimo_remetente: Optional[str] = None
 
 
+class CasoDoContato(BaseModel):
+    """Um assunto trazido por este contato."""
+    id: str
+    area: Optional[str] = None
+    resumo: Optional[str] = None
+    # Preenchido só quando a parte não é quem manda a mensagem.
+    titular: Optional[str] = None
+    score_qualificacao: int = 0
+    data_abertura: Optional[datetime] = None
+    analise_preliminar: Optional[str] = None
+
+
 class ConversationMessagesResponse(BaseModel):
     """Transcrição de uma conversa, da mais antiga para a mais recente."""
     conversation_id: str
@@ -460,6 +472,9 @@ class ConversationMessagesResponse(BaseModel):
     # Parecer preliminar em markdown, quando houver. É interno: o cliente
     # nunca o recebe, e esta rota exige token e escopo do dono do agente.
     analise_preliminar: Optional[str] = None
+    # Os assuntos deste contato, do mais recente para o mais antigo. Um
+    # contato pode trazer mais de um, e um deles pode ser de terceiro.
+    casos: List[CasoDoContato] = []
     messages: List[ChatHistoryMessage] = []
 
 
@@ -617,12 +632,31 @@ async def get_conversation_messages(
         lead = lead_result.scalars().first()
 
         parecer = None
+        casos: List[CasoDoContato] = []
         if lead is not None:
             detalhes_result = await db.execute(
                 select(LeadDetails).where(LeadDetails.lead_id == lead.id)
             )
             detalhes = detalhes_result.scalars().first()
             parecer = detalhes.analise_preliminar if detalhes else None
+
+            casos_result = await db.execute(
+                select(Caso)
+                .where(Caso.lead_id == lead.id)
+                .order_by(Caso.data_abertura.desc())
+            )
+            casos = [
+                CasoDoContato(
+                    id=caso.id,
+                    area=caso.area,
+                    resumo=caso.resumo,
+                    titular=caso.titular,
+                    score_qualificacao=caso.score_qualificacao or 0,
+                    data_abertura=caso.data_abertura,
+                    analise_preliminar=caso.analise_preliminar,
+                )
+                for caso in casos_result.scalars().all()
+            ]
 
         return ConversationMessagesResponse(
             conversation_id=conversation.id,
@@ -631,6 +665,7 @@ async def get_conversation_messages(
             phone_number=conversation.phone_number,
             lead_nome=lead.nome if lead else None,
             analise_preliminar=parecer,
+            casos=casos,
             messages=[
                 ChatHistoryMessage(
                     id=message.id,

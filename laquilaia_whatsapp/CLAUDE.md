@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **331 testes no backend, 120 no frontend.**
+Estado atual: **331 testes no backend, 124 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como

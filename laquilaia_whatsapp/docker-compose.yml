@@ -1,4 +1,4 @@
-services:
+﻿services:
   postgres:
     image: postgres:16-alpine
     container_name: laquilaia_postgres
@@ -6,10 +6,10 @@ services:
       POSTGRES_USER: ${DB_USER:-laquilaia}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-laquilaia_dev_pwd}
       POSTGRES_DB: ${DB_NAME:-laquilaia_db}
-      # C.UTF-8, e não pt_BR.UTF-8: a imagem alpine usa musl, que não traz
-      # locales além de C/C.UTF-8, e o initdb morre com "invalid locale name"
-      # — o volume nunca é inicializado, o healthcheck nunca passa e o backend
-      # fica preso no depends_on. Se a ordenação em português importar, troque
+      # C.UTF-8, e nÃ£o pt_BR.UTF-8: a imagem alpine usa musl, que nÃ£o traz
+      # locales alÃ©m de C/C.UTF-8, e o initdb morre com "invalid locale name"
+      # â€” o volume nunca Ã© inicializado, o healthcheck nunca passa e o backend
+      # fica preso no depends_on. Se a ordenaÃ§Ã£o em portuguÃªs importar, troque
       # a imagem pela variante Debian e use --locale-provider=icu.
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
     ports:
@@ -17,9 +17,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      # O default precisa acompanhar o de POSTGRES_USER: a substituição é feita
-      # pelo compose antes de o container existir, então sem `.env` isto viraria
-      # `pg_isready -U` e o serviço nunca ficaria saudável.
+      # O default precisa acompanhar o de POSTGRES_USER: a substituiÃ§Ã£o Ã© feita
+      # pelo compose antes de o container existir, entÃ£o sem `.env` isto viraria
+      # `pg_isready -U` e o serviÃ§o nunca ficaria saudÃ¡vel.
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-laquilaia} -d ${DB_NAME:-laquilaia_db}"]
       interval: 10s
       timeout: 5s
@@ -55,8 +55,8 @@ services:
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       CLAUDE_MODEL: ${CLAUDE_MODEL:-claude-sonnet-5}
-      # Provedor de reserva. Sem repasse, o container não enxerga a chave e a
-      # reserva fica desligada sem ninguém perceber.
+      # Provedor de reserva. Sem repasse, o container nÃ£o enxerga a chave e a
+      # reserva fica desligada sem ninguÃ©m perceber.
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-flash-latest}
       TEMPERATURE: ${TEMPERATURE:-0.7}
@@ -66,17 +66,17 @@ services:
       REDIS_CACHE_TTL: ${REDIS_CACHE_TTL:-3600}
       METRICS_CACHE_TTL: ${METRICS_CACHE_TTL:-900}
       EVOLUTION_API_URL: ${EVOLUTION_API_URL:-http://evolution:8080}
-      # Qual agente atende o WhatsApp. A Evolution não sabe que agentes
-      # existem, então sem isto todo webhook real morre com "Missing agent_id".
+      # Qual agente atende o WhatsApp. A Evolution nÃ£o sabe que agentes
+      # existem, entÃ£o sem isto todo webhook real morre com "Missing agent_id".
       EVOLUTION_DEFAULT_AGENT_ID: ${EVOLUTION_DEFAULT_AGENT_ID}
       EVOLUTION_API_KEY: ${EVOLUTION_API_KEY}
       EVOLUTION_INSTANCE_NAME: ${EVOLUTION_INSTANCE_NAME:-laquilaia}
       EVOLUTION_WEBHOOK_URL: ${EVOLUTION_WEBHOOK_URL:-http://localhost:8000/api/v1/webhook/messages}
-      # Sem repassar, o container não enxergava o valor do .env e o webhook
+      # Sem repassar, o container nÃ£o enxergava o valor do .env e o webhook
       # nascia recusando tudo com 503 (o endpoint exige HMAC quando DEBUG=False).
       WEBHOOK_SECRET: ${WEBHOOK_SECRET}
-      # As origens liberadas no CORS. Sem repasse, customizar a variável no
-      # `.env` não teria efeito nenhum dentro do container.
+      # As origens liberadas no CORS. Sem repasse, customizar a variÃ¡vel no
+      # `.env` nÃ£o teria efeito nenhum dentro do container.
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
@@ -92,17 +92,17 @@ services:
       - ./backend:/app
     networks:
       - laquilaia_network
-    # As migrações rodam antes do servidor: a aplicação não cria mais o
-    # schema sozinha, então subir sem `alembic upgrade` deixaria o banco vazio.
+    # As migraÃ§Ãµes rodam antes do servidor: a aplicaÃ§Ã£o nÃ£o cria mais o
+    # schema sozinha, entÃ£o subir sem `alembic upgrade` deixaria o banco vazio.
     command: >
       sh -c "alembic upgrade head &&
              uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
-  # Evolution API — a ponte com o WhatsApp.
+  # Evolution API â€” a ponte com o WhatsApp.
   #
-  # Fica em profile próprio: `docker compose up` sobe a aplicação sem ela, e
-  # `docker compose --profile whatsapp up` inclui. Ela exige parear um número
-  # de verdade por QR code, então não deve ser obrigatória para quem só quer
+  # Fica em profile prÃ³prio: `docker compose up` sobe a aplicaÃ§Ã£o sem ela, e
+  # `docker compose --profile whatsapp up` inclui. Ela exige parear um nÃºmero
+  # de verdade por QR code, entÃ£o nÃ£o deve ser obrigatÃ³ria para quem sÃ³ quer
   # ver o painel funcionando.
   evolution:
     image: evoapicloud/evolution-api:latest
@@ -111,9 +111,9 @@ services:
     environment:
       SERVER_URL: ${EVOLUTION_SERVER_URL:-http://localhost:8080}
       AUTHENTICATION_API_KEY: ${EVOLUTION_API_KEY}
-      # Mesmo servidor de banco, schema próprio: as tabelas da Evolution são
-      # dela e não se misturam com as da aplicação. O schema é criado sozinho
-      # na primeira subida, sem script de init — que só rodaria com o volume
+      # Mesmo servidor de banco, schema prÃ³prio: as tabelas da Evolution sÃ£o
+      # dela e nÃ£o se misturam com as da aplicaÃ§Ã£o. O schema Ã© criado sozinho
+      # na primeira subida, sem script de init â€” que sÃ³ rodaria com o volume
       # do Postgres vazio.
       DATABASE_ENABLED: "true"
       DATABASE_PROVIDER: postgresql
@@ -124,15 +124,15 @@ services:
       DATABASE_SAVE_MESSAGE_UPDATE: "true"
       DATABASE_SAVE_DATA_CONTACTS: "true"
       DATABASE_SAVE_DATA_CHATS: "true"
-      # Banco 6 do Redis, para não disputar chaves com o cache da aplicação.
+      # Banco 6 do Redis, para nÃ£o disputar chaves com o cache da aplicaÃ§Ã£o.
       CACHE_REDIS_ENABLED: "true"
       CACHE_REDIS_URI: redis://redis:6379/6
       CACHE_REDIS_PREFIX_KEY: evolution
       CACHE_LOCAL_ENABLED: "false"
-      # O webhook global evita ter que configurar a URL a cada instância
-      # criada. O host é `backend`, nome do serviço na rede do compose —
-      # `localhost` aqui seria o próprio container da Evolution.
-      WEBHOOK_GLOBAL_ENABLED: "true"
+      # O webhook global evita ter que configurar a URL a cada instÃ¢ncia
+      # criada. O host Ã© `backend`, nome do serviÃ§o na rede do compose â€”
+      # `localhost` aqui seria o prÃ³prio container da Evolution.
+      WEBHOOK_GLOBAL_ENABLED: "false"
       WEBHOOK_GLOBAL_URL: http://backend:8000/api/v1/webhook/messages
       WEBHOOK_GLOBAL_WEBHOOK_BY_EVENTS: "false"
     ports:
@@ -153,7 +153,7 @@ services:
       dockerfile: Dockerfile
     container_name: laquilaia_frontend
     environment:
-      # URL usada pelo browser, por isso é localhost e não o host do serviço.
+      # URL usada pelo browser, por isso Ã© localhost e nÃ£o o host do serviÃ§o.
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
@@ -161,7 +161,7 @@ services:
       - backend
     volumes:
       - ./frontend:/app
-      # Mantém o node_modules da imagem, senão o bind mount o esconde.
+      # MantÃ©m o node_modules da imagem, senÃ£o o bind mount o esconde.
       - /app/node_modules
       - /app/.next
     networks:

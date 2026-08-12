@@ -53,6 +53,7 @@ const TRANSCRICAO: ConversationTranscript = {
   ia_ativa: true,
   phone_number: "5561999990001",
   lead_nome: "Maria Silva",
+  analise_preliminar: null,
   messages: [
     {
       id: "m1",
@@ -308,5 +309,59 @@ describe("ConversationsPanel", () => {
     expect(
       screen.getByRole("button", { name: "Tentar novamente" }),
     ).toBeInTheDocument();
+  });
+});
+
+
+describe("Parecer preliminar", () => {
+  function abrirConversaCom(analise: string | null) {
+    // Duas respostas em sequência: a lista de conversas e a transcrição da
+    // que for aberta — é assim que o painel busca.
+    mockFetch.mockResolvedValueOnce(jsonResponse([CONVERSA]));
+    mockFetch.mockResolvedValueOnce(
+      jsonResponse({ ...TRANSCRICAO, analise_preliminar: analise }),
+    );
+    render(<ConversationsPanel agentId="agent-1" />);
+  }
+
+  it("não aparece quando a conversa não tem análise", async () => {
+    abrirConversaCom(null);
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    await waitFor(() =>
+      expect(screen.getByText("Olá, queria saber mais.")).toBeInTheDocument(),
+    );
+    expect(
+      screen.queryByText("Análise preliminar do caso"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("vem fechado, e o conteúdo só aparece depois de abrir", async () => {
+    abrirConversaCom(
+      "## Resumo\nCliente relata demissão por justa causa.\n\n## Documentos a pedir\n- Atestados médicos",
+    );
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    const gatilho = await screen.findByText("Análise preliminar do caso");
+    // Fechado: o cabeçalho existe, o conteúdo não. Quem abre a conversa quer
+    // ler a conversa; o parecer é consulta.
+    expect(screen.queryByText("Atestados médicos")).not.toBeInTheDocument();
+
+    await userEvent.click(gatilho);
+
+    expect(screen.getByText("Documentos a pedir")).toBeInTheDocument();
+    expect(screen.getByText("Atestados médicos")).toBeInTheDocument();
+  });
+
+  it("deixa explícito que é interno e que o cliente não recebe", async () => {
+    abrirConversaCom("## Resumo\nCaso trabalhista.");
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+    await userEvent.click(await screen.findByText("Análise preliminar do caso"));
+
+    expect(screen.getByText("interno")).toBeInTheDocument();
+    expect(screen.getByText(/o cliente nunca a recebe/i)).toBeInTheDocument();
   });
 });

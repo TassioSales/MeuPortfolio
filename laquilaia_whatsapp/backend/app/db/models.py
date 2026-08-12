@@ -210,6 +210,8 @@ class LeadDetails(Base):
     problemas_detectados = Column(Text, nullable=True)
     score_qualificacao = Column(Integer, default=0)  # 0-100
     dados_json = Column(Text, nullable=True)
+    # Parecer preliminar em markdown, para o advogado. Nunca vai ao cliente.
+    analise_preliminar = Column(Text, nullable=True)
     data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships

@@ -10,7 +10,7 @@ from app.models.llm_models import (
     ChatHistoryMessage,
     ChatHistoryResponse,
 )
-from app.db.models import Agent, Conversation, Lead, Message
+from app.db.models import Agent, Conversation, Lead, LeadDetails, Message
 from app.services.llm_service import llm_service
 from app.utils.auth_middleware import get_current_user
 from app.utils.exceptions import ValidationException, NotFoundException
@@ -457,6 +457,9 @@ class ConversationMessagesResponse(BaseModel):
     ia_ativa: bool
     phone_number: str
     lead_nome: Optional[str] = None
+    # Parecer preliminar em markdown, quando houver. É interno: o cliente
+    # nunca o recebe, e esta rota exige token e escopo do dono do agente.
+    analise_preliminar: Optional[str] = None
     messages: List[ChatHistoryMessage] = []
 
 
@@ -613,12 +616,21 @@ async def get_conversation_messages(
         )
         lead = lead_result.scalars().first()
 
+        parecer = None
+        if lead is not None:
+            detalhes_result = await db.execute(
+                select(LeadDetails).where(LeadDetails.lead_id == lead.id)
+            )
+            detalhes = detalhes_result.scalars().first()
+            parecer = detalhes.analise_preliminar if detalhes else None
+
         return ConversationMessagesResponse(
             conversation_id=conversation.id,
             status=conversation.status,
             ia_ativa=conversation.status != "pausada",
             phone_number=conversation.phone_number,
             lead_nome=lead.nome if lead else None,
+            analise_preliminar=parecer,
             messages=[
                 ChatHistoryMessage(
                     id=message.id,

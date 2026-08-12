@@ -143,6 +143,8 @@ export interface ConversationTranscript {
   ia_ativa: boolean;
   phone_number: string;
   lead_nome: string | null;
+  /** Parecer preliminar em markdown. Interno: nunca vai ao cliente. */
+  analise_preliminar: string | null;
   messages: ChatHistoryMessage[];
 }
 

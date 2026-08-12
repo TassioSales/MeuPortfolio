@@ -290,6 +290,49 @@ class LLMService:
             logger.error(f"❌ Error streaming response: {e}")
             raise
 
+    async def analisar_com_prompt(
+        self,
+        system_prompt: str,
+        user_message: str,
+        user_id: Optional[str] = None,
+        max_tokens: int = 1500,
+    ) -> Tuple[str, dict]:
+        """
+        Uma chamada avulsa ao modelo, sem agente e sem histórico.
+
+        Serve para trabalho interno — o parecer do `legal_analyst` — em que o
+        prompt não é o do atendimento e não existe conversa a continuar. Passa
+        pelo mesmo limitador e pela mesma reserva: é a mesma cota, e a análise
+        não pode furar a fila do atendimento.
+        """
+        # Um agente sintético reaproveita `_chamar_claude` e `_chamar_reserva`
+        # sem duplicar a lógica de queda entre provedores.
+        class _AgenteAvulso:
+            id = "interno"
+            system_prompt = None
+            temperatura = None
+            max_tokens = None
+            user_id = None
+
+        agente = _AgenteAvulso()
+        agente.system_prompt = system_prompt
+        agente.max_tokens = max_tokens
+        agente.user_id = user_id
+
+        await self._check_rate_limits(user_id)
+        messages = self._build_messages(None, user_message)
+
+        if self._tentar_claude_primeiro():
+            try:
+                texto, uso = self._chamar_claude(agente, messages)
+            except (RateLimitError, APIConnectionError, APIError) as e:
+                texto, uso = await self._chamar_reserva(agente, user_message, None, causa=e)
+        else:
+            texto, uso = await self._chamar_reserva(agente, user_message, None, causa=None)
+
+        await self._track_usage(uso["total_tokens"], user_id)
+        return texto, uso
+
     def count_tokens(self, text: str) -> int:
         """
         Count tokens in text using Claude's tokenizer.

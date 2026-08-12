@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.db.models import Lead, LeadDetails, LeadTimeline, Conversation, KanbanCard, KanbanColumn, Agent
 from app.utils.logger import logger
+from app.services.legal_analyst import legal_analyst
 from app.utils.exceptions import ValidationException
 
 
@@ -94,6 +95,12 @@ class LeadProcessor:
 
             # Create/update LeadDetails
             await self._update_lead_details(lead, qualification_data, db)
+
+            # O parecer para o escritório. Vem depois dos detalhes porque
+            # grava no mesmo registro, e antes do commit para entrar na mesma
+            # transação — um lead qualificado sem análise é aceitável, um
+            # commit pela metade não.
+            await self._gerar_analise(lead, conversation_id, agent_id, db)
 
             # Add to timeline
             await self._add_timeline(lead, qualification_data, db, agent_id)
@@ -303,6 +310,31 @@ class LeadProcessor:
         details.problemas_detectados = qualification_data.get("problemas_detectados", "")
         details.dados_json = json.dumps(qualification_data)
         details.data_atualizacao = datetime.utcnow()
+
+    async def _gerar_analise(
+        self,
+        lead,
+        conversation_id: str,
+        agent_id: str,
+        db: AsyncSession,
+    ) -> None:
+        """
+        Guarda o parecer preliminar, se houver.
+
+        Silencioso quando não houver: o analista devolve `None` tanto com a
+        função desligada quanto quando a chamada falha, e nenhum dos dois é
+        motivo para reprovar a qualificação.
+        """
+        parecer = await legal_analyst.analisar(conversation_id, db)
+        if not parecer:
+            return
+
+        resultado = await db.execute(
+            select(LeadDetails).where(LeadDetails.lead_id == lead.id)
+        )
+        details = resultado.scalars().first()
+        if details is not None:
+            details.analise_preliminar = parecer
 
     async def _add_timeline(
         self,

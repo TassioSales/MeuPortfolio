@@ -8,6 +8,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { useAgentEvents } from "@/hooks/useAgentEvents";
 import { useConversations } from "@/hooks/useConversations";
 import { cn } from "@/lib/utils";
+import { ParecerPreliminar } from "./ParecerPreliminar";
 import type { ConversationSummary } from "@/types";
 
 /** Data curta e legível; o ano só aparece quando não é o corrente. */
@@ -257,6 +258,10 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
                   ? "O agente está respondendo automaticamente. Assuma para que ele pare."
                   : "A IA parou de responder. As mensagens do cliente continuam chegando e ficam registradas aqui."}
               </p>
+
+              {transcript.analise_preliminar && (
+                <ParecerPreliminar texto={transcript.analise_preliminar} />
+              )}
 
               <div className="max-h-[26rem] space-y-3 overflow-y-auto px-4 py-4">
                 {transcript.messages.length === 0 ? (

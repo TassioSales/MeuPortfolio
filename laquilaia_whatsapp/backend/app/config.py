@@ -38,6 +38,13 @@ class Settings(BaseSettings):
     gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
     gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
 
+    # Parecer preliminar para o escritório (ver `legal_analyst.py`).
+    # São duas chamadas ao LLM por lead qualificado em vez de uma — desligue
+    # se o custo pesar mais que o insumo.
+    analise_juridica_enabled: bool = os.getenv(
+        "ANALISE_JURIDICA_ENABLED", "True"
+    ).lower() == "true"
+
     # WhatsApp / Evolution API
     # A Evolution v2 escuta na 8080 (SERVER_PORT do .env.example dela). O default
     # anterior, 4000, não corresponde a nenhuma versão.

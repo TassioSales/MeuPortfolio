@@ -184,3 +184,138 @@ class TestTokenEstatico:
             verify_webhook_request(
                 corpo, compute_signature(corpo, "hmac-secret"), None
             )
+
+
+class TestTokenNaQueryString:
+    """
+    O caminho que a Evolution consegue usar.
+
+    Verificado contra a v2.3.7 self-hosted: ela grava os cabeçalhos
+    configurados na instância — o POST de configuração devolve o `headers` —
+    mas a requisição chega sem eles, e o backend respondia 401 em toda
+    mensagem. A URL ela repassa exatamente como configurada.
+    """
+
+    def test_token_na_query_passa(self):
+        with patch.object(settings, "webhook_static_token", "tok-123"), patch.object(
+            settings, "webhook_secret", "hmac-secret"
+        ), patch.object(settings, "debug", False):
+            verify_webhook_request(b'{"a":1}', None, None, "tok-123")
+
+    def test_token_errado_na_query_nao_passa(self):
+        with patch.object(settings, "webhook_static_token", "tok-123"), patch.object(
+            settings, "webhook_secret", "hmac-secret"
+        ), patch.object(settings, "debug", False):
+            with pytest.raises(HTTPException) as exc:
+                verify_webhook_request(b'{"a":1}', None, None, "errado")
+            assert exc.value.status_code == 401
+
+    def test_query_vazia_com_modo_desligado_nao_autoriza(self):
+        with patch.object(settings, "webhook_static_token", ""), patch.object(
+            settings, "webhook_secret", "hmac-secret"
+        ), patch.object(settings, "debug", False):
+            with pytest.raises(HTTPException):
+                verify_webhook_request(b'{"a":1}', None, None, "")
+
+    def test_endpoint_aceita_token_na_url(self):
+        """Ponta a ponta: o token viaja na query e o corpo é processado."""
+        corpo = json.dumps(CORPO).encode()
+        with patch.object(settings, "webhook_static_token", "tok-url"), patch.object(
+            settings, "webhook_secret", SEGREDO
+        ), patch.object(settings, "debug", False):
+            r = client.post(
+                "/api/v1/webhook/messages?token=tok-url",
+                content=corpo,
+                headers={"Content-Type": "application/json"},
+            )
+        # connection.update é ignorado, mas passou pela autenticação.
+        assert r.status_code == 200
+        assert r.json()["status"] == "ignored"
+
+
+class TestFormatoDaEvolutionV2:
+    """
+    O formato real, verificado com WhatsApp pareado contra a v2.3.7.
+
+    O projeto assumia `messageType: "textMessage"` e o texto em
+    `messageBody` — nenhum dos dois existe no payload da Evolution. Toda
+    mensagem real virava "[non-text message]" e era descartada em silêncio,
+    com o webhook devolvendo 200.
+    """
+
+    def _payload(self, **data):
+        base = {
+            "event": "messages.upsert",
+            "data": {
+                "key": {
+                    "remoteJid": "5561999998888@s.whatsapp.net",
+                    "fromMe": False,
+                    "id": "ABC",
+                },
+                "pushName": "Cliente",
+                **data,
+            },
+        }
+        return json.dumps(base).encode()
+
+    def _post(self, corpo):
+        with patch.object(settings, "webhook_secret", ""), patch.object(
+            settings, "debug", True
+        ), patch.object(settings, "evolution_default_agent_id", ""):
+            return client.post(
+                "/api/v1/webhook/messages",
+                content=corpo,
+                headers={"Content-Type": "application/json"},
+            )
+
+    def test_conversation_e_reconhecido_como_texto(self):
+        corpo = self._payload(
+            messageType="conversation", message={"conversation": "oi, tudo bem?"}
+        )
+        r = self._post(corpo)
+        # Chega até a busca do agente — ou seja, passou pelo filtro de tipo.
+        assert r.json().get("reason") != "non-text message"
+
+    def test_extended_text_tambem(self):
+        corpo = self._payload(
+            messageType="extendedTextMessage",
+            message={"extendedTextMessage": {"text": "olha esse link"}},
+        )
+        r = self._post(corpo)
+        assert r.json().get("reason") != "non-text message"
+
+    def test_imagem_continua_ignorada(self):
+        corpo = self._payload(
+            messageType="imageMessage", message={"imageMessage": {"url": "..."}}
+        )
+        assert self._post(corpo).json()["reason"] == "non-text message"
+
+    def test_mensagem_de_grupo_e_ignorada(self):
+        """
+        O agente responderia a todo mundo do grupo, e o lead qualificado
+        seria o grupo. Apareceu no primeiro teste com WhatsApp real.
+        """
+        corpo = json.dumps(
+            {
+                "event": "messages.upsert",
+                "data": {
+                    "key": {
+                        "remoteJid": "120363405688990443@g.us",
+                        "fromMe": False,
+                        "id": "G1",
+                    },
+                    "messageType": "conversation",
+                    "message": {"conversation": "bom dia pessoal"},
+                },
+            }
+        ).encode()
+        assert self._post(corpo).json()["reason"] == "group message"
+
+    def test_formato_antigo_continua_aceito(self):
+        """`textMessage`/`messageBody` seguem valendo: os testes e as
+        ferramentas internas forjam payloads nesse formato."""
+        corpo = self._payload(
+            message={"messageType": "textMessage", "messageBody": "oi"}
+        )
+        r = self._post(corpo)
+        assert r.json().get("reason") != "non-text message"

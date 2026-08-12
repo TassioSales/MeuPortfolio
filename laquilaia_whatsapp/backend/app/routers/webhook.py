@@ -11,6 +11,7 @@ from app.utils.logger import logger
 from app.utils.webhook_security import (
     SIGNATURE_HEADER,
     STATIC_TOKEN_HEADER,
+    STATIC_TOKEN_QUERY,
     verify_webhook_request,
 )
 from app.utils.exceptions import NotFoundException, ValidationException
@@ -51,6 +52,7 @@ async def webhook_messages(
         body,
         request.headers.get(SIGNATURE_HEADER),
         request.headers.get(STATIC_TOKEN_HEADER),
+        request.query_params.get(STATIC_TOKEN_QUERY),
     )
 
     try:
@@ -71,8 +73,9 @@ async def webhook_messages(
             logger.debug(f"⏭️ Ignoring event type: {event_type}")
             return {"status": "ignored", "event": event_type}
 
-        phone = payload.data.key.get("remoteJid", "unknown").replace("@s.whatsapp.net", "")
-        message_body = payload.data.message.messageBody or "[non-text message]"
+        remote_jid = payload.data.key.get("remoteJid", "")
+        phone = remote_jid.replace("@s.whatsapp.net", "")
+        message_body = payload.data.message.texto or "[non-text message]"
 
         logger.info(
             f"🔔 Webhook received: event={event_type}, phone={phone}, "
@@ -84,22 +87,25 @@ async def webhook_messages(
             logger.debug("⏭️ Ignoring outgoing message")
             return {"status": "ignored", "reason": "outgoing message"}
 
+        # Conversa de grupo não é atendimento: o agente responderia a todo
+        # mundo do grupo, e o lead qualificado seria o grupo inteiro. O `@g.us`
+        # no remoteJid é o que distingue.
+        if remote_jid.endswith("@g.us"):
+            logger.debug(f"⏭️ Ignorando mensagem de grupo: {remote_jid}")
+            return {"status": "ignored", "reason": "group message"}
+
         # Ignore non-text messages for now
-        if payload.data.message.messageType != "textMessage":
-            logger.debug(
-                f"⏭️ Ignoring non-text message: {payload.data.message.messageType}"
-            )
+        if not payload.data.e_texto:
+            logger.debug(f"⏭️ Ignoring non-text message: {payload.data.tipo}")
             return {"status": "ignored", "reason": "non-text message"}
 
         # Extract message content
-        message_text = payload.data.message.messageBody
+        message_text = payload.data.message.texto
         if not message_text or not message_text.strip():
             logger.warning("⚠️ Empty message body")
             return {"status": "ignored", "reason": "empty message"}
 
-        # Extract phone number from remoteJid
-        remote_jid = payload.data.key.get("remoteJid", "")
-        phone_number = remote_jid.replace("@s.whatsapp.net", "")
+        phone_number = phone
 
         # Qual agente responde.
         #

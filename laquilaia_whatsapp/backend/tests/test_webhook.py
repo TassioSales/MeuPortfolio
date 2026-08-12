@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, AsyncMock, MagicMock
 from app.main import app
+from tests.conftest import criar_acesso
 from app.models.webhook_models import WebhookPayload
 from app.db.models import Agent, Conversation, Message, User
 
@@ -20,7 +21,7 @@ class TestWebhookIntegration:
             "nome": "Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": self.user_data["email"],
@@ -248,7 +249,7 @@ class TestConversationCreation:
             "nome": "Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": self.user_data["email"],

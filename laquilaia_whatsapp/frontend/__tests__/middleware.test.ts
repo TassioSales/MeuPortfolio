@@ -9,7 +9,7 @@
  */
 import { NextRequest } from "next/server";
 import { middleware } from "@/middleware";
-import { ACCESS_TOKEN_KEY } from "@/lib/constants";
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/lib/constants";
 
 function requestFor(path: string, { withSession = false } = {}): NextRequest {
   const request = new NextRequest(new URL(path, "http://localhost:3000"));
@@ -56,5 +56,27 @@ describe("middleware", () => {
     const response = middleware(requestFor("/register"));
 
     expect(response.headers.get("location")).toBeNull();
+  });
+});
+
+
+describe("Sessão que sobrevive ao access token", () => {
+  it("deixa passar quando só o refresh sobreviveu", () => {
+    // O access dura 30 minutos; o refresh, uma semana. Conferindo só o
+    // access, o middleware expulsava para o login com a sessão ainda válida —
+    // e o `api.ts` nunca chegava a renovar, porque numa navegação o
+    // middleware responde antes de qualquer requisição sair.
+    const request = new NextRequest(new URL("/dashboard", "http://localhost:3000"));
+    request.cookies.set(REFRESH_TOKEN_KEY, "refresh-valido");
+
+    const response = middleware(request);
+
+    expect(response.status).not.toBe(307);
+  });
+
+  it("sem cookie nenhum continua indo para o login", () => {
+    const response = middleware(requestFor("/dashboard"));
+
+    expect(response.status).toBe(307);
   });
 });

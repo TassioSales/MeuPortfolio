@@ -18,6 +18,12 @@ class User(Base):
     nome = Column(String(255), nullable=False)
     senha_hash = Column(String(255), nullable=False)
     status = Column(String(50), default="ativo")  # ativo, inativo, bloqueado
+    # admin configura o sistema; operador só atende.
+    #
+    # O default é o menor privilégio: um papel que chega vazio por qualquer
+    # caminho — importação, script, migração esquecida — não pode virar
+    # administrador por omissão.
+    papel = Column(String(20), default="operador", nullable=False)
     data_criacao = Column(DateTime, default=datetime.utcnow)
     data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -196,8 +202,56 @@ class Lead(Base):
     lead_timeline = relationship("LeadTimeline", back_populates="lead", cascade="all, delete-orphan")
     kanban_card = relationship("KanbanCard", back_populates="lead", uselist=False, cascade="all, delete-orphan")
 
+    # Um contato pode trazer mais de um caso, inclusive de outra pessoa.
+    casos = relationship(
+        "Caso",
+        back_populates="lead",
+        cascade="all, delete-orphan",
+        order_by="desc(Caso.data_abertura)",
+    )
+
     def __repr__(self):
         return f"<Lead(id={self.id}, phone={self.phone_number})>"
+
+
+class Caso(Base):
+    """
+    Um assunto jurídico trazido por um contato.
+
+    `Lead` era as duas coisas ao mesmo tempo: a pessoa que manda mensagem e o
+    caso dela. Isso quebra no primeiro cliente que volta com outro assunto — e
+    quebra pior quando o assunto é de terceiro, porque o nome no card passa a
+    ser o de quem escreveu, não o de quem é parte. O caso do irmão fica
+    pendurado no cadastro do irmão.
+
+    O funil continua no `Lead` nesta primeira volta: mover card por caso mexe
+    no arrastar, nas métricas e no WebSocket, e a base vem antes.
+    """
+
+    __tablename__ = "casos"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    lead_id = Column(
+        String(36), ForeignKey("leads.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    # trabalhista, familia, consumidor, previdenciario, civel, criminal, outro
+    area = Column(String(50), nullable=True)
+    resumo = Column(Text, nullable=True)
+    # Quem é parte no caso. Vazio significa o próprio contato — o comum.
+    titular = Column(String(255), nullable=True)
+    status = Column(String(50), default="aberto")  # aberto, arquivado
+    # Parecer preliminar deste caso. Fica aqui, e não no contato, porque dois
+    # casos do mesmo contato têm análises diferentes e uma sobrescreveria a
+    # outra.
+    analise_preliminar = Column(Text, nullable=True)
+    score_qualificacao = Column(Integer, default=0)
+    data_abertura = Column(DateTime, default=datetime.utcnow)
+    data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    lead = relationship("Lead", back_populates="casos")
+
+    def __repr__(self):
+        return f"<Caso(id={self.id}, area={self.area}, lead={self.lead_id})>"
 
 
 class LeadDetails(Base):
@@ -210,6 +264,8 @@ class LeadDetails(Base):
     problemas_detectados = Column(Text, nullable=True)
     score_qualificacao = Column(Integer, default=0)  # 0-100
     dados_json = Column(Text, nullable=True)
+    # Parecer preliminar em markdown, para o advogado. Nunca vai ao cliente.
+    analise_preliminar = Column(Text, nullable=True)
     data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships

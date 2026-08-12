@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db_session
 from app.models.schemas import AgentCreate, AgentUpdate, AgentResponse
 from app.services.agent_service import agent_service
-from app.utils.auth_middleware import get_current_user
+from app.utils.auth_middleware import get_current_user, require_admin
 from app.utils.exceptions import NotFoundException, ValidationException
 from app.utils.logger import logger
 from typing import List
@@ -19,7 +19,7 @@ router = APIRouter(
 @router.post("", response_model=AgentResponse, status_code=status.HTTP_201_CREATED)
 async def create_agent(
     agent_data: AgentCreate,
-    user_id: str = Depends(get_current_user),
+    user_id: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Create a new agent."""
@@ -95,7 +95,7 @@ async def list_agents(
 async def update_agent(
     agent_id: str,
     agent_data: AgentUpdate,
-    user_id: str = Depends(get_current_user),
+    user_id: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Update agent by ID."""
@@ -122,7 +122,7 @@ async def update_agent(
 @router.delete("/{agent_id}", status_code=status.HTTP_200_OK)
 async def delete_agent(
     agent_id: str,
-    user_id: str = Depends(get_current_user),
+    user_id: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Delete agent by ID."""
@@ -147,7 +147,7 @@ async def delete_agent(
 async def add_agent_variable(
     agent_id: str,
     variable_data: dict,
-    user_id: str = Depends(get_current_user),
+    user_id: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Add a variable to an agent."""

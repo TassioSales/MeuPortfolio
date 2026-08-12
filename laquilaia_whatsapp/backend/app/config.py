@@ -38,6 +38,28 @@ class Settings(BaseSettings):
     gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
     gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
 
+    # Parecer preliminar para o escritório (ver `legal_analyst.py`).
+    # São duas chamadas ao LLM por lead qualificado em vez de uma — desligue
+    # se o custo pesar mais que o insumo.
+    analise_juridica_enabled: bool = os.getenv(
+        "ANALISE_JURIDICA_ENABLED", "True"
+    ).lower() == "true"
+
+    # Modelo do parecer, por provedor. Vazio = o mesmo do atendimento.
+    #
+    # São dois campos e não um porque o parecer cai para a reserva como
+    # qualquer outra chamada, e um id de modelo não atravessa provedores:
+    # mandar "claude-opus-5" para o Gemini é 404 na hora em que o Claude
+    # falhou — justamente quando não se pode falhar de novo.
+    #
+    # A separação existe porque as duas chamadas não pedem a mesma coisa. O
+    # atendimento troca frases curtas no WhatsApp e o que importa é responder
+    # rápido; o parecer é uma peça de raciocínio que alguém vai ler antes de
+    # decidir o caso, e roda uma vez por lead. Pagar por um modelo melhor só
+    # nele é a troca óbvia.
+    analise_claude_model: str = os.getenv("ANALISE_CLAUDE_MODEL", "")
+    analise_gemini_model: str = os.getenv("ANALISE_GEMINI_MODEL", "")
+
     # WhatsApp / Evolution API
     # A Evolution v2 escuta na 8080 (SERVER_PORT do .env.example dela). O default
     # anterior, 4000, não corresponde a nenhuma versão.

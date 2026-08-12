@@ -28,10 +28,19 @@ class UserResponse(UserBase):
     """User response model."""
     id: str
     status: str
+    # admin ou operador. O front usa para decidir o que mostrar no menu; quem
+    # decide o que é permitido continua sendo o backend, em cada rota.
+    papel: str = "operador"
     data_criacao: datetime
 
     class Config:
         from_attributes = True
+
+
+class UserCreateByAdmin(UserBase):
+    """Corpo de `POST /auth/users` — o administrador criando um operador."""
+    senha: str = Field(..., min_length=8, max_length=100)
+    papel: str = Field(default="operador", pattern="^(admin|operador)$")
 
 
 # ========== Agent Models ==========

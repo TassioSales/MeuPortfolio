@@ -51,10 +51,20 @@ export function setStoredToken(token: string, expiresInSeconds?: number): void {
   Cookies.set(ACCESS_TOKEN_KEY, token, attributes);
 }
 
+/**
+ * Dias que o cookie do refresh token dura.
+ *
+ * Acompanha a validade do JWT emitido em `auth_service.create_refresh_token`.
+ * Era cookie de sessão, e por isso fechar o navegador deslogava: o token
+ * continuava válido por uma semana no servidor e sumia do cliente.
+ */
+const REFRESH_DIAS = 7;
+
 export function setStoredRefreshToken(token: string): void {
-  // O refresh token dura mais que o access token; a validade real é do JWT,
-  // então aqui basta o cookie de sessão.
-  Cookies.set(REFRESH_TOKEN_KEY, token, baseAttributes());
+  Cookies.set(REFRESH_TOKEN_KEY, token, {
+    ...baseAttributes(),
+    expires: REFRESH_DIAS,
+  });
 }
 
 export function clearStoredTokens(): void {

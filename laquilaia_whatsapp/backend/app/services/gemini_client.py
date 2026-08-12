@@ -33,7 +33,24 @@ BASE_URL = "https://generativelanguage.googleapis.com/v1beta"
 #
 # Somar em vez de fixar um piso preserva a intenção de quem configurou: a
 # resposta ainda pode usar os `max_tokens` pedidos, e o raciocínio sai daqui.
-FOLGA_DE_RACIOCINIO = 1024
+FOLGA_MINIMA_DE_RACIOCINIO = 1024
+
+
+def folga_de_raciocinio(max_tokens: int) -> int:
+    """
+    Quanto reservar para o raciocínio, além da resposta pedida.
+
+    Os 1024 fixos bastavam enquanto tudo que passava por aqui era um turno de
+    WhatsApp. O parecer jurídico quebrou a conta: pedindo 4000 tokens de
+    resposta, o modelo gastou 3433 só pensando e o texto foi cortado no meio da
+    lista de documentos. Quanto maior a tarefa, mais o modelo pensa antes de
+    escrever — a folga precisa acompanhar, e não ficar constante.
+
+    Reservar o mesmo tanto da resposta é a regra mais simples que cobre o caso
+    medido com margem, e não muda nada abaixo de 1024. Não custa: o
+    `maxOutputTokens` é teto, e só se paga o que o modelo de fato gerar.
+    """
+    return max(FOLGA_MINIMA_DE_RACIOCINIO, max_tokens)
 
 
 class GeminiIndisponivel(RuntimeError):
@@ -71,9 +88,14 @@ class GeminiClient:
         conversation_history: Optional[List[dict]] = None,
         max_tokens: Optional[int] = None,
         temperature: Optional[float] = None,
+        model: Optional[str] = None,
     ) -> Tuple[str, dict]:
         """
         Gera uma resposta.
+
+        `model` troca o modelo só nesta chamada, sem tocar no cliente: o
+        parecer jurídico usa um modelo mais forte que o atendimento, e os dois
+        passam por aqui.
 
         Raises:
             GeminiIndisponivel: sem chave, erro HTTP, ou resposta sem texto
@@ -86,7 +108,7 @@ class GeminiClient:
             system_prompt, user_message, conversation_history, max_tokens, temperature
         )
 
-        url = f"{BASE_URL}/models/{self.model}:generateContent"
+        url = f"{BASE_URL}/models/{model or self.model}:generateContent"
         try:
             async with httpx.AsyncClient(
                 timeout=self.timeout, transport=self._transport
@@ -130,7 +152,7 @@ class GeminiClient:
 
         config = {}
         if max_tokens is not None:
-            config["maxOutputTokens"] = max_tokens + FOLGA_DE_RACIOCINIO
+            config["maxOutputTokens"] = max_tokens + folga_de_raciocinio(max_tokens)
         if temperature is not None:
             # Ao contrário dos modelos novos do Claude, o Gemini aceita
             # `temperature` — quando ele responde, o valor do agente vale.

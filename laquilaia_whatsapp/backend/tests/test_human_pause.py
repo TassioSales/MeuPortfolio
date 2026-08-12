@@ -5,6 +5,7 @@ O ponto crítico é o orquestrador: com a conversa pausada a mensagem do cliente
 ainda é registrada, mas a IA não responde — senão operador e agente falariam
 ao mesmo tempo com o cliente.
 """
+from tests.conftest import criar_acesso
 
 import pytest
 from unittest.mock import AsyncMock, patch
@@ -25,7 +26,7 @@ def _login(suffix: str) -> dict:
         "nome": "Pause User",
         "senha": "SenhaSegura123!",
     }
-    client.post("/api/v1/auth/register", json=creds)
+    criar_acesso(client, creds["email"], creds["senha"], creds.get("nome", "Teste"))
     r = client.post(
         "/api/v1/auth/login", json={"email": creds["email"], "senha": creds["senha"]}
     )

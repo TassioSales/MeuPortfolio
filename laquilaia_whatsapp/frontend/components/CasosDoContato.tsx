@@ -1,0 +1,118 @@
+"use client";
+
+import { useState } from "react";
+import type { CasoDoContato } from "@/types";
+import { ParecerPreliminar } from "./ParecerPreliminar";
+import { cn } from "@/lib/utils";
+
+/**
+ * Os assuntos que este contato trouxe.
+ *
+ * Um contato pode ter mais de um caso, e um deles pode ser de outra pessoa —
+ * o irmão que pergunta pelo divórcio da irmã. Quando isso acontece o titular
+ * aparece em destaque: abrir o caso achando que é do titular do WhatsApp é o
+ * erro que a separação entre contato e caso existe para evitar.
+ */
+
+const ROTULO_DA_AREA: Record<string, string> = {
+  trabalhista: "Trabalhista",
+  familia: "Família",
+  consumidor: "Consumidor",
+  previdenciario: "Previdenciário",
+  civel: "Cível",
+  criminal: "Criminal",
+  outro: "Outro",
+};
+
+interface CasosDoContatoProps {
+  casos: CasoDoContato[];
+  /** Nome de quem manda as mensagens, para contrastar com o titular. */
+  contato: string;
+}
+
+function formatarData(iso: string | null): string {
+  if (!iso) return "";
+  return new Date(iso).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
+function Caso({ caso, contato }: { caso: CasoDoContato; contato: string }) {
+  const [aberto, setAberto] = useState(false);
+  const deTerceiro = Boolean(caso.titular);
+
+  return (
+    <li className="border-b border-surface-border last:border-b-0">
+      <button
+        type="button"
+        onClick={() => setAberto((v) => !v)}
+        aria-expanded={aberto}
+        className="flex w-full items-start justify-between gap-3 px-4 py-3 text-left hover:bg-surface-muted"
+      >
+        <span className="min-w-0">
+          <span className="flex flex-wrap items-center gap-2">
+            <span className="text-sm font-medium text-gray-900">
+              {ROTULO_DA_AREA[caso.area ?? ""] ?? "Sem área"}
+            </span>
+            {deTerceiro && (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-900">
+                de {caso.titular}
+              </span>
+            )}
+            {caso.score_qualificacao > 0 && (
+              <span className="text-xs text-gray-500">
+                score {caso.score_qualificacao}
+              </span>
+            )}
+          </span>
+          {caso.resumo && (
+            <span
+              className={cn(
+                "mt-1 block text-xs text-gray-600",
+                aberto ? "" : "line-clamp-2",
+              )}
+            >
+              {caso.resumo}
+            </span>
+          )}
+        </span>
+        <span className="shrink-0 text-xs text-gray-400">
+          {formatarData(caso.data_abertura)}
+        </span>
+      </button>
+
+      {aberto && caso.analise_preliminar && (
+        <div className="pb-2">
+          {deTerceiro && (
+            <p className="px-4 pb-2 text-xs text-amber-900">
+              A parte deste caso é <strong>{caso.titular}</strong>. Quem escreve
+              pelo WhatsApp é {contato}.
+            </p>
+          )}
+          <ParecerPreliminar texto={caso.analise_preliminar} />
+        </div>
+      )}
+    </li>
+  );
+}
+
+export function CasosDoContato({ casos, contato }: CasosDoContatoProps) {
+  if (casos.length === 0) return null;
+
+  return (
+    <section className="border-b border-surface-border bg-white">
+      <h3 className="px-4 pt-3 text-xs font-medium uppercase tracking-wide text-gray-500">
+        {casos.length === 1 ? "Caso deste contato" : `Casos deste contato (${casos.length})`}
+      </h3>
+      <ul className="mt-1">
+        {casos.map((caso) => (
+          <Caso key={caso.id} caso={caso} contato={contato} />
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+export default CasosDoContato;

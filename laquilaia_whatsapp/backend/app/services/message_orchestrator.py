@@ -4,6 +4,11 @@ from app.db.models import Agent, Conversation, Message
 from app.services.llm_service import llm_service
 from app.services.whatsapp_service import whatsapp_service
 from app.services.lead_processor import lead_processor
+from app.services.atendimento_context import (
+    MENSAGENS_DE_CONTEXTO,
+    com_nota,
+    nota_de_atendimento_anterior,
+)
 from app.utils.logger import logger
 from app.ws.manager import notify_new_message
 from app.utils.exceptions import NotFoundException, ValidationException
@@ -96,8 +101,14 @@ class MessageOrchestrator:
 
             # Step 3: Get conversation history
             history = await llm_service.get_conversation_history(
-                conversation.id, db, limit=5
+                conversation.id, db, limit=MENSAGENS_DE_CONTEXTO
             )
+
+            # Quem já foi atendido não pode ouvir "seu caso é sobre o quê?"
+            # de novo. A nota conta ao agente o que o banco sabe deste número
+            # e que ele não deve recomeçar a triagem.
+            nota = await nota_de_atendimento_anterior(phone_number, conversation.id, db)
+            history = com_nota(history, nota)
 
             # Step 4: Call Claude
             response_text, token_usage = await llm_service.generate_response(

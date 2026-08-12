@@ -6,6 +6,7 @@ qualquer requisição anônima lia (e movia) os leads de qualquer agente, o que
 inclui nome, e-mail e telefone dos clientes. Os testes abaixo fixam o
 comportamento correto para a regressão não passar despercebida.
 """
+from tests.conftest import criar_acesso
 
 import pytest
 from fastapi.testclient import TestClient
@@ -21,7 +22,7 @@ def _register_and_login(suffix: str) -> dict:
         "nome": "Authz User",
         "senha": "SenhaSegura123!",
     }
-    client.post("/api/v1/auth/register", json=credentials)
+    criar_acesso(client, credentials["email"], credentials["senha"], credentials.get("nome", "Teste"))
     login = client.post(
         "/api/v1/auth/login",
         json={"email": credentials["email"], "senha": credentials["senha"]},
@@ -176,3 +177,121 @@ class TestTimeseriesEndpoint:
         )
 
         assert response.status_code == 422
+
+
+class TestPapeis:
+    """
+    O operador atende; quem configura é o administrador.
+
+    Sem isto, qualquer conta criada no sistema podia reescrever o prompt do
+    agente — que é onde mora o comportamento inteiro do atendimento.
+    """
+
+    def setup_method(self, method):
+        self.admin = {
+            "email": f"papel-admin-{method.__name__}@example.com",
+            "nome": "Dono",
+            "senha": "SenhaSegura123!",
+        }
+        criar_acesso(client, self.admin["email"], self.admin["senha"], self.admin["nome"])
+        self.operador = {
+            "email": f"papel-op-{method.__name__}@example.com",
+            "nome": "Operador",
+            "senha": "SenhaSegura123!",
+        }
+        criar_acesso(
+            client,
+            self.operador["email"],
+            self.operador["senha"],
+            self.operador["nome"],
+            papel="operador",
+        )
+
+    def _headers(self, credenciais):
+        r = client.post(
+            "/api/v1/auth/login",
+            json={"email": credenciais["email"], "senha": credenciais["senha"]},
+        )
+        return {"Authorization": f"Bearer {r.json()['access_token']}"}
+
+    def test_operador_nao_cria_agente(self):
+        resposta = client.post(
+            "/api/v1/agents",
+            json={
+                "nome": "Agente do operador",
+                "system_prompt": "teste",
+                "temperatura": 0.5,
+                "max_tokens": 512,
+            },
+            headers=self._headers(self.operador),
+        )
+
+        # 404, e não 403: dizer "existe, mas você não pode" entrega a rota a
+        # quem não deveria enxergá-la. É a mesma regra dos agentes alheios.
+        assert resposta.status_code == 404
+
+    def test_operador_nao_usa_o_chat_de_teste(self):
+        """O chat de teste calibra prompt e gasta LLM: é configuração."""
+        resposta = client.post(
+            "/api/v1/agents/qualquer-id/chat",
+            json={"message": "oi"},
+            headers=self._headers(self.operador),
+        )
+
+        assert resposta.status_code == 404
+
+    def test_operador_lista_agentes(self):
+        """
+        Listar continua liberado: a tela de atendimentos tem uma aba por
+        agente, e sem a lista o operador não escolhe qual fila abrir.
+        """
+        resposta = client.get("/api/v1/agents", headers=self._headers(self.operador))
+
+        assert resposta.status_code == 200
+
+    def test_admin_cria_agente(self):
+        resposta = client.post(
+            "/api/v1/agents",
+            json={
+                "nome": "Agente do dono",
+                "system_prompt": "teste",
+                "temperatura": 0.5,
+                "max_tokens": 512,
+            },
+            headers=self._headers(self.admin),
+        )
+
+        assert resposta.status_code == 201
+
+    def test_operador_nao_cria_outros_acessos(self):
+        resposta = client.post(
+            "/api/v1/auth/users",
+            json={
+                "email": "novo@example.com",
+                "nome": "Novo",
+                "senha": "SenhaSegura123!",
+                "papel": "admin",
+            },
+            headers=self._headers(self.operador),
+        )
+
+        assert resposta.status_code == 404
+
+    def test_cadastro_publico_fecha_no_primeiro(self):
+        """
+        A porta de entrada é única.
+
+        Sem isso, qualquer um que alcançasse a URL criava conta e entrava no
+        sistema do escritório.
+        """
+        resposta = client.post(
+            "/api/v1/auth/register",
+            json={
+                "email": "intruso@example.com",
+                "nome": "Intruso",
+                "senha": "SenhaSegura123!",
+            },
+        )
+
+        assert resposta.status_code == 403
+        assert "administrador" in resposta.json()["detail"]

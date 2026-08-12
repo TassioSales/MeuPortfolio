@@ -143,7 +143,23 @@ export interface ConversationTranscript {
   ia_ativa: boolean;
   phone_number: string;
   lead_nome: string | null;
+  /** Parecer preliminar em markdown. Interno: nunca vai ao cliente. */
+  analise_preliminar: string | null;
+  /** Assuntos deste contato, do mais recente para o mais antigo. */
+  casos: CasoDoContato[];
   messages: ChatHistoryMessage[];
+}
+
+/** Um assunto trazido pelo contato (`CasoDoContato` no backend). */
+export interface CasoDoContato {
+  id: string;
+  area: string | null;
+  resumo: string | null;
+  /** Preenchido só quando a parte não é quem manda as mensagens. */
+  titular: string | null;
+  score_qualificacao: number;
+  data_abertura: string | null;
+  analise_preliminar: string | null;
 }
 
 /** Resposta de `pause`, `resume` e `status`. */

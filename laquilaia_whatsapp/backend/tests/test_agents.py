@@ -3,6 +3,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
+from tests.conftest import criar_acesso
 
 client = TestClient(app)
 
@@ -18,7 +19,7 @@ class TestAgentCreation:
             "nome": "Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         # Login to get token
         login_response = client.post("/api/v1/auth/login", json={
@@ -106,7 +107,7 @@ class TestAgentRetrieval:
             "nome": "Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": self.user_data["email"],
@@ -187,7 +188,7 @@ class TestAgentRetrieval:
             "nome": "Empty User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=new_user_data)
+        criar_acesso(client, new_user_data["email"], new_user_data["senha"], new_user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": new_user_data["email"],
@@ -216,7 +217,7 @@ class TestAgentUpdate:
             "nome": "Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": self.user_data["email"],
@@ -321,7 +322,7 @@ class TestAgentDeletion:
             "nome": "Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": self.user_data["email"],
@@ -397,7 +398,7 @@ class TestAgentVariables:
             "nome": "Test User",
             "senha": "TestPassword123!",
         }
-        client.post("/api/v1/auth/register", json=self.user_data)
+        criar_acesso(client, self.user_data["email"], self.user_data["senha"], self.user_data.get("nome", "Teste"))
 
         login_response = client.post("/api/v1/auth/login", json={
             "email": self.user_data["email"],

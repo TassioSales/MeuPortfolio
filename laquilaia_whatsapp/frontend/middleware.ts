@@ -1,5 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { ACCESS_TOKEN_KEY, DEFAULT_AUTHENTICATED_ROUTE } from "@/lib/constants";
+import {
+  ACCESS_TOKEN_KEY,
+  DEFAULT_AUTHENTICATED_ROUTE,
+  REFRESH_TOKEN_KEY,
+} from "@/lib/constants";
 
 /**
  * Primeira barreira de proteção de rotas: roda no servidor e só enxerga o
@@ -11,7 +15,16 @@ const AUTH_ROUTES = ["/login", "/register"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const hasSession = request.cookies.has(ACCESS_TOKEN_KEY);
+  // O refresh token conta como sessão.
+  //
+  // Conferindo só o access, o middleware expulsava para o login assim que ele
+  // expirava — meia hora —, mesmo com refresh válido por uma semana. O
+  // `api.ts` sabe renovar em 401, mas numa navegação o middleware responde
+  // antes de qualquer requisição sair. Quem valida de fato é o
+  // `DashboardLayout`, com `GET /auth/me`; aqui basta haver por onde renovar.
+  const hasSession =
+    request.cookies.has(ACCESS_TOKEN_KEY) ||
+    request.cookies.has(REFRESH_TOKEN_KEY);
 
   const isPrivate = PRIVATE_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),

@@ -11,6 +11,7 @@ from app.utils.logger import logger
 from app.utils.webhook_security import (
     SIGNATURE_HEADER,
     STATIC_TOKEN_HEADER,
+    STATIC_TOKEN_QUERY,
     verify_webhook_request,
 )
 from app.utils.exceptions import NotFoundException, ValidationException
@@ -51,6 +52,7 @@ async def webhook_messages(
         body,
         request.headers.get(SIGNATURE_HEADER),
         request.headers.get(STATIC_TOKEN_HEADER),
+        request.query_params.get(STATIC_TOKEN_QUERY),
     )
 
     try:

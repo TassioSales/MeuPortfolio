@@ -184,3 +184,50 @@ class TestTokenEstatico:
             verify_webhook_request(
                 corpo, compute_signature(corpo, "hmac-secret"), None
             )
+
+
+class TestTokenNaQueryString:
+    """
+    O caminho que a Evolution consegue usar.
+
+    Verificado contra a v2.3.7 self-hosted: ela grava os cabeçalhos
+    configurados na instância — o POST de configuração devolve o `headers` —
+    mas a requisição chega sem eles, e o backend respondia 401 em toda
+    mensagem. A URL ela repassa exatamente como configurada.
+    """
+
+    def test_token_na_query_passa(self):
+        with patch.object(settings, "webhook_static_token", "tok-123"), patch.object(
+            settings, "webhook_secret", "hmac-secret"
+        ), patch.object(settings, "debug", False):
+            verify_webhook_request(b'{"a":1}', None, None, "tok-123")
+
+    def test_token_errado_na_query_nao_passa(self):
+        with patch.object(settings, "webhook_static_token", "tok-123"), patch.object(
+            settings, "webhook_secret", "hmac-secret"
+        ), patch.object(settings, "debug", False):
+            with pytest.raises(HTTPException) as exc:
+                verify_webhook_request(b'{"a":1}', None, None, "errado")
+            assert exc.value.status_code == 401
+
+    def test_query_vazia_com_modo_desligado_nao_autoriza(self):
+        with patch.object(settings, "webhook_static_token", ""), patch.object(
+            settings, "webhook_secret", "hmac-secret"
+        ), patch.object(settings, "debug", False):
+            with pytest.raises(HTTPException):
+                verify_webhook_request(b'{"a":1}', None, None, "")
+
+    def test_endpoint_aceita_token_na_url(self):
+        """Ponta a ponta: o token viaja na query e o corpo é processado."""
+        corpo = json.dumps(CORPO).encode()
+        with patch.object(settings, "webhook_static_token", "tok-url"), patch.object(
+            settings, "webhook_secret", SEGREDO
+        ), patch.object(settings, "debug", False):
+            r = client.post(
+                "/api/v1/webhook/messages?token=tok-url",
+                content=corpo,
+                headers={"Content-Type": "application/json"},
+            )
+        # connection.update é ignorado, mas passou pela autenticação.
+        assert r.status_code == 200
+        assert r.json()["status"] == "ignored"

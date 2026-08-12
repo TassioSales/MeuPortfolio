@@ -31,6 +31,20 @@ SIGNATURE_HEADER = "x-hub-signature-256"
 # estático faz uma escolha consciente.
 STATIC_TOKEN_HEADER = "x-webhook-token"
 
+# Mesmo token, na query string.
+#
+# A Evolution v2 self-hosted **salva** os cabeçalhos configurados na instância
+# e não os envia: verificado contra a v2.3.7, o POST de configuração devolve o
+# `headers` gravado, mas a requisição chega sem ele e o backend responde 401.
+# A URL, essa ela repassa exatamente como configurada — então é por onde o
+# token consegue viajar.
+#
+# É o modo mais fraco dos três: além de não provar integridade nem frescor,
+# a query string aparece em log de servidor e de proxy. Só use onde a URL do
+# webhook não atravessa infraestrutura de terceiros — numa rede interna de
+# compose, por exemplo.
+STATIC_TOKEN_QUERY = "token"
+
 
 def compute_signature(payload: bytes, secret: str) -> str:
     """HMAC-SHA256 do corpo cru, no formato `sha256=<hex>`."""
@@ -66,20 +80,22 @@ def verify_webhook_request(
     payload: bytes,
     signature: Optional[str],
     static_token: Optional[str] = None,
+    query_token: Optional[str] = None,
 ) -> None:
     """
     Reject the request unless it carries a valid signature.
 
-    Aceita dois modos: o HMAC do corpo, e — se `WEBHOOK_STATIC_TOKEN` estiver
-    definido — um token fixo em cabeçalho, para emissores que não assinam,
-    como a Evolution API.
+    Aceita três modos: o HMAC do corpo e — se `WEBHOOK_STATIC_TOKEN` estiver
+    definido — o mesmo token fixo em cabeçalho ou na query string, para
+    emissores que não assinam. A Evolution API precisa da query: ela guarda os
+    cabeçalhos configurados e não os envia.
 
     Sem segredo configurado o endpoint fica aberto, o que serve para
     desenvolvimento — mas em produção (`DEBUG=false`) a requisição é recusada,
     para um deploy que esqueceu de definir `WEBHOOK_SECRET` falhar de forma
     visível em vez de aceitar tudo em silêncio.
     """
-    if static_token_is_valid(static_token):
+    if static_token_is_valid(static_token) or static_token_is_valid(query_token):
         return
 
     if not settings.webhook_secret:

@@ -166,7 +166,29 @@ class LLMService:
             return True
         return not self.gemini.configured
 
-    def _chamar_claude(
+    async def _chamar_claude(
+        self, agent: Agent, messages: List[dict], model: Optional[str] = None
+    ) -> Tuple[str, dict]:
+        """
+        Uma resposta do Claude, **fora** do event loop.
+
+        O cliente da Anthropic aqui é o síncrono, e ele estava sendo chamado
+        direto de dentro de função `async`. Uma chamada bloqueante no event
+        loop não atrasa só quem espera por ela: **para o processo inteiro**.
+        Durante os cinco segundos de uma resposta de atendimento, nenhum outro
+        webhook era lido e nenhuma tela do painel carregava; durante os dois
+        minutos de um parecer, o backend ficava parado — e a segunda mensagem
+        do cliente esperava o parecer da primeira terminar antes de sequer ser
+        lida. Era a demora "de minutos" que aparecia no WhatsApp com o
+        servidor aparentemente ocioso.
+
+        `to_thread` em vez de trocar para o `AsyncAnthropic`: a mudança fica
+        contida numa linha por ponto de chamada, e o cliente síncrono é o que
+        os testes usam.
+        """
+        return await asyncio.to_thread(self._chamar_claude_sincrono, agent, messages, model)
+
+    def _chamar_claude_sincrono(
         self, agent: Agent, messages: List[dict], model: Optional[str] = None
     ) -> Tuple[str, dict]:
         modelo = model or self.model
@@ -289,7 +311,7 @@ class LLMService:
                 )
             elif self._tentar_claude_primeiro():
                 try:
-                    response_text, token_usage = self._chamar_claude(agent, messages)
+                    response_text, token_usage = await self._chamar_claude(agent, messages)
                 except (RateLimitError, APIConnectionError, APIError) as e:
                     # A reserva devolve a falha original se não puder assumir,
                     # para o tratamento lá embaixo continuar valendo.
@@ -422,7 +444,7 @@ class LLMService:
 
         if self._tentar_claude_primeiro():
             try:
-                texto, uso = self._chamar_claude(agente, messages, model=modelo_claude)
+                texto, uso = await self._chamar_claude(agente, messages, model=modelo_claude)
             except (RateLimitError, APIConnectionError, APIError) as e:
                 texto, uso = await self._chamar_reserva(
                     agente, user_message, None, causa=e, model=modelo_gemini

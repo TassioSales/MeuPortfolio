@@ -1,10 +1,13 @@
 """Kanban routes for lead management."""
 
+import json
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from app.db.database import get_db_session
-from app.db.models import Agent, KanbanColumn, KanbanCard, Lead, LeadDetails
+from app.db.models import Agent, Caso, Conversation, KanbanColumn, KanbanCard, Lead, LeadDetails
+from app.models.caso_schemas import CasoDoContato, LeadDossie
 from app.services.kanban_defaults import COLUNAS_PADRAO, criar_colunas_padrao
 from app.utils.auth_middleware import get_current_user
 from app.ws.manager import notify_lead_moved
@@ -537,3 +540,132 @@ async def get_kanban_stats(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to get stats",
         )
+
+
+@router.get(
+    "/agents/{agent_id}/kanban/leads/{lead_id}",
+    response_model=LeadDossie,
+)
+async def get_lead_dossie(
+    agent_id: str,
+    lead_id: str,
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    O que o escritório sabe sobre um contato, numa resposta só.
+
+    O card do funil mostrava nome, telefone e um número de 0 a 100 — e o número
+    sozinho não diz nada. Quem abre um card quer saber do que se trata, quanto
+    vale e o que fazer primeiro. Tudo isso já estava gravado e não tinha por
+    onde sair.
+    """
+    try:
+        resultado = await db.execute(
+            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
+        )
+        if resultado.scalars().first() is None:
+            raise NotFoundException("Agent")
+
+        # O lead precisa ser deste agente. Sem esta condição, conhecer um id
+        # bastaria para ler o dossiê de um contato de outro escritório.
+        #
+        # O vínculo passa pela conversa: `Lead` não guarda `agent_id`, e o
+        # telefone é único no sistema inteiro, não por agente. Filtrar só por
+        # `Lead.id` seria dar o dossiê a quem tem o id.
+        resultado = await db.execute(
+            select(Lead)
+            .join(Conversation, Lead.conversation_id == Conversation.id)
+            .where((Lead.id == lead_id) & (Conversation.agent_id == agent_id))
+        )
+        lead = resultado.scalars().first()
+        if lead is None:
+            raise NotFoundException("Lead")
+
+        resultado = await db.execute(
+            select(LeadDetails).where(LeadDetails.lead_id == lead.id)
+        )
+        detalhes = resultado.scalars().first()
+
+        resultado = await db.execute(
+            select(Caso)
+            .where(Caso.lead_id == lead.id)
+            .order_by(Caso.data_abertura.desc())
+        )
+        casos = [
+            CasoDoContato(
+                id=caso.id,
+                area=caso.area,
+                resumo=caso.resumo,
+                titular=caso.titular,
+                score_qualificacao=caso.score_qualificacao or 0,
+                valor_estimado_min=caso.valor_estimado_min,
+                valor_estimado_max=caso.valor_estimado_max,
+                viabilidade=caso.viabilidade or "indeterminado",
+                data_abertura=caso.data_abertura,
+                analise_preliminar=caso.analise_preliminar,
+            )
+            for caso in resultado.scalars().all()
+        ]
+
+        coletado = _dados_coletados(detalhes)
+
+        return LeadDossie(
+            lead_id=lead.id,
+            nome=lead.nome,
+            email=lead.email,
+            phone_number=lead.phone_number,
+            status_funil=lead.status_funil,
+            score_qualificacao=(detalhes.score_qualificacao if detalhes else 0) or 0,
+            data_criacao=lead.data_criacao,
+            conversation_id=lead.conversation_id,
+            dados_economicos=coletado.get("dados_economicos"),
+            documentos_em_maos=coletado.get("documentos_em_maos"),
+            inconsistencias=(detalhes.inconsistencias if detalhes else None) or None,
+            problemas_detectados=(
+                detalhes.problemas_detectados if detalhes else None
+            ) or None,
+            recomendacoes=coletado.get("recomendacoes"),
+            analise_preliminar=detalhes.analise_preliminar if detalhes else None,
+            casos=casos,
+        )
+
+    except NotFoundException as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Erro ao montar o dossiê do lead {lead_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error fetching lead dossier",
+        )
+
+
+def _dados_coletados(detalhes) -> Dict[str, Any]:
+    """
+    Os campos que a triagem gravou em `dados_json`.
+
+    Eles não têm coluna própria: o bloco de qualificação muda com o prompt, e
+    criar coluna a cada campo novo transformaria uma edição de texto em
+    migração. Vazio quando não há nada — string vazia vira `None`, para o
+    painel ter um caso só de "não coletado" em vez de dois.
+    """
+    if detalhes is None or not detalhes.dados_json:
+        return {}
+
+    try:
+        dados = json.loads(detalhes.dados_json)
+    except (ValueError, TypeError):
+        # `dados_json` guarda o que o modelo devolveu. JSON quebrado ali é
+        # motivo para o dossiê vir sem esses campos, não para ele falhar.
+        logger.warning(f"⚠️ dados_json ilegível no lead {detalhes.lead_id}")
+        return {}
+
+    if not isinstance(dados, dict):
+        return {}
+
+    return {
+        chave: (dados.get(chave) or None)
+        for chave in ("dados_economicos", "documentos_em_maos", "recomendacoes")
+    }

@@ -1,4 +1,4 @@
-# CLAUDE.md — L'Aquila AI (WhatsApp)
+# CLAUDE.md — AdvogAi (WhatsApp)
 
 Orientações para trabalhar neste projeto. Leia antes de mexer no código.
 
@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **363 testes no backend, 126 no frontend.**
+Estado atual: **389 testes no backend, 162 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -49,10 +49,14 @@ falha — na CI o serviço existe, então um pulo significa conexão quebrada.
 ```
 backend/app/
   routers/     auth, agents, chat (+conversations), webhook, kanban, metrics
-  services/    llm (+ gemini_client, reserva), legal_analyst (parecer interno),
+  services/    llm (+ gemini_client, reserva), legal_analyst (parecer interno,
+               com jurisprudência, provas e porte econômico),
                caso_service (um contato, vários casos),
                rate_limiter, memory, whatsapp, lead_processor,
                message_orchestrator, metrics, agent, auth
+  models/      schemas.py, llm_models.py, caso_schemas.py (o caso nas telas)
+  prompts/     triagem_juridica.py — o texto que o cliente encontra, versionado
+  scripts/     seed.py, aplicar_prompt.py (grava o prompt canônico num agente)
   db/          models.py (SQLAlchemy), database.py, redis_client.py
   ws/          manager.py — canal de tempo real por agente
   jobs/        metrics_aggregator.py (APScheduler)
@@ -62,8 +66,10 @@ backend/app/
 frontend/
   app/dashboard/  agents · conversations (pausa humana) · chat-test · kanban · metrics
   components/     + charts/ (theme.ts tem a paleta validada)
+                  Logo · icons · SeletorDeTema · LeadDossie · ParecerPreliminar
   hooks/          useAuth, useAgents, useChat, useConversations, useKanban, useMetrics, useAgentEvents
-  lib/            api.ts (refresh em 401), auth, agents, chat, conversations, kanban, metrics, tokens
+  lib/            api.ts (refresh em 401), auth, agents, chat, conversations,
+                  kanban, metrics, tokens, tema, telefone
   middleware.ts   proteção de rotas no edge
 ```
 
@@ -79,6 +85,20 @@ pelo dono (`Agent.user_id == user_id`), respondendo **404, não 403**, para não
 revelar que o agente existe. Vale também para o WebSocket, recusado antes do
 `accept()`. `tests/test_authorization.py` cobre os 12 endpoints em três
 cenários.
+
+**O caso é a unidade, não o contato.** `Lead` é quem manda mensagem; `Caso` é
+o assunto que ela traz, e um contato pode ter mais de um — inclusive de
+terceiro (o irmão que pergunta pelo divórcio da irmã). A área é o critério de
+identidade do caso, porque é o que o sistema reconhece sozinho. O parecer
+arquiva o caso pela `## Ficha`, que por isso é a **segunda** seção do prompt:
+no fim da lista ela seria a primeira coisa perdida quando o modelo estoura o
+teto de saída.
+
+**O porte econômico etiqueta, não descarta.** O parecer estima uma faixa em
+reais e a compara com `CASO_VALOR_MINIMO` (R$ 15.000 por padrão), sempre pelo
+**piso** da faixa. `indeterminado` não é sinônimo de inviável: um pede
+pergunta, o outro mandaria descartar. Nada disso mexe no funil — o veredito é
+para o advogado discordar.
 
 **Papéis: admin configura, operador atende.** O cadastro público fecha no
 primeiro usuário, que vira administrador — é o que resolve o bootstrap sem
@@ -107,6 +127,23 @@ carrega o conteúdo** — quem precisa dele busca pela API, que checa o dono.
 **Gráficos:** as cores em `components/charts/theme.ts` passaram pelo validador
 de paleta (luminosidade, croma, daltonismo, contraste) nos dois modos. Não troque
 um hex sem revalidar o conjunto. Eixo Y de contagem trava em zero.
+
+**Identidade: tinta e latão.** A moldura (lateral, telas de entrada) é
+`ink`; o acento é `brass`, reservado à marca e ao item ativo da navegação — um
+acento em tudo deixa de ser acento. As ações primárias são `ink-900`, não o
+azul de antes. A escala `brand` continua onde estava porque é a cor dos dados:
+gráficos e colunas do Kanban usam hexes que passaram pelo validador de
+contraste e daltonismo, e moldura nova não é motivo para revalidar paleta de
+dados. Ícones de navegação são SVG em `components/icons.tsx` — emoji é
+desenhado pelo sistema, muda entre Windows e Mac e não herda a cor do texto.
+
+**Tema: token, nunca cor literal.** `bg-surface`, `text-fg`, `text-fg-muted`
+e afins saem de variáveis CSS que trocam com o tema (`globals.css`). Não escreva
+`bg-white` nem `text-gray-900` em componente: com dois temas, cada literal
+precisaria de um par `dark:` escrito à mão, e o que faltasse viraria texto
+cinza-claro em cartão branco — o defeito que ninguém vê no tema em que
+trabalha. O tema vem de uma classe no `<html>`, posta por um script inline
+antes da primeira pintura; sem ele a página nasce clara e vira escura ao montar.
 
 **`@dnd-kit`, não `react-beautiful-dnd`** (arquivado pela Atlassian, problemas
 com StrictMode do React 18).
@@ -169,6 +206,9 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Ler `response.content[0].text` | A resposta é lista de blocos **tipados**. O Opus 5 raciocina por padrão e manda um `ThinkingBlock` na frente, que não tem `.text`: `AttributeError` antes de qualquer resposta sair. Filtre por `type == "text"` — ver `texto_da_resposta()` |
 | Qualificar o lead antes de responder ao cliente | A qualificação dispara o parecer jurídico, que é outra chamada ao modelo: **2 minutos** no Opus 5, medido. O cliente ficava esperando por um texto que ele nunca vai ler |
 | Pôr a seção que classifica no fim do parecer | É a primeira coisa que se perde quando o modelo estoura o teto. O Opus 5 escreveu 19 mil caracteres, foi cortado, e devolveu análise excelente sem a `## Ficha` — caso que o sistema não consegue arquivar. Ordem por fragilidade, não por elegância |
+| Coluna nova com default só do lado do Python | `default=` do SQLAlchemy vale para linha nova; as que já existem ficam `NULL`. Aí o painel tem dois jeitos de dizer a mesma coisa — `NULL` e `'indeterminado'` — que é como nasce um `if` errado. A migração precisa do `UPDATE` |
+| Escopar recurso por `agent_id` que a tabela não tem | `Lead` não guarda `agent_id` — o vínculo passa pela conversa, e o telefone é único no sistema inteiro, não por agente. Filtrar o dossiê só por `Lead.id` daria o contato a quem tem o id |
+| Semear `User` antes de `criar_acesso()` nos testes | O cadastro público fecha no primeiro usuário: o helper não acha administrador e recusa. Faça login primeiro, semeie depois — e semeie o agente sob o id de quem logou |
 | Folga fixa de raciocínio no Gemini | Os 1024 tokens serviam para um turno de WhatsApp. No parecer, o modelo gastou **3433 tokens só pensando** e o texto morreu no meio da lista de documentos. A folga tem que acompanhar o tamanho do pedido |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)
@@ -188,23 +228,63 @@ exige mudar o outro. O mesmo vale para os nomes de evento em `ws/manager.py` e
 
 ## 6. Pendências
 
-1. **A stack em container nunca subiu.** Fora de container ela já rodou
-   inteira (ver `GUIA_DEPLOY.md` §6), mas falta o `docker compose up`: os
-   `Dockerfile`, o healthcheck do `depends_on` e a rede do compose seguem sem
-   exercício.
-2. **O Claude já respondeu de verdade** — `claude-sonnet-5` no atendimento e
-   `claude-opus-5` no parecer, os dois conferidos contra a API. O que ainda
-   não foi exercitado é a queda de provedor com chave real dos dois lados: a
-   passagem para o Gemini só rodou com `httpx.MockTransport`. A lista de
-   modelos que aceitam `temperature` continua vindo da documentação, não da
-   Models API.
+Em ordem de valor, e a primeira vale mais que as outras juntas.
+
+1. **Nenhuma conversa real rodou com o prompt novo.** O prompt de triagem está
+   em `app/prompts/triagem_juridica.py` e **não** foi aplicado ao agente que
+   atende — o do banco ainda é o antigo. Aplique com
+   `python -m scripts.aplicar_prompt --agente <id>` e converse pelo WhatsApp de
+   verdade. Tudo o que veio depois dele (os números que dimensionam o caso, o
+   porte econômico, o dossiê do card) é alimentado por essa conversa; se a
+   triagem não coletar como se espera, o resto está resolvendo o problema
+   errado.
+
+2. **A tela de conexão do WhatsApp não existe.** O QR e o estado da instância
+   só aparecem no Manager da Evolution, fora do sistema. Quem administra o
+   escritório precisa sair do painel para reconectar o número.
+
 3. **O operador não responde pelo painel.** Ele assume a conversa e a IA para,
    mas mandar a mensagem ao cliente ainda é fora do sistema — não há endpoint
    de envio avulso pela Evolution API.
-4. **`stream_response` não tem consumidor.** Virou gerador assíncrono junto
-   com o limitador, mas nenhum endpoint o usa — só os testes.
 
-`GUIA_DEPLOY.md` tem o checklist de produção completo.
+4. **Anexos não são lidos.** PDF, imagem e áudio chegam pelo WhatsApp e são
+   descartados. A ideia é ligá-los pelo painel do administrador, não por
+   variável de ambiente.
+
+5. **A stack em container nunca subiu.** Fora de container ela já rodou inteira
+   (ver `GUIA_DEPLOY.md` §6), mas falta o `docker compose up`: os `Dockerfile`,
+   o healthcheck do `depends_on` e a rede do compose seguem sem exercício.
+
+6. **`stream_response` não tem consumidor.** Virou gerador assíncrono junto com
+   o limitador, mas nenhum endpoint o usa — só os testes.
+
+### O que foi conferido contra a API, e o que não foi
+
+O Claude responde de verdade: `claude-sonnet-5` no atendimento e
+`claude-opus-5` no parecer, os dois medidos. O parecer completo sai em ~5 mil
+tokens de saída e ~90 segundos, custando cerca de US$ 0,14 por lead
+qualificado. As citações do primeiro parecer real (Súmulas 32, 338 e 389 do
+TST; arts. 482 "i", 477 §8º e 818, II da CLT) foram conferidas uma a uma.
+
+O que **não** foi exercitado com chave real dos dois lados é a queda de
+provedor: a passagem para o Gemini só rodou com `httpx.MockTransport`. E a
+lista de modelos que aceitam `temperature` continua vindo da documentação, não
+da Models API.
+
+Atenção ao Gemini: `gemini-pro-latest` responde 429 com `limit: 0` na camada
+gratuita — o modelo aparece em `/models` e não tem cota nenhuma sem faturamento
+ativo.
+
+### Do lado visual
+
+Tema claro e escuro foram vistos no navegador em login, painel e agentes. **Não
+foram vistos no escuro:** Kanban, Métricas e Atendimentos. Os gráficos são o
+risco maior — a paleta deles foi validada para fundo claro. As tarjas coloridas
+(verde de "ativo", âmbar do titular, vermelho de erro) continuam em tom claro
+no escuro: pequenas e legíveis, mas não o ideal.
+
+O contraste da paleta nova (`ink`/`brass`) foi escolhido a olho, diferente do
+da paleta de dados, que passou pelo validador.
 
 ---
 

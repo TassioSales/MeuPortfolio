@@ -16,7 +16,7 @@ export function Input({ label, error, hint, className, id, ...props }: InputProp
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={inputId} className="text-sm font-medium text-gray-700">
+      <label htmlFor={inputId} className="text-sm font-medium text-fg-soft">
         {label}
       </label>
       <input
@@ -24,8 +24,8 @@ export function Input({ label, error, hint, className, id, ...props }: InputProp
         aria-invalid={error ? true : undefined}
         aria-describedby={describedById}
         className={cn(
-          "rounded-lg border border-surface-border bg-white px-3 py-2.5 text-sm text-gray-900",
-          "placeholder:text-gray-400",
+          "rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-fg",
+          "placeholder:text-fg-faint",
           "focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100",
           "disabled:cursor-not-allowed disabled:bg-surface-muted",
           error && "border-red-500 focus:border-red-500 focus:ring-red-100",
@@ -39,7 +39,7 @@ export function Input({ label, error, hint, className, id, ...props }: InputProp
         </p>
       )}
       {!error && hint && (
-        <p id={`${inputId}-hint`} className="text-xs text-gray-500">
+        <p id={`${inputId}-hint`} className="text-xs text-fg-muted">
           {hint}
         </p>
       )}

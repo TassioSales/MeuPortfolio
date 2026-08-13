@@ -2,73 +2,93 @@
 
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  IconeAgente,
+  IconeConversa,
+  IconeFunil,
+  IconeMetricas,
+  IconeTeste,
+} from "@/components/icons";
 
 interface QuickLink {
   href: string;
   title: string;
   description: string;
-  icon: string;
+  Icone: (props: { className?: string }) => JSX.Element;
   available: boolean;
+  /** Atalhos que levam a telas que o operador não abre (404 no backend). */
+  soAdmin?: boolean;
 }
 
 const QUICK_LINKS: QuickLink[] = [
   {
     href: "/dashboard/agents",
     title: "Agentes",
-    description: "Crie e edite os prompts dos seus agentes de IA.",
-    icon: "🤖",
+    description: "O prompt da triagem e os limites do atendimento.",
+    Icone: IconeAgente,
+    available: true,
+    soAdmin: true,
+  },
+  {
+    href: "/dashboard/conversations",
+    title: "Atendimentos",
+    description: "As conversas em andamento e o parecer de cada caso.",
+    Icone: IconeConversa,
     available: true,
   },
   {
     href: "/dashboard/chat-test",
     title: "Chat de teste",
-    description: "Converse com o agente antes de publicá-lo no WhatsApp.",
-    icon: "💬",
+    description: "Converse com o agente antes de soltá-lo no WhatsApp.",
+    Icone: IconeTeste,
     available: true,
+    soAdmin: true,
   },
   {
     href: "/dashboard/kanban",
     title: "Kanban CRM",
-    description: "Acompanhe os leads pelo funil de qualificação.",
-    icon: "🗂️",
+    description: "Acompanhe os casos pelo funil, da entrada ao agendamento.",
+    Icone: IconeFunil,
     available: true,
   },
   {
     href: "/dashboard/metrics",
     title: "Métricas",
-    description: "Taxa de qualificação, tempo de resposta e KPIs.",
-    icon: "📈",
+    description: "Volume de atendimentos, taxa de qualificação e tempo de resposta.",
+    Icone: IconeMetricas,
     available: true,
   },
 ];
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const eAdmin = user?.papel === "admin";
+  const atalhos = QUICK_LINKS.filter((link) => eAdmin || !link.soAdmin);
 
   return (
     <div className="mx-auto max-w-5xl">
       <header className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Olá, {user?.nome ?? "por aqui"} 👋
+        <h1 className="text-2xl font-semibold tracking-tight text-fg">
+          Olá, {user?.nome ?? "por aqui"}
         </h1>
-        <p className="mt-1 text-sm text-gray-600">
-          Este é o painel da sua conta. As áreas abaixo são liberadas conforme as próximas
-          fases do projeto forem entregues.
+        <p className="mt-1 text-sm text-fg-muted">
+          O agente atende no WhatsApp, faz a triagem e prepara a análise do caso.
+          Por aqui você acompanha e ajusta.
         </p>
       </header>
 
       <section aria-label="Atalhos" className="grid gap-4 sm:grid-cols-2">
-        {QUICK_LINKS.map((link) => {
+        {atalhos.map((link) => {
           const card = (
             <>
-              <span aria-hidden="true" className="text-2xl">
-                {link.icon}
+              <span className="rounded-lg bg-ink-50 p-2 text-ink-700">
+                <link.Icone />
               </span>
               <div>
-                <h2 className="text-sm font-medium text-gray-900">{link.title}</h2>
-                <p className="mt-0.5 text-sm text-gray-600">{link.description}</p>
+                <h2 className="text-sm font-medium text-fg">{link.title}</h2>
+                <p className="mt-0.5 text-sm text-fg-muted">{link.description}</p>
                 {!link.available && (
-                  <span className="mt-2 inline-block rounded-full bg-surface-muted px-2 py-0.5 text-xs text-gray-500">
+                  <span className="mt-2 inline-block rounded-full bg-surface-muted px-2 py-0.5 text-xs text-fg-muted">
                     Em breve
                   </span>
                 )}
@@ -77,7 +97,7 @@ export default function DashboardPage() {
           );
 
           const className =
-            "flex items-start gap-4 rounded-xl border border-surface-border bg-white p-5";
+            "flex items-start gap-4 rounded-xl border border-surface-border bg-surface p-5";
 
           return link.available ? (
             <Link

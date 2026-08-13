@@ -19,6 +19,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useDroppable } from "@dnd-kit/core";
 import { KanbanCardItem } from "./KanbanCard";
+import { LeadDossiePanel } from "./LeadDossie";
 import { Button } from "./Button";
 import { FullPageLoader } from "./LoadingSpinner";
 import { useKanban } from "@/hooks/useKanban";
@@ -29,7 +30,13 @@ interface KanbanBoardProps {
   agentId: string;
 }
 
-function Column({ column }: { column: KanbanColumn }) {
+function Column({
+  column,
+  onAbrir,
+}: {
+  column: KanbanColumn;
+  onAbrir: (leadId: string) => void;
+}) {
   // A coluna inteira é área de soltura, para aceitar card em coluna vazia.
   const { setNodeRef, isOver } = useDroppable({
     id: column.id,
@@ -48,9 +55,9 @@ function Column({ column }: { column: KanbanColumn }) {
             className="h-2.5 w-2.5 shrink-0 rounded-full"
             style={{ backgroundColor: column.cor_hex }}
           />
-          <h3 className="truncate text-sm font-medium text-gray-900">{column.nome}</h3>
+          <h3 className="truncate text-sm font-medium text-fg">{column.nome}</h3>
         </div>
-        <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-xs text-gray-600">
+        <span className="shrink-0 rounded-full bg-surface px-2 py-0.5 text-xs text-fg-muted">
           {column.cards.length}
         </span>
       </header>
@@ -67,12 +74,12 @@ function Column({ column }: { column: KanbanColumn }) {
           strategy={verticalListSortingStrategy}
         >
           {column.cards.map((card) => (
-            <KanbanCardItem key={card.id} card={card} />
+            <KanbanCardItem key={card.id} card={card} onAbrir={onAbrir} />
           ))}
         </SortableContext>
 
         {column.cards.length === 0 && (
-          <p className="px-1 py-4 text-center text-xs text-gray-400">
+          <p className="px-1 py-4 text-center text-xs text-fg-faint">
             Nenhum lead nesta etapa
           </p>
         )}
@@ -83,6 +90,8 @@ function Column({ column }: { column: KanbanColumn }) {
 
 export function KanbanBoard({ agentId }: KanbanBoardProps) {
   const { board, isLoading, error, moveCard, reload } = useKanban(agentId);
+  // Qual card está aberto. Nulo é o normal — o dossiê é modal.
+  const [leadAberto, setLeadAberto] = useState<string | null>(null);
   const [dragging, setDragging] = useState<KanbanCard | null>(null);
 
   // Tempo real: um lead qualificado pelo agente no WhatsApp aparece no board
@@ -164,7 +173,7 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
         </p>
       )}
 
-      <p className="mb-4 flex items-center gap-2 text-xs text-gray-500">
+      <p className="mb-4 flex items-center gap-2 text-xs text-fg-muted">
         <span
           aria-hidden="true"
           className={
@@ -177,7 +186,7 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
       </p>
 
       {totalCards === 0 && (
-        <p className="mb-4 rounded-lg border border-surface-border bg-white px-4 py-3 text-sm text-gray-600">
+        <p className="mb-4 rounded-lg border border-surface-border bg-surface px-4 py-3 text-sm text-fg-muted">
           Nenhum lead ainda. Os leads entram no funil automaticamente conforme o agente
           qualifica as conversas do WhatsApp.
         </p>
@@ -192,7 +201,7 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
       >
         <div className="flex gap-4 overflow-x-auto pb-4">
           {board.columns.map((column) => (
-            <Column key={column.id} column={column} />
+            <Column key={column.id} column={column} onAbrir={setLeadAberto} />
           ))}
         </div>
 
@@ -201,6 +210,12 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
           {dragging && <KanbanCardItem card={dragging} isOverlay />}
         </DragOverlay>
       </DndContext>
+
+      <LeadDossiePanel
+        agentId={agentId}
+        leadId={leadAberto}
+        onClose={() => setLeadAberto(null)}
+      />
     </div>
   );
 }

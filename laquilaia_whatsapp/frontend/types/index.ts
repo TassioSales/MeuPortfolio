@@ -12,8 +12,18 @@ export interface User {
   email: string;
   nome: string;
   status: string;
+  /**
+   * `admin` configura os agentes; `operador` atende.
+   *
+   * O painel usa isto para decidir o que mostrar no menu. Quem decide o que é
+   * permitido continua sendo o backend, em cada rota — esconder o link evita o
+   * 404, não é a autorização.
+   */
+  papel: Papel;
   data_criacao: string;
 }
+
+export type Papel = "admin" | "operador";
 
 export interface LoginRequest {
   email: string;
@@ -158,9 +168,25 @@ export interface CasoDoContato {
   /** Preenchido só quando a parte não é quem manda as mensagens. */
   titular: string | null;
   score_qualificacao: number;
+  /** Faixa em reais, do parecer. Nula quando não deu para dimensionar. */
+  valor_estimado_min: number | null;
+  valor_estimado_max: number | null;
+  viabilidade: Viabilidade;
   data_abertura: string | null;
   analise_preliminar: string | null;
 }
+
+/**
+ * O veredito do parecer sobre o porte do caso.
+ *
+ * `indeterminado` não é sinônimo de inviável: é caso que ninguém dimensionou
+ * ainda, e o que ele pede é uma pergunta, não um descarte.
+ */
+export type Viabilidade =
+  | "acima_do_piso"
+  | "abaixo_do_piso"
+  | "indeterminado"
+  | "nao_se_aplica";
 
 /** Resposta de `pause`, `resume` e `status`. */
 export interface ConversationStatus {
@@ -180,6 +206,25 @@ export interface KanbanCard {
   score_qualificacao: number;
   status_funil: string;
   ordem: number;
+}
+
+/** Resposta de `GET /agents/{id}/kanban/leads/{leadId}` (`LeadDossie`). */
+export interface LeadDossie {
+  lead_id: string;
+  nome: string | null;
+  email: string | null;
+  phone_number: string;
+  status_funil: string | null;
+  score_qualificacao: number;
+  data_criacao: string | null;
+  conversation_id: string | null;
+  dados_economicos: string | null;
+  documentos_em_maos: string | null;
+  inconsistencias: string | null;
+  problemas_detectados: string | null;
+  recomendacoes: string | null;
+  analise_preliminar: string | null;
+  casos: CasoDoContato[];
 }
 
 export interface KanbanColumn {

@@ -28,9 +28,9 @@ export function StatTile({
   const isGood = hasDelta ? (lowerIsBetter ? delta! < 0 : delta! > 0) : false;
 
   return (
-    <div className="rounded-xl border border-surface-border bg-white p-5">
-      <p className="text-sm text-gray-600">{label}</p>
-      <p className="mt-1 text-3xl font-semibold tabular-nums text-gray-900">{value}</p>
+    <div className="rounded-xl border border-surface-border bg-surface p-5">
+      <p className="text-sm text-fg-muted">{label}</p>
+      <p className="mt-1 text-3xl font-semibold tabular-nums text-fg">{value}</p>
 
       <div className="mt-1 flex items-center gap-2">
         {hasDelta && (
@@ -45,7 +45,7 @@ export function StatTile({
             {Math.abs(delta!).toFixed(1)}%
           </span>
         )}
-        {hint && <span className="text-xs text-gray-500">{hint}</span>}
+        {hint && <span className="text-xs text-fg-muted">{hint}</span>}
       </div>
     </div>
   );

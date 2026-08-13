@@ -216,6 +216,9 @@ async def get_me(
             email=user.email,
             nome=user.nome,
             status=user.status,
+            # Sem isto o schema cai no default "operador" e o painel esconde do
+            # administrador as telas que só ele pode abrir.
+            papel=user.papel,
             data_criacao=user.data_criacao,
         )
 

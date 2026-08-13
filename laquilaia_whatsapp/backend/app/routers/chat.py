@@ -3,6 +3,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db_session
+from app.models.caso_schemas import CasoDoContato
 from app.models.llm_models import (
     MessageRequest,
     MessageResponse,
@@ -450,18 +451,6 @@ class ConversationListItem(BaseModel):
     ultimo_remetente: Optional[str] = None
 
 
-class CasoDoContato(BaseModel):
-    """Um assunto trazido por este contato."""
-    id: str
-    area: Optional[str] = None
-    resumo: Optional[str] = None
-    # Preenchido só quando a parte não é quem manda a mensagem.
-    titular: Optional[str] = None
-    score_qualificacao: int = 0
-    data_abertura: Optional[datetime] = None
-    analise_preliminar: Optional[str] = None
-
-
 class ConversationMessagesResponse(BaseModel):
     """Transcrição de uma conversa, da mais antiga para a mais recente."""
     conversation_id: str
@@ -652,6 +641,9 @@ async def get_conversation_messages(
                     resumo=caso.resumo,
                     titular=caso.titular,
                     score_qualificacao=caso.score_qualificacao or 0,
+                    valor_estimado_min=caso.valor_estimado_min,
+                    valor_estimado_max=caso.valor_estimado_max,
+                    viabilidade=caso.viabilidade or "indeterminado",
                     data_abertura=caso.data_abertura,
                     analise_preliminar=caso.analise_preliminar,
                 )

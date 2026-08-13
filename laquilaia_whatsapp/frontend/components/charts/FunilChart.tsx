@@ -31,10 +31,10 @@ export function FunilChart({ distribuicao }: FunilChartProps) {
   const maior = Math.max(...ETAPAS.map((e) => distribuicao[e.chave] as number), 1);
 
   return (
-    <figure className="rounded-xl border border-surface-border bg-white p-5">
+    <figure className="rounded-xl border border-surface-border bg-surface p-5">
       <figcaption className="mb-4">
-        <h3 className="text-sm font-medium text-gray-900">Leads por etapa do funil</h3>
-        <p className="mt-0.5 text-xs text-gray-500">
+        <h3 className="text-sm font-medium text-fg">Leads por etapa do funil</h3>
+        <p className="mt-0.5 text-xs text-fg-muted">
           Situação atual — {distribuicao.total}{" "}
           {distribuicao.total === 1 ? "lead" : "leads"} no total.
         </p>
@@ -47,7 +47,7 @@ export function FunilChart({ distribuicao }: FunilChartProps) {
 
           return (
             <li key={etapa.chave} className="flex items-center gap-3">
-              <span className="w-32 shrink-0 text-xs text-gray-600">{etapa.rotulo}</span>
+              <span className="w-32 shrink-0 text-xs text-fg-muted">{etapa.rotulo}</span>
 
               <div className="h-6 flex-1 overflow-hidden rounded bg-surface-muted">
                 <div
@@ -61,7 +61,7 @@ export function FunilChart({ distribuicao }: FunilChartProps) {
                 />
               </div>
 
-              <span className="w-10 shrink-0 text-right text-sm font-medium tabular-nums text-gray-900">
+              <span className="w-10 shrink-0 text-right text-sm font-medium tabular-nums text-fg">
                 {valor}
               </span>
             </li>

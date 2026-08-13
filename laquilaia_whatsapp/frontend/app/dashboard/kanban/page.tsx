@@ -46,7 +46,7 @@ function KanbanContent() {
         action={
           <Link
             href="/dashboard/agents"
-            className="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700"
+            className="rounded-lg bg-ink-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-ink-800 dark:bg-ink-100 dark:text-ink-950 dark:hover:bg-white"
           >
             Ir para Agentes
           </Link>
@@ -58,8 +58,8 @@ function KanbanContent() {
   return (
     <div>
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Kanban CRM</h1>
-        <p className="mt-1 text-sm text-gray-600">
+        <h1 className="text-2xl font-semibold text-fg">Kanban CRM</h1>
+        <p className="mt-1 text-sm text-fg-muted">
           Arraste os leads entre as etapas do funil. Mover um card atualiza o status do
           lead no backend.
         </p>
@@ -75,8 +75,8 @@ function KanbanContent() {
               aria-pressed={agent.id === selected?.id}
               className={
                 agent.id === selected?.id
-                  ? "rounded-full bg-brand-600 px-3 py-1.5 text-sm font-medium text-white"
-                  : "rounded-full border border-surface-border bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-surface-muted"
+                  ? "rounded-full bg-ink-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-ink-100 dark:text-ink-950"
+                  : "rounded-full border border-surface-border bg-surface px-3 py-1.5 text-sm text-fg-soft hover:bg-surface-muted"
               }
             >
               {agent.nome}

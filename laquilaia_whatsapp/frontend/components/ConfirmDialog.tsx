@@ -38,7 +38,7 @@ export function ConfirmDialog({
 
   return (
     <Modal isOpen={isOpen} onClose={onCancel} title={title}>
-      <p className="text-sm text-gray-600">{message}</p>
+      <p className="text-sm text-fg-muted">{message}</p>
 
       {error && (
         <p role="alert" className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">

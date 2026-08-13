@@ -10,10 +10,14 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANTS: Record<NonNullable<ButtonProps["variant"]>, string> = {
-  primary: "bg-brand-600 text-white hover:bg-brand-700 focus-visible:outline-brand-600",
+  // No escuro o primário inverte: botão escuro sobre fundo escuro deixa de
+  // parecer botão, e a ação principal da tela é justamente a que não pode
+  // sumir.
+  primary:
+    "bg-ink-900 text-white hover:bg-ink-800 dark:bg-ink-100 dark:text-ink-950 dark:hover:bg-white focus-visible:outline-ink-900 dark:focus-visible:outline-ink-100",
   secondary:
-    "bg-white text-gray-800 border border-surface-border hover:bg-surface-muted focus-visible:outline-brand-600",
-  ghost: "bg-transparent text-gray-600 hover:bg-surface-muted focus-visible:outline-brand-600",
+    "bg-surface text-fg border border-surface-border hover:bg-surface-muted focus-visible:outline-brand-600",
+  ghost: "bg-transparent text-fg-muted hover:bg-surface-muted focus-visible:outline-brand-600",
   danger: "bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600",
 };
 

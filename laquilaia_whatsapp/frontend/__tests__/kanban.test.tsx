@@ -7,6 +7,7 @@
  * rollback quando o backend recusa.
  */
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { renderHook, act } from "@testing-library/react";
 import * as kanbanApi from "@/lib/kanban";
 import { useKanban } from "@/hooks/useKanban";
@@ -174,7 +175,8 @@ describe("KanbanBoard", () => {
     render(<KanbanBoard agentId="agent-1" />);
 
     expect(await screen.findByText("Maria Silva")).toBeInTheDocument();
-    expect(screen.getByText("5561999990001")).toBeInTheDocument();
+    // Formatado, e como link: o número cru é ilegível e inútil para responder.
+    expect(screen.getByText("+55 61 99999-0001")).toBeInTheDocument();
     expect(screen.getByText("maria@example.com")).toBeInTheDocument();
     expect(screen.getByText("85")).toBeInTheDocument();
   });
@@ -199,5 +201,109 @@ describe("KanbanBoard", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Agent not found");
     expect(screen.getByRole("button", { name: "Tentar novamente" })).toBeInTheDocument();
+  });
+});
+
+
+describe("Dossiê do contato", () => {
+  const DOSSIE = {
+    lead_id: "lead-1",
+    nome: "Maria Silva",
+    email: "maria@example.com",
+    phone_number: "5561999990001",
+    status_funil: "qualificado",
+    score_qualificacao: 85,
+    data_criacao: "2026-08-10T09:00:00Z",
+    conversation_id: "conv-1",
+    dados_economicos: "salário R$ 2.100, 4 anos de casa",
+    documentos_em_maos: "atestado e prints do RH",
+    inconsistencias: "Não disse se recebeu a rescisão",
+    problemas_detectados: "Prazo apertado",
+    recomendacoes: "Pedir a carta de justa causa",
+    analise_preliminar: null,
+    casos: [
+      {
+        id: "caso-1",
+        area: "trabalhista",
+        resumo: "Justa causa por abandono.",
+        titular: null,
+        score_qualificacao: 85,
+        valor_estimado_min: 18000,
+        valor_estimado_max: 75000,
+        viabilidade: "acima_do_piso",
+        data_abertura: "2026-08-10T09:00:00Z",
+        analise_preliminar: "## Resumo\nCliente relata demissão.",
+      },
+    ],
+  };
+
+  async function abrirCard(dossie: unknown = DOSSIE) {
+    mockFetch.mockResolvedValueOnce(jsonResponse(BOARD));
+    mockFetch.mockResolvedValueOnce(jsonResponse(dossie));
+    render(<KanbanBoard agentId="agent-1" />);
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+  }
+
+  it("clicar no card abre o porte e o que a triagem coletou", async () => {
+    // O card mostrava nome, telefone e um número de 0 a 100 — e o número
+    // sozinho não diz nada sobre o caso.
+    await abrirCard();
+
+    expect(await screen.findByText(/R\$\s?18\.000 a R\$\s?75\.000/)).toBeInTheDocument();
+    expect(screen.getByText(/salário R\$ 2\.100/)).toBeInTheDocument();
+    expect(screen.getByText("Pedir a carta de justa causa")).toBeInTheDocument();
+  });
+
+  it("o caso sem dimensionar não vira um valor inventado", async () => {
+    await abrirCard({
+      ...DOSSIE,
+      casos: [
+        {
+          ...DOSSIE.casos[0],
+          valor_estimado_min: null,
+          valor_estimado_max: null,
+          viabilidade: "indeterminado",
+        },
+      ],
+    });
+
+    expect(await screen.findByText(/Ainda não dimensionado/)).toBeInTheDocument();
+  });
+
+  it("oferece responder no WhatsApp e abrir o atendimento", async () => {
+    await abrirCard();
+
+    expect(await screen.findByRole("link", { name: /Responder no WhatsApp/ }))
+      .toHaveAttribute("href", "https://wa.me/5561999990001");
+    expect(screen.getByRole("link", { name: /Ver o atendimento/ }))
+      .toHaveAttribute("href", "/dashboard/conversations?conversa=conv-1");
+  });
+
+  it("contato sem caso abre mesmo assim", async () => {
+    // Lead que entrou no funil e nunca foi qualificado é o estado normal da
+    // primeira coluna — a mais cheia do board.
+    await abrirCard({ ...DOSSIE, casos: [], dados_economicos: null });
+
+    expect(await screen.findByText(/ainda não tem caso arquivado/)).toBeInTheDocument();
+  });
+
+  it("o número do card é um link para o WhatsApp", async () => {
+    mockFetch.mockResolvedValueOnce(jsonResponse(BOARD));
+    render(<KanbanBoard agentId="agent-1" />);
+
+    const link = await screen.findByRole("link", { name: "+55 61 99999-0001" });
+    expect(link).toHaveAttribute("href", "https://wa.me/5561999990001");
+  });
+
+  it("clicar no número não abre o dossiê junto", async () => {
+    // O dossiê é uma tela inteira aparecendo por cima de um link que já foi
+    // seguido — o clique no número tem que parar nele.
+    mockFetch.mockResolvedValueOnce(jsonResponse(BOARD));
+    render(<KanbanBoard agentId="agent-1" />);
+
+    await userEvent.click(await screen.findByRole("link", { name: "+55 61 99999-0001" }));
+
+    expect(screen.queryByText(/Porte estimado/)).not.toBeInTheDocument();
   });
 });

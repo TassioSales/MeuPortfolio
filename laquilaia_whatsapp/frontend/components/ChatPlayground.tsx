@@ -45,11 +45,11 @@ export function ChatPlayground({ agent }: ChatPlaygroundProps) {
   }
 
   return (
-    <div className="flex h-[calc(100vh-10rem)] flex-col rounded-xl border border-surface-border bg-white">
+    <div className="flex h-[calc(100vh-10rem)] flex-col rounded-xl border border-surface-border bg-surface">
       <header className="flex items-start justify-between gap-4 border-b border-surface-border px-5 py-4">
         <div className="min-w-0">
-          <h2 className="truncate text-sm font-semibold text-gray-900">{agent.nome}</h2>
-          <p className="mt-0.5 text-xs text-gray-500">
+          <h2 className="truncate text-sm font-semibold text-fg">{agent.nome}</h2>
+          <p className="mt-0.5 text-xs text-fg-muted">
             temperatura {agent.temperatura} · máx. {agent.max_tokens} tokens
           </p>
         </div>
@@ -72,8 +72,8 @@ export function ChatPlayground({ agent }: ChatPlaygroundProps) {
             <span aria-hidden="true" className="text-3xl">
               💬
             </span>
-            <p className="text-sm font-medium text-gray-900">Converse com o agente</p>
-            <p className="max-w-sm text-sm text-gray-600">
+            <p className="text-sm font-medium text-fg">Converse com o agente</p>
+            <p className="max-w-sm text-sm text-fg-muted">
               As mensagens usam o system prompt configurado. É o mesmo comportamento que
               o cliente teria no WhatsApp.
             </p>
@@ -90,12 +90,12 @@ export function ChatPlayground({ agent }: ChatPlaygroundProps) {
                   className={cn(
                     "max-w-[75%] rounded-2xl px-4 py-2.5 text-sm",
                     isUser
-                      ? "bg-brand-600 text-white"
-                      : "bg-surface-muted text-gray-900",
+                      ? "bg-ink-900 text-white"
+                      : "bg-surface-muted text-fg",
                   )}
                 >
                   {message.pending ? (
-                    <span className="flex items-center gap-2 text-gray-500">
+                    <span className="flex items-center gap-2 text-fg-muted">
                       <LoadingSpinner size="sm" label="Aguardando resposta" />
                       digitando...
                     </span>
@@ -103,7 +103,7 @@ export function ChatPlayground({ agent }: ChatPlaygroundProps) {
                     <p className="whitespace-pre-wrap break-words">{message.conteudo}</p>
                   )}
                   {message.tokens !== undefined && (
-                    <p className="mt-1 text-xs text-gray-500">{message.tokens} tokens</p>
+                    <p className="mt-1 text-xs text-fg-muted">{message.tokens} tokens</p>
                   )}
                 </div>
               </div>
@@ -137,7 +137,7 @@ export function ChatPlayground({ agent }: ChatPlaygroundProps) {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="max-h-32 min-h-[2.75rem] flex-1 resize-y rounded-lg border border-surface-border px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+          className="max-h-32 min-h-[2.75rem] flex-1 resize-y rounded-lg border border-surface-border px-3 py-2.5 text-sm text-fg placeholder:text-fg-faint focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
         />
         <Button type="submit" isLoading={isSending} disabled={!draft.trim()}>
           Enviar

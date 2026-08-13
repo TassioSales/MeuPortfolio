@@ -60,6 +60,19 @@ class Settings(BaseSettings):
     analise_claude_model: str = os.getenv("ANALISE_CLAUDE_MODEL", "")
     analise_gemini_model: str = os.getenv("ANALISE_GEMINI_MODEL", "")
 
+    # Piso, em reais, a partir do qual o caso comporta o trabalho do escritório.
+    #
+    # É critério comercial, não jurídico: um caso de mil reais pode ter razão
+    # inteira e ainda assim custar mais para tocar do que rende. Por isso o
+    # número mora aqui e não no prompt — muda por escritório e muda com o
+    # tempo, sem precisar reescrever texto.
+    #
+    # O parecer compara com o **piso** da faixa estimada, não com o valor
+    # provável: caso que só compensa no melhor cenário não compensa. E nada
+    # disso descarta ninguém sozinho — o veredito é etiqueta para o advogado
+    # discordar, não filtro que apaga o caso.
+    caso_valor_minimo: int = int(os.getenv("CASO_VALOR_MINIMO", "15000"))
+
     # WhatsApp / Evolution API
     # A Evolution v2 escuta na 8080 (SERVER_PORT do .env.example dela). O default
     # anterior, 4000, não corresponde a nenhuma versão.

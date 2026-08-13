@@ -19,8 +19,8 @@ export default function GlobalError({
       <span aria-hidden="true" className="text-4xl">
         ⚠️
       </span>
-      <h1 className="text-xl font-semibold text-gray-900">Algo deu errado</h1>
-      <p className="max-w-sm text-sm text-gray-600">
+      <h1 className="text-xl font-semibold text-fg">Algo deu errado</h1>
+      <p className="max-w-sm text-sm text-fg-muted">
         {error.message || "Ocorreu um erro inesperado ao renderizar a página."}
       </p>
       <Button onClick={reset}>Tentar novamente</Button>

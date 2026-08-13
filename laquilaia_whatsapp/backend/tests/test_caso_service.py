@@ -69,6 +69,75 @@ class TestLeituraDaFicha:
         assert ler_ficha("") == (None, None)
 
 
+PORTE = """## Porte econômico
+Verbas rescisórias sobre 4 anos e 3 meses de casa, mais horas extras.
+
+Valor estimado: R$ 22.000 a R$ 41.500
+Viabilidade: acima do piso
+"""
+
+
+class TestLeituraDoPorte:
+    def test_le_a_faixa_e_o_veredito(self):
+        from app.services.caso_service import ler_porte
+
+        assert ler_porte(PORTE) == (22000, 41500, "acima_do_piso")
+
+    def test_faixa_invertida_e_ordenada_em_vez_de_descartada(self):
+        """
+        Os dois números estão certos, só trocados de lugar. Descartar perderia
+        a estimativa inteira por causa da ordem.
+        """
+        from app.services.caso_service import ler_porte
+
+        piso, provavel, _ = ler_porte(
+            "Valor estimado: R$ 40.000 a R$ 12.000\nViabilidade: acima do piso"
+        )
+
+        assert (piso, provavel) == (12000, 40000)
+
+    def test_centavos_sao_descartados(self):
+        """Centavo em estimativa preliminar é precisão que o número não tem."""
+        from app.services.caso_service import ler_porte
+
+        piso, provavel, _ = ler_porte("Valor estimado: R$ 8.500,00 a R$ 12.300,75")
+
+        assert (piso, provavel) == (8500, 12300)
+
+    def test_abaixo_do_piso_e_reconhecido(self):
+        from app.services.caso_service import ler_porte
+
+        assert ler_porte("Viabilidade: abaixo do piso")[2] == "abaixo_do_piso"
+
+    def test_sem_dados_para_dimensionar(self):
+        from app.services.caso_service import ler_porte
+
+        assert ler_porte("Viabilidade: não dá para dimensionar")[2] == "indeterminado"
+
+    def test_criminal_nao_se_aplica(self):
+        from app.services.caso_service import ler_porte
+
+        assert ler_porte("Viabilidade: não se aplica")[2] == "nao_se_aplica"
+
+    def test_parecer_sem_a_secao_fica_indeterminado_e_nao_inviavel(self):
+        """
+        A diferença que importa: caso não dimensionado pede uma pergunta; caso
+        inviável mandaria descartar. Confundir os dois joga fora caso bom.
+        """
+        from app.services.caso_service import ler_porte
+
+        assert ler_porte("## Resumo\nCliente relata demissão.") == (
+            None,
+            None,
+            "indeterminado",
+        )
+
+    def test_parecer_vazio_nao_quebra(self):
+        from app.services.caso_service import ler_porte
+
+        assert ler_porte("") == (None, None, "indeterminado")
+
+
 def _db(caso_existente=None):
     db = AsyncMock()
     resultado = MagicMock()
@@ -137,6 +206,14 @@ class TestRegistroDoCaso:
         caso = await registrar_caso(_lead(nome="Pedro Sales"), PARECER_DE_TERCEIRO, 70, db)
 
         assert caso.titular == "Marina Sales"
+
+    async def test_o_porte_e_gravado_junto_com_o_caso(self):
+        db = _db()
+
+        caso = await registrar_caso(_lead(), PARECER + "\n" + PORTE, 80, db)
+
+        assert (caso.valor_estimado_min, caso.valor_estimado_max) == (22000, 41500)
+        assert caso.viabilidade == "acima_do_piso"
 
     async def test_sem_parecer_nao_abre_caso(self):
         db = _db()

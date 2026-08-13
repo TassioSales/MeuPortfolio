@@ -39,8 +39,8 @@ function Painel({ agentId }: { agentId: string }) {
             aria-pressed={period === opcao.valor}
             className={
               period === opcao.valor
-                ? "rounded-full bg-brand-600 px-3 py-1.5 text-sm font-medium text-white"
-                : "rounded-full border border-surface-border bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-surface-muted"
+                ? "rounded-full bg-ink-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-ink-100 dark:text-ink-950"
+                : "rounded-full border border-surface-border bg-surface px-3 py-1.5 text-sm text-fg-soft hover:bg-surface-muted"
             }
           >
             {opcao.rotulo}
@@ -98,8 +98,8 @@ function Painel({ agentId }: { agentId: string }) {
             <FunilChart distribuicao={summary.leads_por_status} />
 
             {/* Tabela: a mesma informação sem depender de cor nem de gráfico. */}
-            <details className="rounded-xl border border-surface-border bg-white p-5">
-              <summary className="cursor-pointer text-sm font-medium text-gray-900">
+            <details className="rounded-xl border border-surface-border bg-surface p-5">
+              <summary className="cursor-pointer text-sm font-medium text-fg">
                 Ver os dados em tabela
               </summary>
               <div className="mt-4 overflow-x-auto">
@@ -108,7 +108,7 @@ function Painel({ agentId }: { agentId: string }) {
                     Atendimentos e leads qualificados por dia
                   </caption>
                   <thead>
-                    <tr className="border-b border-surface-border text-left text-xs text-gray-600">
+                    <tr className="border-b border-surface-border text-left text-xs text-fg-muted">
                       <th scope="col" className="py-2 pr-4 font-medium">
                         Dia
                       </th>
@@ -123,11 +123,11 @@ function Painel({ agentId }: { agentId: string }) {
                   <tbody>
                     {pontos.map((ponto) => (
                       <tr key={ponto.data} className="border-b border-surface-border/60">
-                        <td className="py-2 pr-4 text-gray-700">{ponto.data}</td>
-                        <td className="py-2 pr-4 tabular-nums text-gray-900">
+                        <td className="py-2 pr-4 text-fg-soft">{ponto.data}</td>
+                        <td className="py-2 pr-4 tabular-nums text-fg">
                           {ponto.atendimentos}
                         </td>
-                        <td className="py-2 tabular-nums text-gray-900">
+                        <td className="py-2 tabular-nums text-fg">
                           {ponto.leads_qualificados}
                         </td>
                       </tr>
@@ -179,7 +179,7 @@ function MetricsContent() {
         action={
           <Link
             href="/dashboard/agents"
-            className="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700"
+            className="rounded-lg bg-ink-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-ink-800 dark:bg-ink-100 dark:text-ink-950 dark:hover:bg-white"
           >
             Ir para Agentes
           </Link>
@@ -191,8 +191,8 @@ function MetricsContent() {
   return (
     <div className="mx-auto max-w-5xl">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Métricas</h1>
-        <p className="mt-1 text-sm text-gray-600">
+        <h1 className="text-2xl font-semibold text-fg">Métricas</h1>
+        <p className="mt-1 text-sm text-fg-muted">
           Desempenho do agente no atendimento e na qualificação de leads.
         </p>
       </header>
@@ -207,8 +207,8 @@ function MetricsContent() {
               aria-pressed={agent.id === selected?.id}
               className={
                 agent.id === selected?.id
-                  ? "rounded-full bg-brand-600 px-3 py-1.5 text-sm font-medium text-white"
-                  : "rounded-full border border-surface-border bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-surface-muted"
+                  ? "rounded-full bg-ink-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-ink-100 dark:text-ink-950"
+                  : "rounded-full border border-surface-border bg-surface px-3 py-1.5 text-sm text-fg-soft hover:bg-surface-muted"
               }
             >
               {agent.nome}

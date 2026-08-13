@@ -65,6 +65,70 @@ def ler_ficha(parecer: str) -> Tuple[Optional[str], Optional[str]]:
     return area, titular
 
 
+# Como o parecer escreve a viabilidade → como o sistema guarda.
+#
+# Guardar o texto do modelo direto seria pedir para o painel comparar strings
+# com acento e maiúscula variando a cada parecer. O `indeterminado` é o default
+# de propósito: parecer que não fala de porte não é caso viável nem inviável, é
+# caso que ninguém dimensionou ainda.
+VIABILIDADES = {
+    "acima do piso": "acima_do_piso",
+    "abaixo do piso": "abaixo_do_piso",
+    "nao da para dimensionar": "indeterminado",
+    "nao se aplica": "nao_se_aplica",
+}
+
+
+def ler_porte(parecer: str) -> Tuple[Optional[int], Optional[int], str]:
+    """
+    Extrai a faixa de valor e a viabilidade da seção de Porte econômico.
+
+    Devolve `(piso, provavel, viabilidade)` em reais inteiros. Faixa ausente ou
+    ilegível devolve `(None, None, ...)` sem estragar o resto: o parecer segue
+    valendo, só não classifica o porte sozinho.
+    """
+    if not parecer:
+        return None, None, "indeterminado"
+
+    piso = provavel = None
+    m = re.search(
+        r"^\s*Valor estimado:\s*R\$\s*([\d.,]+)\s*a\s*R\$\s*([\d.,]+)",
+        parecer,
+        re.MULTILINE | re.IGNORECASE,
+    )
+    if m:
+        piso, provavel = _em_reais(m.group(1)), _em_reais(m.group(2))
+        # O modelo às vezes inverte a ordem da faixa. Ordenar é mais útil que
+        # descartar: os dois números estão certos, só trocados de lugar.
+        if piso is not None and provavel is not None and piso > provavel:
+            piso, provavel = provavel, piso
+
+    viabilidade = "indeterminado"
+    m = re.search(r"^\s*Viabilidade:\s*(.+)$", parecer, re.MULTILINE | re.IGNORECASE)
+    if m:
+        bruto = _sem_acento(m.group(1).strip().lower())
+        for texto, chave in VIABILIDADES.items():
+            if _sem_acento(texto) in bruto:
+                viabilidade = chave
+                break
+
+    return piso, provavel, viabilidade
+
+
+def _em_reais(bruto: str) -> Optional[int]:
+    """
+    "35.000" e "35.000,00" viram 35000.
+
+    Só o inteiro interessa: centavo em estimativa preliminar é precisão que o
+    número não tem.
+    """
+    limpo = bruto.strip().rstrip(".,")
+    if "," in limpo:  # formato brasileiro: ponto é milhar, vírgula é decimal
+        limpo = limpo.split(",")[0]
+    limpo = limpo.replace(".", "")
+    return int(limpo) if limpo.isdigit() else None
+
+
 def _sem_acento(texto: str) -> str:
     trocas = str.maketrans("áàâãéêíóôõúç", "aaaaeeiooouc")
     return texto.translate(trocas)
@@ -147,6 +211,9 @@ async def registrar_caso(
     caso.resumo = _resumo_do_parecer(parecer)
     caso.analise_preliminar = parecer
     caso.score_qualificacao = score
+    caso.valor_estimado_min, caso.valor_estimado_max, caso.viabilidade = ler_porte(
+        parecer
+    )
 
     await db.flush()
     return caso

@@ -53,6 +53,8 @@ export interface Agent {
   system_prompt: string;
   temperatura: number;
   max_tokens: number;
+  /** Se o agente lê imagem, PDF e áudio que o cliente manda. */
+  anexos_habilitados: boolean;
   status: string;
   data_criacao: string;
   data_atualizacao: string;
@@ -65,6 +67,7 @@ export interface AgentInput {
   system_prompt: string;
   temperatura: number;
   max_tokens: number;
+  anexos_habilitados?: boolean;
 }
 
 /** Corpo de `PUT /api/v1/agents/{id}` — todos os campos são opcionais. */

@@ -52,6 +52,10 @@ class AgentBase(BaseModel):
     system_prompt: str
     temperatura: float = Field(default=0.7, ge=0, le=2)
     max_tokens: int = Field(default=1024, ge=1, le=4096)
+    # Se o agente lê imagem, PDF e áudio que o cliente manda. Desligado por
+    # padrão: cada anexo é uma chamada a mais à Evolution e tokens a mais no
+    # modelo, e isso é decisão de quem administra, não default.
+    anexos_habilitados: bool = False
 
 
 class AgentCreate(AgentBase):
@@ -66,6 +70,7 @@ class AgentUpdate(BaseModel):
     system_prompt: Optional[str] = None
     temperatura: Optional[float] = None
     max_tokens: Optional[int] = None
+    anexos_habilitados: Optional[bool] = None
 
 
 class AgentResponse(AgentBase):

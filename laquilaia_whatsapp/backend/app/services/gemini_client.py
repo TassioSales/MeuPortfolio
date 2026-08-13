@@ -89,6 +89,7 @@ class GeminiClient:
         max_tokens: Optional[int] = None,
         temperature: Optional[float] = None,
         model: Optional[str] = None,
+        anexo: Optional[dict] = None,
     ) -> Tuple[str, dict]:
         """
         Gera uma resposta.
@@ -105,7 +106,12 @@ class GeminiClient:
             raise GeminiIndisponivel("GEMINI_API_KEY não configurada")
 
         payload = self._montar_payload(
-            system_prompt, user_message, conversation_history, max_tokens, temperature
+            system_prompt,
+            user_message,
+            conversation_history,
+            max_tokens,
+            temperature,
+            anexo,
         )
 
         url = f"{BASE_URL}/models/{model or self.model}:generateContent"
@@ -140,9 +146,12 @@ class GeminiClient:
         conversation_history: Optional[List[dict]],
         max_tokens: Optional[int],
         temperature: Optional[float],
+        anexo: Optional[dict] = None,
     ) -> dict:
         payload = {
-            "contents": self._montar_contents(conversation_history, user_message),
+            "contents": self._montar_contents(
+                conversation_history, user_message, anexo
+            ),
         }
 
         if system_prompt:
@@ -164,7 +173,9 @@ class GeminiClient:
 
     @staticmethod
     def _montar_contents(
-        conversation_history: Optional[List[dict]], user_message: str
+        conversation_history: Optional[List[dict]],
+        user_message: str,
+        anexo: Optional[dict] = None,
     ) -> List[dict]:
         """
         Converte o histórico do formato do Claude para o do Gemini.
@@ -182,7 +193,24 @@ class GeminiClient:
                 {"role": papel, "parts": [{"text": mensagem.get("content", "")}]}
             )
 
-        contents.append({"role": "user", "parts": [{"text": user_message}]})
+        partes: List[dict] = []
+        if anexo:
+            # `inlineData`, em camelCase, com o base64 cru — sem o prefixo
+            # `data:`, que aqui é erro e não enfeite.
+            #
+            # O anexo vem antes do texto: a legenda ("olha a cláusula 8") só
+            # faz sentido depois de o modelo ter visto o arquivo.
+            partes.append(
+                {
+                    "inlineData": {
+                        "mimeType": anexo["mimetype"],
+                        "data": anexo["base64"],
+                    }
+                }
+            )
+        partes.append({"text": user_message})
+
+        contents.append({"role": "user", "parts": partes})
         return contents
 
     @staticmethod

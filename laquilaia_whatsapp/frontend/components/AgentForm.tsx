@@ -69,6 +69,7 @@ export function AgentForm({ agent, onSubmit, onCancel }: AgentFormProps) {
   const [maxTokens, setMaxTokens] = useState(
     String(agent?.max_tokens ?? DEFAULT_MAX_TOKENS),
   );
+  const [anexos, setAnexos] = useState(agent?.anexos_habilitados ?? false);
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -86,6 +87,7 @@ export function AgentForm({ agent, onSubmit, onCancel }: AgentFormProps) {
       // silenciosamente um valor que o usuário não escolheu.
       temperatura: toNumber(temperatura),
       max_tokens: toNumber(maxTokens),
+      anexos_habilitados: anexos,
     };
 
     const errors = validate(data);
@@ -159,6 +161,27 @@ export function AgentForm({ agent, onSubmit, onCancel }: AgentFormProps) {
           hint="Tamanho máximo da resposta."
         />
       </div>
+
+      <label className="flex items-start gap-3 rounded-lg border border-surface-border p-3">
+        <input
+          type="checkbox"
+          name="anexos_habilitados"
+          checked={anexos}
+          onChange={(e) => setAnexos(e.target.checked)}
+          className="mt-0.5 h-4 w-4 shrink-0 accent-ink-900"
+        />
+        <span>
+          <span className="block text-sm font-medium text-fg">
+            Ler anexos do cliente
+          </span>
+          <span className="mt-0.5 block text-xs text-fg-muted">
+            Imagem, PDF e áudio — a foto da carta de demissão, o contrato, o
+            áudio de quem prefere falar. Cada anexo é uma chamada a mais à
+            Evolution e tokens a mais no modelo. Desligado, o agente pede que a
+            pessoa escreva.
+          </span>
+        </span>
+      </label>
 
       {submitError && (
         <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">

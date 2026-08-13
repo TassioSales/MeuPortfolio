@@ -284,9 +284,24 @@ class TestFormatoDaEvolutionV2:
         r = self._post(corpo)
         assert r.json().get("reason") != "non-text message"
 
-    def test_imagem_continua_ignorada(self):
+    def test_imagem_deixou_de_ser_descartada(self):
+        """
+        A imagem era descartada no webhook, antes de qualquer decisão.
+
+        Agora ela passa: quem decide se será **lida** é o agente, pela
+        configuração de anexos. A diferença importa — descartar aqui apagava
+        a mensagem da conversa; deixar passar registra que houve um documento
+        mesmo quando o agente não o lê.
+        """
         corpo = self._payload(
             messageType="imageMessage", message={"imageMessage": {"url": "..."}}
+        )
+        assert self._post(corpo).json().get("reason") != "non-text message"
+
+    def test_tipo_que_ninguem_trata_continua_ignorado(self):
+        """Figurinha, localização, contato: não é texto nem anexo de triagem."""
+        corpo = self._payload(
+            messageType="stickerMessage", message={"stickerMessage": {"url": "..."}}
         )
         assert self._post(corpo).json()["reason"] == "non-text message"
 

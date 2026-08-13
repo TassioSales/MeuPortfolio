@@ -212,6 +212,55 @@ class WhatsAppService:
             "detalhe": None if (base64 or codigo) else "a Evolution respondeu sem QR",
         }
 
+    async def baixar_midia(self, key: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """
+        O conteúdo de um anexo, em base64.
+
+        O webhook avisa que chegou uma imagem, mas não a manda: o arquivo fica
+        criptografado no servidor do WhatsApp, e quem tem a chave para abri-lo
+        é a Evolution — daí a segunda chamada.
+
+        `None` quando não deu, e nunca levanta: um anexo que não baixou é uma
+        mensagem sem anexo, e o atendimento continua. Levantar aqui derrubaria
+        a resposta ao cliente por causa de uma foto.
+
+        Devolve `{"base64", "mimetype", "nome", "tamanho"}`.
+        """
+        url = f"{self.api_url}/chat/getBase64FromMediaMessage/{self.instance_name}"
+
+        try:
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                # Timeout maior que o dos outros: aqui o que trafega é o
+                # arquivo, e um PDF de contrato não chega em três segundos.
+                resposta = await client.post(
+                    url,
+                    json={"message": {"key": key}, "convertToMp4": False},
+                    headers={"apikey": self.api_key, "Content-Type": "application/json"},
+                )
+        except httpx.HTTPError as e:
+            logger.error(f"❌ Falha de rede ao baixar o anexo: {e}")
+            return None
+
+        if resposta.status_code >= 400:
+            logger.error(
+                f"❌ A Evolution recusou o download do anexo: "
+                f"{resposta.status_code} — {resposta.text[:200]}"
+            )
+            return None
+
+        dados = resposta.json() or {}
+        base64 = dados.get("base64")
+        if not base64:
+            logger.warning("⚠️ A Evolution respondeu sem base64 no anexo")
+            return None
+
+        return {
+            "base64": base64,
+            "mimetype": dados.get("mimetype") or "application/octet-stream",
+            "nome": dados.get("fileName"),
+            "tamanho": dados.get("size"),
+        }
+
     async def health_check(self) -> bool:
         """
         Check Evolution API health.

@@ -24,6 +24,7 @@ const AGENT: Agent = {
   system_prompt: "Você é um assistente...",
   temperatura: 0.7,
   max_tokens: 1024,
+  anexos_habilitados: false,
   status: "ativo",
   data_criacao: "2026-08-11T00:00:00Z",
   data_atualizacao: "2026-08-11T00:00:00Z",

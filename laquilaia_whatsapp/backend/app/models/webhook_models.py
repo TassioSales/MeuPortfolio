@@ -59,6 +59,23 @@ class MessageModel(BaseModel):
 # mantido porque os testes e as ferramentas internas o usam.
 TIPOS_DE_TEXTO = {"conversation", "extendedTextMessage", "textMessage"}
 
+# Anexos que o cliente manda e que valem alguma coisa numa triagem jurídica:
+# a foto da carta de demissão, o PDF do contrato, o áudio de quem prefere
+# falar a digitar. Cada um vira uma leitura diferente do lado do modelo — daí
+# o mapa, e não um `in`.
+TIPOS_DE_ANEXO = {
+    "imageMessage": "imagem",
+    "documentMessage": "documento",
+    "audioMessage": "audio",
+    # A Evolution chama de `documentWithCaptionMessage` o PDF mandado com
+    # texto junto. É o caso mais comum de todos: "segue o contrato, olha a
+    # cláusula 8".
+    "documentWithCaptionMessage": "documento",
+    # Áudio gravado na hora, que é como quase todo mundo manda.
+    "audioWithCaptionMessage": "audio",
+    "pttMessage": "audio",
+}
+
 
 class DataModel(BaseModel):
     """Data payload from Evolution webhook."""
@@ -82,6 +99,22 @@ class DataModel(BaseModel):
     @property
     def e_texto(self) -> bool:
         return self.tipo in TIPOS_DE_TEXTO
+
+    @property
+    def tipo_de_anexo(self) -> Optional[str]:
+        """`imagem`, `documento`, `audio` — ou `None` quando não é anexo."""
+        return TIPOS_DE_ANEXO.get(self.tipo or "")
+
+    @property
+    def legenda(self) -> Optional[str]:
+        """
+        O texto que veio junto do anexo.
+
+        Quase sempre é onde está a pergunta de verdade: o anexo é o contrato, a
+        legenda é "olha a cláusula 8, isso pode?". Ignorá-la seria jogar fora a
+        parte que diz o que a pessoa quer.
+        """
+        return self.message.caption
 
 
 class WebhookPayload(BaseModel):

@@ -197,10 +197,12 @@ laquilaia_whatsapp/
 - [x] Documentação: GUIA_WEBHOOK.md
 
 ### Fase 6: ✅ Memory Service + Launcher Scripts (COMPLETA)
-- [x] MemoryService com Redis cache
-- [x] get_conversation_history() com cache
-- [x] invalidate_cache() e cleanup automático
-- [x] 14+ testes de cache/TTL/invalidação
+- [x] MemoryService: histórico da conversa em ordem cronológica
+- [x] get_conversation_history(), lendo do banco a cada turno
+- [x] Cache Redis **removido**: guardava o histórico por uma hora sem
+      invalidar na escrita, e o agente reperguntava o que já sabia
+      (ver `GUIA_MEMORY_SERVICE.md` §3)
+- [x] Teste de dois turnos pelo orquestrador, que é o que o cache quebrava
 - [x] Scripts launcher: run.bat, run.sh
 - [x] Scripts setup: setup.bat, setup.sh
 - [x] .env.example com 40+ variáveis documentadas

@@ -409,3 +409,97 @@ class TestMessageOrchestration:
             assert result["success"]
             assert "conversation_id" in result
             assert result["tokens_used"] == 70
+
+    @pytest.mark.asyncio
+    async def test_segunda_mensagem_enxerga_a_primeira(self):
+        """
+        O agente lembra do turno anterior.
+
+        Este é o teste que faltava. Havia um cache de histórico no Redis com
+        TTL de uma hora e nenhuma invalidação na escrita: a primeira mensagem
+        da conversa lia o banco vazio, gravava `[]`, e pela hora seguinte todo
+        turno chegava ao modelo com esse histórico congelado. Na prática o
+        agente reperguntava a data de admissão, a função e o tipo de demissão
+        indefinidamente — o cliente respondia, e o turno seguinte não sabia
+        que ele havia respondido.
+
+        Existia um teste de invalidação de cache, e ele passava: invalidava o
+        cache com as próprias mãos antes de reler. Provava que o método
+        funcionava, não que alguém o chamava. Por isso este caso olha o que
+        chega ao modelo no segundo turno, e não o que o serviço de memória
+        faz quando alguém pede educadamente.
+
+        Vale registrar o que este teste **não** teria pego. Enquanto o cache
+        existia, ele era inerte aqui: `redis_client.connect()` só roda no
+        lifespan, que o `TestClient` não dispara, então `self.redis` era
+        `None`, toda operação de cache estourava `AttributeError` e o `except`
+        de cada método engolia. O cache estava desligado na suíte inteira,
+        CI incluída — nenhum teste desta pasta poderia tê-lo visto quebrar. O
+        que protege daqui em diante é o cache não existir mais; este caso
+        protege o histórico de parar de chegar por qualquer outro motivo.
+        """
+        from app.services.message_orchestrator import orchestrator
+        from app.db.database import AsyncSessionLocal
+        from app.db.models import Agent
+
+        async with AsyncSessionLocal() as db:
+            owner = User(
+                id="test-memoria-user",
+                email="test-memoria-user@example.com",
+                nome="Memoria Owner",
+                senha_hash="x",
+                status="ativo",
+            )
+            db.add(owner)
+            await db.flush()
+
+            agent = Agent(
+                id="test-memoria-agent",
+                user_id="test-memoria-user",
+                nome="Memoria Test",
+                system_prompt="Test prompt",
+                temperatura=0.7,
+                max_tokens=1024,
+                status="ativo",
+            )
+            db.add(agent)
+            await db.commit()
+
+            with patch("app.services.llm_service.llm_service.generate_response") as mock_llm:
+                with patch("app.services.whatsapp_service.whatsapp_service.send_message") as mock_wa:
+                    mock_wa.return_value = {"success": True, "message_id": "msg-1"}
+
+                    mock_llm.return_value = (
+                        "Em que mês foi a demissão?",
+                        {"input_tokens": 10, "output_tokens": 5, "total_tokens": 15},
+                    )
+                    await orchestrator.process_incoming_message(
+                        agent_id=agent.id,
+                        phone_number="5561900000001",
+                        message_text="fui demitido por justa causa",
+                        db=db,
+                    )
+
+                    mock_llm.return_value = (
+                        "Certo, anotado.",
+                        {"input_tokens": 10, "output_tokens": 5, "total_tokens": 15},
+                    )
+                    await orchestrator.process_incoming_message(
+                        agent_id=agent.id,
+                        phone_number="5561900000001",
+                        message_text="foi em agosto",
+                        db=db,
+                    )
+
+                    historico = mock_llm.call_args.kwargs["conversation_history"]
+
+        conteudos = [msg["content"] for msg in historico]
+
+        # O que o cliente disse no primeiro turno, e o que o agente
+        # respondeu: sem os dois, o modelo repergunta.
+        assert "fui demitido por justa causa" in conteudos
+        assert "Em que mês foi a demissão?" in conteudos
+
+        papeis = {msg["content"]: msg["role"] for msg in historico}
+        assert papeis["fui demitido por justa causa"] == "user"
+        assert papeis["Em que mês foi a demissão?"] == "assistant"

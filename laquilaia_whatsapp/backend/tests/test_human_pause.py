@@ -624,6 +624,8 @@ class TestHistoricoParaOModelo:
         ]
         db.execute = AsyncMock(return_value=resultado)
 
-        historico = await memory_service._fetch_from_db("conv-1", db, limit=10)
+        historico = await memory_service.get_conversation_history(
+            "conv-1", db, limit=10
+        )
 
         assert [m["role"] for m in historico] == ["user", "assistant"]

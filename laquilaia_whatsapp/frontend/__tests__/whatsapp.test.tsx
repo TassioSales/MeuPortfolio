@@ -153,6 +153,98 @@ describe("ConexaoWhatsapp", () => {
     expect(mockFetch).toHaveBeenCalledTimes(3);
   });
 
+  describe("desconectar", () => {
+    it("só aparece com o número conectado", async () => {
+      // Desconectar o que já está desconectado não faz nada, e botão parado
+      // convida ao clique.
+      mockFetch
+        .mockResolvedValueOnce(jsonResponse(DESCONECTADO))
+        .mockResolvedValueOnce(jsonResponse(QR));
+
+      render(<ConexaoWhatsapp />);
+
+      await screen.findByAltText(/QR code/);
+      expect(
+        screen.queryByRole("button", { name: "Desconectar" }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("pede confirmação antes de derrubar o atendimento", async () => {
+      // Um clique não pode tirar o escritório do ar. E a confirmação é da
+      // própria tela, não o `window.confirm` que todo mundo fecha sem ler.
+      mockFetch.mockResolvedValueOnce(jsonResponse(CONECTADO));
+
+      render(<ConexaoWhatsapp />);
+      await screen.findByText("Conectado");
+
+      await userEvent.click(screen.getByRole("button", { name: "Desconectar" }));
+
+      expect(screen.getByText(/derruba o atendimento/)).toBeInTheDocument();
+      // O pedido não saiu: só a leitura inicial.
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+
+    it("confirmado, chama o backend e relê o estado", async () => {
+      mockFetch
+        .mockResolvedValueOnce(jsonResponse(CONECTADO))
+        .mockResolvedValueOnce(jsonResponse({ desconectado: true, detalhe: null }))
+        .mockResolvedValueOnce(jsonResponse(DESCONECTADO))
+        .mockResolvedValueOnce(jsonResponse(QR));
+
+      render(<ConexaoWhatsapp />);
+      await screen.findByText("Conectado");
+
+      await userEvent.click(screen.getByRole("button", { name: "Desconectar" }));
+      await userEvent.click(
+        screen.getByRole("button", { name: "Sim, desconectar" }),
+      );
+
+      // A tela não fica dizendo "Conectado" depois de desconectar: ela relê.
+      expect(await screen.findByText("Desconectado")).toBeInTheDocument();
+
+      const [url, init] = mockFetch.mock.calls[1];
+      expect(url).toContain("/api/v1/whatsapp/desconectar");
+      expect(init.method).toBe("POST");
+    });
+
+    it("falha no logout não vira 'pronto, desconectado'", async () => {
+      // O pior desfecho possível: o escritório para de olhar o WhatsApp e as
+      // mensagens continuam chegando.
+      mockFetch
+        .mockResolvedValueOnce(jsonResponse(CONECTADO))
+        .mockResolvedValueOnce(
+          jsonResponse({ desconectado: false, detalhe: "HTTP 502" }),
+        );
+
+      render(<ConexaoWhatsapp />);
+      await screen.findByText("Conectado");
+
+      await userEvent.click(screen.getByRole("button", { name: "Desconectar" }));
+      await userEvent.click(
+        screen.getByRole("button", { name: "Sim, desconectar" }),
+      );
+
+      const alerta = await screen.findByRole("alert");
+      expect(alerta).toHaveTextContent(/pode continuar no ar/);
+      expect(alerta).toHaveTextContent("HTTP 502");
+    });
+
+    it("cancelar não desconecta", async () => {
+      mockFetch.mockResolvedValueOnce(jsonResponse(CONECTADO));
+
+      render(<ConexaoWhatsapp />);
+      await screen.findByText("Conectado");
+
+      await userEvent.click(screen.getByRole("button", { name: "Desconectar" }));
+      await userEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+
+      expect(
+        screen.getByRole("button", { name: "Desconectar" }),
+      ).toBeInTheDocument();
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it("o botão de atualizar relê na hora", async () => {
     mockFetch
       .mockResolvedValueOnce(jsonResponse(CONECTADO))

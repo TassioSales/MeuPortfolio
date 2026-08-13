@@ -223,6 +223,51 @@ class WhatsAppService:
             "detalhe": None if (base64 or codigo) else "a Evolution respondeu sem QR",
         }
 
+    async def desconectar(self) -> Dict[str, Any]:
+        """
+        Despareia o número, mantendo a instância.
+
+        É o `logout` da Evolution, e **não** o `delete`: a instância continua
+        existindo, com o webhook e as configurações. O que sai é a sessão do
+        celular — para religar, basta ler o QR de novo. O `delete` apagaria a
+        instância inteira, e aí seria preciso recriá-la e reconfigurar o
+        webhook antes de qualquer pareamento.
+
+        Nunca levanta, pela mesma razão dos outros métodos: a tela precisa
+        dizer o que aconteceu, e "não deu para falar com a Evolution" é
+        informação melhor que uma tela de erro genérica.
+        """
+        url = f"{self.api_url}/instance/logout/{self.instance_name}"
+
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                resposta = await client.delete(url, headers={"apikey": self.api_key})
+        except httpx.HTTPError as e:
+            logger.error(f"❌ Não foi possível desconectar o número: {e}")
+            return {"desconectado": False, "detalhe": str(e)}
+
+        if resposta.status_code == 404:
+            # Instância inexistente: não há sessão para encerrar, e o estado
+            # final é o que o pedido queria. Tratar como falha faria a tela
+            # pedir para tentar de novo, para sempre.
+            logger.warning(
+                f"⚠️ A instância '{self.instance_name}' não existe na Evolution"
+            )
+            return {"desconectado": True, "detalhe": "a instância não existia"}
+
+        if resposta.status_code >= 400:
+            logger.error(
+                f"❌ A Evolution recusou o logout: {resposta.status_code} — "
+                f"{resposta.text[:200]}"
+            )
+            return {
+                "desconectado": False,
+                "detalhe": f"HTTP {resposta.status_code}",
+            }
+
+        logger.info(f"🔌 Número desconectado da instância '{self.instance_name}'")
+        return {"desconectado": True, "detalhe": None}
+
     async def baixar_midia(self, key: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
         O conteúdo de um anexo, em base64.

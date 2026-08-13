@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getQrCode, getStatus } from "@/lib/whatsapp";
+import { desconectar, getQrCode, getStatus } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 import type { EstadoDaConexao, EstadoDaInstancia, QrCode } from "@/types";
 import { Button } from "./Button";
@@ -72,6 +72,11 @@ export function ConexaoWhatsapp() {
   const [qr, setQr] = useState<QrCode | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(true);
+  // Confirmação em dois passos, em vez de `window.confirm`: desconectar
+  // derruba o atendimento do escritório inteiro, e o diálogo do navegador é
+  // justamente aquele que todo mundo aprendeu a fechar sem ler.
+  const [confirmando, setConfirmando] = useState(false);
+  const [desconectando, setDesconectando] = useState(false);
   // Evita duas leituras simultâneas quando o botão é clicado durante o ciclo.
   const lendo = useRef(false);
 
@@ -100,6 +105,30 @@ export function ConexaoWhatsapp() {
       setCarregando(false);
     }
   }, []);
+
+  const encerrarSessao = useCallback(async () => {
+    setDesconectando(true);
+    try {
+      const resultado = await desconectar();
+      if (!resultado.desconectado) {
+        // Dizer "pronto, desconectado" com o número no ar seria o pior
+        // desfecho: o escritório pararia de olhar o WhatsApp que continua
+        // recebendo.
+        setErro(
+          `Não foi possível desconectar${
+            resultado.detalhe ? ` (${resultado.detalhe})` : ""
+          }. O número pode continuar no ar.`,
+        );
+        return;
+      }
+      setConfirmando(false);
+      await ler();
+    } catch {
+      setErro("Não foi possível desconectar. O número pode continuar no ar.");
+    } finally {
+      setDesconectando(false);
+    }
+  }, [ler]);
 
   useEffect(() => {
     void ler();
@@ -138,9 +167,40 @@ export function ConexaoWhatsapp() {
           )}
         </div>
 
-        <Button variant="secondary" onClick={() => void ler()}>
-          Atualizar
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Só aparece com o número no ar: desconectar o que já está
+              desconectado não faz nada, e o botão parado convida ao clique. */}
+          {conectado &&
+            (confirmando ? (
+              <>
+                <span className="text-xs text-fg-muted">
+                  Isso derruba o atendimento. Confirma?
+                </span>
+                <Button
+                  variant="danger"
+                  onClick={() => void encerrarSessao()}
+                  disabled={desconectando}
+                >
+                  {desconectando ? "Desconectando..." : "Sim, desconectar"}
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => setConfirmando(false)}
+                  disabled={desconectando}
+                >
+                  Cancelar
+                </Button>
+              </>
+            ) : (
+              <Button variant="secondary" onClick={() => setConfirmando(true)}>
+                Desconectar
+              </Button>
+            ))}
+
+          <Button variant="secondary" onClick={() => void ler()}>
+            Atualizar
+          </Button>
+        </div>
       </header>
 
       {erro && (

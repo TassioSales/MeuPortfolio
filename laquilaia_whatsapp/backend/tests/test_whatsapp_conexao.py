@@ -153,6 +153,46 @@ class TestPrefixoDaImagem:
         assert _com_prefixo_de_imagem("") is None
 
 
+class TestDesconectar:
+    """Despareamento pelo painel. Derruba o atendimento — não é botão inocente."""
+
+    async def test_logout_bem_sucedido(self):
+        servico = _servico(
+            httpx.Response(200, json={"status": "SUCCESS", "error": False})
+        )
+        try:
+            assert (await servico.desconectar())["desconectado"] is True
+        finally:
+            servico._restaurar()
+
+    async def test_instancia_inexistente_conta_como_desconectado(self):
+        """
+        404 aqui não é falha: não há sessão para encerrar, e o estado final é
+        exatamente o que o pedido queria. Tratar como erro faria a tela pedir
+        para tentar de novo, para sempre.
+        """
+        servico = _servico(httpx.Response(404, json={"message": "not found"}))
+        try:
+            resultado = await servico.desconectar()
+            assert resultado["desconectado"] is True
+            assert "não existia" in resultado["detalhe"]
+        finally:
+            servico._restaurar()
+
+    async def test_evolution_fora_do_ar_nao_mente(self):
+        """
+        O pior desfecho seria dizer "desconectado" com o número no ar: o
+        escritório acharia que parou de atender e continuaria recebendo.
+        """
+        servico = _servico(httpx.Response(502, text="bad gateway"))
+        try:
+            resultado = await servico.desconectar()
+            assert resultado["desconectado"] is False
+            assert resultado["detalhe"] == "HTTP 502"
+        finally:
+            servico._restaurar()
+
+
 class TestAcesso:
     """Conectar o número é configuração: só o administrador."""
 
@@ -176,5 +216,24 @@ class TestAcesso:
         # E o admin passa — senão o teste acima passaria com a rota quebrada.
         assert client.get("/api/v1/whatsapp/status", headers=admin).status_code == 200
 
+    def test_operador_nao_derruba_o_numero(self):
+        """
+        A mais grave das três: um operador irritado deixaria o escritório
+        inteiro sem atendimento com um clique.
+
+        O admin é criado antes de propósito: o cadastro público fecha no
+        primeiro usuário, que vira administrador. Sem esta linha, o "operador"
+        abaixo seria o primeiro, nasceria admin, e o teste passaria a provar o
+        contrário do que diz.
+        """
+        self._headers("wa-admin-logout@example.com", "admin")
+        operador = self._headers("wa-op-logout@example.com", "operador")
+
+        assert (
+            client.post("/api/v1/whatsapp/desconectar", headers=operador).status_code
+            == 404
+        )
+
     def test_sem_token_nao_passa(self):
         assert client.get("/api/v1/whatsapp/qrcode").status_code in (401, 403)
+        assert client.post("/api/v1/whatsapp/desconectar").status_code in (401, 403)

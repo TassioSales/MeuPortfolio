@@ -52,6 +52,26 @@ async def status_da_conexao(_: str = Depends(require_admin)):
     )
 
 
+class ResultadoDaDesconexao(BaseModel):
+    """O que aconteceu com o pedido de desconectar."""
+
+    desconectado: bool
+    detalhe: Optional[str] = None
+
+
+@router.post("/desconectar", response_model=ResultadoDaDesconexao)
+async def desconectar(_: str = Depends(require_admin)):
+    """
+    Despareia o número.
+
+    Derruba o atendimento: enquanto ninguém ler o QR de novo, nenhuma mensagem
+    chega ao agente. Por isso é `POST` e não `GET` — um `GET` seria disparado
+    por um pré-carregamento de link ou por um crawler de extensão.
+    """
+    resultado = await whatsapp_service.desconectar()
+    return ResultadoDaDesconexao(**resultado)
+
+
 @router.get("/qrcode", response_model=QrCode)
 async def qrcode(_: str = Depends(require_admin)):
     """

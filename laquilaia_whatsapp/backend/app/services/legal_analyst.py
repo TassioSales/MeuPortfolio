@@ -43,12 +43,20 @@ Analise a conversa e responda **exatamente** nestas seções, em markdown:
 Dois ou três períodos: quem é, o que aconteceu, o que a pessoa quer.
 
 ## Ficha
-Duas linhas, exatamente neste formato, para o sistema arquivar o caso:
+Quatro linhas, exatamente neste formato, para o sistema arquivar o caso:
 
 Área: uma de [trabalhista, familia, consumidor, previdenciario, civel, criminal, outro]
 Titular: nome de quem é parte no caso — **só** quando for outra pessoa. \
 Quando a parte for quem está escrevendo, escreva literalmente `o próprio \
 contato`, sem repetir o nome.
+Valor estimado: R$ 20.000 a R$ 35.000
+Viabilidade: acima do piso
+
+As duas últimas linhas são a conclusão da seção **Porte econômico**, lá \
+embaixo — escreva-as aqui já decididas, e desenvolva a conta lá. Elas ficam no \
+alto porque são o que o sistema lê: no fim do parecer, são a primeira coisa \
+que se perde quando o texto é cortado, e um parecer sem elas é um caso que \
+ninguém dimensionou.
 
 O titular importa: quem manda a mensagem nem sempre é a parte. Um irmão \
 perguntando pelo divórcio da irmã traz um caso que não é dele — e é esse caso, \
@@ -98,10 +106,8 @@ vista — o que entra, com que número, e de onde veio cada número. Se o númer
 veio do relato, aponte de onde; se você teve de arbitrar, diga que arbitrou e \
 com que base.
 
-Feche a seção com duas linhas exatamente neste formato, que o sistema lê:
-
-Valor estimado: R$ 20.000 a R$ 35.000
-Viabilidade: acima do piso
+A conclusão desta seção — as linhas `Valor estimado:` e `Viabilidade:` — vai \
+na **Ficha**, lá em cima, e não aqui. Aqui fica a conta que a sustenta.
 
 As opções de viabilidade são: `acima do piso`, `abaixo do piso`, `não dá para \
 dimensionar` e `não se aplica`.
@@ -188,7 +194,18 @@ class LegalAnalyst:
     # que dá ~2500 tokens), e o teto é rede de segurança, não meta. Alto de
     # propósito: teto não custa nada, só se paga o que o modelo gerar, e o
     # preço de errar para baixo é um parecer sem a Ficha.
-    MAX_TOKENS = 8000
+    #
+    # 8000 também não bastou, e o motivo é o que faltava entender: **o
+    # raciocínio sai do mesmo orçamento**. Nas três triagens medidas, o Opus 5
+    # gastou os 8000 de saída inteiros e entregou ~2400 tokens de texto — o
+    # resto foi pensar. Os três pareceres terminaram no meio de uma frase, e os
+    # três perderam as linhas de porte econômico, que ficam no fim. O sintoma
+    # não é erro: é um parecer bonito sem a conclusão que o sistema lê.
+    #
+    # 16000 cabe raciocínio e texto com folga. O custo é só o gerado: no pior
+    # caso, US$ 0,40 por lead qualificado — barato ao lado de um caso que se
+    # perde por falta de dimensionamento.
+    MAX_TOKENS = 16000
 
     @property
     def enabled(self) -> bool:
@@ -230,6 +247,18 @@ class LegalAnalyst:
                 f"⚖️ Parecer preliminar gerado para a conversa {conversation_id} "
                 f"({uso.get('total_tokens')} tokens, {uso.get('model')})"
             )
+
+            if uso.get("stop_reason") == "max_tokens":
+                # Aviso, e não exceção: um parecer cortado ainda serve ao
+                # advogado, e derrubar a qualificação por causa dele seria
+                # trocar o essencial pelo acessório. Mas precisa aparecer —
+                # sem isto, o corte se disfarça de parecer completo.
+                logger.warning(
+                    f"⚠️ O parecer da conversa {conversation_id} bateu no teto de "
+                    f"{self.MAX_TOKENS} tokens e foi cortado. As linhas de porte "
+                    "econômico podem ter ficado de fora; considere subir o teto."
+                )
+
             return texto
 
         except Exception as e:

@@ -7,6 +7,30 @@ import httpx
 from typing import Optional, Dict, Any
 
 
+# O vocabulário da Evolution traduzido para o do painel.
+#
+# "open" não quer dizer nada para quem administra o escritório, e prender a
+# tela ao vocabulário da Evolution significa mexer no front no dia em que ela
+# mudar de palavra.
+ESTADOS = {
+    "open": "conectado",
+    "connecting": "conectando",
+    "close": "desconectado",
+}
+
+
+def _com_prefixo_de_imagem(base64: Optional[str]) -> Optional[str]:
+    """
+    Garante o `data:image/png;base64,` que a tag `<img>` exige.
+
+    A Evolution já devolveu das duas formas — com e sem o prefixo — e sem ele
+    a imagem simplesmente não aparece, sem erro nenhum no console.
+    """
+    if not base64:
+        return None
+    return base64 if base64.startswith("data:") else f"data:image/png;base64,{base64}"
+
+
 class WhatsAppService:
     """Service for sending messages via Evolution API."""
 
@@ -104,6 +128,89 @@ class WhatsAppService:
         except Exception as e:
             logger.error(f"❌ Error sending WhatsApp message: {e}")
             raise ValidationException(f"Error sending message: {str(e)}")
+
+    async def estado_da_conexao(self) -> Dict[str, Any]:
+        """
+        Se o número está conectado, conectando ou fora.
+
+        A Evolution devolve `open`, `connecting` ou `close` em
+        `instance.state`. Traduzimos aqui porque "open" não quer dizer nada
+        para quem administra o escritório, e porque o dia em que a Evolution
+        mudar o vocabulário o painel não deve mudar junto.
+
+        Nunca levanta: a tela de conexão precisa dizer *alguma coisa* quando a
+        Evolution está fora do ar, e "não deu para falar com a Evolution" é
+        informação melhor que uma tela de erro genérica.
+        """
+        url = f"{self.api_url}/instance/connectionState/{self.instance_name}"
+
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                resposta = await client.get(url, headers={"apikey": self.api_key})
+        except httpx.HTTPError as e:
+            logger.error(f"❌ Não foi possível falar com a Evolution: {e}")
+            return {"estado": "indisponivel", "detalhe": str(e)}
+
+        if resposta.status_code >= 400:
+            logger.error(
+                f"❌ connectionState devolveu {resposta.status_code}: "
+                f"{resposta.text[:200]}"
+            )
+            return {
+                "estado": "indisponivel",
+                "detalhe": f"HTTP {resposta.status_code}",
+            }
+
+        bruto = (resposta.json().get("instance") or {}).get("state")
+        return {
+            "estado": ESTADOS.get(bruto, "desconhecido"),
+            "detalhe": None if bruto in ESTADOS else f"state={bruto!r}",
+        }
+
+    async def qrcode(self) -> Dict[str, Any]:
+        """
+        O QR para parear o número, e o código de pareamento quando houver.
+
+        `GET /instance/connect/{instancia}` devolve o QR **só quando a
+        instância está desconectada**: com o número já conectado ela responde
+        sem `base64` nenhum, e isso não é erro — é a resposta certa para "já
+        está pareado".
+
+        Há um histórico de versões da Evolution devolvendo `{"count": 0}` sem
+        QR e sem código (issues #2380 e #2385, nas 2.0.10 a 2.2.3). Por isso o
+        retorno distingue "não veio QR" de "falhou": a tela precisa saber a
+        diferença entre reconectar e avisar que o endpoint não colabora nesta
+        versão.
+        """
+        url = f"{self.api_url}/instance/connect/{self.instance_name}"
+
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                resposta = await client.get(url, headers={"apikey": self.api_key})
+        except httpx.HTTPError as e:
+            logger.error(f"❌ Não foi possível pedir o QR à Evolution: {e}")
+            return {"qrcode": None, "codigo": None, "detalhe": str(e)}
+
+        if resposta.status_code >= 400:
+            return {
+                "qrcode": None,
+                "codigo": None,
+                "detalhe": f"HTTP {resposta.status_code}",
+            }
+
+        dados = resposta.json() or {}
+        # A Evolution já variou entre `base64` na raiz e dentro de `qrcode`.
+        # Aceitar os dois é uma linha; descobrir em produção que mudou custa
+        # uma noite.
+        interno = dados.get("qrcode") or {}
+        base64 = dados.get("base64") or interno.get("base64")
+        codigo = dados.get("pairingCode") or interno.get("pairingCode")
+
+        return {
+            "qrcode": _com_prefixo_de_imagem(base64),
+            "codigo": codigo,
+            "detalhe": None if (base64 or codigo) else "a Evolution respondeu sem QR",
+        }
 
     async def health_check(self) -> bool:
         """

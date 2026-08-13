@@ -291,3 +291,32 @@ export interface TimeseriesResponse {
 }
 
 export type MetricsPeriod = "day" | "week" | "month";
+
+// ========== Conexão do WhatsApp ==========
+
+/**
+ * Estado da instância na Evolution (`EstadoDaConexao` no backend).
+ *
+ * `indisponivel` é a Evolution fora do ar; `desconectado` é o número caído.
+ * São problemas diferentes, com donos diferentes — por isso não viram um só.
+ */
+export type EstadoDaInstancia =
+  | "conectado"
+  | "conectando"
+  | "desconectado"
+  | "indisponivel"
+  | "desconhecido";
+
+export interface EstadoDaConexao {
+  estado: EstadoDaInstancia;
+  instancia: string;
+  detalhe: string | null;
+}
+
+export interface QrCode {
+  /** Já vem com o prefixo `data:image/png;base64,`. */
+  qrcode: string | null;
+  /** Código de pareamento, para quem não consegue ler o QR. */
+  codigo: string | null;
+  detalhe: string | null;
+}

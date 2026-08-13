@@ -114,3 +114,13 @@ export function IconeSair(props: IconProps) {
     </Base>
   );
 }
+
+/** WhatsApp: o número que atende. */
+export function IconeWhatsapp(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M20 11.5a8 8 0 0 1-11.9 7L4 20l1.6-4a8 8 0 1 1 14.4-4.5z" />
+      <path d="M9 9.5c0 3 2.5 5.5 5.5 5.5" />
+    </Base>
+  );
+}

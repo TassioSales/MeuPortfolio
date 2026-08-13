@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **389 testes no backend, 162 no frontend.**
+Estado atual: **402 testes no backend, 169 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -48,7 +48,8 @@ falha — na CI o serviço existe, então um pulo significa conexão quebrada.
 
 ```
 backend/app/
-  routers/     auth, agents, chat (+conversations), webhook, kanban, metrics
+  routers/     auth, agents, chat (+conversations), webhook, kanban, metrics,
+               whatsapp (estado da conexão e QR, só admin)
   services/    llm (+ gemini_client, reserva), legal_analyst (parecer interno,
                com jurisprudência, provas e porte econômico),
                caso_service (um contato, vários casos),
@@ -56,7 +57,8 @@ backend/app/
                message_orchestrator, metrics, agent, auth
   models/      schemas.py, llm_models.py, caso_schemas.py (o caso nas telas)
   prompts/     triagem_juridica.py — o texto que o cliente encontra, versionado
-  scripts/     seed.py, aplicar_prompt.py (grava o prompt canônico num agente)
+  scripts/     seed.py, aplicar_prompt.py (grava o prompt canônico num agente),
+               sondar_evolution.py (prova o QR contra a Evolution de verdade)
   db/          models.py (SQLAlchemy), database.py, redis_client.py
   ws/          manager.py — canal de tempo real por agente
   jobs/        metrics_aggregator.py (APScheduler)
@@ -64,7 +66,8 @@ backend/app/
   alembic/     migrações — o schema é daqui, não da aplicação
 
 frontend/
-  app/dashboard/  agents · conversations (pausa humana) · chat-test · kanban · metrics
+  app/dashboard/  agents · whatsapp (conexão) · conversations (pausa humana)
+                  chat-test · kanban · metrics
   components/     + charts/ (theme.ts tem a paleta validada)
                   Logo · icons · SeletorDeTema · LeadDossie · ParecerPreliminar
   hooks/          useAuth, useAgents, useChat, useConversations, useKanban, useMetrics, useAgentEvents
@@ -239,9 +242,12 @@ Em ordem de valor, e a primeira vale mais que as outras juntas.
    triagem não coletar como se espera, o resto está resolvendo o problema
    errado.
 
-2. **A tela de conexão do WhatsApp não existe.** O QR e o estado da instância
-   só aparecem no Manager da Evolution, fora do sistema. Quem administra o
-   escritório precisa sair do painel para reconectar o número.
+2. **A tela de conexão existe, mas nunca falou com a Evolution de verdade.**
+   `/dashboard/whatsapp` mostra estado e QR, e os testes usam transporte
+   mockado — provam que **nós** lemos a resposta certa, não que a Evolution
+   manda uma. Há um histórico de versões devolvendo `{"count": 0}` sem QR e sem
+   erro (issues #2380 e #2385, nas 2.0.10 a 2.2.3; estamos na 2.3.7). Rode
+   `python -m scripts.sondar_evolution` antes de confiar na tela.
 
 3. **O operador não responde pelo painel.** Ele assume a conversa e a IA para,
    mas mandar a mensagem ao cliente ainda é fora do sistema — não há endpoint

@@ -81,6 +81,34 @@ class TestAnonymousAccessIsRejected:
             f"{method} {url} respondeu {response.status_code} sem autenticação"
         )
 
+    @pytest.mark.parametrize("method,path,body", ALL_ENDPOINTS)
+    def test_sem_cabecalho_e_401_e_nao_403(self, method, path, body):
+        """
+        Sem cabeçalho `Authorization` a resposta é **401**, nunca 403.
+
+        403 quer dizer "sei quem você é e você não pode"; quem chega sem
+        cabeçalho nenhum ainda não é ninguém. A distinção parece formalidade e
+        não é: o `HTTPBearer` do FastAPI recusava com 403 por padrão, e o
+        cliente HTTP do painel só renova a sessão quando vê 401. Como o cookie
+        do access token expira em 30 minutos e o browser o apaga, a partir daí
+        as chamadas saíam sem cabeçalho — e o usuário era deslogado com um
+        refresh token válido por sete dias no bolso, que ninguém usou.
+
+        Os endpoints administrativos respondem 404 de propósito (não revelam
+        que existem), e por isso ficam de fora.
+        """
+        url = path.format(agent_id="qualquer-agente")
+
+        response = client.request(method, url, json=body)
+
+        if response.status_code == 404:
+            pytest.skip("rota que esconde a própria existência de quem não é admin")
+
+        assert response.status_code == 401, (
+            f"{method} {url} respondeu {response.status_code}; em 403 o painel "
+            "não tenta renovar a sessão e desloga o usuário"
+        )
+
 
 class TestCrossUserAccessIsRejected:
     """Um usuário autenticado não pode ler os dados de agente alheio."""

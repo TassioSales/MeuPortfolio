@@ -9,6 +9,15 @@ interface AuthState {
   user: User | null;
   /** true enquanto a sessão inicial ainda não foi resolvida. */
   isLoading: boolean;
+  /**
+   * A sessão não pôde ser confirmada porque o servidor não respondeu.
+   *
+   * Diferente de "não tem sessão": os cookies continuam lá e válidos. Quem lê
+   * isto (o layout do painel) precisa oferecer uma nova tentativa em vez de
+   * mandar para o login — mandar seria pior que inútil, porque o middleware vê
+   * o cookie e devolve para o painel, e a pessoa fica no pingue-pongue.
+   */
+  servidorForaDoAr: boolean;
   error: string | null;
 
   login: (email: string, senha: string) => Promise<void>;
@@ -28,6 +37,7 @@ function messageFrom(error: unknown, fallback: string): string {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isLoading: true,
+  servidorForaDoAr: false,
   error: null,
 
   login: async (email, senha) => {
@@ -68,17 +78,37 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   loadSession: async () => {
     if (!authApi.hasStoredSession()) {
-      set({ user: null, isLoading: false });
+      set({ user: null, isLoading: false, servidorForaDoAr: false });
       return;
     }
 
     try {
       const user = await authApi.getCurrentUser();
-      set({ user, isLoading: false });
-    } catch {
-      // Token inválido/expirado e sem refresh possível: sessão descartada.
-      authApi.logout();
-      set({ user: null, isLoading: false });
+      set({ user, isLoading: false, servidorForaDoAr: false });
+    } catch (error) {
+      // Só o servidor encerra sessão.
+      //
+      // Aqui se chamava `logout()` para qualquer erro — e `logout()` apaga os
+      // cookies. Bastava o backend estar reiniciando, um 502 do proxy ou o
+      // wi-fi piscar para a sessão ser destruída no cliente, com token válido
+      // por sete dias. Quem estava com o painel aberto durante um
+      // `docker compose up -d backend` era deslogado por isso.
+      //
+      // 401 aqui já passou pela renovação do `api.ts` e falhou: aí sim acabou.
+      // Qualquer outra coisa é problema de rede, e o que ela pede é tentar de
+      // novo, não recomeçar a sessão.
+      if (error instanceof ApiError && error.status === 401) {
+        authApi.logout();
+        set({ user: null, isLoading: false, servidorForaDoAr: false });
+        return;
+      }
+
+      set({
+        user: null,
+        isLoading: false,
+        servidorForaDoAr: true,
+        error: messageFrom(error, "Não foi possível falar com o servidor."),
+      });
     }
   },
 

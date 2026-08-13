@@ -12,18 +12,28 @@ from typing import Optional
 
 from sqlalchemy import select
 
-security = HTTPBearer()
-
+# `auto_error=False` porque o erro é nosso, não do FastAPI.
+#
+# Com o padrão (`True`), requisição **sem** cabeçalho `Authorization` era
+# recusada pelo próprio FastAPI com **403**. E 403 quer dizer "eu sei quem você
+# é e você não pode"; o certo aqui é 401, "você não está autenticado".
+#
+# A diferença não era acadêmica: o cookie do access token dura 30 minutos e o
+# browser o apaga ao expirar, então a partir daí as chamadas saíam sem
+# cabeçalho nenhum. O cliente HTTP do front renova a sessão quando vê 401 — em
+# 403 ele não tenta. O usuário tinha refresh token válido por sete dias no
+# bolso e era deslogado meia hora depois de entrar, porque ninguém o usou.
+security = HTTPBearer(auto_error=False)
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
 ) -> str:
     """
     Dependency to extract and verify JWT token from request headers.
     Returns the user_id if token is valid, otherwise raises HTTPException.
     """
-    token = credentials.credentials
+    token = credentials.credentials if credentials else None
 
     if not token:
         logger.warning("⚠️ Request without token")

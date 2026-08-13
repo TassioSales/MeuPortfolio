@@ -15,7 +15,17 @@ jest.mock("next/navigation", () => ({
   usePathname: () => mockPathname,
 }));
 
+jest.mock("@/hooks/useAuth", () => ({
+  useAuth: () => ({ user: mockUser }),
+}));
+
 let mockPathname = "/dashboard";
+let mockUser: { papel: string } | null = { papel: "admin" };
+
+beforeEach(() => {
+  mockPathname = "/dashboard";
+  mockUser = { papel: "admin" };
+});
 
 describe("Marca", () => {
   it("tem nome acessível — é um símbolo, não enfeite", () => {
@@ -63,5 +73,37 @@ describe("Navegação lateral", () => {
     expect(screen.getByRole("link", { name: /Visão geral/ })).not.toHaveAttribute(
       "aria-current",
     );
+  });
+});
+
+
+describe("Menu por papel", () => {
+  it("o administrador vê as telas de configuração", () => {
+    mockUser = { papel: "admin" };
+    render(<Sidebar />);
+
+    expect(screen.getByRole("link", { name: /Agentes/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Chat de teste/ })).toBeInTheDocument();
+  });
+
+  it("o operador não vê link que bate em 404", () => {
+    // O backend responde 404 nessas telas para quem não é admin. Deixar o link
+    // visível é oferecer uma porta que bate na cara de quem clica.
+    mockUser = { papel: "operador" };
+    render(<Sidebar />);
+
+    expect(screen.queryByRole("link", { name: /Agentes/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Chat de teste/ })).not.toBeInTheDocument();
+    // O que ele usa continua lá.
+    expect(screen.getByRole("link", { name: /Atendimentos/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Kanban/ })).toBeInTheDocument();
+  });
+
+  it("sem sessão carregada, esconde em vez de piscar", () => {
+    // Mostrar e esconder meio segundo depois faz o menu parecer defeito.
+    mockUser = null;
+    render(<Sidebar />);
+
+    expect(screen.queryByRole("link", { name: /Agentes/ })).not.toBeInTheDocument();
   });
 });

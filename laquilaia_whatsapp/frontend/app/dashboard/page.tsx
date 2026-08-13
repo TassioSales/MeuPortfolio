@@ -16,6 +16,8 @@ interface QuickLink {
   description: string;
   Icone: (props: { className?: string }) => JSX.Element;
   available: boolean;
+  /** Atalhos que levam a telas que o operador não abre (404 no backend). */
+  soAdmin?: boolean;
 }
 
 const QUICK_LINKS: QuickLink[] = [
@@ -25,6 +27,7 @@ const QUICK_LINKS: QuickLink[] = [
     description: "O prompt da triagem e os limites do atendimento.",
     Icone: IconeAgente,
     available: true,
+    soAdmin: true,
   },
   {
     href: "/dashboard/conversations",
@@ -39,6 +42,7 @@ const QUICK_LINKS: QuickLink[] = [
     description: "Converse com o agente antes de soltá-lo no WhatsApp.",
     Icone: IconeTeste,
     available: true,
+    soAdmin: true,
   },
   {
     href: "/dashboard/kanban",
@@ -58,6 +62,8 @@ const QUICK_LINKS: QuickLink[] = [
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const eAdmin = user?.papel === "admin";
+  const atalhos = QUICK_LINKS.filter((link) => eAdmin || !link.soAdmin);
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -72,7 +78,7 @@ export default function DashboardPage() {
       </header>
 
       <section aria-label="Atalhos" className="grid gap-4 sm:grid-cols-2">
-        {QUICK_LINKS.map((link) => {
+        {atalhos.map((link) => {
           const card = (
             <>
               <span className="rounded-lg bg-ink-50 p-2 text-ink-700">

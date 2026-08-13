@@ -12,8 +12,18 @@ export interface User {
   email: string;
   nome: string;
   status: string;
+  /**
+   * `admin` configura os agentes; `operador` atende.
+   *
+   * O painel usa isto para decidir o que mostrar no menu. Quem decide o que é
+   * permitido continua sendo o backend, em cada rota — esconder o link evita o
+   * 404, não é a autorização.
+   */
+  papel: Papel;
   data_criacao: string;
 }
+
+export type Papel = "admin" | "operador";
 
 export interface LoginRequest {
   email: string;

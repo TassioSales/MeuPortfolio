@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { Logo } from "./Logo";
 import {
@@ -19,19 +20,33 @@ interface NavItem {
   Icone: (props: { className?: string }) => JSX.Element;
   /** Fases que ainda não existem ficam visíveis porém desabilitadas. */
   disabled?: boolean;
+  /**
+   * Telas que só o administrador abre.
+   *
+   * Escondidas do operador porque o backend responde 404 nelas: deixar o link
+   * visível é oferecer uma porta que bate na cara de quem clica. Esconder não
+   * é a autorização — ela continua no backend, rota por rota.
+   */
+  soAdmin?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Visão geral", Icone: IconePainel },
-  { href: "/dashboard/agents", label: "Agentes", Icone: IconeAgente },
+  { href: "/dashboard/agents", label: "Agentes", Icone: IconeAgente, soAdmin: true },
   { href: "/dashboard/conversations", label: "Atendimentos", Icone: IconeConversa },
-  { href: "/dashboard/chat-test", label: "Chat de teste", Icone: IconeTeste },
+  { href: "/dashboard/chat-test", label: "Chat de teste", Icone: IconeTeste, soAdmin: true },
   { href: "/dashboard/kanban", label: "Kanban CRM", Icone: IconeFunil },
   { href: "/dashboard/metrics", label: "Métricas", Icone: IconeMetricas },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  // Enquanto a sessão não carregou, trate como operador: mostrar o link e
+  // escondê-lo meio segundo depois pisca a tela, e um menu que muda sozinho
+  // parece defeito.
+  const eAdmin = user?.papel === "admin";
+  const itens = NAV_ITEMS.filter((item) => eAdmin || !item.soAdmin);
 
   return (
     <aside className="hidden w-60 shrink-0 bg-ink-900 dark:bg-ink-950 md:flex md:flex-col">
@@ -40,7 +55,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-0.5 px-3 py-2" aria-label="Navegação principal">
-        {NAV_ITEMS.map(({ href, label, Icone, disabled }) => {
+        {itens.map(({ href, label, Icone, disabled }) => {
           const isActive =
             href === "/dashboard" ? pathname === href : pathname.startsWith(href);
 

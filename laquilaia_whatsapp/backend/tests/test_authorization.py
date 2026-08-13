@@ -240,6 +240,21 @@ class TestPapeis:
 
         assert resposta.status_code == 404
 
+    def test_o_papel_chega_em_auth_me(self):
+        """
+        O painel decide o menu por este campo — e ele não vinha.
+
+        `UserResponse` tem default "operador", então `/auth/me` respondia
+        "operador" para todo mundo, inclusive para o administrador. O menu
+        esconderia dele justamente as telas que só ele pode abrir, e o sintoma
+        seria "sumiu a tela de agentes", não "o papel veio errado".
+        """
+        admin = client.get("/api/v1/auth/me", headers=self._headers(self.admin))
+        operador = client.get("/api/v1/auth/me", headers=self._headers(self.operador))
+
+        assert admin.json()["papel"] == "admin"
+        assert operador.json()["papel"] == "operador"
+
     def test_operador_lista_agentes(self):
         """
         Listar continua liberado: a tela de atendimentos tem uma aba por

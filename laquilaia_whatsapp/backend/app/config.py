@@ -12,6 +12,11 @@ class Settings(BaseSettings):
 
     # Redis
     redis_url: str = os.getenv("REDIS_URL", "redis://localhost:6379")
+    # Sem uso desde que o cache de histórico saiu (ver `memory_service`).
+    # Continua declarada de propósito: ela está no `.env.example` e portanto
+    # nos `.env` já existentes, e o pydantic-settings recusa variável que não
+    # conheça — remover daqui impediria o backend de subir na máquina de quem
+    # já tem o arquivo.
     redis_cache_ttl: int = int(os.getenv("REDIS_CACHE_TTL", "3600"))
     metrics_cache_ttl: int = int(os.getenv("METRICS_CACHE_TTL", "900"))
 

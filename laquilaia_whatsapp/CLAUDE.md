@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **424 testes no backend, 173 no frontend.**
+Estado atual: **416 testes no backend, 177 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -197,7 +197,9 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Arrancar o DDI do número antes de enviar | O `remoteJid` chega com `55` e é o identificador do contato: sem ele a resposta vai para outra pessoa. E mutilava DDD 55 (Santa Maria/RS) |
 | Middleware conferindo só o access token | Ele expira em 30 min e o cookie some: o middleware expulsava para o login com refresh válido por 7 dias, antes de o `api.ts` ter chance de renovar |
 | Modelar a pessoa e o assunto na mesma tabela | `Lead` era contato **e** caso. Quebra no primeiro cliente que volta com outro assunto, e pior quando o assunto é de terceiro: o card fica com o nome de quem escreveu, não de quem é parte |
-| Janela de contexto curta demais para o caso de uso | Com 5 mensagens, uma triagem perdia o relato antes de terminar, e quem voltava dias depois ouvia "seu caso é sobre o quê?" de novo. Contexto é decisão de produto, não default |
+| Janela de contexto curta demais para o caso de uso | Com 5 mensagens, uma triagem perdia o relato antes de terminar, e quem voltava dias depois ouvia "seu caso é sobre o quê?" de novo. Com 20 também: a primeira triagem real levou quase **cinquenta** mensagens, porque no WhatsApp o cliente responde uma ideia por mensagem ("mandaod", "1", "analista"). Contexto é decisão de produto, não default |
+| Cache de leitura sem invalidação na escrita | O histórico ficava guardado por uma hora e **nenhum** dos quatro caminhos que gravam mensagem o invalidava. A primeira mensagem da conversa cacheava `[]`, e pela hora seguinte todo turno chegava ao modelo com o histórico congelado: o agente perguntou a data de admissão quatro vezes na mesma conversa. O `invalidate_cache` existia e ninguém chamava — inclusive havia uma seção de troubleshooting no `GUIA_MEMORY_SERVICE.md` com a linha exata que faltava |
+| Testar cache com o cliente de infra desconectado | `redis_client.connect()` só roda no lifespan, que o `TestClient` não dispara: `self.redis` era `None`, toda operação estourava `AttributeError` e o `except` engolia. O cache ficava **desligado na suíte inteira**, CI incluída, e ligado em produção — a única configuração onde o defeito aparecia era a única que ninguém exercitava. Teste que passa por causa de uma dependência ausente não testa nada |
 | Deixar o parecer interno chegar ao cliente | A análise jurídica é insumo do escritório: sai por rota autenticada, nunca pelo WhatsApp. O modelo já inventou um ajuizamento que não houve — texto assim na mão do cliente é dano, não ruído |
 | Supor que o emissor do webhook assina o corpo | A Evolution API não calcula HMAC — só repassa cabeçalhos fixos. Com HMAC puro ela é recusada com 401 em toda mensagem; existe `WEBHOOK_STATIC_TOKEN` para isso |
 | Esperar `agentId` no payload da Evolution | Ela não sabe que agentes existem. Sem `EVOLUTION_DEFAULT_AGENT_ID`, todo webhook real morre com "Missing agent_id" |

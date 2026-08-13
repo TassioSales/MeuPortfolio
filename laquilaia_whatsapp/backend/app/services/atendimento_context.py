@@ -19,11 +19,19 @@ from app.db.models import Lead, LeadDetails, Message
 # Quantas mensagens da conversa vão como contexto.
 #
 # Eram 5, e uma triagem passa disso no terceiro par de perguntas — o relato do
-# caso caía fora da janela antes de a conversa terminar. Vinte cobre uma
-# triagem inteira sem inflar demais o custo por mensagem; conversas mais
-# longas que isso perdem o começo, e é aí que a nota de atendimento abaixo
-# passa a carregar o resumo.
-MENSAGENS_DE_CONTEXTO = 20
+# caso caía fora da janela antes de a conversa terminar. Foram para 20, o que
+# pareceu suficiente até a primeira triagem real: ela levou quase cinquenta
+# mensagens, porque no WhatsApp o cliente responde "mandaod", "1", "analista"
+# — uma ideia por mensagem, não um parágrafo. Com 20, o agente perdia a data
+# de admissão que ele mesmo tinha perguntado dez mensagens antes, e
+# reperguntava.
+#
+# Sessenta cobre a triagem inteira desse tamanho. São mensagens curtas: o
+# histórico completo dá umas poucas centenas de tokens, contra os 6,4 mil
+# caracteres do system prompt que vão em toda chamada de qualquer jeito.
+# Repetir pergunta custa mais — em mensagem trocada e em cliente que desiste —
+# do que os tokens que isto economizava.
+MENSAGENS_DE_CONTEXTO = 60
 
 
 async def nota_de_atendimento_anterior(

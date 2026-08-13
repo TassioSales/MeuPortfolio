@@ -60,6 +60,14 @@
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-flash-latest}
       TEMPERATURE: ${TEMPERATURE:-0.7}
+      # O parecer jurídico: se roda, em que modelo, e o piso a partir do qual
+      # o caso comporta o trabalho do escritório. Sem repasse, o container não
+      # enxerga o .env e cai no default — o parecer rodaria no modelo do
+      # atendimento e ninguém entenderia por que ficou raso.
+      ANALISE_JURIDICA_ENABLED: ${ANALISE_JURIDICA_ENABLED:-true}
+      ANALISE_CLAUDE_MODEL: ${ANALISE_CLAUDE_MODEL}
+      ANALISE_GEMINI_MODEL: ${ANALISE_GEMINI_MODEL}
+      CASO_VALOR_MINIMO: ${CASO_VALOR_MINIMO:-15000}
       MAX_TOKENS: ${MAX_TOKENS:-1024}
       LLM_MAX_CALLS_PER_MINUTE: ${LLM_MAX_CALLS_PER_MINUTE:-60}
       LLM_MAX_TOKENS_PER_MINUTE: ${LLM_MAX_TOKENS_PER_MINUTE:-40000}

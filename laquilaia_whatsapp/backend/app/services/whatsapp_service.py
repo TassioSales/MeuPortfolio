@@ -151,6 +151,17 @@ class WhatsAppService:
             logger.error(f"❌ Não foi possível falar com a Evolution: {e}")
             return {"estado": "indisponivel", "detalhe": str(e)}
 
+        if resposta.status_code == 404:
+            # 404 não é "a Evolution caiu" — ela respondeu. É a instância que
+            # não existe lá dentro, o que acontece toda vez que o container é
+            # recriado sem volume: o serviço sobe limpo e a instância pareada
+            # se perde junto. Tratar como indisponível manda procurar o
+            # problema no serviço, quando o que falta é criar a instância.
+            logger.warning(
+                f"⚠️ A instância '{self.instance_name}' não existe na Evolution"
+            )
+            return {"estado": "inexistente", "detalhe": None}
+
         if resposta.status_code >= 400:
             logger.error(
                 f"❌ connectionState devolveu {resposta.status_code}: "

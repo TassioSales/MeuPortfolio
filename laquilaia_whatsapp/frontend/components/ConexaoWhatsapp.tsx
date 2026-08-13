@@ -42,6 +42,16 @@ const APARENCIA: Record<
     explicacao: "Ninguém está sendo atendido. Leia o QR abaixo para reconectar.",
     cor: "bg-red-500",
   },
+  // A Evolution respondeu 404: ela está no ar, a instância é que não existe.
+  // Acontece quando o container é recriado sem volume — o serviço sobe limpo
+  // e a instância pareada se perde junto. Chamar isso de "fora do ar" manda
+  // procurar o problema no lugar errado.
+  inexistente: {
+    rotulo: "Instância não criada",
+    explicacao:
+      "A Evolution está no ar, mas não conhece esta instância. Ela precisa ser criada antes de parear o número.",
+    cor: "bg-amber-500",
+  },
   // Estados diferentes de propósito: um é o número que caiu, o outro é a
   // Evolution que caiu. Quem conserta cada um é uma pessoa diferente.
   indisponivel: {
@@ -74,12 +84,15 @@ export function ConexaoWhatsapp() {
       setStatus(novoStatus);
       setErro(null);
 
-      // O QR só é pedido quando faz sentido pedir.
-      if (novoStatus.estado === "conectado") {
-        setQr(null);
-      } else if (novoStatus.estado !== "indisponivel") {
-        setQr(await getQrCode());
-      }
+      // O QR só é pedido quando faz sentido pedir: já conectado não precisa,
+      // e sem serviço ou sem instância o pedido volta com o mesmo erro — dois
+      // 404 em vez de um, e nada a mostrar na tela.
+      const vaisadiantar =
+        novoStatus.estado !== "conectado" &&
+        novoStatus.estado !== "indisponivel" &&
+        novoStatus.estado !== "inexistente";
+
+      setQr(vaisadiantar ? await getQrCode() : null);
     } catch {
       setErro("Não foi possível ler o estado da conexão.");
     } finally {

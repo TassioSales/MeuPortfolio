@@ -78,6 +78,22 @@ describe("ConexaoWhatsapp", () => {
     expect(screen.queryByAltText(/QR code/)).not.toBeInTheDocument();
   });
 
+  it("instância inexistente não é 'Evolution fora do ar'", async () => {
+    // A Evolution respondeu 404: ela está no ar, quem não existe é a
+    // instância — o que acontece quando o container é recriado sem volume.
+    // Chamar isso de "fora do ar" manda procurar o problema no lugar errado.
+    mockFetch.mockResolvedValueOnce(
+      jsonResponse({ estado: "inexistente", instancia: "laquilaia", detalhe: null }),
+    );
+
+    render(<ConexaoWhatsapp />);
+
+    expect(await screen.findByText("Instância não criada")).toBeInTheDocument();
+    // E não adianta pedir QR de uma instância que não existe: seria um
+    // segundo 404 para não mostrar nada.
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
   it("sem QR e sem código, explica em vez de mostrar quadrado vazio", async () => {
     // É a resposta que as issues #2380 e #2385 da Evolution relatam.
     mockFetch

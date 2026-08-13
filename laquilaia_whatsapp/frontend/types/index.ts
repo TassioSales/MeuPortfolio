@@ -334,3 +334,15 @@ export interface QrCode {
   codigo: string | null;
   detalhe: string | null;
 }
+
+/**
+ * Resposta de `POST /api/v1/whatsapp/desconectar`.
+ *
+ * `desconectado: false` quer dizer que o número **continua no ar** — o pior
+ * desfecho possível é a tela dizer que parou de atender enquanto as mensagens
+ * seguem chegando.
+ */
+export interface ResultadoDaDesconexao {
+  desconectado: boolean;
+  detalhe: string | null;
+}

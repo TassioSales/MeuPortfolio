@@ -292,7 +292,7 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
                             "max-w-[85%] rounded-2xl px-3 py-2 text-sm",
                             doCliente
                               ? "rounded-bl-sm bg-surface-muted text-gray-800"
-                              : "rounded-br-sm bg-brand-600 text-white",
+                              : "rounded-br-sm bg-ink-900 text-white",
                           )}
                         >
                           {mensagem.conteudo}

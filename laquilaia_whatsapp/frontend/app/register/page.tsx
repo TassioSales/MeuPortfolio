@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AuthShell } from "@/components/AuthShell";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { useAuth } from "@/hooks/useAuth";
@@ -48,84 +49,76 @@ export default function RegisterPage() {
   const shownError = localError ?? error;
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-6 py-12">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <span aria-hidden="true" className="text-3xl">
-            🦅
-          </span>
-          <h1 className="mt-2 text-2xl font-semibold text-gray-900">Criar conta</h1>
-          <p className="mt-1 text-sm text-gray-600">
-            Comece a configurar seus agentes de WhatsApp.
-          </p>
-        </div>
-
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4 rounded-xl border border-surface-border bg-white p-6 shadow-sm"
-        >
-          <Input
-            label="Nome"
-            name="nome"
-            autoComplete="name"
-            placeholder="Seu nome"
-            required
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-          />
-
-          <Input
-            label="E-mail"
-            type="email"
-            name="email"
-            autoComplete="email"
-            placeholder="voce@empresa.com"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <Input
-            label="Senha"
-            type="password"
-            name="senha"
-            autoComplete="new-password"
-            placeholder="••••••••"
-            required
-            hint={`Mínimo de ${MIN_PASSWORD_LENGTH} caracteres.`}
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-          />
-
-          <Input
-            label="Confirmar senha"
-            type="password"
-            name="confirmacao"
-            autoComplete="new-password"
-            placeholder="••••••••"
-            required
-            value={confirmacao}
-            onChange={(e) => setConfirmacao(e.target.value)}
-          />
-
-          {shownError && (
-            <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
-              {shownError}
-            </p>
-          )}
-
-          <Button type="submit" fullWidth isLoading={isSubmitting}>
-            Criar conta
-          </Button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-gray-600">
+    <AuthShell
+      titulo="Criar conta"
+      subtitulo="Comece a configurar o atendimento do escritório."
+      rodape={
+        <>
           Já tem conta?{" "}
           <Link href="/login" className="font-medium text-brand-600 hover:text-brand-700">
             Entrar
           </Link>
-        </p>
-      </div>
-    </main>
+        </>
+      }
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 rounded-xl border border-surface-border bg-white p-6 shadow-sm"
+      >
+        <Input
+          label="Nome"
+          name="nome"
+          autoComplete="name"
+          placeholder="Seu nome"
+          required
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+        />
+
+        <Input
+          label="E-mail"
+          type="email"
+          name="email"
+          autoComplete="email"
+          placeholder="voce@empresa.com"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <Input
+          label="Senha"
+          type="password"
+          name="senha"
+          autoComplete="new-password"
+          placeholder="••••••••"
+          required
+          hint={`Mínimo de ${MIN_PASSWORD_LENGTH} caracteres.`}
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+        />
+
+        <Input
+          label="Confirmar senha"
+          type="password"
+          name="confirmacao"
+          autoComplete="new-password"
+          placeholder="••••••••"
+          required
+          value={confirmacao}
+          onChange={(e) => setConfirmacao(e.target.value)}
+        />
+
+        {shownError && (
+          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+            {shownError}
+          </p>
+        )}
+
+        <Button type="submit" fullWidth isLoading={isSubmitting}>
+          Criar conta
+        </Button>
+      </form>
+    </AuthShell>
   );
 }

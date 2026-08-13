@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "L'Aquila AI — Agentes de WhatsApp",
+  title: "AdvogAi — triagem jurídica no WhatsApp",
   description:
-    "Plataforma para gerenciar agentes de IA no WhatsApp, qualificar leads e acompanhar métricas.",
+    "Agente de triagem jurídica no WhatsApp: entende o caso, coleta o que importa e entrega ao advogado uma análise preliminar.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

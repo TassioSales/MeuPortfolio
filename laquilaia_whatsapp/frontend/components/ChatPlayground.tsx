@@ -90,7 +90,7 @@ export function ChatPlayground({ agent }: ChatPlaygroundProps) {
                   className={cn(
                     "max-w-[75%] rounded-2xl px-4 py-2.5 text-sm",
                     isUser
-                      ? "bg-brand-600 text-white"
+                      ? "bg-ink-900 text-white"
                       : "bg-surface-muted text-gray-900",
                   )}
                 >

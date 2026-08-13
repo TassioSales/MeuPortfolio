@@ -1,4 +1,4 @@
-# CLAUDE.md — L'Aquila AI (WhatsApp)
+# CLAUDE.md — AdvogAi (WhatsApp)
 
 Orientações para trabalhar neste projeto. Leia antes de mexer no código.
 
@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **380 testes no backend, 129 no frontend.**
+Estado atual: **380 testes no backend, 134 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -107,6 +107,15 @@ carrega o conteúdo** — quem precisa dele busca pela API, que checa o dono.
 **Gráficos:** as cores em `components/charts/theme.ts` passaram pelo validador
 de paleta (luminosidade, croma, daltonismo, contraste) nos dois modos. Não troque
 um hex sem revalidar o conjunto. Eixo Y de contagem trava em zero.
+
+**Identidade: tinta e latão.** A moldura (lateral, telas de entrada) é
+`ink`; o acento é `brass`, reservado à marca e ao item ativo da navegação — um
+acento em tudo deixa de ser acento. As ações primárias são `ink-900`, não o
+azul de antes. A escala `brand` continua onde estava porque é a cor dos dados:
+gráficos e colunas do Kanban usam hexes que passaram pelo validador de
+contraste e daltonismo, e moldura nova não é motivo para revalidar paleta de
+dados. Ícones de navegação são SVG em `components/icons.tsx` — emoji é
+desenhado pelo sistema, muda entre Windows e Mac e não herda a cor do texto.
 
 **`@dnd-kit`, não `react-beautiful-dnd`** (arquivado pela Atlassian, problemas
 com StrictMode do React 18).

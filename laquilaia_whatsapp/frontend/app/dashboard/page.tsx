@@ -2,12 +2,19 @@
 
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  IconeAgente,
+  IconeConversa,
+  IconeFunil,
+  IconeMetricas,
+  IconeTeste,
+} from "@/components/icons";
 
 interface QuickLink {
   href: string;
   title: string;
   description: string;
-  icon: string;
+  Icone: (props: { className?: string }) => JSX.Element;
   available: boolean;
 }
 
@@ -15,29 +22,36 @@ const QUICK_LINKS: QuickLink[] = [
   {
     href: "/dashboard/agents",
     title: "Agentes",
-    description: "Crie e edite os prompts dos seus agentes de IA.",
-    icon: "🤖",
+    description: "O prompt da triagem e os limites do atendimento.",
+    Icone: IconeAgente,
+    available: true,
+  },
+  {
+    href: "/dashboard/conversations",
+    title: "Atendimentos",
+    description: "As conversas em andamento e o parecer de cada caso.",
+    Icone: IconeConversa,
     available: true,
   },
   {
     href: "/dashboard/chat-test",
     title: "Chat de teste",
-    description: "Converse com o agente antes de publicá-lo no WhatsApp.",
-    icon: "💬",
+    description: "Converse com o agente antes de soltá-lo no WhatsApp.",
+    Icone: IconeTeste,
     available: true,
   },
   {
     href: "/dashboard/kanban",
     title: "Kanban CRM",
-    description: "Acompanhe os leads pelo funil de qualificação.",
-    icon: "🗂️",
+    description: "Acompanhe os casos pelo funil, da entrada ao agendamento.",
+    Icone: IconeFunil,
     available: true,
   },
   {
     href: "/dashboard/metrics",
     title: "Métricas",
-    description: "Taxa de qualificação, tempo de resposta e KPIs.",
-    icon: "📈",
+    description: "Volume de atendimentos, taxa de qualificação e tempo de resposta.",
+    Icone: IconeMetricas,
     available: true,
   },
 ];
@@ -48,12 +62,12 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-5xl">
       <header className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Olá, {user?.nome ?? "por aqui"} 👋
+        <h1 className="text-2xl font-semibold tracking-tight text-ink-900">
+          Olá, {user?.nome ?? "por aqui"}
         </h1>
         <p className="mt-1 text-sm text-gray-600">
-          Este é o painel da sua conta. As áreas abaixo são liberadas conforme as próximas
-          fases do projeto forem entregues.
+          O agente atende no WhatsApp, faz a triagem e prepara a análise do caso.
+          Por aqui você acompanha e ajusta.
         </p>
       </header>
 
@@ -61,8 +75,8 @@ export default function DashboardPage() {
         {QUICK_LINKS.map((link) => {
           const card = (
             <>
-              <span aria-hidden="true" className="text-2xl">
-                {link.icon}
+              <span className="rounded-lg bg-ink-50 p-2 text-ink-700">
+                <link.Icone />
               </span>
               <div>
                 <h2 className="text-sm font-medium text-gray-900">{link.title}</h2>

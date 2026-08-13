@@ -47,7 +47,7 @@ function ConversationsContent() {
         action={
           <Link
             href="/dashboard/agents"
-            className="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700"
+            className="rounded-lg bg-ink-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-ink-800"
           >
             Ir para Agentes
           </Link>
@@ -76,7 +76,7 @@ function ConversationsContent() {
               aria-pressed={agent.id === selected?.id}
               className={
                 agent.id === selected?.id
-                  ? "rounded-full bg-brand-600 px-3 py-1.5 text-sm font-medium text-white"
+                  ? "rounded-full bg-ink-900 px-3 py-1.5 text-sm font-medium text-white"
                   : "rounded-full border border-surface-border bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-surface-muted"
               }
             >

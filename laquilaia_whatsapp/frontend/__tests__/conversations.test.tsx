@@ -348,11 +348,30 @@ describe("Parecer preliminar", () => {
     const gatilho = await screen.findByText("Análise preliminar do caso");
     // Fechado: o cabeçalho existe, o conteúdo não. Quem abre a conversa quer
     // ler a conversa; o parecer é consulta.
-    expect(screen.queryByText("Atestados médicos")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Cliente relata demissão/)).not.toBeInTheDocument();
 
     await userEvent.click(gatilho);
 
+    // O Resumo abre junto: é o que se lê sempre.
+    expect(screen.getByText(/Cliente relata demissão/)).toBeInTheDocument();
     expect(screen.getByText("Documentos a pedir")).toBeInTheDocument();
+  });
+
+  it("cada seção abre por conta, e os títulos viram o índice", async () => {
+    // São nove seções e doze mil caracteres. Tudo aberto de uma vez obriga a
+    // rolar às cegas para achar "Prazos e urgência"; fechadas, os títulos são
+    // o índice — que é como se lê parecer, pelo que se procura.
+    abrirConversaCom(
+      "## Resumo\nDemissão por justa causa.\n\n## Documentos a pedir\n- Atestados médicos",
+    );
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+    await userEvent.click(await screen.findByText("Análise preliminar do caso"));
+
+    expect(screen.queryByText("Atestados médicos")).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByText("Documentos a pedir"));
+
     expect(screen.getByText("Atestados médicos")).toBeInTheDocument();
   });
 

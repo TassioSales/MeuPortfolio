@@ -24,6 +24,51 @@ const ROTULO_DA_AREA: Record<string, string> = {
   outro: "Outro",
 };
 
+/**
+ * O porte do caso, como tarja.
+ *
+ * A faixa aparece junto do veredito sempre que existe: "abaixo do piso"
+ * sozinho é uma etiqueta que ninguém consegue contestar, e contestar é
+ * justamente o trabalho de quem lê. `indeterminado` não vira tarja — caso não
+ * dimensionado é o estado normal de quem acabou de chegar, e uma tarja em todo
+ * card não informa nada.
+ */
+function Porte({ caso }: { caso: CasoDoContato }) {
+  if (caso.viabilidade === "indeterminado" || caso.viabilidade === "nao_se_aplica") {
+    return null;
+  }
+
+  const abaixo = caso.viabilidade === "abaixo_do_piso";
+  const faixa =
+    caso.valor_estimado_min !== null && caso.valor_estimado_max !== null
+      ? `${formatarReais(caso.valor_estimado_min)}–${formatarReais(caso.valor_estimado_max)}`
+      : null;
+
+  return (
+    <span
+      className={cn(
+        "rounded-full px-2 py-0.5 text-xs",
+        abaixo ? "bg-gray-200 text-gray-700" : "bg-emerald-100 text-emerald-900",
+      )}
+      title={
+        abaixo
+          ? "O parecer estimou o caso abaixo do piso do escritório. É estimativa preliminar, sem documentos."
+          : "O parecer estimou o caso acima do piso do escritório."
+      }
+    >
+      {faixa ?? (abaixo ? "abaixo do piso" : "acima do piso")}
+    </span>
+  );
+}
+
+function formatarReais(valor: number): string {
+  return valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    maximumFractionDigits: 0,
+  });
+}
+
 interface CasosDoContatoProps {
   casos: CasoDoContato[];
   /** Nome de quem manda as mensagens, para contrastar com o titular. */
@@ -61,6 +106,7 @@ function Caso({ caso, contato }: { caso: CasoDoContato; contato: string }) {
                 de {caso.titular}
               </span>
             )}
+            <Porte caso={caso} />
             {caso.score_qualificacao > 0 && (
               <span className="text-xs text-gray-500">
                 score {caso.score_qualificacao}

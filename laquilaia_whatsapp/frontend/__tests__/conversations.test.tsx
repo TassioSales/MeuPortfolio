@@ -374,6 +374,9 @@ describe("Casos do contato", () => {
     resumo: "Cliente relata demissão por justa causa em maio.",
     titular: null,
     score_qualificacao: 90,
+    valor_estimado_min: 22000,
+    valor_estimado_max: 41500,
+    viabilidade: "acima_do_piso",
     data_abertura: "2026-08-10T09:00:00Z",
     analise_preliminar: "## Resumo\nDemissão por justa causa.",
   };
@@ -384,6 +387,9 @@ describe("Casos do contato", () => {
     resumo: "O contato pergunta pelo divórcio da irmã.",
     titular: "Marina Sales",
     score_qualificacao: 70,
+    valor_estimado_min: null,
+    valor_estimado_max: null,
+    viabilidade: "indeterminado",
     data_abertura: "2026-08-12T09:00:00Z",
     analise_preliminar: "## Resumo\nDivórcio com dois filhos menores.",
   };
@@ -412,6 +418,46 @@ describe("Casos do contato", () => {
     await userEvent.click(await screen.findByText("Maria Silva"));
 
     expect(await screen.findByText("de Marina Sales")).toBeInTheDocument();
+  });
+
+  it("mostra a faixa estimada no caso dimensionado", async () => {
+    // A faixa aparece junto do veredito, e não o veredito sozinho: "abaixo do
+    // piso" sem número é uma etiqueta que ninguém consegue contestar — e
+    // contestar é o trabalho de quem lê.
+    abrirConversaCom([CASO_PROPRIO]);
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    expect(await screen.findByText(/R\$\s?22\.000.*R\$\s?41\.500/)).toBeInTheDocument();
+  });
+
+  it("caso ainda não dimensionado não ganha tarja nenhuma", async () => {
+    // `indeterminado` é o estado normal de quem acabou de chegar. Uma tarja em
+    // todo card não informa nada, e sugeriria um veredito que não existe.
+    abrirConversaCom([CASO_DE_TERCEIRO]);
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+    await screen.findByText("Família");
+
+    expect(screen.queryByText(/piso/)).not.toBeInTheDocument();
+  });
+
+  it("marca o caso abaixo do piso do escritório", async () => {
+    abrirConversaCom([
+      {
+        ...CASO_PROPRIO,
+        valor_estimado_min: 400,
+        valor_estimado_max: 3500,
+        viabilidade: "abaixo_do_piso",
+      },
+    ]);
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    const tarja = await screen.findByText(/R\$\s?400.*R\$\s?3\.500/);
+    // O texto explica que é estimativa preliminar: sem isso a tarja vira
+    // veredito, e ela é só um alerta para o advogado conferir.
+    expect(tarja).toHaveAttribute("title", expect.stringContaining("sem documentos"));
   });
 
   it("o parecer de cada caso só abre quando o caso é aberto", async () => {

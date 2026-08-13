@@ -92,6 +92,37 @@ O prazo prescricional ou decadencial aplicável, com a contagem que o relato \
 permitir fazer: data do fato → prazo → quanto resta. Prazos processuais e atos \
 já marcados. Se nada indicar urgência, diga.
 
+## Porte econômico
+Quanto o caso comporta, em **faixa**: piso e valor provável, com a conta à \
+vista — o que entra, com que número, e de onde veio cada número. Se o número \
+veio do relato, aponte de onde; se você teve de arbitrar, diga que arbitrou e \
+com que base.
+
+Feche a seção com duas linhas exatamente neste formato, que o sistema lê:
+
+Valor estimado: R$ 20.000 a R$ 35.000
+Viabilidade: acima do piso
+
+As opções de viabilidade são: `acima do piso`, `abaixo do piso`, `não dá para \
+dimensionar` e `não se aplica`.
+
+Regras desta seção, e elas valem mais que o resto dela:
+
+- **Faixa, nunca número único.** Você não tem os documentos; precisão aqui é \
+falsa e o advogado repassa ao cliente como se fosse conta feita.
+- **Sem os números básicos, não dimensione.** Escreva `Viabilidade: não dá \
+para dimensionar` e diga em uma linha qual pergunta falta. Chutar é pior que \
+não responder: o escritório descarta um caso bom por causa de um número que \
+você inventou.
+- O piso do escritório é **R$ {VALOR_MINIMO}**. Compare com o **piso** da sua \
+faixa, não com o valor provável — caso que só compensa no melhor cenário não \
+compensa.
+- Estar abaixo do piso **não** é motivo para enfraquecer a análise nas outras \
+seções, nem para recomendar não litigar. São coisas diferentes: uma é o \
+direito da pessoa, outra é a conta do escritório.
+- Em matéria criminal, escreva `Viabilidade: não se aplica`. Liberdade não se \
+dimensiona por valor de causa.
+
 ## Caminhos possíveis
 As vias que o escritório pode oferecer ao cliente, com o que cada uma custa em \
 tempo e risco: acordo direto, ação judicial, tutela de urgência, via \
@@ -112,7 +143,9 @@ escritório não é ajuizar. Quando a existência do ato mudar a análise, coloq
 como pergunta em "Pontos fracos", não como fato no resumo.
 - **Citação inventada é o pior erro possível aqui.** Vale para lei, súmula, \
 tema e acórdão. Na dúvida sobre o número, descreva o entendimento sem ele.
-- Não estime valor de causa nem honorários.
+- Não estime honorários, e não estime valor fora da seção de Porte econômico — \
+lá é faixa, com a conta à vista; no meio do texto vira número solto que alguém \
+repassa ao cliente.
 - Não prometa resultado. Fale em risco e probabilidade, não em certeza.
 - **Denso, não longo.** O parecer inteiro fica entre 800 e 1500 palavras. Toda \
 frase precisa carregar informação que o advogado ainda não tem: corte adjetivo, \
@@ -122,6 +155,19 @@ análise para caber — corte texto.
 Resumo e, em "Pontos fracos", o que precisa ser perguntado antes de qualquer \
 análise. Não invente para preencher seção.
 """
+
+
+def prompt_do_analista(valor_minimo: Optional[int] = None) -> str:
+    """
+    O prompt com o piso do escritório preenchido.
+
+    O piso entra por substituição e não por `str.format` porque o texto tem
+    chaves e crases próprias — um `format` quebraria na primeira citação em
+    bloco que alguém acrescentasse ao prompt, e quebraria em produção, não em
+    revisão.
+    """
+    piso = settings.caso_valor_minimo if valor_minimo is None else valor_minimo
+    return PROMPT_ANALISTA.replace("{VALOR_MINIMO}", f"{piso:,}".replace(",", "."))
 
 
 class LegalAnalyst:
@@ -173,7 +219,7 @@ class LegalAnalyst:
             from app.services.llm_service import llm_service
 
             texto, uso = await llm_service.analisar_com_prompt(
-                system_prompt=PROMPT_ANALISTA,
+                system_prompt=prompt_do_analista(),
                 user_message=transcricao,
                 user_id=getattr(agent, "user_id", None),
                 max_tokens=self.MAX_TOKENS,

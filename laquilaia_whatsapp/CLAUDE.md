@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **363 testes no backend, 126 no frontend.**
+Estado atual: **380 testes no backend, 129 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -169,6 +169,7 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Ler `response.content[0].text` | A resposta é lista de blocos **tipados**. O Opus 5 raciocina por padrão e manda um `ThinkingBlock` na frente, que não tem `.text`: `AttributeError` antes de qualquer resposta sair. Filtre por `type == "text"` — ver `texto_da_resposta()` |
 | Qualificar o lead antes de responder ao cliente | A qualificação dispara o parecer jurídico, que é outra chamada ao modelo: **2 minutos** no Opus 5, medido. O cliente ficava esperando por um texto que ele nunca vai ler |
 | Pôr a seção que classifica no fim do parecer | É a primeira coisa que se perde quando o modelo estoura o teto. O Opus 5 escreveu 19 mil caracteres, foi cortado, e devolveu análise excelente sem a `## Ficha` — caso que o sistema não consegue arquivar. Ordem por fragilidade, não por elegância |
+| Coluna nova com default só do lado do Python | `default=` do SQLAlchemy vale para linha nova; as que já existem ficam `NULL`. Aí o painel tem dois jeitos de dizer a mesma coisa — `NULL` e `'indeterminado'` — que é como nasce um `if` errado. A migração precisa do `UPDATE` |
 | Folga fixa de raciocínio no Gemini | Os 1024 tokens serviam para um turno de WhatsApp. No parecer, o modelo gastou **3433 tokens só pensando** e o texto morreu no meio da lista de documentos. A folga tem que acompanhar o tamanho do pedido |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)

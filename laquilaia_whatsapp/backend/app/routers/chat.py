@@ -458,6 +458,13 @@ class CasoDoContato(BaseModel):
     # Preenchido só quando a parte não é quem manda a mensagem.
     titular: Optional[str] = None
     score_qualificacao: int = 0
+    # Faixa em reais e o veredito do parecer contra o piso do escritório. A
+    # faixa vai junto do veredito de propósito: "abaixo do piso" sem número
+    # é uma etiqueta que ninguém consegue contestar, e contestar é o trabalho
+    # de quem lê.
+    valor_estimado_min: Optional[int] = None
+    valor_estimado_max: Optional[int] = None
+    viabilidade: str = "indeterminado"
     data_abertura: Optional[datetime] = None
     analise_preliminar: Optional[str] = None
 
@@ -652,6 +659,9 @@ async def get_conversation_messages(
                     resumo=caso.resumo,
                     titular=caso.titular,
                     score_qualificacao=caso.score_qualificacao or 0,
+                    valor_estimado_min=caso.valor_estimado_min,
+                    valor_estimado_max=caso.valor_estimado_max,
+                    viabilidade=caso.viabilidade or "indeterminado",
                     data_abertura=caso.data_abertura,
                     analise_preliminar=caso.analise_preliminar,
                 )

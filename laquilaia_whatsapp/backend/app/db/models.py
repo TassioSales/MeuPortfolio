@@ -245,6 +245,17 @@ class Caso(Base):
     # outra.
     analise_preliminar = Column(Text, nullable=True)
     score_qualificacao = Column(Integer, default=0)
+    # Porte econômico, lido da seção do parecer. Faixa em reais inteiros — sem
+    # os documentos, centavo é precisão que o número não tem, e valor único é
+    # precisão que a estimativa não tem.
+    valor_estimado_min = Column(Integer, nullable=True)
+    valor_estimado_max = Column(Integer, nullable=True)
+    # acima_do_piso, abaixo_do_piso, indeterminado, nao_se_aplica.
+    #
+    # `indeterminado` é o default porque parecer sem porte não é caso inviável:
+    # é caso que ninguém dimensionou. A diferença importa — a segunda etiqueta
+    # manda perguntar, a primeira mandaria descartar.
+    viabilidade = Column(String(30), default="indeterminado")
     data_abertura = Column(DateTime, default=datetime.utcnow)
     data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

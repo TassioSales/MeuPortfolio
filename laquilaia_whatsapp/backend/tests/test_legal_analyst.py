@@ -138,12 +138,26 @@ class TestModeloDoParecer:
 class TestPromptDoAnalista:
     """O prompt é o produto aqui — estas travas descrevem o que ele promete."""
 
-    def test_proibe_afirmar_fato_e_estimar_valor(self):
+    def test_proibe_afirmar_fato_e_prometer_resultado(self):
         from app.services.legal_analyst import PROMPT_ANALISTA
 
         assert "não tem os documentos" in PROMPT_ANALISTA
-        assert "Não estime valor" in PROMPT_ANALISTA
         assert "Não prometa resultado" in PROMPT_ANALISTA
+
+    def test_valor_so_pode_aparecer_na_secao_de_porte(self):
+        """
+        A proibição era total — "não estime valor" — e deixou de ser quando o
+        escritório passou a precisar do porte para decidir se pega o caso.
+
+        Ela virou restrição de lugar, e o lugar importa: dentro da seção o
+        número vem como faixa, com a conta à vista e o rótulo de preliminar. No
+        meio do texto vira número solto, e número solto num parecer é o que
+        alguém repassa ao cliente como se fosse conta feita.
+        """
+        from app.services.legal_analyst import PROMPT_ANALISTA
+
+        assert "Não estime honorários" in PROMPT_ANALISTA
+        assert "não estime valor fora da seção de Porte econômico" in PROMPT_ANALISTA
 
     def test_deixa_claro_que_o_leitor_e_o_advogado(self):
         from app.services.legal_analyst import PROMPT_ANALISTA
@@ -160,6 +174,7 @@ class TestPromptDoAnalista:
             "## Provas e ônus",
             "## Documentos a pedir",
             "## Prazos e urgência",
+            "## Porte econômico",
             "## Caminhos possíveis",
             "## Pontos fracos",
             "## Ficha",
@@ -231,6 +246,74 @@ class TestPromptDoAnalista:
 
         assert "não foi dito não aconteceu" in PROMPT_ANALISTA
         assert "Procurar o escritório não é ajuizar" in PROMPT_ANALISTA
+
+
+class TestPorteEconomico:
+    """
+    A seção que decide se o caso comporta o trabalho do escritório.
+
+    É a parte mais perigosa do parecer: um número inventado aqui faz descartar
+    caso bom, e a pessoa do outro lado nunca fica sabendo por quê.
+    """
+
+    def test_o_piso_do_escritorio_entra_no_texto(self):
+        from app.services.legal_analyst import prompt_do_analista
+
+        assert "R$ 15.000" in prompt_do_analista(15000)
+        assert "R$ 40.000" in prompt_do_analista(40000)
+        # O marcador não pode sobrar: o modelo leria "{VALOR_MINIMO}" como
+        # sendo o piso literal.
+        assert "{VALOR_MINIMO}" not in prompt_do_analista(15000)
+
+    def test_o_piso_vem_das_settings_por_padrao(self):
+        from app.config import settings
+        from app.services.legal_analyst import prompt_do_analista
+
+        with patch.object(settings, "caso_valor_minimo", 25000):
+            assert "R$ 25.000" in prompt_do_analista()
+
+    def test_exige_faixa_e_nao_numero_unico(self):
+        from app.services.legal_analyst import PROMPT_ANALISTA
+
+        assert "**Faixa, nunca número único.**" in PROMPT_ANALISTA
+
+    def test_manda_comparar_com_o_piso_da_faixa(self):
+        """
+        Comparar pelo valor provável aprova caso que só fecha no melhor
+        cenário — e o melhor cenário é justamente o que não se conhece antes
+        dos documentos.
+        """
+        from app.services.legal_analyst import PROMPT_ANALISTA
+
+        assert "não com o valor provável" in PROMPT_ANALISTA
+
+    def test_prefere_nao_dimensionar_a_chutar(self):
+        from app.services.legal_analyst import PROMPT_ANALISTA
+
+        assert "Sem os números básicos, não dimensione" in PROMPT_ANALISTA
+        assert "Chutar é pior que \\\nnão responder".replace("\\\n", "") in (
+            PROMPT_ANALISTA.replace("\n", " ")
+        )
+
+    def test_o_porte_nao_contamina_a_analise_juridica(self):
+        """
+        São coisas separadas: uma é o direito da pessoa, outra é a conta do
+        escritório. Sem esta regra o modelo passa a escrever teses mais fracas
+        para justificar o veredito econômico.
+        """
+        from app.services.legal_analyst import PROMPT_ANALISTA
+
+        assert "é motivo para enfraquecer a análise" in PROMPT_ANALISTA
+        assert "uma é o \\\ndireito da pessoa".replace("\\\n", "") in (
+            PROMPT_ANALISTA.replace("\n", " ")
+        )
+
+    def test_criminal_nao_se_dimensiona_por_valor(self):
+        from app.services.legal_analyst import PROMPT_ANALISTA
+
+        assert "Liberdade não se \\\ndimensiona".replace("\\\n", "") in (
+            PROMPT_ANALISTA.replace("\n", " ")
+        )
 
 
 class TestContextoCompleto:

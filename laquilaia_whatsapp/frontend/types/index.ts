@@ -158,9 +158,25 @@ export interface CasoDoContato {
   /** Preenchido só quando a parte não é quem manda as mensagens. */
   titular: string | null;
   score_qualificacao: number;
+  /** Faixa em reais, do parecer. Nula quando não deu para dimensionar. */
+  valor_estimado_min: number | null;
+  valor_estimado_max: number | null;
+  viabilidade: Viabilidade;
   data_abertura: string | null;
   analise_preliminar: string | null;
 }
+
+/**
+ * O veredito do parecer sobre o porte do caso.
+ *
+ * `indeterminado` não é sinônimo de inviável: é caso que ninguém dimensionou
+ * ainda, e o que ele pede é uma pergunta, não um descarte.
+ */
+export type Viabilidade =
+  | "acima_do_piso"
+  | "abaixo_do_piso"
+  | "indeterminado"
+  | "nao_se_aplica";
 
 /** Resposta de `pause`, `resume` e `status`. */
 export interface ConversationStatus {

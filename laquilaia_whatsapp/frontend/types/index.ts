@@ -198,6 +198,25 @@ export interface KanbanCard {
   ordem: number;
 }
 
+/** Resposta de `GET /agents/{id}/kanban/leads/{leadId}` (`LeadDossie`). */
+export interface LeadDossie {
+  lead_id: string;
+  nome: string | null;
+  email: string | null;
+  phone_number: string;
+  status_funil: string | null;
+  score_qualificacao: number;
+  data_criacao: string | null;
+  conversation_id: string | null;
+  dados_economicos: string | null;
+  documentos_em_maos: string | null;
+  inconsistencias: string | null;
+  problemas_detectados: string | null;
+  recomendacoes: string | null;
+  analise_preliminar: string | null;
+  casos: CasoDoContato[];
+}
+
 export interface KanbanColumn {
   id: string;
   nome: string;

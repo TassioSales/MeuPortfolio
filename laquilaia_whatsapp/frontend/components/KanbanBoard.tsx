@@ -19,6 +19,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useDroppable } from "@dnd-kit/core";
 import { KanbanCardItem } from "./KanbanCard";
+import { LeadDossiePanel } from "./LeadDossie";
 import { Button } from "./Button";
 import { FullPageLoader } from "./LoadingSpinner";
 import { useKanban } from "@/hooks/useKanban";
@@ -29,7 +30,13 @@ interface KanbanBoardProps {
   agentId: string;
 }
 
-function Column({ column }: { column: KanbanColumn }) {
+function Column({
+  column,
+  onAbrir,
+}: {
+  column: KanbanColumn;
+  onAbrir: (leadId: string) => void;
+}) {
   // A coluna inteira é área de soltura, para aceitar card em coluna vazia.
   const { setNodeRef, isOver } = useDroppable({
     id: column.id,
@@ -67,7 +74,7 @@ function Column({ column }: { column: KanbanColumn }) {
           strategy={verticalListSortingStrategy}
         >
           {column.cards.map((card) => (
-            <KanbanCardItem key={card.id} card={card} />
+            <KanbanCardItem key={card.id} card={card} onAbrir={onAbrir} />
           ))}
         </SortableContext>
 
@@ -83,6 +90,8 @@ function Column({ column }: { column: KanbanColumn }) {
 
 export function KanbanBoard({ agentId }: KanbanBoardProps) {
   const { board, isLoading, error, moveCard, reload } = useKanban(agentId);
+  // Qual card está aberto. Nulo é o normal — o dossiê é modal.
+  const [leadAberto, setLeadAberto] = useState<string | null>(null);
   const [dragging, setDragging] = useState<KanbanCard | null>(null);
 
   // Tempo real: um lead qualificado pelo agente no WhatsApp aparece no board
@@ -192,7 +201,7 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
       >
         <div className="flex gap-4 overflow-x-auto pb-4">
           {board.columns.map((column) => (
-            <Column key={column.id} column={column} />
+            <Column key={column.id} column={column} onAbrir={setLeadAberto} />
           ))}
         </div>
 
@@ -201,6 +210,12 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
           {dragging && <KanbanCardItem card={dragging} isOverlay />}
         </DragOverlay>
       </DndContext>
+
+      <LeadDossiePanel
+        agentId={agentId}
+        leadId={leadAberto}
+        onClose={() => setLeadAberto(null)}
+      />
     </div>
   );
 }

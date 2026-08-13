@@ -3,6 +3,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db_session
+from app.models.caso_schemas import CasoDoContato
 from app.models.llm_models import (
     MessageRequest,
     MessageResponse,
@@ -448,25 +449,6 @@ class ConversationListItem(BaseModel):
     total_mensagens: int = 0
     ultima_mensagem: Optional[str] = None
     ultimo_remetente: Optional[str] = None
-
-
-class CasoDoContato(BaseModel):
-    """Um assunto trazido por este contato."""
-    id: str
-    area: Optional[str] = None
-    resumo: Optional[str] = None
-    # Preenchido só quando a parte não é quem manda a mensagem.
-    titular: Optional[str] = None
-    score_qualificacao: int = 0
-    # Faixa em reais e o veredito do parecer contra o piso do escritório. A
-    # faixa vai junto do veredito de propósito: "abaixo do piso" sem número
-    # é uma etiqueta que ninguém consegue contestar, e contestar é o trabalho
-    # de quem lê.
-    valor_estimado_min: Optional[int] = None
-    valor_estimado_max: Optional[int] = None
-    viabilidade: str = "indeterminado"
-    data_abertura: Optional[datetime] = None
-    analise_preliminar: Optional[str] = None
 
 
 class ConversationMessagesResponse(BaseModel):

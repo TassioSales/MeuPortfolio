@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **380 testes no backend, 134 no frontend.**
+Estado atual: **388 testes no backend, 148 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -179,6 +179,8 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Qualificar o lead antes de responder ao cliente | A qualificação dispara o parecer jurídico, que é outra chamada ao modelo: **2 minutos** no Opus 5, medido. O cliente ficava esperando por um texto que ele nunca vai ler |
 | Pôr a seção que classifica no fim do parecer | É a primeira coisa que se perde quando o modelo estoura o teto. O Opus 5 escreveu 19 mil caracteres, foi cortado, e devolveu análise excelente sem a `## Ficha` — caso que o sistema não consegue arquivar. Ordem por fragilidade, não por elegância |
 | Coluna nova com default só do lado do Python | `default=` do SQLAlchemy vale para linha nova; as que já existem ficam `NULL`. Aí o painel tem dois jeitos de dizer a mesma coisa — `NULL` e `'indeterminado'` — que é como nasce um `if` errado. A migração precisa do `UPDATE` |
+| Escopar recurso por `agent_id` que a tabela não tem | `Lead` não guarda `agent_id` — o vínculo passa pela conversa, e o telefone é único no sistema inteiro, não por agente. Filtrar o dossiê só por `Lead.id` daria o contato a quem tem o id |
+| Semear `User` antes de `criar_acesso()` nos testes | O cadastro público fecha no primeiro usuário: o helper não acha administrador e recusa. Faça login primeiro, semeie depois — e semeie o agente sob o id de quem logou |
 | Folga fixa de raciocínio no Gemini | Os 1024 tokens serviam para um turno de WhatsApp. No parecer, o modelo gastou **3433 tokens só pensando** e o texto morreu no meio da lista de documentos. A folga tem que acompanhar o tamanho do pedido |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)

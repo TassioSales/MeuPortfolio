@@ -244,9 +244,16 @@ class MemoryService:
             logger.debug(f"📭 No messages found for conversation {conversation_id}")
             return []
 
+        # Cliente é `user`; **todo o resto** é o escritório falando.
+        #
+        # A comparação era ao contrário (`"assistant" if remetente ==
+        # "assistant" else "user"`), e com ela a mensagem que o operador
+        # escreve à mão entraria no histórico como se fosse o cliente. O modelo
+        # leria a própria resposta do escritório como pergunta e responderia a
+        # ela — o atendimento conversando sozinho.
         history = [
             {
-                "role": "assistant" if msg.remetente == "assistant" else "user",
+                "role": "user" if msg.remetente == "user" else "assistant",
                 "content": msg.conteudo,
             }
             for msg in reversed(messages)

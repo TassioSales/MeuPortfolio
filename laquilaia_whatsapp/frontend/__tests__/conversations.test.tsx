@@ -514,3 +514,67 @@ describe("Casos do contato", () => {
     expect(screen.queryByText(/Casos deste contato/)).not.toBeInTheDocument();
   });
 });
+
+
+describe("Operador respondendo", () => {
+  function abrirAssumida(ia_ativa = false) {
+    mockFetch.mockResolvedValueOnce(jsonResponse([{ ...CONVERSA, ia_ativa }]));
+    mockFetch.mockResolvedValueOnce(jsonResponse({ ...TRANSCRICAO, ia_ativa }));
+    render(<ConversationsPanel agentId="agent-1" />);
+  }
+
+  it("com a IA ativa, a caixa fica travada e diz por quê", async () => {
+    // O backend recusa com 409 de qualquer jeito. Descobrir isso depois de
+    // digitar é pior do que ver de antemão por que não dá.
+    abrirAssumida(true);
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    const caixa = await screen.findByPlaceholderText(/Assuma a conversa para responder/);
+    expect(caixa).toBeDisabled();
+  });
+
+  it("assumida, envia e a mensagem entra na transcrição na hora", async () => {
+    // Sem o acréscimo local, quem acabou de escrever ficaria olhando para uma
+    // tela que não mudou, sem saber se foi.
+    abrirAssumida();
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    mockFetch.mockResolvedValueOnce(
+      jsonResponse({
+        id: "m3",
+        remetente: "operador",
+        conteudo: "Bom dia, seu caso está comigo.",
+        timestamp: "2026-08-13T12:00:00Z",
+      }),
+    );
+
+    await userEvent.type(
+      await screen.findByPlaceholderText(/Escreva para o cliente/),
+      "Bom dia, seu caso está comigo.",
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Enviar" }));
+
+    expect(
+      await screen.findByText("Bom dia, seu caso está comigo."),
+    ).toBeInTheDocument();
+    // E fica claro que quem falou foi gente, não a IA.
+    expect(screen.getByText(/Você ·/)).toBeInTheDocument();
+  });
+
+  it("envio que falha não apaga o que a pessoa escreveu", async () => {
+    abrirAssumida();
+
+    await userEvent.click(await screen.findByText("Maria Silva"));
+
+    mockFetch.mockResolvedValueOnce(jsonResponse({ detail: "Evolution fora" }, 502));
+
+    const caixa = await screen.findByPlaceholderText(/Escreva para o cliente/);
+    await userEvent.type(caixa, "texto que custou a escrever");
+    await userEvent.click(screen.getByRole("button", { name: "Enviar" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(/Não foi possível enviar/);
+    expect(caixa).toHaveValue("texto que custou a escrever");
+  });
+});

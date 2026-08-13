@@ -101,6 +101,25 @@ export function useConversations(agentId: string) {
     }
   }, [loadConversations, selectedId]);
 
+  /**
+   * Manda a mensagem do operador e a acrescenta à transcrição na hora.
+   *
+   * Sem o acréscimo local, a mensagem só apareceria no próximo carregamento —
+   * e quem acabou de escrever ficaria olhando para uma tela que não mudou,
+   * sem saber se foi.
+   */
+  const responder = useCallback(
+    async (conteudo: string) => {
+      if (!selectedId) return;
+
+      const mensagem = await conversationsApi.enviarComoOperador(selectedId, conteudo);
+      setTranscript((atual) =>
+        atual ? { ...atual, messages: [...atual.messages, mensagem] } : atual,
+      );
+    },
+    [selectedId],
+  );
+
   return {
     conversations,
     selectedId,
@@ -111,6 +130,7 @@ export function useConversations(agentId: string) {
     error,
     openConversation,
     togglePause,
+    responder,
     reload,
   };
 }

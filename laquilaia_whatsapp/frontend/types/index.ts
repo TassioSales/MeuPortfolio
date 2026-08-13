@@ -103,10 +103,20 @@ export interface ChatResponse {
   model: string;
 }
 
+/**
+ * Quem escreveu.
+ *
+ * `operador` é gente do escritório digitando pelo painel. Para o modelo ele
+ * conta como o escritório falando (junto com `assistant`); para quem lê a
+ * transcrição depois, a diferença importa: "o escritório disse" não é "a IA
+ * disse".
+ */
+export type Remetente = "user" | "assistant" | "operador";
+
 /** Mensagem persistida, como vem de `GET .../chat/history`. */
 export interface ChatHistoryMessage {
   id: string;
-  remetente: "user" | "assistant";
+  remetente: Remetente;
   conteudo: string;
   timestamp: string;
 }
@@ -122,7 +132,7 @@ export interface ChatHistoryResponse {
  */
 export interface ChatBubble {
   id: string;
-  remetente: "user" | "assistant";
+  remetente: Remetente;
   conteudo: string;
   /** true enquanto a resposta do agente não chegou. */
   pending?: boolean;

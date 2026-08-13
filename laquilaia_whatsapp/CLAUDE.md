@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **402 testes no backend, 169 no frontend.**
+Estado atual: **408 testes no backend, 172 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -212,6 +212,7 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Coluna nova com default só do lado do Python | `default=` do SQLAlchemy vale para linha nova; as que já existem ficam `NULL`. Aí o painel tem dois jeitos de dizer a mesma coisa — `NULL` e `'indeterminado'` — que é como nasce um `if` errado. A migração precisa do `UPDATE` |
 | Escopar recurso por `agent_id` que a tabela não tem | `Lead` não guarda `agent_id` — o vínculo passa pela conversa, e o telefone é único no sistema inteiro, não por agente. Filtrar o dossiê só por `Lead.id` daria o contato a quem tem o id |
 | Semear `User` antes de `criar_acesso()` nos testes | O cadastro público fecha no primeiro usuário: o helper não acha administrador e recusa. Faça login primeiro, semeie depois — e semeie o agente sob o id de quem logou |
+| Mapear papel do histórico por igualdade com `"assistant"` | Todo remetente que não fosse exatamente `assistant` virava `user`. Com a fala do operador no banco, o modelo leria a resposta do próprio escritório como pergunta e responderia a ela — o atendimento conversando sozinho. Cliente é `user`; **o resto** é o escritório |
 | Folga fixa de raciocínio no Gemini | Os 1024 tokens serviam para um turno de WhatsApp. No parecer, o modelo gastou **3433 tokens só pensando** e o texto morreu no meio da lista de documentos. A folga tem que acompanhar o tamanho do pedido |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)
@@ -248,10 +249,6 @@ Em ordem de valor, e a primeira vale mais que as outras juntas.
    manda uma. Há um histórico de versões devolvendo `{"count": 0}` sem QR e sem
    erro (issues #2380 e #2385, nas 2.0.10 a 2.2.3; estamos na 2.3.7). Rode
    `python -m scripts.sondar_evolution` antes de confiar na tela.
-
-3. **O operador não responde pelo painel.** Ele assume a conversa e a IA para,
-   mas mandar a mensagem ao cliente ainda é fora do sistema — não há endpoint
-   de envio avulso pela Evolution API.
 
 4. **Anexos não são lidos.** PDF, imagem e áudio chegam pelo WhatsApp e são
    descartados. A ideia é ligá-los pelo painel do administrador, não por

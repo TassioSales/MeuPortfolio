@@ -317,6 +317,7 @@ export type EstadoDaInstancia =
   | "conectado"
   | "conectando"
   | "desconectado"
+  | "inexistente"
   | "indisponivel"
   | "desconhecido";
 

@@ -195,6 +195,12 @@ class LLMService:
             "output_tokens": saida,
             "total_tokens": entrada + saida,
             "model": modelo,
+            # Vai junto porque `max_tokens` é o único motivo de parada que não
+            # se parece com erro: a resposta chega, bem escrita, terminando no
+            # meio de uma frase. Quem chama precisa poder perceber — foi assim
+            # que três pareceres seguidos perderam a conclusão sem que nada
+            # aparecesse no log.
+            "stop_reason": response.stop_reason,
         }
 
     async def _chamar_reserva(

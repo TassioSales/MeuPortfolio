@@ -62,10 +62,10 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-5xl">
       <header className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-ink-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-fg">
           Olá, {user?.nome ?? "por aqui"}
         </h1>
-        <p className="mt-1 text-sm text-gray-600">
+        <p className="mt-1 text-sm text-fg-muted">
           O agente atende no WhatsApp, faz a triagem e prepara a análise do caso.
           Por aqui você acompanha e ajusta.
         </p>
@@ -79,10 +79,10 @@ export default function DashboardPage() {
                 <link.Icone />
               </span>
               <div>
-                <h2 className="text-sm font-medium text-gray-900">{link.title}</h2>
-                <p className="mt-0.5 text-sm text-gray-600">{link.description}</p>
+                <h2 className="text-sm font-medium text-fg">{link.title}</h2>
+                <p className="mt-0.5 text-sm text-fg-muted">{link.description}</p>
                 {!link.available && (
-                  <span className="mt-2 inline-block rounded-full bg-surface-muted px-2 py-0.5 text-xs text-gray-500">
+                  <span className="mt-2 inline-block rounded-full bg-surface-muted px-2 py-0.5 text-xs text-fg-muted">
                     Em breve
                   </span>
                 )}
@@ -91,7 +91,7 @@ export default function DashboardPage() {
           );
 
           const className =
-            "flex items-start gap-4 rounded-xl border border-surface-border bg-white p-5";
+            "flex items-start gap-4 rounded-xl border border-surface-border bg-surface p-5";
 
           return link.available ? (
             <Link

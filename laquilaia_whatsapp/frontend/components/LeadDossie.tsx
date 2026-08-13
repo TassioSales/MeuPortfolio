@@ -35,10 +35,10 @@ function Campo({ titulo, texto }: { titulo: string; texto: string | null }) {
 
   return (
     <div>
-      <h4 className="text-xs font-medium uppercase tracking-wide text-gray-500">
+      <h4 className="text-xs font-medium uppercase tracking-wide text-fg-muted">
         {titulo}
       </h4>
-      <p className="mt-1 whitespace-pre-line text-sm text-gray-800">{texto}</p>
+      <p className="mt-1 whitespace-pre-line text-sm text-fg">{texto}</p>
     </div>
   );
 }
@@ -77,21 +77,21 @@ function Porte({ casos }: { casos: CasoDoContato[] }) {
             : "border-emerald-200 bg-emerald-50",
       )}
     >
-      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+      <p className="text-xs font-medium uppercase tracking-wide text-fg-muted">
         Porte estimado
       </p>
       {semDimensionar ? (
-        <p className="mt-1 text-sm text-gray-700">
+        <p className="mt-1 text-sm text-fg-soft">
           {caso.viabilidade === "nao_se_aplica"
             ? "Não se dimensiona por valor."
             : "Ainda não dimensionado — falta dado na triagem."}
         </p>
       ) : (
         <>
-          <p className="mt-1 text-xl font-semibold tracking-tight text-ink-900">
+          <p className="mt-1 text-xl font-semibold tracking-tight text-fg">
             {faixa ?? (abaixo ? "Abaixo do piso" : "Acima do piso")}
           </p>
-          <p className="mt-0.5 text-xs text-gray-600">
+          <p className="mt-0.5 text-xs text-fg-muted">
             {abaixo
               ? "Abaixo do piso do escritório — estimativa preliminar, sem documentos."
               : "Acima do piso do escritório — estimativa preliminar, sem documentos."}
@@ -162,7 +162,7 @@ export function LeadDossiePanel({ agentId, leadId, onClose }: LeadDossieProps) {
                 href={whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg bg-ink-900 px-3 py-2 text-sm font-medium text-white hover:bg-ink-800"
+                className="rounded-lg bg-ink-900 px-3 py-2 text-sm font-medium text-white hover:bg-ink-800 dark:bg-ink-100 dark:text-ink-950 dark:hover:bg-white"
               >
                 Responder no WhatsApp
               </a>
@@ -170,7 +170,7 @@ export function LeadDossiePanel({ agentId, leadId, onClose }: LeadDossieProps) {
             {dossie.conversation_id && (
               <Link
                 href={`/dashboard/conversations?conversa=${dossie.conversation_id}`}
-                className="rounded-lg border border-surface-border px-3 py-2 text-sm font-medium text-gray-800 hover:bg-surface-muted"
+                className="rounded-lg border border-surface-border px-3 py-2 text-sm font-medium text-fg hover:bg-surface-muted"
               >
                 Ver o atendimento
               </Link>
@@ -178,7 +178,7 @@ export function LeadDossiePanel({ agentId, leadId, onClose }: LeadDossieProps) {
             {dossie.email && (
               <a
                 href={`mailto:${dossie.email}`}
-                className="rounded-lg border border-surface-border px-3 py-2 text-sm text-gray-700 hover:bg-surface-muted"
+                className="rounded-lg border border-surface-border px-3 py-2 text-sm text-fg-soft hover:bg-surface-muted"
               >
                 {dossie.email}
               </a>
@@ -199,7 +199,7 @@ export function LeadDossiePanel({ agentId, leadId, onClose }: LeadDossieProps) {
               contato={dossie.nome || "quem escreve"}
             />
           ) : (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-fg-muted">
               Este contato ainda não tem caso arquivado. O caso é aberto quando a
               triagem fecha e o parecer identifica a área.
             </p>

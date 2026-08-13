@@ -55,9 +55,9 @@ function Column({
             className="h-2.5 w-2.5 shrink-0 rounded-full"
             style={{ backgroundColor: column.cor_hex }}
           />
-          <h3 className="truncate text-sm font-medium text-gray-900">{column.nome}</h3>
+          <h3 className="truncate text-sm font-medium text-fg">{column.nome}</h3>
         </div>
-        <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-xs text-gray-600">
+        <span className="shrink-0 rounded-full bg-surface px-2 py-0.5 text-xs text-fg-muted">
           {column.cards.length}
         </span>
       </header>
@@ -79,7 +79,7 @@ function Column({
         </SortableContext>
 
         {column.cards.length === 0 && (
-          <p className="px-1 py-4 text-center text-xs text-gray-400">
+          <p className="px-1 py-4 text-center text-xs text-fg-faint">
             Nenhum lead nesta etapa
           </p>
         )}
@@ -173,7 +173,7 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
         </p>
       )}
 
-      <p className="mb-4 flex items-center gap-2 text-xs text-gray-500">
+      <p className="mb-4 flex items-center gap-2 text-xs text-fg-muted">
         <span
           aria-hidden="true"
           className={
@@ -186,7 +186,7 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
       </p>
 
       {totalCards === 0 && (
-        <p className="mb-4 rounded-lg border border-surface-border bg-white px-4 py-3 text-sm text-gray-600">
+        <p className="mb-4 rounded-lg border border-surface-border bg-surface px-4 py-3 text-sm text-fg-muted">
           Nenhum lead ainda. Os leads entram no funil automaticamente conforme o agente
           qualifica as conversas do WhatsApp.
         </p>

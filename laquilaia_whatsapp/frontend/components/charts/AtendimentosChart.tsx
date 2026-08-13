@@ -22,17 +22,17 @@ function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="rounded-lg border border-surface-border bg-white px-3 py-2 text-xs shadow-sm">
-      <p className="font-medium text-gray-900">{formatDayShort(String(label))}</p>
+    <div className="rounded-lg border border-surface-border bg-surface px-3 py-2 text-xs shadow-sm">
+      <p className="font-medium text-fg">{formatDayShort(String(label))}</p>
       {payload.map((entry: any) => (
-        <p key={entry.dataKey} className="mt-1 flex items-center gap-2 text-gray-600">
+        <p key={entry.dataKey} className="mt-1 flex items-center gap-2 text-fg-muted">
           <span
             aria-hidden="true"
             className="h-2 w-2 rounded-full"
             style={{ backgroundColor: entry.color }}
           />
           {entry.name}
-          <span className="ml-auto font-medium tabular-nums text-gray-900">
+          <span className="ml-auto font-medium tabular-nums text-fg">
             {entry.value}
           </span>
         </p>
@@ -53,10 +53,10 @@ export function AtendimentosChart({ pontos }: AtendimentosChartProps) {
   const [corAtendimentos, corQualificados] = SERIES.light;
 
   return (
-    <figure className="rounded-xl border border-surface-border bg-white p-5">
+    <figure className="rounded-xl border border-surface-border bg-surface p-5">
       <figcaption className="mb-4">
-        <h3 className="text-sm font-medium text-gray-900">Atendimentos por dia</h3>
-        <p className="mt-0.5 text-xs text-gray-500">
+        <h3 className="text-sm font-medium text-fg">Atendimentos por dia</h3>
+        <p className="mt-0.5 text-xs text-fg-muted">
           Conversas iniciadas e leads que chegaram a qualificado.
         </p>
       </figcaption>

@@ -48,7 +48,7 @@ function Porte({ caso }: { caso: CasoDoContato }) {
     <span
       className={cn(
         "rounded-full px-2 py-0.5 text-xs",
-        abaixo ? "bg-gray-200 text-gray-700" : "bg-emerald-100 text-emerald-900",
+        abaixo ? "bg-gray-200 text-fg-soft" : "bg-emerald-100 text-emerald-900",
       )}
       title={
         abaixo
@@ -98,7 +98,7 @@ function Caso({ caso, contato }: { caso: CasoDoContato; contato: string }) {
       >
         <span className="min-w-0">
           <span className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-medium text-gray-900">
+            <span className="text-sm font-medium text-fg">
               {ROTULO_DA_AREA[caso.area ?? ""] ?? "Sem área"}
             </span>
             {deTerceiro && (
@@ -108,7 +108,7 @@ function Caso({ caso, contato }: { caso: CasoDoContato; contato: string }) {
             )}
             <Porte caso={caso} />
             {caso.score_qualificacao > 0 && (
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-fg-muted">
                 score {caso.score_qualificacao}
               </span>
             )}
@@ -116,7 +116,7 @@ function Caso({ caso, contato }: { caso: CasoDoContato; contato: string }) {
           {caso.resumo && (
             <span
               className={cn(
-                "mt-1 block text-xs text-gray-600",
+                "mt-1 block text-xs text-fg-muted",
                 aberto ? "" : "line-clamp-2",
               )}
             >
@@ -124,7 +124,7 @@ function Caso({ caso, contato }: { caso: CasoDoContato; contato: string }) {
             </span>
           )}
         </span>
-        <span className="shrink-0 text-xs text-gray-400">
+        <span className="shrink-0 text-xs text-fg-faint">
           {formatarData(caso.data_abertura)}
         </span>
       </button>
@@ -148,8 +148,8 @@ export function CasosDoContato({ casos, contato }: CasosDoContatoProps) {
   if (casos.length === 0) return null;
 
   return (
-    <section className="border-b border-surface-border bg-white">
-      <h3 className="px-4 pt-3 text-xs font-medium uppercase tracking-wide text-gray-500">
+    <section className="border-b border-surface-border bg-surface">
+      <h3 className="px-4 pt-3 text-xs font-medium uppercase tracking-wide text-fg-muted">
         {casos.length === 1 ? "Caso deste contato" : `Casos deste contato (${casos.length})`}
       </h3>
       <ul className="mt-1">

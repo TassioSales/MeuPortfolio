@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Logo, Marca } from "./Logo";
+import { SeletorDeTema } from "./SeletorDeTema";
 
 /**
  * A moldura das telas de entrar e criar conta.
@@ -44,19 +45,20 @@ export function AuthShell({ titulo, subtitulo, children, rodape }: AuthShellProp
         </p>
       </section>
 
-      <section className="flex flex-1 items-center justify-center px-6 py-12">
+      <section className="relative flex flex-1 items-center justify-center px-6 py-12">
+        <SeletorDeTema className="absolute right-6 top-6" />
         <div className="w-full max-w-sm">
           <div className="mb-8">
-            <Marca size={34} className="text-ink-900 lg:hidden" />
-            <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink-900">
+            <Marca size={34} className="text-fg lg:hidden" />
+            <h1 className="mt-3 text-2xl font-semibold tracking-tight text-fg">
               {titulo}
             </h1>
-            <p className="mt-1 text-sm text-gray-600">{subtitulo}</p>
+            <p className="mt-1 text-sm text-fg-muted">{subtitulo}</p>
           </div>
 
           {children}
 
-          <p className="mt-6 text-sm text-gray-600">{rodape}</p>
+          <p className="mt-6 text-sm text-fg-muted">{rodape}</p>
         </div>
       </section>
     </main>

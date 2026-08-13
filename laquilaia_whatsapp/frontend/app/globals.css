@@ -2,9 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * As cores da interface como variáveis, e não como classes literais.
+ *
+ * Antes cada componente escrevia `bg-white` e `text-gray-900` na mão. Isso
+ * funciona enquanto existe um tema só; com dois, cada uma dessas duzentas
+ * ocorrências precisaria de um par `dark:` escrito à mão, e a que faltasse
+ * viraria texto cinza-claro em cartão branco — o defeito que ninguém vê no
+ * tema em que trabalha.
+ *
+ * Aqui elas viram token. Trocar de tema é trocar o valor da variável; nenhum
+ * componente sabe que existe tema escuro.
+ *
+ * Os valores vão sem `rgb()` porque o Tailwind precisa dos canais soltos para
+ * aplicar opacidade (`bg-surface/60`).
+ */
+
 :root {
-  --background: #f7f8fa;
-  --foreground: #101828;
+  --background: 247 248 250;
+  --surface: 255 255 255;
+  --surface-muted: 247 248 250;
+  --surface-border: 228 231 236;
+
+  --fg: 16 24 40;
+  --fg-soft: 55 65 81;
+  --fg-muted: 75 85 99;
+  --fg-faint: 156 163 175;
+}
+
+/*
+ * No escuro o fundo é o mais escuro e os cartões sobem um degrau — o contrário
+ * (cartão mais escuro que a página) faz o conteúdo parecer um buraco.
+ */
+.dark {
+  --background: 8 14 24;
+  --surface: 15 24 38;
+  --surface-muted: 24 35 53;
+  --surface-border: 37 52 76;
+
+  --fg: 244 246 249;
+  --fg-soft: 200 211 226;
+  --fg-muted: 155 173 196;
+  --fg-faint: 107 129 160;
 }
 
 html,
@@ -13,7 +52,7 @@ body {
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: rgb(var(--background));
+  color: rgb(var(--fg));
   -webkit-font-smoothing: antialiased;
 }

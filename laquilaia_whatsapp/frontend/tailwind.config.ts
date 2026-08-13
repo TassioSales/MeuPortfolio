@@ -1,6 +1,10 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  // O tema vem de uma classe no <html>, não do `prefers-color-scheme`: a
+  // escolha do usuário precisa vencer a do sistema, e "seguir o sistema" é uma
+  // das opções — não a única.
+  darkMode: "class",
   content: [
     "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -21,10 +25,18 @@ const config: Config = {
           800: "#1829b6",
           900: "#1a298f",
         },
+        // Ver `globals.css`: os valores mudam com o tema, os nomes não.
         surface: {
-          DEFAULT: "#ffffff",
-          muted: "#f7f8fa",
-          border: "#e4e7ec",
+          DEFAULT: "rgb(var(--surface) / <alpha-value>)",
+          muted: "rgb(var(--surface-muted) / <alpha-value>)",
+          border: "rgb(var(--surface-border) / <alpha-value>)",
+        },
+        // Texto, do mais forte ao mais apagado.
+        fg: {
+          DEFAULT: "rgb(var(--fg) / <alpha-value>)",
+          soft: "rgb(var(--fg-soft) / <alpha-value>)",
+          muted: "rgb(var(--fg-muted) / <alpha-value>)",
+          faint: "rgb(var(--fg-faint) / <alpha-value>)",
         },
         // Azul-tinta da barra lateral e das telas de entrada.
         //

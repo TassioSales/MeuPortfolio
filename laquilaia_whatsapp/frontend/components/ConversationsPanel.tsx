@@ -84,21 +84,21 @@ function ItemDaFila({
         )}
       >
         <div className="flex items-baseline justify-between gap-2">
-          <span className="truncate text-sm font-medium text-gray-900">{titulo}</span>
-          <span className="shrink-0 text-xs text-gray-500">
+          <span className="truncate text-sm font-medium text-fg">{titulo}</span>
+          <span className="shrink-0 text-xs text-fg-muted">
             {formatarQuando(conversa.data_ultima_msg)}
           </span>
         </div>
 
         {conversa.lead_nome && (
-          <p className="mt-0.5 truncate text-xs text-gray-500">
+          <p className="mt-0.5 truncate text-xs text-fg-muted">
             {conversa.phone_number}
           </p>
         )}
 
-        <p className="mt-1 truncate text-sm text-gray-600">
+        <p className="mt-1 truncate text-sm text-fg-muted">
           {conversa.ultimo_remetente === "assistant" && (
-            <span className="text-gray-400">IA: </span>
+            <span className="text-fg-faint">IA: </span>
           )}
           {conversa.ultima_mensagem ?? "Sem mensagens"}
         </p>
@@ -178,7 +178,7 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
 
   return (
     <div>
-      <p className="mb-3 flex items-center gap-2 text-xs text-gray-500">
+      <p className="mb-3 flex items-center gap-2 text-xs text-fg-muted">
         <span
           aria-hidden="true"
           className={cn(
@@ -199,8 +199,8 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
       )}
 
       <div className="grid gap-4 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
-        <div className="overflow-hidden rounded-xl border border-surface-border bg-white">
-          <h2 className="border-b border-surface-border px-4 py-3 text-sm font-medium text-gray-900">
+        <div className="overflow-hidden rounded-xl border border-surface-border bg-surface">
+          <h2 className="border-b border-surface-border px-4 py-3 text-sm font-medium text-fg">
             Atendimentos ({conversations.length})
           </h2>
           <ul className="max-h-[32rem] overflow-y-auto">
@@ -215,9 +215,9 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
           </ul>
         </div>
 
-        <div className="rounded-xl border border-surface-border bg-white">
+        <div className="rounded-xl border border-surface-border bg-surface">
           {!selectedId ? (
-            <div className="px-6 py-14 text-center text-sm text-gray-600">
+            <div className="px-6 py-14 text-center text-sm text-fg-muted">
               Escolha um atendimento para ler a conversa e decidir se assume.
             </div>
           ) : isLoadingTranscript ? (
@@ -225,18 +225,18 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
               <LoadingSpinner label="Abrindo conversa..." />
             </div>
           ) : !transcript ? (
-            <div className="px-6 py-14 text-center text-sm text-gray-600">
+            <div className="px-6 py-14 text-center text-sm text-fg-muted">
               Não foi possível abrir esta conversa.
             </div>
           ) : (
             <>
               <header className="flex flex-wrap items-center justify-between gap-3 border-b border-surface-border px-4 py-3">
                 <div className="min-w-0">
-                  <h2 className="truncate text-sm font-medium text-gray-900">
+                  <h2 className="truncate text-sm font-medium text-fg">
                     {transcript.lead_nome ?? transcript.phone_number}
                   </h2>
                   {transcript.lead_nome && (
-                    <p className="truncate text-xs text-gray-500">
+                    <p className="truncate text-xs text-fg-muted">
                       {transcript.phone_number}
                     </p>
                   )}
@@ -254,7 +254,7 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
                 </div>
               </header>
 
-              <p className="border-b border-surface-border bg-surface-muted px-4 py-2 text-xs text-gray-600">
+              <p className="border-b border-surface-border bg-surface-muted px-4 py-2 text-xs text-fg-muted">
                 {transcript.ia_ativa
                   ? "O agente está respondendo automaticamente. Assuma para que ele pare."
                   : "A IA parou de responder. As mensagens do cliente continuam chegando e ficam registradas aqui."}
@@ -273,7 +273,7 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
 
               <div className="max-h-[26rem] space-y-3 overflow-y-auto px-4 py-4">
                 {transcript.messages.length === 0 ? (
-                  <p className="py-8 text-center text-sm text-gray-500">
+                  <p className="py-8 text-center text-sm text-fg-muted">
                     Nenhuma mensagem nesta conversa ainda.
                   </p>
                 ) : (
@@ -291,13 +291,13 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
                           className={cn(
                             "max-w-[85%] rounded-2xl px-3 py-2 text-sm",
                             doCliente
-                              ? "rounded-bl-sm bg-surface-muted text-gray-800"
+                              ? "rounded-bl-sm bg-surface-muted text-fg"
                               : "rounded-br-sm bg-ink-900 text-white",
                           )}
                         >
                           {mensagem.conteudo}
                         </div>
-                        <span className="mt-1 text-xs text-gray-400">
+                        <span className="mt-1 text-xs text-fg-faint">
                           {doCliente ? "Cliente" : "Agente"} ·{" "}
                           {formatarHorario(mensagem.timestamp)}
                         </span>

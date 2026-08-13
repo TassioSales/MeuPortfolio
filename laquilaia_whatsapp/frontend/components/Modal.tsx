@@ -62,22 +62,22 @@ export function Modal({
         aria-labelledby="modal-title"
         tabIndex={-1}
         className={cn(
-          "w-full rounded-xl bg-white shadow-xl outline-none",
+          "w-full rounded-xl bg-surface shadow-xl outline-none",
           size === "lg" ? "max-w-2xl" : "max-w-md",
         )}
       >
         <div className="flex items-start justify-between gap-4 border-b border-surface-border px-6 py-4">
           <div>
-            <h2 id="modal-title" className="text-base font-semibold text-gray-900">
+            <h2 id="modal-title" className="text-base font-semibold text-fg">
               {title}
             </h2>
-            {description && <p className="mt-0.5 text-sm text-gray-600">{description}</p>}
+            {description && <p className="mt-0.5 text-sm text-fg-muted">{description}</p>}
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Fechar"
-            className="rounded-lg p-1 text-gray-400 transition-colors hover:bg-surface-muted hover:text-gray-600"
+            className="rounded-lg p-1 text-fg-faint transition-colors hover:bg-surface-muted hover:text-fg-muted"
           >
             <span aria-hidden="true">✕</span>
           </button>

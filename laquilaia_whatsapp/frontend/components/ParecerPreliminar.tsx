@@ -65,7 +65,7 @@ function analisar(markdown: string): Bloco[] {
 function comNegrito(texto: string) {
   return texto.split(/(\*\*[^*]+\*\*)/g).map((parte, i) =>
     parte.startsWith("**") && parte.endsWith("**") ? (
-      <strong key={i} className="font-semibold text-gray-900">
+      <strong key={i} className="font-semibold text-fg">
         {parte.slice(2, -2)}
       </strong>
     ) : (
@@ -88,21 +88,21 @@ export function ParecerPreliminar({ texto }: ParecerPreliminarProps) {
       >
         <span className="flex items-center gap-2">
           <span aria-hidden="true">⚖️</span>
-          <span className="text-sm font-medium text-gray-900">
+          <span className="text-sm font-medium text-fg">
             Análise preliminar do caso
           </span>
           <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-900">
             interno
           </span>
         </span>
-        <span className="text-xs text-gray-600">
+        <span className="text-xs text-fg-muted">
           {aberto ? "ocultar" : "ler"}
         </span>
       </button>
 
       {aberto && (
         <div className="max-h-80 overflow-y-auto px-4 pb-4">
-          <p className="mb-3 text-xs text-gray-600">
+          <p className="mb-3 text-xs text-fg-muted">
             Gerada por IA a partir da conversa, sem acesso a documentos. É ponto
             de partida para o advogado, não parecer — e o cliente nunca a recebe.
           </p>
@@ -113,7 +113,7 @@ export function ParecerPreliminar({ texto }: ParecerPreliminarProps) {
                 <h4
                   key={i}
                   className={cn(
-                    "text-sm font-semibold text-gray-900",
+                    "text-sm font-semibold text-fg",
                     i === 0 ? "" : "mt-4",
                   )}
                 >
@@ -125,7 +125,7 @@ export function ParecerPreliminar({ texto }: ParecerPreliminarProps) {
               return (
                 <ul key={i} className="mt-1 list-disc space-y-1 pl-5">
                   {bloco.itens.map((item, j) => (
-                    <li key={j} className="text-sm text-gray-700">
+                    <li key={j} className="text-sm text-fg-soft">
                       {comNegrito(item)}
                     </li>
                   ))}
@@ -133,7 +133,7 @@ export function ParecerPreliminar({ texto }: ParecerPreliminarProps) {
               );
             }
             return (
-              <p key={i} className="mt-1 text-sm leading-relaxed text-gray-700">
+              <p key={i} className="mt-1 text-sm leading-relaxed text-fg-soft">
                 {comNegrito(bloco.texto)}
               </p>
             );

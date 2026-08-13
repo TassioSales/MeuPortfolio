@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **388 testes no backend, 148 no frontend.**
+Estado atual: **388 testes no backend, 158 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -116,6 +116,14 @@ gráficos e colunas do Kanban usam hexes que passaram pelo validador de
 contraste e daltonismo, e moldura nova não é motivo para revalidar paleta de
 dados. Ícones de navegação são SVG em `components/icons.tsx` — emoji é
 desenhado pelo sistema, muda entre Windows e Mac e não herda a cor do texto.
+
+**Tema: token, nunca cor literal.** `bg-surface`, `text-fg`, `text-fg-muted`
+e afins saem de variáveis CSS que trocam com o tema (`globals.css`). Não escreva
+`bg-white` nem `text-gray-900` em componente: com dois temas, cada literal
+precisaria de um par `dark:` escrito à mão, e o que faltasse viraria texto
+cinza-claro em cartão branco — o defeito que ninguém vê no tema em que
+trabalha. O tema vem de uma classe no `<html>`, posta por um script inline
+antes da primeira pintura; sem ele a página nasce clara e vira escura ao montar.
 
 **`@dnd-kit`, não `react-beautiful-dnd`** (arquivado pela Atlassian, problemas
 com StrictMode do React 18).

@@ -50,8 +50,8 @@ export default function AgentsPage() {
     <div className="mx-auto max-w-5xl">
       <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Agentes</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <h1 className="text-2xl font-semibold text-fg">Agentes</h1>
+          <p className="mt-1 text-sm text-fg-muted">
             Cada agente tem seu próprio system prompt e responde às conversas do WhatsApp.
           </p>
         </div>

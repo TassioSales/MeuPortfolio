@@ -63,7 +63,7 @@ export default function RegisterPage() {
     >
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 rounded-xl border border-surface-border bg-white p-6 shadow-sm"
+        className="flex flex-col gap-4 rounded-xl border border-surface-border bg-surface p-6 shadow-sm"
       >
         <Input
           label="Nome"

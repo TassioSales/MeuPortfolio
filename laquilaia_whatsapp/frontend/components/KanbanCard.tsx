@@ -18,7 +18,7 @@ interface KanbanCardProps {
 function scoreTone(score: number): string {
   if (score >= 70) return "bg-green-50 text-green-700";
   if (score >= 40) return "bg-amber-50 text-amber-700";
-  return "bg-surface-muted text-gray-600";
+  return "bg-surface-muted text-fg-muted";
 }
 
 export function KanbanCardItem({ card, isOverlay = false, onAbrir }: KanbanCardProps) {
@@ -38,7 +38,7 @@ export function KanbanCardItem({ card, isOverlay = false, onAbrir }: KanbanCardP
       // simples chega aqui inteiro (ver `KanbanBoard`).
       onClick={() => onAbrir?.(card.id)}
       className={cn(
-        "cursor-grab rounded-lg border border-surface-border bg-white p-3 active:cursor-grabbing",
+        "cursor-grab rounded-lg border border-surface-border bg-surface p-3 active:cursor-grabbing",
         onAbrir && "hover:border-ink-300",
         // O original fica esmaecido enquanto a cópia acompanha o cursor.
         isDragging && !isOverlay && "opacity-40",
@@ -46,7 +46,7 @@ export function KanbanCardItem({ card, isOverlay = false, onAbrir }: KanbanCardP
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <h4 className="min-w-0 truncate text-sm font-medium text-gray-900">
+        <h4 className="min-w-0 truncate text-sm font-medium text-fg">
           {card.nome || "Sem nome"}
         </h4>
         <span
@@ -74,11 +74,11 @@ export function KanbanCardItem({ card, isOverlay = false, onAbrir }: KanbanCardP
           {formatarTelefone(card.phone_number)}
         </a>
       ) : (
-        <p className="mt-1 truncate text-xs text-gray-600">
+        <p className="mt-1 truncate text-xs text-fg-muted">
           {formatarTelefone(card.phone_number)}
         </p>
       )}
-      {card.email && <p className="truncate text-xs text-gray-500">{card.email}</p>}
+      {card.email && <p className="truncate text-xs text-fg-muted">{card.email}</p>}
     </article>
   );
 }

@@ -49,7 +49,7 @@ class TestAgentCreation:
     def test_create_agent_without_auth(self, sample_agent_data):
         """Test agent creation without authentication."""
         response = client.post("/api/v1/agents", json=sample_agent_data)
-        assert response.status_code == 403
+        assert response.status_code == 401
 
     def test_create_agent_invalid_temperatura(self, sample_agent_data):
         """Test agent creation with invalid temperatura."""
@@ -154,7 +154,7 @@ class TestAgentRetrieval:
     def test_get_agent_without_auth(self):
         """Test agent retrieval without authentication."""
         response = client.get(f"/api/v1/agents/{self.agent_id}")
-        assert response.status_code == 403
+        assert response.status_code == 401
 
     def test_list_agents_success(self):
         """Test successful agents listing."""
@@ -309,7 +309,7 @@ class TestAgentUpdate:
             json=update_data,
         )
 
-        assert response.status_code == 403
+        assert response.status_code == 401
 
 
 class TestAgentDeletion:
@@ -369,7 +369,7 @@ class TestAgentDeletion:
     def test_delete_agent_without_auth(self):
         """Test agent deletion without authentication."""
         response = client.delete(f"/api/v1/agents/{self.agent_id}")
-        assert response.status_code == 403
+        assert response.status_code == 401
 
     def test_delete_and_verify_removed(self):
         """Test that deleted agent cannot be retrieved."""

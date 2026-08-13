@@ -85,13 +85,23 @@ async function toApiError(response: Response): Promise<ApiError> {
  * trava as três tentariam renovar o token ao mesmo tempo e duas das
  * renovações seriam descartadas.
  */
-let refreshInFlight: Promise<boolean> | null = null;
+/**
+ * Como a renovação terminou.
+ *
+ * `recusado` e `indisponivel` são coisas diferentes e por muito tempo foram a
+ * mesma: só `recusado` significa que a sessão acabou. `indisponivel` é o
+ * servidor sem responder, e apagar os cookies aí seria deslogar alguém por
+ * causa de um soluço de rede.
+ */
+type ResultadoDaRenovacao = "renovado" | "recusado" | "indisponivel";
 
-async function refreshSession(): Promise<boolean> {
+let refreshInFlight: Promise<ResultadoDaRenovacao> | null = null;
+
+async function refreshSession(): Promise<ResultadoDaRenovacao> {
   const refreshToken = getStoredRefreshToken();
   // Sem refresh token não há o que tentar: poupa uma ida ao servidor que já
   // se sabe que vai falhar.
-  if (!refreshToken) return false;
+  if (!refreshToken) return "recusado";
 
   if (!refreshInFlight) {
     refreshInFlight = (async () => {
@@ -104,7 +114,8 @@ async function refreshSession(): Promise<boolean> {
           body: JSON.stringify({ refresh_token: refreshToken }),
         });
 
-        if (!response.ok) return false;
+        // O servidor respondeu e disse não: a sessão acabou de verdade.
+        if (!response.ok) return "recusado";
 
         const data = (await response.json()) as {
           access_token?: string;
@@ -112,13 +123,16 @@ async function refreshSession(): Promise<boolean> {
           expires_in?: number;
         };
 
-        if (!data?.access_token) return false;
+        if (!data?.access_token) return "recusado";
 
         setStoredToken(data.access_token, data.expires_in);
         if (data.refresh_token) setStoredRefreshToken(data.refresh_token);
-        return true;
+        return "renovado";
       } catch {
-        return false;
+        // `fetch` só lança quando a requisição não chegou: DNS, conexão
+        // recusada, backend reiniciando. Não é resposta do servidor, então
+        // não é motivo para encerrar sessão nenhuma.
+        return "indisponivel";
       } finally {
         refreshInFlight = null;
       }
@@ -148,10 +162,16 @@ async function request<T>(
     // chamador precisa ver, não o do refresh.
     const original = await toApiError(response);
 
-    if (!(await refreshSession())) {
+    const renovacao = await refreshSession();
+
+    if (renovacao === "recusado") {
       clearStoredTokens();
       throw original;
     }
+
+    // Servidor sem responder: os cookies ficam, e o chamador recebe o erro
+    // para tentar de novo. Apagá-los aqui deslogaria por causa de rede.
+    if (renovacao === "indisponivel") throw original;
 
     // Os cabeçalhos são remontados para pegar o token novo.
     response = await fetch(url, { ...init, headers: buildHeaders(false, hasBody) });

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/Button";
 import { Navbar } from "@/components/Navbar";
 import { Sidebar } from "@/components/Sidebar";
 import { FullPageLoader } from "@/components/LoadingSpinner";
@@ -9,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { user, isLoading, loadSession } = useAuth();
+  const { user, isLoading, servidorForaDoAr, loadSession } = useAuth();
 
   // O middleware só confere se o cookie existe; aqui o backend valida o token.
   useEffect(() => {
@@ -17,8 +18,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [loadSession]);
 
   useEffect(() => {
-    if (!isLoading && !user) router.replace("/login");
-  }, [isLoading, user, router]);
+    // Servidor fora do ar não é sessão encerrada: os cookies continuam
+    // válidos, e mandar para o login faria o middleware devolver para cá —
+    // pingue-pongue em vez de mensagem.
+    if (!isLoading && !user && !servidorForaDoAr) router.replace("/login");
+  }, [isLoading, user, servidorForaDoAr, router]);
+
+  if (!isLoading && !user && servidorForaDoAr) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center">
+        <h1 className="text-lg font-medium text-fg">
+          Não foi possível falar com o servidor
+        </h1>
+        <p className="max-w-sm text-sm text-fg-muted">
+          Sua sessão continua válida. Se o backend acabou de reiniciar, ele
+          costuma levar alguns segundos para responder.
+        </p>
+        <Button onClick={() => void loadSession()}>Tentar de novo</Button>
+      </div>
+    );
+  }
 
   if (isLoading || !user) {
     return <FullPageLoader label="Verificando sessão..." />;

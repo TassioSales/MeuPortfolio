@@ -5,6 +5,7 @@
 import { api, ApiError, API_URL } from "@/lib/api";
 import {
   clearStoredTokens,
+  getStoredRefreshToken,
   getStoredToken,
   setStoredRefreshToken,
   setStoredToken,
@@ -107,6 +108,24 @@ describe("apiCall", () => {
 
     await expect(api.get("/api/v1/agents")).rejects.toMatchObject({ status: 401 });
     expect(getStoredToken()).toBeNull();
+  });
+
+  it("servidor sem responder não apaga a sessão", async () => {
+    // O 401 veio do servidor, mas a renovação não chegou a sair — backend
+    // reiniciando, proxy caído, wi-fi piscando. Apagar os cookies aqui
+    // deslogaria alguém com token válido por uma semana, e era o que
+    // acontecia: qualquer falha na renovação limpava tudo.
+    setStoredToken("token-velho");
+    setStoredRefreshToken("refresh-valido");
+
+    mockFetch
+      .mockResolvedValueOnce(jsonResponse({ detail: "expirado" }, 401))
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"));
+
+    await expect(api.get("/api/v1/agents")).rejects.toMatchObject({ status: 401 });
+
+    expect(getStoredToken()).toBe("token-velho");
+    expect(getStoredRefreshToken()).toBe("refresh-valido");
   });
 
   it("não tenta renovar quando não há refresh token", async () => {

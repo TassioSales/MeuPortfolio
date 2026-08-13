@@ -67,6 +67,14 @@ class Agent(Base):
     temperatura = Column(Float, default=0.7)
     max_tokens = Column(Integer, default=1024)
     status = Column(String(50), default="ativo")  # ativo, inativo, em_teste
+    # Se o agente lê o que o cliente anexa: foto da carta de demissão, PDF do
+    # contrato, áudio de quem prefere falar.
+    #
+    # Desligado por padrão, e é decisão de quem administra: cada anexo é uma
+    # chamada a mais à Evolution e tokens a mais no modelo, e há escritório que
+    # prefere que documento chegue por outro canal. Ligado sem querer, a conta
+    # sobe sem ninguém entender por quê.
+    anexos_habilitados = Column(Boolean, default=False, nullable=False)
     data_criacao = Column(DateTime, default=datetime.utcnow)
     data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

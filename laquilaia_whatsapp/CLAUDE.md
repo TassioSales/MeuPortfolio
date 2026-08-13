@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **389 testes no backend, 162 no frontend.**
+Estado atual: **424 testes no backend, 173 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -48,7 +48,8 @@ falha — na CI o serviço existe, então um pulo significa conexão quebrada.
 
 ```
 backend/app/
-  routers/     auth, agents, chat (+conversations), webhook, kanban, metrics
+  routers/     auth, agents, chat (+conversations), webhook, kanban, metrics,
+               whatsapp (estado da conexão e QR, só admin)
   services/    llm (+ gemini_client, reserva), legal_analyst (parecer interno,
                com jurisprudência, provas e porte econômico),
                caso_service (um contato, vários casos),
@@ -56,7 +57,8 @@ backend/app/
                message_orchestrator, metrics, agent, auth
   models/      schemas.py, llm_models.py, caso_schemas.py (o caso nas telas)
   prompts/     triagem_juridica.py — o texto que o cliente encontra, versionado
-  scripts/     seed.py, aplicar_prompt.py (grava o prompt canônico num agente)
+  scripts/     seed.py, aplicar_prompt.py (grava o prompt canônico num agente),
+               sondar_evolution.py (prova o QR contra a Evolution de verdade)
   db/          models.py (SQLAlchemy), database.py, redis_client.py
   ws/          manager.py — canal de tempo real por agente
   jobs/        metrics_aggregator.py (APScheduler)
@@ -64,7 +66,8 @@ backend/app/
   alembic/     migrações — o schema é daqui, não da aplicação
 
 frontend/
-  app/dashboard/  agents · conversations (pausa humana) · chat-test · kanban · metrics
+  app/dashboard/  agents · whatsapp (conexão) · conversations (pausa humana)
+                  chat-test · kanban · metrics
   components/     + charts/ (theme.ts tem a paleta validada)
                   Logo · icons · SeletorDeTema · LeadDossie · ParecerPreliminar
   hooks/          useAuth, useAgents, useChat, useConversations, useKanban, useMetrics, useAgentEvents
@@ -99,6 +102,13 @@ reais e a compara com `CASO_VALOR_MINIMO` (R$ 15.000 por padrão), sempre pelo
 **piso** da faixa. `indeterminado` não é sinônimo de inviável: um pede
 pergunta, o outro mandaria descartar. Nada disso mexe no funil — o veredito é
 para o advogado discordar.
+
+**Anexos: o agente decide, o webhook não.** Imagem, PDF e áudio entram sempre
+na conversa; ler o arquivo é configuração por agente (`anexos_habilitados`,
+desligada por padrão — cada anexo é uma chamada a mais à Evolution e tokens a
+mais no modelo). Desligado, o agente pede que a pessoa escreva, em vez de
+ignorar em silêncio. Áudio vai direto ao Gemini: a Anthropic não aceita áudio
+de entrada.
 
 **Papéis: admin configura, operador atende.** O cadastro público fecha no
 primeiro usuário, que vira administrador — é o que resolve o bootstrap sem
@@ -209,6 +219,9 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Coluna nova com default só do lado do Python | `default=` do SQLAlchemy vale para linha nova; as que já existem ficam `NULL`. Aí o painel tem dois jeitos de dizer a mesma coisa — `NULL` e `'indeterminado'` — que é como nasce um `if` errado. A migração precisa do `UPDATE` |
 | Escopar recurso por `agent_id` que a tabela não tem | `Lead` não guarda `agent_id` — o vínculo passa pela conversa, e o telefone é único no sistema inteiro, não por agente. Filtrar o dossiê só por `Lead.id` daria o contato a quem tem o id |
 | Semear `User` antes de `criar_acesso()` nos testes | O cadastro público fecha no primeiro usuário: o helper não acha administrador e recusa. Faça login primeiro, semeie depois — e semeie o agente sob o id de quem logou |
+| Mapear papel do histórico por igualdade com `"assistant"` | Todo remetente que não fosse exatamente `assistant` virava `user`. Com a fala do operador no banco, o modelo leria a resposta do próprio escritório como pergunta e responderia a ela — o atendimento conversando sozinho. Cliente é `user`; **o resto** é o escritório |
+| Coluna `NOT NULL` sem `server_default` na migração | O autogenerate não o põe. Em tabela com linhas, o ALTER falha: o Postgres não sabe o que escrever nas existentes |
+| Descartar tipo de mensagem no webhook | Imagem e PDF eram descartados antes de qualquer decisão, e a mensagem sumia da conversa. Quem decide se o anexo é **lido** é o agente; o webhook só decide se ele **entra** |
 | Folga fixa de raciocínio no Gemini | Os 1024 tokens serviam para um turno de WhatsApp. No parecer, o modelo gastou **3433 tokens só pensando** e o texto morreu no meio da lista de documentos. A folga tem que acompanhar o tamanho do pedido |
 
 **Padrão geral:** as três falhas de autorização (Kanban, métricas, WebSocket)
@@ -239,17 +252,16 @@ Em ordem de valor, e a primeira vale mais que as outras juntas.
    triagem não coletar como se espera, o resto está resolvendo o problema
    errado.
 
-2. **A tela de conexão do WhatsApp não existe.** O QR e o estado da instância
-   só aparecem no Manager da Evolution, fora do sistema. Quem administra o
-   escritório precisa sair do painel para reconectar o número.
+2. **A tela de conexão existe, mas nunca falou com a Evolution de verdade.**
+   `/dashboard/whatsapp` mostra estado e QR, e os testes usam transporte
+   mockado — provam que **nós** lemos a resposta certa, não que a Evolution
+   manda uma. Há um histórico de versões devolvendo `{"count": 0}` sem QR e sem
+   erro (issues #2380 e #2385, nas 2.0.10 a 2.2.3; estamos na 2.3.7). Rode
+   `python -m scripts.sondar_evolution` antes de confiar na tela.
 
-3. **O operador não responde pelo painel.** Ele assume a conversa e a IA para,
-   mas mandar a mensagem ao cliente ainda é fora do sistema — não há endpoint
-   de envio avulso pela Evolution API.
-
-4. **Anexos não são lidos.** PDF, imagem e áudio chegam pelo WhatsApp e são
-   descartados. A ideia é ligá-los pelo painel do administrador, não por
-   variável de ambiente.
+4. **O áudio depende do Gemini.** A API da Anthropic não aceita áudio de
+   entrada, então o roteamento manda áudio direto para a reserva. Sem
+   `GEMINI_API_KEY`, áudio não é lido — o agente pede que a pessoa escreva.
 
 5. **A stack em container nunca subiu.** Fora de container ela já rodou inteira
    (ver `GUIA_DEPLOY.md` §6), mas falta o `docker compose up`: os `Dockerfile`,

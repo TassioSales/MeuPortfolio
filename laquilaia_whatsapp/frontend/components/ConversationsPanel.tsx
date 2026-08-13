@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/Button";
 import { EmptyState } from "@/components/EmptyState";
@@ -132,6 +132,7 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
     error,
     openConversation,
     togglePause,
+    responder,
     reload,
   } = useConversations(agentId);
 
@@ -298,19 +299,99 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
                           {mensagem.conteudo}
                         </div>
                         <span className="mt-1 text-xs text-fg-faint">
-                          {doCliente ? "Cliente" : "Agente"} ·{" "}
-                          {formatarHorario(mensagem.timestamp)}
+                          {/* Quem falou importa para quem lê depois: "o
+                              escritório disse" é diferente de "a IA disse". */}
+                          {doCliente
+                            ? "Cliente"
+                            : mensagem.remetente === "operador"
+                              ? "Você"
+                              : "Agente"}{" "}
+                          · {formatarHorario(mensagem.timestamp)}
                         </span>
                       </div>
                     );
                   })
                 )}
               </div>
+
+              <CaixaDeResposta
+                habilitada={!transcript.ia_ativa}
+                onEnviar={responder}
+              />
             </>
           )}
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Onde o operador escreve.
+ *
+ * Desabilitada enquanto a IA responde, com o motivo à vista: o backend recusa
+ * com 409 de qualquer jeito, e descobrir isso depois de digitar é pior do que
+ * ver de antemão por que não dá.
+ */
+function CaixaDeResposta({
+  habilitada,
+  onEnviar,
+}: {
+  habilitada: boolean;
+  onEnviar: (conteudo: string) => Promise<void>;
+}) {
+  const [texto, setTexto] = useState("");
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+
+  async function enviar(evento: FormEvent<HTMLFormElement>) {
+    evento.preventDefault();
+    const conteudo = texto.trim();
+    if (!conteudo || enviando) return;
+
+    setEnviando(true);
+    setErro(null);
+    try {
+      await onEnviar(conteudo);
+      // Só limpa depois de dar certo: apagar o que a pessoa escreveu quando o
+      // envio falhou faz ela redigitar tudo.
+      setTexto("");
+    } catch {
+      setErro("Não foi possível enviar. A mensagem continua aqui.");
+    } finally {
+      setEnviando(false);
+    }
+  }
+
+  return (
+    <form
+      onSubmit={enviar}
+      className="border-t border-surface-border p-3"
+      aria-label="Responder ao cliente"
+    >
+      {erro && (
+        <p role="alert" className="mb-2 text-xs text-red-600">
+          {erro}
+        </p>
+      )}
+      <div className="flex items-end gap-2">
+        <textarea
+          value={texto}
+          onChange={(e) => setTexto(e.target.value)}
+          disabled={!habilitada || enviando}
+          rows={2}
+          placeholder={
+            habilitada
+              ? "Escreva para o cliente..."
+              : "Assuma a conversa para responder."
+          }
+          className="min-w-0 flex-1 resize-none rounded-lg border border-surface-border bg-surface px-3 py-2 text-sm text-fg placeholder:text-fg-faint focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100 disabled:cursor-not-allowed disabled:bg-surface-muted"
+        />
+        <Button type="submit" disabled={!habilitada || !texto.trim()} isLoading={enviando}>
+          Enviar
+        </Button>
+      </div>
+    </form>
   );
 }
 

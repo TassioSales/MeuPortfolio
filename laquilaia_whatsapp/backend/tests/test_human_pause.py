@@ -16,6 +16,7 @@ from app.main import app
 from app.db.database import AsyncSessionLocal
 from app.db.models import Agent, Conversation, Message, User
 from app.services.message_orchestrator import orchestrator
+from app.utils.exceptions import ValidationException
 
 client = TestClient(app)
 
@@ -463,3 +464,166 @@ class TestMensagensDaConversa:
         r = client.get("/api/v1/conversations/qualquer/messages")
 
         assert r.status_code in (401, 403)
+
+
+class TestOperadorResponde:
+    """
+    O operador escrevendo ao cliente pelo painel.
+
+    Antes disto, assumir a conversa parava a IA e mais nada: para responder, a
+    pessoa abria o WhatsApp no celular, e a mensagem nunca entrava na
+    transcrição. Quem lesse o atendimento depois via a conversa com um buraco.
+    """
+
+    def _preparar(self, sufixo: str):
+        headers = _login(sufixo)
+        agent_id = client.post(
+            "/api/v1/agents",
+            headers=headers,
+            json={"nome": "A", "system_prompt": "p", "temperatura": 0.7, "max_tokens": 1024},
+        ).json()["id"]
+        return headers, agent_id
+
+    async def _conversa(self, agent_id: str, conv_id: str, status: str):
+        async with AsyncSessionLocal() as db:
+            db.add(
+                Conversation(
+                    id=conv_id,
+                    agent_id=agent_id,
+                    phone_number=f"5561{conv_id[-6:]}",
+                    status=status,
+                )
+            )
+            await db.commit()
+
+    @pytest.mark.asyncio
+    async def test_com_a_ia_ativa_recusa_com_409(self):
+        """
+        Não é erro de digitação: é o operador falando por cima do agente. Os
+        dois responderiam à mesma pergunta, e o cliente receberia duas versões
+        da mesma resposta — pior que demorar.
+        """
+        headers, agent_id = self._preparar("op-409")
+        await self._conversa(agent_id, "conv-op409", "ativa")
+
+        r = client.post(
+            "/api/v1/conversations/conv-op409/mensagens",
+            json={"conteudo": "Oi, aqui é a Dra. Helena."},
+            headers=headers,
+        )
+
+        assert r.status_code == 409
+        assert "Assuma a conversa" in r.json()["detail"]
+
+    @pytest.mark.asyncio
+    async def test_pausada_envia_e_grava_na_transcricao(self):
+        headers, agent_id = self._preparar("op-ok")
+        await self._conversa(agent_id, "conv-opok", "pausada")
+
+        with patch(
+            "app.services.whatsapp_service.whatsapp_service.send_message",
+            new_callable=AsyncMock,
+        ) as envio:
+            envio.return_value = {"success": True, "message_id": "m1"}
+
+            r = client.post(
+                "/api/v1/conversations/conv-opok/mensagens",
+                json={"conteudo": "Bom dia, seu caso está comigo."},
+                headers=headers,
+            )
+
+        assert r.status_code == 201
+        assert r.json()["remetente"] == "operador"
+        envio.assert_awaited_once()
+
+        transcricao = client.get(
+            "/api/v1/conversations/conv-opok/messages", headers=headers
+        ).json()
+        assert transcricao["messages"][-1]["conteudo"] == "Bom dia, seu caso está comigo."
+
+    @pytest.mark.asyncio
+    async def test_envio_recusado_nao_grava_mensagem(self):
+        """
+        Gravar o que a Evolution recusou faria a transcrição mentir: o
+        escritório leria uma resposta que o cliente nunca recebeu.
+        """
+        headers, agent_id = self._preparar("op-falha")
+        await self._conversa(agent_id, "conv-opfalha", "pausada")
+
+        with patch(
+            "app.services.whatsapp_service.whatsapp_service.send_message",
+            new_callable=AsyncMock,
+            side_effect=ValidationException("Evolution fora do ar"),
+        ):
+            r = client.post(
+                "/api/v1/conversations/conv-opfalha/mensagens",
+                json={"conteudo": "teste"},
+                headers=headers,
+            )
+
+        assert r.status_code == 502
+
+        transcricao = client.get(
+            "/api/v1/conversations/conv-opfalha/messages", headers=headers
+        ).json()
+        assert transcricao["messages"] == []
+
+    @pytest.mark.asyncio
+    async def test_conversa_de_outro_dono_e_404(self):
+        headers, agent_id = self._preparar("op-dono")
+        await self._conversa(agent_id, "conv-opdono", "pausada")
+        alheio = _login("op-alheio")
+
+        r = client.post(
+            "/api/v1/conversations/conv-opdono/mensagens",
+            json={"conteudo": "oi"},
+            headers=alheio,
+        )
+
+        assert r.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_mensagem_vazia_e_recusada(self):
+        headers, agent_id = self._preparar("op-vazio")
+        await self._conversa(agent_id, "conv-opvazio", "pausada")
+
+        r = client.post(
+            "/api/v1/conversations/conv-opvazio/mensagens",
+            json={"conteudo": ""},
+            headers=headers,
+        )
+
+        assert r.status_code == 422
+
+
+class TestHistoricoParaOModelo:
+    async def test_a_fala_do_operador_nao_vira_pergunta_do_cliente(self):
+        """
+        O mapeamento era `"assistant" if remetente == "assistant" else "user"`.
+        Com ele, a mensagem escrita à mão pelo operador entraria no histórico
+        como se fosse o cliente: o modelo leria a própria resposta do
+        escritório como pergunta e responderia a ela — o atendimento
+        conversando sozinho.
+        """
+        from unittest.mock import MagicMock
+
+        from app.services.memory_service import memory_service
+
+        def _msg(remetente, conteudo):
+            m = MagicMock()
+            m.remetente = remetente
+            m.conteudo = conteudo
+            return m
+
+        db = AsyncMock()
+        resultado = MagicMock()
+        # A query ordena do mais recente para o mais antigo.
+        resultado.scalars.return_value.all.return_value = [
+            _msg("operador", "Bom dia, seu caso está comigo."),
+            _msg("user", "tem alguém aí?"),
+        ]
+        db.execute = AsyncMock(return_value=resultado)
+
+        historico = await memory_service._fetch_from_db("conv-1", db, limit=10)
+
+        assert [m["role"] for m in historico] == ["user", "assistant"]

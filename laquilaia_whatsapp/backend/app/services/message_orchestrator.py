@@ -21,12 +21,74 @@ from typing import Optional, Dict, Any
 class MessageOrchestrator:
     """Orchestrates the complete message flow."""
 
+    # O que fica na transcrição quando o cliente manda um arquivo.
+    #
+    # O texto entra na conversa e no histórico do modelo; o arquivo em si não
+    # fica guardado. Assim o advogado que abre o atendimento vê que houve um
+    # documento, e a conversa não tem buraco.
+    DESCRICAO_DO_ANEXO = {
+        "imagem": "[o cliente enviou uma imagem]",
+        "documento": "[o cliente enviou um documento]",
+        "audio": "[o cliente enviou um áudio]",
+    }
+
+    # Quando o agente não lê anexos, é isto que ele responde. Dizer o que
+    # fazer é melhor que ignorar em silêncio — a pessoa fica esperando.
+    PEDIDO_DE_TEXTO = {
+        "imagem": "Não consigo abrir imagens por aqui. Pode me contar por escrito o que aparece nela?",
+        "documento": "Não consigo abrir documentos por aqui. Pode me contar por escrito o que ele diz?",
+        "audio": "Não consigo ouvir áudios por aqui. Pode me escrever o que você falou?",
+    }
+
+    async def _preparar_anexo(
+        self,
+        agent,
+        tipo_de_anexo: Optional[str],
+        chave: Optional[dict],
+        message_text: str,
+    ):
+        """
+        Baixa o anexo, se o agente estiver configurado para lê-los.
+
+        Devolve `(anexo, texto)` — e o texto muda mesmo quando o anexo não vem:
+        sem ele o modelo receberia uma mensagem vazia e responderia no vácuo.
+
+        Anexo que não baixou não derruba o atendimento: vira uma conversa sem
+        anexo, com a descrição no lugar. Perder a foto é ruim; perder o
+        atendimento por causa da foto é pior.
+        """
+        if not tipo_de_anexo:
+            return None, message_text
+
+        descricao = self.DESCRICAO_DO_ANEXO.get(tipo_de_anexo, "[anexo]")
+        texto = f"{descricao} {message_text}".strip() if message_text else descricao
+
+        if not getattr(agent, "anexos_habilitados", False):
+            logger.info(f"📎 Anexo ignorado: o agente {agent.id} não lê anexos")
+            return None, f"{texto}\n\n{self.PEDIDO_DE_TEXTO.get(tipo_de_anexo, '')}".strip()
+
+        if not chave:
+            return None, texto
+
+        midia = await whatsapp_service.baixar_midia(chave)
+        if not midia:
+            logger.warning("⚠️ Anexo não baixou; seguindo sem ele")
+            return None, texto
+
+        logger.info(
+            f"📎 Anexo lido: {midia['mimetype']} "
+            f"({midia.get('tamanho') or '?'} bytes)"
+        )
+        return midia, texto
+
     async def process_incoming_message(
         self,
         agent_id: str,
         phone_number: str,
         message_text: str,
         db: AsyncSession,
+        tipo_de_anexo: Optional[str] = None,
+        chave_da_mensagem: Optional[dict] = None,
     ) -> Dict[str, Any]:
         """
         Process incoming WhatsApp message end-to-end.
@@ -110,11 +172,17 @@ class MessageOrchestrator:
             nota = await nota_de_atendimento_anterior(phone_number, conversation.id, db)
             history = com_nota(history, nota)
 
+            # O anexo, quando o agente estiver configurado para ler.
+            anexo, message_text = await self._preparar_anexo(
+                agent, tipo_de_anexo, chave_da_mensagem, message_text
+            )
+
             # Step 4: Call Claude
             response_text, token_usage = await llm_service.generate_response(
                 agent=agent,
                 user_message=message_text,
                 conversation_history=history,
+                anexo=anexo,
             )
 
             # Step 5: Save user message

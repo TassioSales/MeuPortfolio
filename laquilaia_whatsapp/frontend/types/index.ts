@@ -53,6 +53,8 @@ export interface Agent {
   system_prompt: string;
   temperatura: number;
   max_tokens: number;
+  /** Se o agente lê imagem, PDF e áudio que o cliente manda. */
+  anexos_habilitados: boolean;
   status: string;
   data_criacao: string;
   data_atualizacao: string;
@@ -65,6 +67,7 @@ export interface AgentInput {
   system_prompt: string;
   temperatura: number;
   max_tokens: number;
+  anexos_habilitados?: boolean;
 }
 
 /** Corpo de `PUT /api/v1/agents/{id}` — todos os campos são opcionais. */
@@ -103,10 +106,20 @@ export interface ChatResponse {
   model: string;
 }
 
+/**
+ * Quem escreveu.
+ *
+ * `operador` é gente do escritório digitando pelo painel. Para o modelo ele
+ * conta como o escritório falando (junto com `assistant`); para quem lê a
+ * transcrição depois, a diferença importa: "o escritório disse" não é "a IA
+ * disse".
+ */
+export type Remetente = "user" | "assistant" | "operador";
+
 /** Mensagem persistida, como vem de `GET .../chat/history`. */
 export interface ChatHistoryMessage {
   id: string;
-  remetente: "user" | "assistant";
+  remetente: Remetente;
   conteudo: string;
   timestamp: string;
 }
@@ -122,7 +135,7 @@ export interface ChatHistoryResponse {
  */
 export interface ChatBubble {
   id: string;
-  remetente: "user" | "assistant";
+  remetente: Remetente;
   conteudo: string;
   /** true enquanto a resposta do agente não chegou. */
   pending?: boolean;
@@ -291,3 +304,32 @@ export interface TimeseriesResponse {
 }
 
 export type MetricsPeriod = "day" | "week" | "month";
+
+// ========== Conexão do WhatsApp ==========
+
+/**
+ * Estado da instância na Evolution (`EstadoDaConexao` no backend).
+ *
+ * `indisponivel` é a Evolution fora do ar; `desconectado` é o número caído.
+ * São problemas diferentes, com donos diferentes — por isso não viram um só.
+ */
+export type EstadoDaInstancia =
+  | "conectado"
+  | "conectando"
+  | "desconectado"
+  | "indisponivel"
+  | "desconhecido";
+
+export interface EstadoDaConexao {
+  estado: EstadoDaInstancia;
+  instancia: string;
+  detalhe: string | null;
+}
+
+export interface QrCode {
+  /** Já vem com o prefixo `data:image/png;base64,`. */
+  qrcode: string | null;
+  /** Código de pareamento, para quem não consegue ler o QR. */
+  codigo: string | null;
+  detalhe: string | null;
+}

@@ -14,6 +14,7 @@ const AGENT: Agent = {
   system_prompt: "Você é um assistente...",
   temperatura: 0.7,
   max_tokens: 1024,
+  anexos_habilitados: false,
   status: "ativo",
   data_criacao: "2026-08-11T00:00:00Z",
   data_atualizacao: "2026-08-11T00:00:00Z",
@@ -54,7 +55,29 @@ describe("AgentForm", () => {
       system_prompt: "Instruções",
       temperatura: 0.7,
       max_tokens: 1024,
+      // Desligado por padrão: ninguém liga leitura de documento sem saber, e
+      // cada anexo custa uma chamada à Evolution e tokens no modelo.
+      anexos_habilitados: false,
     });
+  });
+
+  it("a leitura de anexos é uma escolha, e vem desligada", async () => {
+    const user = userEvent.setup();
+    const onSubmit = jest.fn().mockResolvedValue(undefined);
+    render(<AgentForm onSubmit={onSubmit} onCancel={jest.fn()} />);
+
+    const chave = screen.getByLabelText(/Ler anexos do cliente/);
+    expect(chave).not.toBeChecked();
+
+    await user.type(screen.getByLabelText("Nome"), "Triagem");
+    await user.type(screen.getByLabelText("System prompt"), "Instruções");
+    await user.click(chave);
+    await user.click(screen.getByRole("button", { name: "Criar agente" }));
+
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({ anexos_habilitados: true }),
+    );
   });
 
   it("bloqueia o envio quando o system prompt só tem espaços", async () => {

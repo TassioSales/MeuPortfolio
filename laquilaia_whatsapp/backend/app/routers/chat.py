@@ -13,13 +13,15 @@ from app.models.llm_models import (
 )
 from app.db.models import Agent, Caso, Conversation, Lead, LeadDetails, Message
 from app.services.llm_service import llm_service
+from app.services.whatsapp_service import whatsapp_service
+from app.ws.manager import notify_new_message
 from app.utils.auth_middleware import get_current_user, require_admin
 from app.utils.exceptions import ValidationException, NotFoundException
 from app.utils.logger import logger
 from sqlalchemy import select
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 router = APIRouter(
     prefix="/api/v1/agents",
@@ -733,6 +735,99 @@ async def resume_conversation(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error resuming conversation",
+        )
+
+
+class MensagemDoOperador(BaseModel):
+    """O que o operador digitou para mandar ao cliente."""
+
+    conteudo: str = Field(..., min_length=1, max_length=4096)
+
+
+@conversations_router.post(
+    "/{conversation_id}/mensagens",
+    response_model=ChatHistoryMessage,
+    status_code=status.HTTP_201_CREATED,
+)
+async def responder_como_operador(
+    conversation_id: str,
+    corpo: MensagemDoOperador,
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    O operador escreve ao cliente, pelo painel.
+
+    Antes disto, assumir a conversa parava a IA e mais nada: para responder, a
+    pessoa abria o WhatsApp no celular, e a mensagem que ela mandava nunca
+    entrava na transcrição. Quem lesse o atendimento depois via a conversa com
+    um buraco.
+
+    **Só com a conversa pausada.** Com a IA ativa, os dois responderiam ao
+    mesmo tempo à mesma pergunta — e o cliente receberia duas versões da mesma
+    resposta, que é pior que demorar. Daí o 409: não é erro de digitação, é o
+    operador tentando falar por cima do agente.
+
+    O envio vem antes do commit de propósito: gravar uma mensagem que a
+    Evolution recusou faria a transcrição mentir para quem a lê.
+    """
+    try:
+        conversa = await _get_owned_conversation(conversation_id, user_id, db)
+
+        if conversa.status != "pausada":
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Assuma a conversa antes de responder: a IA ainda está ativa.",
+            )
+
+        envio = await whatsapp_service.send_message(
+            phone_number=conversa.phone_number,
+            message_text=corpo.conteudo,
+        )
+        if not envio.get("success"):
+            raise ValidationException("A Evolution não confirmou o envio.")
+
+        mensagem = Message(
+            conversation_id=conversa.id,
+            # Nem "user" nem "assistant": quem escreveu foi gente do
+            # escritório. O histórico do modelo trata tudo que não é "user"
+            # como o escritório falando, então isto entra no lugar certo sem
+            # virar pergunta do cliente.
+            remetente="operador",
+            conteudo=corpo.conteudo,
+            timestamp=datetime.utcnow(),
+        )
+        db.add(mensagem)
+        conversa.data_ultima_msg = datetime.utcnow()
+        await db.commit()
+        await db.refresh(mensagem)
+
+        await notify_new_message(conversa.agent_id, conversa.id, conversa.phone_number)
+
+        logger.info(f"🧑 Operador respondeu na conversa {conversa.id}")
+        return ChatHistoryMessage(
+            id=mensagem.id,
+            remetente=mensagem.remetente,
+            conteudo=mensagem.conteudo,
+            timestamp=mensagem.timestamp,
+        )
+
+    except NotFoundException as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.detail)
+    except ValidationException as e:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Não foi possível enviar pelo WhatsApp: {e.detail}",
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Erro ao responder como operador: {e}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error sending operator message",
         )
 
 

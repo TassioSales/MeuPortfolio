@@ -12,6 +12,7 @@ import {
   IconeMetricas,
   IconePainel,
   IconeTeste,
+  IconeWhatsapp,
 } from "./icons";
 
 interface NavItem {
@@ -33,6 +34,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Visão geral", Icone: IconePainel },
   { href: "/dashboard/agents", label: "Agentes", Icone: IconeAgente, soAdmin: true },
+  { href: "/dashboard/whatsapp", label: "WhatsApp", Icone: IconeWhatsapp, soAdmin: true },
   { href: "/dashboard/conversations", label: "Atendimentos", Icone: IconeConversa },
   { href: "/dashboard/chat-test", label: "Chat de teste", Icone: IconeTeste, soAdmin: true },
   { href: "/dashboard/kanban", label: "Kanban CRM", Icone: IconeFunil },

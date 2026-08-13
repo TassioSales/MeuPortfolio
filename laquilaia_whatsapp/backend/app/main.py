@@ -12,7 +12,7 @@ from app.db.redis_client import redis_client
 from app.db.models import Agent
 from app.services.auth_service import auth_service
 from app.ws.manager import connection_manager
-from app.routers import auth, agents, chat, webhook, kanban, metrics
+from app.routers import auth, agents, chat, webhook, kanban, metrics, whatsapp
 from app.jobs.metrics_aggregator import MetricsAggregator
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -159,6 +159,7 @@ app.include_router(chat.conversations_router)
 app.include_router(webhook.router)
 app.include_router(kanban.router)
 app.include_router(metrics.router)
+app.include_router(whatsapp.router)
 
 
 # ========== WEBSOCKET ENDPOINTS ==========

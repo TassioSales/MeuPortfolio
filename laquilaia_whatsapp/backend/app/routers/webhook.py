@@ -94,14 +94,22 @@ async def webhook_messages(
             logger.debug(f"⏭️ Ignorando mensagem de grupo: {remote_jid}")
             return {"status": "ignored", "reason": "group message"}
 
-        # Ignore non-text messages for now
-        if not payload.data.e_texto:
+        # Anexo: imagem, PDF ou áudio.
+        #
+        # O tipo é reconhecido aqui, mas quem decide se será lido é o
+        # orquestrador — ele conhece o agente, e a leitura de anexo é
+        # configuração por agente. Reconhecer sem poder ler ainda é melhor que
+        # descartar: a mensagem entra na conversa como "o cliente mandou um
+        # documento", em vez de sumir.
+        tipo_de_anexo = payload.data.tipo_de_anexo
+
+        if not payload.data.e_texto and not tipo_de_anexo:
             logger.debug(f"⏭️ Ignoring non-text message: {payload.data.tipo}")
             return {"status": "ignored", "reason": "non-text message"}
 
         # Extract message content
-        message_text = payload.data.message.texto
-        if not message_text or not message_text.strip():
+        message_text = payload.data.message.texto or payload.data.legenda
+        if not tipo_de_anexo and (not message_text or not message_text.strip()):
             logger.warning("⚠️ Empty message body")
             return {"status": "ignored", "reason": "empty message"}
 
@@ -129,8 +137,10 @@ async def webhook_messages(
         result = await orchestrator.process_incoming_message(
             agent_id=agent_id,
             phone_number=phone_number,
-            message_text=message_text,
+            message_text=message_text or "",
             db=db,
+            tipo_de_anexo=tipo_de_anexo,
+            chave_da_mensagem=payload.data.key if tipo_de_anexo else None,
         )
 
         return {

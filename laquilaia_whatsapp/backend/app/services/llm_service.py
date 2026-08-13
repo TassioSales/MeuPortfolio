@@ -38,6 +38,38 @@ def aceita_temperatura(modelo: str) -> bool:
     return modelo.startswith(MODELOS_QUE_ACEITAM_TEMPERATURA)
 
 
+# O que cada provedor consegue ler.
+#
+# Imagem e PDF os dois leem. Áudio, só o Gemini: a API da Anthropic não aceita
+# áudio como entrada, e mandar assim mesmo é 400 na cara do cliente que gravou
+# um áudio de dois minutos contando o caso dele.
+FORMATOS_DO_CLAUDE = ("image/", "application/pdf")
+
+
+def _bloco_de_anexo_claude(anexo: dict) -> dict:
+    """
+    O anexo no formato de bloco de conteúdo da Anthropic.
+
+    Imagem e PDF usam blocos diferentes (`image` e `document`) com a mesma
+    fonte base64 — trocar um pelo outro é 400.
+    """
+    mimetype = anexo["mimetype"]
+    tipo = "document" if mimetype == "application/pdf" else "image"
+    return {
+        "type": tipo,
+        "source": {
+            "type": "base64",
+            "media_type": mimetype,
+            "data": anexo["base64"],
+        },
+    }
+
+
+def claude_le(mimetype: str) -> bool:
+    """Se o Claude consegue receber este tipo de arquivo."""
+    return mimetype.startswith(FORMATOS_DO_CLAUDE)
+
+
 def texto_da_resposta(response) -> str:
     """
     O texto da resposta, ignorando os blocos que não são texto.
@@ -172,6 +204,7 @@ class LLMService:
         conversation_history: Optional[List[dict]],
         causa: Optional[Exception],
         model: Optional[str] = None,
+        anexo: Optional[dict] = None,
     ) -> Tuple[str, dict]:
         """
         Tenta o provedor de reserva.
@@ -200,6 +233,7 @@ class LLMService:
                 max_tokens=agent.max_tokens or settings.max_tokens,
                 temperature=agent.temperatura or settings.temperature,
                 model=model,
+                anexo=anexo,
             )
         except GeminiIndisponivel as e:
             logger.error(f"❌ A reserva também falhou: {e}")
@@ -215,6 +249,7 @@ class LLMService:
         agent: Agent,
         user_message: str,
         conversation_history: Optional[List[dict]] = None,
+        anexo: Optional[dict] = None,
     ) -> Tuple[str, dict]:
         """
         Generate response using Claude with context.
@@ -235,20 +270,29 @@ class LLMService:
             await self._check_rate_limits(agent.user_id)
 
             # Build messages array
-            messages = self._build_messages(conversation_history, user_message)
+            messages = self._build_messages(conversation_history, user_message, anexo)
 
-            if self._tentar_claude_primeiro():
+            # Áudio é o caso em que a reserva não é reserva: é o único
+            # provedor que sabe ler. Tentar o Claude antes seria gastar uma
+            # chamada para receber 400.
+            so_o_gemini_le = anexo is not None and not claude_le(anexo["mimetype"])
+
+            if so_o_gemini_le:
+                response_text, token_usage = await self._chamar_reserva(
+                    agent, user_message, conversation_history, causa=None, anexo=anexo
+                )
+            elif self._tentar_claude_primeiro():
                 try:
                     response_text, token_usage = self._chamar_claude(agent, messages)
                 except (RateLimitError, APIConnectionError, APIError) as e:
                     # A reserva devolve a falha original se não puder assumir,
                     # para o tratamento lá embaixo continuar valendo.
                     response_text, token_usage = await self._chamar_reserva(
-                        agent, user_message, conversation_history, causa=e
+                        agent, user_message, conversation_history, causa=e, anexo=anexo
                     )
             else:
                 response_text, token_usage = await self._chamar_reserva(
-                    agent, user_message, conversation_history, causa=None
+                    agent, user_message, conversation_history, causa=None, anexo=anexo
                 )
 
             # Track usage
@@ -441,6 +485,7 @@ class LLMService:
         self,
         conversation_history: Optional[List[dict]],
         user_message: str,
+        anexo: Optional[dict] = None,
     ) -> List[dict]:
         """
         Build messages array for Claude API.
@@ -458,8 +503,21 @@ class LLMService:
         if conversation_history:
             messages.extend(conversation_history)
 
-        # Add current user message
-        messages.append({"role": "user", "content": user_message})
+        if anexo:
+            # O anexo vai **antes** do texto: a legenda ("olha a cláusula 8")
+            # só faz sentido depois de o modelo ter visto o documento. Na ordem
+            # inversa ele lê a pergunta sem ter o que responder.
+            messages.append(
+                {
+                    "role": "user",
+                    "content": [
+                        _bloco_de_anexo_claude(anexo),
+                        {"type": "text", "text": user_message},
+                    ],
+                }
+            )
+        else:
+            messages.append({"role": "user", "content": user_message})
 
         return messages
 

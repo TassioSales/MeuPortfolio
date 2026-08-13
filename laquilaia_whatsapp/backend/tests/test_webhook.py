@@ -91,7 +91,13 @@ class TestWebhookIntegration:
 
     @patch("app.services.llm_service.llm_service.generate_response")
     def test_webhook_non_text_message_ignored(self, mock_llm):
-        """Test that non-text messages are ignored."""
+        """
+        Figurinha, localização e afins continuam ignorados.
+
+        Imagem, PDF e áudio deixaram de ser: quem decide se serão lidos é o
+        agente, pela configuração de anexos. Descartar aqui apagava a mensagem
+        da conversa inteira.
+        """
         payload = {
             "event": "messages.upsert",
             "data": {
@@ -102,9 +108,7 @@ class TestWebhookIntegration:
                 },
                 "message": {
                     "messageTimestamp": 1691688000,
-                    "messageType": "imageMessage",
-                    "caption": "Image caption",
-                    "mimetype": "image/jpeg",
+                    "messageType": "stickerMessage",
                 },
                 "owner": "5561999887234",
             },

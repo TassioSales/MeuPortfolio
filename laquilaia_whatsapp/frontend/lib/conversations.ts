@@ -1,5 +1,6 @@
 import { api } from "./api";
 import type {
+  ChatHistoryMessage,
   ConversationStatus,
   ConversationSummary,
   ConversationTranscript,
@@ -49,5 +50,21 @@ export async function getConversationStatus(
 ): Promise<ConversationStatus> {
   return api.get<ConversationStatus>(
     `/api/v1/conversations/${conversationId}/status`,
+  );
+}
+
+/**
+ * O operador escreve ao cliente.
+ *
+ * Só funciona com a conversa assumida — com a IA ativa o backend responde 409,
+ * porque os dois responderiam à mesma pergunta.
+ */
+export async function enviarComoOperador(
+  conversationId: string,
+  conteudo: string,
+): Promise<ChatHistoryMessage> {
+  return api.post<ChatHistoryMessage>(
+    `/api/v1/conversations/${conversationId}/mensagens`,
+    { conteudo },
   );
 }

@@ -184,6 +184,51 @@ class TestGenerateResponse:
         assert tokens["total_tokens"] == 15
 
     @patch("app.services.llm_service.Anthropic")
+    async def test_uma_chamada_nao_congela_o_processo(self, mock_anthropic):
+        """
+        Duas respostas em paralelo não esperam uma pela outra.
+
+        O cliente da Anthropic usado aqui é o síncrono, e ele estava sendo
+        chamado direto de dentro de função `async`. Chamada bloqueante no event
+        loop não atrasa só quem espera por ela: para o processo inteiro. Nos
+        cinco segundos de uma resposta, nenhum outro webhook era lido e nenhuma
+        tela do painel carregava; nos dois minutos de um parecer, o backend
+        ficava parado, e a segunda mensagem do cliente esperava o parecer da
+        primeira terminar antes de ser lida.
+
+        O teste usa `time.sleep` de propósito — é justamente o bloqueio que
+        precisa ser tolerado. Com a chamada fora do loop, as duas caminham
+        juntas; presas nele, somam.
+        """
+        import asyncio
+        import time
+
+        DEMORA = 0.4
+
+        def resposta_lenta(*_args, **_kwargs):
+            time.sleep(DEMORA)
+            mensagem = MagicMock()
+            mensagem.content = [MagicMock(type="text", text="pronto")]
+            mensagem.usage = MagicMock(input_tokens=1, output_tokens=1)
+            return mensagem
+
+        mock_client = MagicMock()
+        mock_client.messages.create.side_effect = resposta_lenta
+        self.service.client = mock_client
+
+        inicio = time.monotonic()
+        await asyncio.gather(
+            self.service.generate_response(self.agent, "primeira"),
+            self.service.generate_response(self.agent, "segunda"),
+        )
+        decorrido = time.monotonic() - inicio
+
+        assert decorrido < DEMORA * 1.8, (
+            f"as duas chamadas levaram {decorrido:.2f}s, perto da soma "
+            f"({DEMORA * 2:.2f}s): a chamada está bloqueando o event loop"
+        )
+
+    @patch("app.services.llm_service.Anthropic")
     async def test_generate_response_with_history(self, mock_anthropic):
         """Test response generation with conversation history."""
         mock_message = MagicMock()

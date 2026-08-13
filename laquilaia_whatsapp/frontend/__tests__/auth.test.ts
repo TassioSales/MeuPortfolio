@@ -2,7 +2,13 @@
  * Testes do fluxo de autenticação (lib/auth + store useAuthStore).
  */
 import * as auth from "@/lib/auth";
-import { clearStoredTokens, getStoredRefreshToken, getStoredToken } from "@/lib/tokens";
+import {
+  clearStoredTokens,
+  getStoredRefreshToken,
+  getStoredToken,
+  setStoredRefreshToken,
+  setStoredToken,
+} from "@/lib/tokens";
 import { useAuthStore } from "@/hooks/useAuth";
 
 const mockFetch = global.fetch as jest.Mock;
@@ -176,5 +182,36 @@ describe("useAuthStore", () => {
 
     expect(useAuthStore.getState().user).toBeNull();
     expect(getStoredToken()).toBeNull();
+  });
+});
+
+
+describe("hasStoredSession", () => {
+  /**
+   * O cliente e o middleware precisam concordar sobre o que é ter sessão.
+   *
+   * Discordando, o painel entra numa volta infinita: o servidor libera
+   * `/dashboard`, o cliente manda para `/login`, o middleware devolve para
+   * `/dashboard`. Na tela é um carregando que não termina; no backend é o
+   * silêncio, porque nenhuma requisição chega a sair.
+   */
+  afterEach(() => clearStoredTokens());
+
+  it("só com o access token, tem sessão", () => {
+    setStoredToken("access");
+
+    expect(auth.hasStoredSession()).toBe(true);
+  });
+
+  it("só com o refresh token, também tem", () => {
+    // É o estado normal depois de 30 minutos: o access expira, o refresh vale
+    // por sete dias. Foi exatamente aqui que o painel travava.
+    setStoredRefreshToken("refresh");
+
+    expect(auth.hasStoredSession()).toBe(true);
+  });
+
+  it("sem nenhum dos dois, não tem", () => {
+    expect(auth.hasStoredSession()).toBe(false);
   });
 });

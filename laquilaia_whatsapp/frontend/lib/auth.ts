@@ -1,6 +1,7 @@
 import { api } from "./api";
 import {
   clearStoredTokens,
+  getStoredRefreshToken,
   getStoredToken,
   setStoredRefreshToken,
   setStoredToken,
@@ -58,7 +59,18 @@ export function logout(): void {
   clearStoredTokens();
 }
 
-/** Há token guardado? Diz apenas isso — a validade quem confirma é o `GET /me`. */
+/**
+ * Há token guardado? Diz apenas isso — a validade quem confirma é o `GET /me`.
+ *
+ * Conta o refresh token, e não só o access. O `middleware.ts` já contava os
+ * dois; aqui só o access era lido, e a diferença travava o painel numa volta
+ * infinita: passados os 30 minutos do access, com o refresh ainda válido por
+ * sete dias, o servidor dizia "tem sessão" e liberava `/dashboard`, o cliente
+ * dizia "não tem" e mandava para `/login`, e o middleware devolvia para
+ * `/dashboard` — sem nunca chegar a perguntar quem era o usuário. Na tela isso
+ * é um carregando que não termina, e nos logs do backend é o silêncio: nenhuma
+ * requisição chegava.
+ */
 export function hasStoredSession(): boolean {
-  return getStoredToken() !== null;
+  return getStoredToken() !== null || getStoredRefreshToken() !== null;
 }

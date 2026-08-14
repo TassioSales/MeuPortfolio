@@ -13,7 +13,7 @@ from typing import List, Optional
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import Lead, LeadDetails, Message
+from app.db.models import Caso, KanbanCard, KanbanColumn, Lead, LeadDetails, Message
 
 
 # Quantas mensagens da conversa vão como contexto.
@@ -63,6 +63,51 @@ async def nota_de_atendimento_anterior(
     if lead.data_criacao:
         partes.append(
             f"Primeiro contato em {lead.data_criacao.strftime('%d/%m/%Y')}."
+        )
+
+    # O card do funil, e em que coluna ele está.
+    #
+    # Isto é um `SELECT` por chave indexada, não uma pergunta ao modelo: saber
+    # se o contato já está no funil é fato registrado, e gastar chamada de LLM
+    # para descobrir o que o banco responde em milissegundos seria pagar caro
+    # por uma resposta pior.
+    card = (
+        await db.execute(
+            select(KanbanCard, KanbanColumn.nome)
+            .join(KanbanColumn, KanbanColumn.id == KanbanCard.column_id)
+            .where(KanbanCard.lead_id == lead.id)
+        )
+    ).first()
+    if card is not None:
+        partes.append(
+            f"Já existe card no funil, na coluna '{card[1]}' — o escritório já "
+            "está com este contato."
+        )
+
+    # Os assuntos já registrados. O contato pode voltar com **outro** caso, e
+    # aí não é retomada: é caso novo, do mesmo cliente.
+    casos = (
+        (
+            await db.execute(
+                select(Caso)
+                .where(Caso.lead_id == lead.id)
+                .order_by(Caso.data_abertura.desc())
+            )
+        )
+        .scalars()
+        .all()
+    )
+    if casos:
+        descricao = ", ".join(
+            f"{c.area or 'sem área'}"
+            + (f" (aberto em {c.data_abertura.strftime('%d/%m/%Y')})" if c.data_abertura else "")
+            for c in casos
+        )
+        partes.append(f"Casos já registrados deste contato: {descricao}.")
+        partes.append(
+            "Se o que a pessoa traz agora for um destes assuntos, retome sem "
+            "reperguntar. Se for assunto diferente, é caso novo: faça a "
+            "triagem dele do começo, sem misturar com o anterior."
         )
 
     detalhes = await db.execute(

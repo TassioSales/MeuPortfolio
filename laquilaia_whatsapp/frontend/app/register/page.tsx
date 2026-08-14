@@ -55,7 +55,7 @@ export default function RegisterPage() {
       rodape={
         <>
           Já tem conta?{" "}
-          <Link href="/login" className="font-medium text-brand-600 hover:text-brand-700">
+          <Link href="/login" className="font-medium text-brand-600 hover:text-brand-700 dark:text-brand-200">
             Entrar
           </Link>
         </>
@@ -110,7 +110,7 @@ export default function RegisterPage() {
         />
 
         {shownError && (
-          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p role="alert" className="rounded-lg bg-red-50 dark:bg-red-950/40 px-3 py-2 text-sm text-red-700 dark:text-red-200">
             {shownError}
           </p>
         )}

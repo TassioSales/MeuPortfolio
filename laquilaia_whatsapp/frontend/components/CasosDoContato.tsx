@@ -48,7 +48,12 @@ function Porte({ caso }: { caso: CasoDoContato }) {
     <span
       className={cn(
         "rounded-full px-2 py-0.5 text-xs",
-        abaixo ? "bg-gray-200 text-fg-soft" : "bg-emerald-100 text-emerald-900",
+        // A tarja clara com `text-fg-soft` virava texto claro sobre fundo
+        // claro no tema escuro. O par `dark:` é obrigatório sempre que a cor
+        // é literal em vez de token.
+        abaixo
+          ? "bg-surface-muted text-fg-soft ring-1 ring-surface-border"
+          : "bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100",
       )}
       title={
         abaixo
@@ -102,7 +107,7 @@ function Caso({ caso, contato }: { caso: CasoDoContato; contato: string }) {
               {ROTULO_DA_AREA[caso.area ?? ""] ?? "Sem área"}
             </span>
             {deTerceiro && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-900">
+              <span className="rounded-full bg-amber-100 dark:bg-amber-950/40 px-2 py-0.5 text-xs text-amber-900 dark:text-amber-200">
                 de {caso.titular}
               </span>
             )}
@@ -132,7 +137,7 @@ function Caso({ caso, contato }: { caso: CasoDoContato; contato: string }) {
       {aberto && caso.analise_preliminar && (
         <div className="pb-2">
           {deTerceiro && (
-            <p className="px-4 pb-2 text-xs text-amber-900">
+            <p className="px-4 pb-2 text-xs text-amber-900 dark:text-amber-200">
               A parte deste caso é <strong>{caso.titular}</strong>. Quem escreve
               pelo WhatsApp é {contato}.
             </p>

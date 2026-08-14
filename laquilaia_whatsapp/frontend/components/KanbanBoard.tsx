@@ -66,7 +66,7 @@ function Column({
         ref={setNodeRef}
         className={
           "flex min-h-[8rem] flex-1 flex-col gap-2 rounded-b-xl p-3 pt-0 transition-colors " +
-          (isOver ? "bg-brand-50" : "")
+          (isOver ? "bg-brand-50 dark:bg-brand-900/40" : "")
         }
       >
         <SortableContext
@@ -146,8 +146,8 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
 
   if (error && !board) {
     return (
-      <div className="rounded-xl border border-red-200 bg-red-50 p-5">
-        <p role="alert" className="text-sm text-red-700">
+      <div className="rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40 p-5">
+        <p role="alert" className="text-sm text-red-700 dark:text-red-200">
           {error}
         </p>
         <Button variant="secondary" className="mt-4" onClick={() => void reload()}>
@@ -167,7 +167,7 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
       {error && (
         <p
           role="alert"
-          className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"
+          className="mb-4 rounded-lg bg-red-50 dark:bg-red-950/40 px-3 py-2 text-sm text-red-700 dark:text-red-200"
         >
           {error}
         </p>
@@ -177,7 +177,7 @@ export function KanbanBoard({ agentId }: KanbanBoardProps) {
         <span
           aria-hidden="true"
           className={
-            "h-2 w-2 rounded-full " + (isConnected ? "bg-green-500" : "bg-gray-300")
+            "h-2 w-2 rounded-full " + (isConnected ? "bg-emerald-500" : "bg-fg-faint")
           }
         />
         {isConnected

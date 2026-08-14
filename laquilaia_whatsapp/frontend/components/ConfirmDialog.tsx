@@ -41,7 +41,7 @@ export function ConfirmDialog({
       <p className="text-sm text-fg-muted">{message}</p>
 
       {error && (
-        <p role="alert" className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="mt-4 rounded-lg bg-red-50 dark:bg-red-950/40 px-3 py-2 text-sm text-red-700 dark:text-red-200">
           {error}
         </p>
       )}

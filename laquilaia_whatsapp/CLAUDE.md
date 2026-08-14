@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **434 testes no backend, 186 no frontend.**
+Estado atual: **440 testes no backend, 186 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -262,11 +262,10 @@ Decidido em conversa, não relitigar a prioridade sem falar com ele.
    (linha do tempo e movimento de Kanban a mais), não custo de modelo. Faltava
    só a trava de concorrência, para duas qualificações seguidas não largarem
    dois pareceres antes de o primeiro gravar — essa entrou junto.
-3. **Contato que volta: consultar se já tem card ativo antes de tratar como
-   novo.** E a consulta é **de banco, não de modelo** — índice por telefone,
-   nada de gastar chamada de Claude para responder o que um `SELECT` responde.
-   Já existe `nota_de_atendimento_anterior`; falta ela dizer explicitamente
-   que há card aberto e em que coluna.
+3. ~~Contato que volta: consultar se já tem card ativo.~~ **Feito.** A nota
+   diz a coluna do card e lista os casos já registrados, tudo por `SELECT` em
+   chave indexada — nenhuma chamada de modelo. E instrui: assunto diferente é
+   caso novo, não continuação.
 4. **Mais métricas.** As de hoje são básicas demais para decidir alguma coisa.
 5. **"Digitando..." no WhatsApp** enquanto o modelo escreve — a Evolution
    expõe presença, e 8 segundos de silêncio parecem travamento.

@@ -11,7 +11,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from app.db.models import Lead, LeadDetails
+from app.db.models import Caso, Lead, LeadDetails
 from app.services.atendimento_context import (
     MENSAGENS_DE_CONTEXTO,
     com_nota,
@@ -19,8 +19,16 @@ from app.services.atendimento_context import (
 )
 
 
-def _db(lead=None, detalhes=None, total_mensagens=0):
-    """Sessão que responde às três consultas na ordem em que são feitas."""
+def _db(lead=None, detalhes=None, total_mensagens=0, card=None, casos=()):
+    """
+    Sessão que responde às consultas na ordem em que são feitas.
+
+    A ordem importa e é frágil de propósito: quem acrescentar uma consulta ao
+    serviço vai ver este helper quebrar, que é melhor do que ver a nota sair
+    com o campo errado.
+
+    `card` é a tupla `(KanbanCard, nome_da_coluna)` que o `join` devolve.
+    """
     respostas = []
 
     r_lead = MagicMock()
@@ -28,6 +36,14 @@ def _db(lead=None, detalhes=None, total_mensagens=0):
     respostas.append(r_lead)
 
     if lead is not None:
+        r_card = MagicMock()
+        r_card.first.return_value = card
+        respostas.append(r_card)
+
+        r_casos = MagicMock()
+        r_casos.scalars.return_value.all.return_value = list(casos)
+        respostas.append(r_casos)
+
         r_det = MagicMock()
         r_det.scalars.return_value.first.return_value = detalhes
         respostas.append(r_det)
@@ -39,6 +55,13 @@ def _db(lead=None, detalhes=None, total_mensagens=0):
     db = AsyncMock()
     db.execute = AsyncMock(side_effect=respostas)
     return db
+
+
+def _caso(area="trabalhista", data=None):
+    caso = MagicMock(spec=Caso)
+    caso.area = area
+    caso.data_abertura = data or datetime(2026, 8, 12, 14, 0)
+    return caso
 
 
 def _lead(**kwargs):
@@ -141,3 +164,149 @@ class TestJanelaDeContexto:
         terminar, e o agente esquecia o que estava apurando.
         """
         assert MENSAGENS_DE_CONTEXTO >= 20
+
+
+class TestCardEmAndamento:
+    """
+    O agente precisa saber que o contato **já está no funil**.
+
+    Isto é fato registrado, respondido por um `SELECT` em chave indexada — não
+    é pergunta para o modelo. Gastar chamada de LLM para descobrir o que o
+    banco responde em milissegundos seria pagar caro por uma resposta pior.
+    """
+
+    async def test_diz_em_que_coluna_o_card_esta(self):
+        card = (MagicMock(), "Lead Qualificado")
+
+        nota = await nota_de_atendimento_anterior(
+            "5561999", "conv-1", _db(lead=_lead(), card=card)
+        )
+
+        assert "card no funil" in nota
+        assert "Lead Qualificado" in nota
+
+    async def test_sem_card_nao_inventa(self):
+        nota = await nota_de_atendimento_anterior(
+            "5561999", "conv-1", _db(lead=_lead(), card=None)
+        )
+
+        assert "card no funil" not in nota
+
+    async def test_lista_os_casos_ja_registrados(self):
+        nota = await nota_de_atendimento_anterior(
+            "5561999",
+            "conv-1",
+            _db(lead=_lead(), casos=[_caso("trabalhista"), _caso("familia")]),
+        )
+
+        assert "trabalhista" in nota
+        assert "familia" in nota
+        assert "12/08/2026" in nota
+
+    async def test_assunto_diferente_e_caso_novo(self):
+        """
+        O contato pode voltar com **outro** assunto, e aí não é retomada.
+        Sem esta instrução o agente trataria o divórcio como continuação da
+        reclamação trabalhista, e os dois virariam um caso só.
+        """
+        nota = await nota_de_atendimento_anterior(
+            "5561999", "conv-1", _db(lead=_lead(), casos=[_caso("trabalhista")])
+        )
+
+        assert "caso novo" in nota
+        assert "sem misturar" in nota
+
+    async def test_sem_caso_registrado_nao_fala_de_caso(self):
+        nota = await nota_de_atendimento_anterior(
+            "5561999", "conv-1", _db(lead=_lead(), casos=[])
+        )
+
+        assert "Casos já registrados" not in nota
+
+
+class TestContraOBancoDeVerdade:
+    """
+    Os casos acima usam mock, e mock responde o que o teste mandar.
+
+    Este projeto já perdeu uma tarde com um teste que passava porque o mock
+    devolvia relacionamento sem IO, enquanto o PostgreSQL estourava
+    `greenlet_spawn`. Consulta nova com `join` merece uma passada no banco de
+    verdade antes de virar produção.
+    """
+
+    @pytest.mark.asyncio
+    async def test_a_consulta_do_card_roda_no_postgres(self):
+        from app.db.database import AsyncSessionLocal
+        from app.db.models import Agent, Caso, Conversation, KanbanCard, User
+        from app.services.kanban_defaults import criar_colunas_padrao
+        from sqlalchemy import select as _select
+        from app.db.models import KanbanColumn
+
+        async with AsyncSessionLocal() as db:
+            db.add(
+                User(
+                    id="ctx-user",
+                    email="ctx@example.com",
+                    nome="Dono",
+                    senha_hash="x",
+                    status="ativo",
+                )
+            )
+            await db.flush()
+            db.add(
+                Agent(
+                    id="ctx-agent",
+                    user_id="ctx-user",
+                    nome="Triagem",
+                    system_prompt="x",
+                    temperatura=0.7,
+                    max_tokens=1024,
+                    status="ativo",
+                )
+            )
+            conversa = Conversation(
+                id="ctx-conv",
+                agent_id="ctx-agent",
+                phone_number="5561911111111",
+                status="ativa",
+            )
+            db.add(conversa)
+            lead = Lead(
+                id="ctx-lead",
+                phone_number="5561911111111",
+                conversation_id="ctx-conv",
+                nome="Marcos",
+                status_funil="qualificado",
+            )
+            db.add(lead)
+            await db.commit()
+
+            await criar_colunas_padrao("ctx-agent", db)
+            await db.commit()
+
+            coluna = (
+                await db.execute(
+                    _select(KanbanColumn)
+                    .where(KanbanColumn.agent_id == "ctx-agent")
+                    .where(KanbanColumn.nome == "Lead Qualificado")
+                )
+            ).scalars().first()
+
+            db.add(KanbanCard(column_id=coluna.id, lead_id="ctx-lead", ordem=1))
+            db.add(
+                Caso(
+                    lead_id="ctx-lead",
+                    area="trabalhista",
+                    resumo="Justa causa sem prova",
+                    data_abertura=datetime(2026, 8, 12, 14, 0),
+                )
+            )
+            await db.commit()
+
+            nota = await nota_de_atendimento_anterior(
+                "5561911111111", "ctx-conv", db
+            )
+
+        assert "Lead Qualificado" in nota
+        assert "trabalhista" in nota
+        assert "caso novo" in nota

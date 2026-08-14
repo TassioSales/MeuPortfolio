@@ -1,8 +1,9 @@
 """Lead processor for extracting qualifications from Claude responses."""
 
+import asyncio
 import json
 import re
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional, Set, Tuple
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -11,6 +12,23 @@ from app.utils.logger import logger
 from app.services.caso_service import registrar_caso
 from app.services.legal_analyst import legal_analyst
 from app.utils.exceptions import ValidationException
+
+
+# Referência forte para as tarefas de parecer em andamento.
+#
+# O `asyncio` guarda só referência fraca para as tarefas: sem isto, uma coleta
+# de lixo no meio do caminho encerra o parecer silenciosamente, e o defeito
+# aparece como "às vezes o parecer não sai".
+_TAREFAS: Set[asyncio.Task] = set()
+
+# Leads com parecer em andamento neste processo.
+#
+# A guarda no banco (`if details.analise_preliminar`) resolve a repetição
+# depois que o parecer existe; enquanto ele está sendo escrito, ainda não
+# existe, e duas qualificações seguidas — que é justamente o que o modelo faz
+# ao repetir o bloco — largariam dois pareceres em paralelo. Com mais de uma
+# réplica isto precisaria de trava no Redis; com uma, o conjunto basta.
+_EM_ANALISE: Set[str] = set()
 
 
 class LeadProcessor:
@@ -97,12 +115,6 @@ class LeadProcessor:
             # Create/update LeadDetails
             await self._update_lead_details(lead, qualification_data, db)
 
-            # O parecer para o escritório. Vem depois dos detalhes porque
-            # grava no mesmo registro, e antes do commit para entrar na mesma
-            # transação — um lead qualificado sem análise é aceitável, um
-            # commit pela metade não.
-            await self._gerar_analise(lead, conversation_id, agent_id, db)
-
             # Add to timeline
             await self._add_timeline(lead, qualification_data, db, agent_id)
 
@@ -111,6 +123,21 @@ class LeadProcessor:
             await self._move_in_kanban(lead, agent_id, status_proposto, db)
 
             await db.commit()
+
+            # O parecer só agora, e fora desta requisição.
+            #
+            # Ele leva ~2 minutos no Opus 5. Rodando aqui dentro, a Evolution
+            # ficava esses dois minutos esperando o `200` do webhook — e
+            # webhook que demora é webhook que ela reentrega por timeout, o que
+            # significa responder duas vezes ao mesmo cliente e qualificar o
+            # mesmo lead de novo.
+            #
+            # Depois do commit, e não antes: a tarefa abre a própria sessão e
+            # precisa enxergar o lead já gravado. É também por isso que ela não
+            # entra mais na transação desta requisição — um lead qualificado
+            # sem parecer é estado válido, e é o que o painel mostra pelos dois
+            # minutos seguintes.
+            self._agendar_analise(lead.id, conversation_id, agent_id)
 
             logger.info(
                 f"✅ Lead processed: {phone_number} "
@@ -311,6 +338,59 @@ class LeadProcessor:
         details.problemas_detectados = qualification_data.get("problemas_detectados", "")
         details.dados_json = json.dumps(qualification_data)
         details.data_atualizacao = datetime.utcnow()
+
+    def _agendar_analise(
+        self, lead_id: str, conversation_id: str, agent_id: str
+    ) -> Optional[asyncio.Task]:
+        """
+        Larga o parecer para rodar sozinho e devolve o controle na hora.
+
+        Devolve a tarefa para quem quiser esperá-la — os testes querem; a
+        requisição do webhook, não.
+        """
+        if lead_id in _EM_ANALISE:
+            logger.debug(f"⏭️ Lead {lead_id} já está sendo analisado")
+            return None
+
+        _EM_ANALISE.add(lead_id)
+        tarefa = asyncio.create_task(
+            self._analisar_em_segundo_plano(lead_id, conversation_id, agent_id)
+        )
+        # Ver `_TAREFAS`: sem a referência forte, a coleta de lixo pode
+        # encerrar o parecer no meio.
+        _TAREFAS.add(tarefa)
+        tarefa.add_done_callback(_TAREFAS.discard)
+        return tarefa
+
+    async def _analisar_em_segundo_plano(
+        self, lead_id: str, conversation_id: str, agent_id: str
+    ) -> None:
+        """
+        O parecer, na própria sessão e fora da requisição que o pediu.
+
+        Sessão nova porque a da requisição já foi fechada quando esta tarefa
+        começa a rodar — usá-la daria `Session is closed` dois minutos depois,
+        sem ninguém olhando.
+
+        Nunca levanta: uma tarefa solta que estoura vira aviso do asyncio no
+        log e mais nada. O que precisa aparecer é o motivo.
+        """
+        from app.db.database import AsyncSessionLocal
+
+        try:
+            async with AsyncSessionLocal() as db:
+                resultado = await db.execute(select(Lead).where(Lead.id == lead_id))
+                lead = resultado.scalars().first()
+                if lead is None:
+                    logger.warning(f"⚠️ Lead {lead_id} sumiu antes do parecer")
+                    return
+
+                await self._gerar_analise(lead, conversation_id, agent_id, db)
+                await db.commit()
+        except Exception as e:
+            logger.error(f"❌ Falha ao gerar o parecer do lead {lead_id}: {e}")
+        finally:
+            _EM_ANALISE.discard(lead_id)
 
     async def _gerar_analise(
         self,

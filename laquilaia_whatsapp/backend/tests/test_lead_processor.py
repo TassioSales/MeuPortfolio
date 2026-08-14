@@ -1,10 +1,13 @@
 """Tests for lead processor."""
 
+import asyncio
 import pytest
 import json
 from unittest.mock import patch, AsyncMock, MagicMock
 from datetime import datetime
-from app.services.lead_processor import lead_processor
+from app.services.lead_processor import _TAREFAS, lead_processor
+from app.services.legal_analyst import legal_analyst
+from sqlalchemy import select
 from app.db.models import Lead, LeadDetails, LeadTimeline, KanbanCard, KanbanColumn
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -356,10 +359,17 @@ class TestLeadProcessorFullFlow:
                         with patch.object(
                             lead_processor, "_move_in_kanban"
                         ) as mock_kanban, patch.object(
-                            lead_processor, "_gerar_analise"
+                            lead_processor, "_agendar_analise"
                         ) as mock_analise:
                             # O parecer é acessório e tem teste próprio; aqui
                             # ele só não pode atrapalhar o fluxo principal.
+                            #
+                            # É `_agendar_analise` que se troca, e não
+                            # `_gerar_analise`: o agendamento larga uma tarefa
+                            # com sessão própria, e uma tarefa que ninguém
+                            # espera ainda está com a transação aberta quando o
+                            # teardown roda `TRUNCATE` — que fica esperando por
+                            # ela. O sintoma é a suíte inteira travar.
                             lead = Lead(
                                 id="lead-123",
                                 phone_number="5561999887234",
@@ -496,3 +506,148 @@ class TestTextoParaOCliente:
 
         assert lead_processor._extract_json(resposta)["nome_cliente"] == "Ana"
         assert "Ana" not in lead_processor.texto_para_o_cliente(resposta)
+
+
+class TestParecerEmSegundoPlano:
+    """
+    O parecer sai da requisição que o pediu.
+
+    Ele leva ~2 minutos no Opus 5. Rodando dentro do webhook, a Evolution
+    ficava esses dois minutos esperando o `200` — e webhook que demora é
+    webhook que ela reentrega por timeout, o que significa responder duas vezes
+    ao mesmo cliente e qualificar o mesmo lead de novo.
+    """
+
+    RESPOSTA = """Registrado.
+
+```json
+{
+    "nome_cliente": "Marcos Andrade",
+    "email": "marcos@example.com",
+    "score_qualificacao": 90,
+    "status_proposto": "qualificado",
+    "inconsistencias": "",
+    "problemas_detectados": "",
+    "recomendacoes": "Ligar hoje"
+}
+```
+"""
+
+    async def _cenario(self, db, sufixo: str):
+        """Dono, agente e conversa de verdade — a tarefa abre sessão própria."""
+        from app.db.models import Agent, Conversation, User
+        from app.services.kanban_defaults import criar_colunas_padrao
+
+        db.add(
+            User(
+                id=f"parecer-user-{sufixo}",
+                email=f"parecer-{sufixo}@example.com",
+                nome="Dono",
+                senha_hash="x",
+                status="ativo",
+            )
+        )
+        await db.flush()
+        db.add(
+            Agent(
+                id=f"parecer-agent-{sufixo}",
+                user_id=f"parecer-user-{sufixo}",
+                nome="Triagem",
+                system_prompt="x",
+                temperatura=0.7,
+                max_tokens=1024,
+                status="ativo",
+            )
+        )
+        conversa = Conversation(
+            id=f"parecer-conv-{sufixo}",
+            agent_id=f"parecer-agent-{sufixo}",
+            phone_number=f"55619000{sufixo}",
+            status="ativa",
+        )
+        db.add(conversa)
+        await db.commit()
+        await criar_colunas_padrao(f"parecer-agent-{sufixo}", db)
+        await db.commit()
+        return conversa
+
+    @pytest.mark.asyncio
+    async def test_a_requisicao_nao_espera_o_parecer(self):
+        import time
+
+        from app.db.database import AsyncSessionLocal
+
+        DEMORA = 0.6
+
+        async def parecer_lento(*_a, **_kw):
+            await asyncio.sleep(DEMORA)
+            return "## Resumo\nx\n\n## Ficha\nÁrea: trabalhista\nTitular: o próprio contato\n"
+
+        async with AsyncSessionLocal() as db:
+            conversa = await self._cenario(db, "01")
+
+            with patch.object(legal_analyst, "analisar", side_effect=parecer_lento):
+                inicio = time.monotonic()
+                resultado = await lead_processor.process_response(
+                    self.RESPOSTA,
+                    conversa.phone_number,
+                    conversa.id,
+                    conversa.agent_id,
+                    db,
+                )
+                decorrido = time.monotonic() - inicio
+
+                assert resultado["success"] is True
+                assert decorrido < DEMORA / 2, (
+                    f"a qualificação levou {decorrido:.2f}s, perto dos "
+                    f"{DEMORA:.2f}s do parecer: ele ainda está na requisição"
+                )
+
+                # E o parecer chega depois, sozinho.
+                await asyncio.gather(*_TAREFAS)
+
+        async with AsyncSessionLocal() as outra:
+            detalhe = (
+                await outra.execute(
+                    select(LeadDetails).join(
+                        Lead, Lead.id == LeadDetails.lead_id
+                    ).where(Lead.phone_number == conversa.phone_number)
+                )
+            ).scalars().first()
+            assert detalhe is not None
+            assert "## Ficha" in (detalhe.analise_preliminar or "")
+
+    @pytest.mark.asyncio
+    async def test_duas_qualificacoes_seguidas_nao_geram_dois_pareceres(self):
+        """
+        O modelo repete o bloco de qualificação na mensagem seguinte ao
+        fechamento — foi o que aconteceu numa das triagens reais. A guarda no
+        banco só vale depois que o parecer existe; enquanto ele está sendo
+        escrito, ainda não existe.
+        """
+        from app.db.database import AsyncSessionLocal
+
+        chamadas = 0
+
+        async def parecer(*_a, **_kw):
+            nonlocal chamadas
+            chamadas += 1
+            await asyncio.sleep(0.2)
+            return "## Resumo\nx\n\n## Ficha\nÁrea: familia\nTitular: o próprio contato\n"
+
+        async with AsyncSessionLocal() as db:
+            conversa = await self._cenario(db, "02")
+
+            with patch.object(legal_analyst, "analisar", side_effect=parecer):
+                for _ in range(2):
+                    await lead_processor.process_response(
+                        self.RESPOSTA,
+                        conversa.phone_number,
+                        conversa.id,
+                        conversa.agent_id,
+                        db,
+                    )
+
+                await asyncio.gather(*_TAREFAS)
+
+        assert chamadas == 1

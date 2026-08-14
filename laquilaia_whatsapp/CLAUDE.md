@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **432 testes no backend, 186 no frontend.**
+Estado atual: **434 testes no backend, 186 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -195,6 +195,7 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Responder mensagem de grupo | O `@g.us` no remoteJid: sem filtro, o agente responde ao grupo inteiro e qualifica o grupo como lead |
 | `textMessage` no envio da Evolution | É o nome da v1. A v2 responde `instance requires property "text"` e devolve 400 — depois de a chamada ao LLM já ter sido paga |
 | Arrancar o DDI do número antes de enviar | O `remoteJid` chega com `55` e é o identificador do contato: sem ele a resposta vai para outra pessoa. E mutilava DDD 55 (Santa Maria/RS) |
+| Tarefa de segundo plano que ninguém espera, em teste | A tarefa abre sessão própria; quando o loop do teste fecha com ela pendente, a transação continua aberta e o `TRUNCATE` do teardown fica esperando por ela — **a suíte inteira trava**, sem erro. Nos testes, ou se espera a tarefa (`asyncio.gather(*_TAREFAS)`) ou se troca `_agendar_analise` pelo mock |
 | Campo sem classe de fundo | Sem `bg-`, o navegador pinta o campo com o padrão dele (branco) enquanto `text-fg` no escuro é claro: **texto claro em fundo branco**, e quem digita não lê o que escreve. Aconteceu no campo do chat de teste. `__tests__/tema-escuro.test.ts` trava a regra |
 | Tom de escala própria que não existe | `brand` vai só até 900. `bg-brand-950` não gera classe nenhuma — o Tailwind ignora **em silêncio**, o fundo claro fica e o texto escuro vira claro por cima dele. O silêncio é o que torna isto perigoso |
 | `HTTPBearer()` com o `auto_error` padrão | Requisição **sem** cabeçalho `Authorization` é recusada pelo FastAPI com **403**, e 403 quer dizer "sei quem você é e você não pode". O `api.ts` só renova a sessão em **401**: como o cookie do access token expira em 30 min e o browser o apaga, a partir daí tudo saía sem cabeçalho e o usuário era deslogado com refresh válido por sete dias. Use `auto_error=False` e levante 401 você mesmo |
@@ -253,12 +254,14 @@ Decidido em conversa, não relitigar a prioridade sem falar com ele.
 
 **Próximo, e é onde está o dinheiro:**
 
-1. **Tirar o parecer de dentro da requisição do webhook.** Ele leva ~2 min e a
-   Evolution fica esperando — o que convida a reentrega por timeout, e
-   reentrega é resposta duplicada ao cliente mais um parecer pago de novo.
-2. **Travar o parecer duplicado.** O modelo repetiu o bloco de qualificação na
-   mensagem seguinte ao fechamento, e cada repetição refaz o parecer: ~90s e
-   ~US$ 0,20 por vez. Não refazer quando já existe um e nada mudou.
+1. ~~Tirar o parecer de dentro da requisição do webhook.~~ **Feito.** Ele roda
+   em tarefa própria, com sessão própria, depois do commit.
+2. ~~Travar o parecer duplicado.~~ **Já existia** — `if
+   details.analise_preliminar: return`. Nas três triagens reais houve 5
+   qualificações e apenas 3 pareceres. O que a repetição gera é ruído no banco
+   (linha do tempo e movimento de Kanban a mais), não custo de modelo. Faltava
+   só a trava de concorrência, para duas qualificações seguidas não largarem
+   dois pareceres antes de o primeiro gravar — essa entrou junto.
 3. **Contato que volta: consultar se já tem card ativo antes de tratar como
    novo.** E a consulta é **de banco, não de modelo** — índice por telefone,
    nada de gastar chamada de Claude para responder o que um `SELECT` responde.

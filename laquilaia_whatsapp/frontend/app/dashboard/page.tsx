@@ -81,7 +81,7 @@ export default function DashboardPage() {
         {atalhos.map((link) => {
           const card = (
             <>
-              <span className="rounded-lg bg-ink-50 p-2 text-ink-700">
+              <span className="rounded-lg bg-ink-50 p-2 text-ink-700 dark:bg-ink-900 dark:text-ink-100">
                 <link.Icone />
               </span>
               <div>
@@ -103,7 +103,7 @@ export default function DashboardPage() {
             <Link
               key={link.href}
               href={link.href}
-              className={`${className} transition-colors hover:border-brand-300 hover:bg-brand-50/40`}
+              className={`${className} transition-colors hover:border-brand-300 hover:bg-brand-50 dark:bg-brand-900/40/40`}
             >
               {card}
             </Link>

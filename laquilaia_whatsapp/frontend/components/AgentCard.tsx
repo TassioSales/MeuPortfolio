@@ -35,7 +35,7 @@ export function AgentCard({ agent, onEdit, onDelete }: AgentCardProps) {
         <span
           className={cn(
             "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
-            isActive ? "bg-green-50 text-green-700" : "bg-surface-muted text-fg-muted",
+            isActive ? "bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-200" : "bg-surface-muted text-fg-muted",
           )}
         >
           {agent.status}

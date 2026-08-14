@@ -34,7 +34,7 @@ export function Input({ label, error, hint, className, id, ...props }: InputProp
         {...props}
       />
       {error && (
-        <p id={`${inputId}-error`} className="text-xs text-red-600">
+        <p id={`${inputId}-error`} className="text-xs text-red-600 dark:text-red-300">
           {error}
         </p>
       )}

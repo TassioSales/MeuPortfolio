@@ -31,8 +31,8 @@ function ChatTestContent() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-5xl rounded-xl border border-red-200 bg-red-50 p-5">
-        <p role="alert" className="text-sm text-red-700">
+      <div className="mx-auto max-w-5xl rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40 p-5">
+        <p role="alert" className="text-sm text-red-700 dark:text-red-200">
           {error}
         </p>
         <Button variant="secondary" className="mt-4" onClick={() => void fetchAgents()}>

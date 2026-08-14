@@ -116,7 +116,7 @@ export function ChatPlayground({ agent }: ChatPlaygroundProps) {
       {error && (
         <p
           role="alert"
-          className="mx-5 mb-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"
+          className="mx-5 mb-3 rounded-lg bg-red-50 dark:bg-red-950/40 px-3 py-2 text-sm text-red-700 dark:text-red-200"
         >
           {error}
         </p>
@@ -137,7 +137,11 @@ export function ChatPlayground({ agent }: ChatPlaygroundProps) {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="max-h-32 min-h-[2.75rem] flex-1 resize-y rounded-lg border border-surface-border px-3 py-2.5 text-sm text-fg placeholder:text-fg-faint focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+          // `bg-surface` não é enfeite: sem classe de fundo, o navegador pinta
+          // o campo com o padrão dele (branco), enquanto `text-fg` no tema
+          // escuro é claro. Dava texto claro em fundo branco — quem digitava
+          // aqui não conseguia ler o que estava escrevendo.
+          className="max-h-32 min-h-[2.75rem] flex-1 resize-y rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-fg placeholder:text-fg-faint focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
         />
         <Button type="submit" isLoading={isSending} disabled={!draft.trim()}>
           Enviar

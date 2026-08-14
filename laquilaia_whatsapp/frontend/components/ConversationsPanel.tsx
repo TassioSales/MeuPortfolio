@@ -52,7 +52,7 @@ function SeloDeAutomacao({ iaAtiva }: { iaAtiva: boolean }) {
     <span
       className={cn(
         "inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
-        iaAtiva ? "bg-brand-50 text-brand-700" : "bg-amber-100 text-amber-800",
+        iaAtiva ? "bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200" : "bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200",
       )}
     >
       <span aria-hidden="true">{iaAtiva ? "🤖" : "🙋"}</span>
@@ -80,7 +80,7 @@ function ItemDaFila({
         aria-current={ativa ? "true" : undefined}
         className={cn(
           "w-full border-b border-surface-border px-4 py-3 text-left transition-colors",
-          ativa ? "bg-brand-50" : "hover:bg-surface-muted",
+          ativa ? "bg-brand-50 dark:bg-brand-900/40" : "hover:bg-surface-muted",
         )}
       >
         <div className="flex items-baseline justify-between gap-2">
@@ -156,8 +156,8 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
 
   if (error && conversations.length === 0) {
     return (
-      <div className="rounded-xl border border-red-200 bg-red-50 p-5">
-        <p role="alert" className="text-sm text-red-700">
+      <div className="rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40 p-5">
+        <p role="alert" className="text-sm text-red-700 dark:text-red-200">
           {error}
         </p>
         <Button variant="secondary" className="mt-4" onClick={() => void reload()}>
@@ -184,7 +184,7 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
           aria-hidden="true"
           className={cn(
             "inline-block h-2 w-2 rounded-full",
-            isConnected ? "bg-green-500" : "bg-gray-300",
+            isConnected ? "bg-emerald-500" : "bg-fg-faint",
           )}
         />
         {isConnected ? "Atualizando em tempo real" : "Sem conexão em tempo real"}
@@ -193,7 +193,7 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
       {error && (
         <p
           role="alert"
-          className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          className="mb-3 rounded-lg border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40 px-3 py-2 text-sm text-red-700 dark:text-red-200"
         >
           {error}
         </p>
@@ -370,7 +370,7 @@ function CaixaDeResposta({
       aria-label="Responder ao cliente"
     >
       {erro && (
-        <p role="alert" className="mb-2 text-xs text-red-600">
+        <p role="alert" className="mb-2 text-xs text-red-600 dark:text-red-300">
           {erro}
         </p>
       )}

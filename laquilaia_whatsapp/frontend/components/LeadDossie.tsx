@@ -73,8 +73,11 @@ function Porte({ casos }: { casos: CasoDoContato[] }) {
         semDimensionar
           ? "border-surface-border bg-surface-muted"
           : abaixo
-            ? "border-gray-300 bg-gray-50"
-            : "border-emerald-200 bg-emerald-50",
+            // Token, não `bg-gray-50`: a caixa clara ficava com o texto claro
+            // do tema escuro por cima. "Abaixo do piso" é justamente o aviso
+            // que não pode sumir.
+            ? "border-surface-border bg-surface-muted"
+            : "border-emerald-200 bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950",
       )}
     >
       <p className="text-xs font-medium uppercase tracking-wide text-fg-muted">
@@ -149,7 +152,7 @@ export function LeadDossiePanel({ agentId, leadId, onClose }: LeadDossieProps) {
       )}
 
       {erro && (
-        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 dark:bg-red-950/40 px-3 py-2 text-sm text-red-700 dark:text-red-200">
           {erro}
         </p>
       )}

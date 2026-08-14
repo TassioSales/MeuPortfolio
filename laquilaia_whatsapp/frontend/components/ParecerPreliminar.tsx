@@ -170,7 +170,7 @@ export function ParecerPreliminar({ texto }: ParecerPreliminarProps) {
   const secoes = seccionar(analisar(texto));
 
   return (
-    <section className="border-b border-surface-border bg-amber-50/60">
+    <section className="border-b border-surface-border bg-amber-50 dark:bg-amber-950/40/60">
       <button
         type="button"
         onClick={() => setAberto((v) => !v)}
@@ -182,7 +182,7 @@ export function ParecerPreliminar({ texto }: ParecerPreliminarProps) {
           <span className="text-sm font-medium text-fg">
             Análise preliminar do caso
           </span>
-          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-900">
+          <span className="rounded-full bg-amber-100 dark:bg-amber-950/40 px-2 py-0.5 text-xs text-amber-900 dark:text-amber-200">
             interno
           </span>
         </span>

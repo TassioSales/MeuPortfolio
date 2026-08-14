@@ -16,8 +16,8 @@ interface KanbanCardProps {
 
 /** Faixas de cor do score, para leitura rápida da qualificação. */
 function scoreTone(score: number): string {
-  if (score >= 70) return "bg-green-50 text-green-700";
-  if (score >= 40) return "bg-amber-50 text-amber-700";
+  if (score >= 70) return "bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-200";
+  if (score >= 40) return "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-200";
   return "bg-surface-muted text-fg-muted";
 }
 

@@ -37,7 +37,7 @@ export function Textarea({ label, error, hint, className, id, ...props }: Textar
         {...props}
       />
       {error && (
-        <p id={`${textareaId}-error`} className="text-xs text-red-600">
+        <p id={`${textareaId}-error`} className="text-xs text-red-600 dark:text-red-300">
           {error}
         </p>
       )}

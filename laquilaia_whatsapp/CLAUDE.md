@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **416 testes no backend, 177 no frontend.**
+Estado atual: **432 testes no backend, 186 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -195,6 +195,8 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Responder mensagem de grupo | O `@g.us` no remoteJid: sem filtro, o agente responde ao grupo inteiro e qualifica o grupo como lead |
 | `textMessage` no envio da Evolution | É o nome da v1. A v2 responde `instance requires property "text"` e devolve 400 — depois de a chamada ao LLM já ter sido paga |
 | Arrancar o DDI do número antes de enviar | O `remoteJid` chega com `55` e é o identificador do contato: sem ele a resposta vai para outra pessoa. E mutilava DDD 55 (Santa Maria/RS) |
+| Campo sem classe de fundo | Sem `bg-`, o navegador pinta o campo com o padrão dele (branco) enquanto `text-fg` no escuro é claro: **texto claro em fundo branco**, e quem digita não lê o que escreve. Aconteceu no campo do chat de teste. `__tests__/tema-escuro.test.ts` trava a regra |
+| Tom de escala própria que não existe | `brand` vai só até 900. `bg-brand-950` não gera classe nenhuma — o Tailwind ignora **em silêncio**, o fundo claro fica e o texto escuro vira claro por cima dele. O silêncio é o que torna isto perigoso |
 | `HTTPBearer()` com o `auto_error` padrão | Requisição **sem** cabeçalho `Authorization` é recusada pelo FastAPI com **403**, e 403 quer dizer "sei quem você é e você não pode". O `api.ts` só renova a sessão em **401**: como o cookie do access token expira em 30 min e o browser o apaga, a partir daí tudo saía sem cabeçalho e o usuário era deslogado com refresh válido por sete dias. Use `auto_error=False` e levante 401 você mesmo |
 | Tratar erro de rede como sessão inválida | O `loadSession` chamava `logout()` — que apaga os cookies — para qualquer exceção. Backend reiniciando, 502 do proxy ou wi-fi piscando destruíam uma sessão perfeitamente válida. Só o servidor encerra sessão: 401 depois da renovação encerra, o resto pede nova tentativa |
 | Middleware conferindo só o access token | Ele expira em 30 min e o cookie some: o middleware expulsava para o login com refresh válido por 7 dias, antes de o `api.ts` ter chance de renovar |
@@ -245,7 +247,43 @@ exige mudar o outro. O mesmo vale para os nomes de evento em `ws/manager.py` e
 
 ---
 
-## 6. Pendências
+## 6. Roteiro combinado com o dono
+
+Decidido em conversa, não relitigar a prioridade sem falar com ele.
+
+**Próximo, e é onde está o dinheiro:**
+
+1. **Tirar o parecer de dentro da requisição do webhook.** Ele leva ~2 min e a
+   Evolution fica esperando — o que convida a reentrega por timeout, e
+   reentrega é resposta duplicada ao cliente mais um parecer pago de novo.
+2. **Travar o parecer duplicado.** O modelo repetiu o bloco de qualificação na
+   mensagem seguinte ao fechamento, e cada repetição refaz o parecer: ~90s e
+   ~US$ 0,20 por vez. Não refazer quando já existe um e nada mudou.
+3. **Contato que volta: consultar se já tem card ativo antes de tratar como
+   novo.** E a consulta é **de banco, não de modelo** — índice por telefone,
+   nada de gastar chamada de Claude para responder o que um `SELECT` responde.
+   Já existe `nota_de_atendimento_anterior`; falta ela dizer explicitamente
+   que há card aberto e em que coluna.
+4. **Mais métricas.** As de hoje são básicas demais para decidir alguma coisa.
+5. **"Digitando..." no WhatsApp** enquanto o modelo escreve — a Evolution
+   expõe presença, e 8 segundos de silêncio parecem travamento.
+
+**Combinado para depois, na ordem em que ele citou:**
+
+6. **Automações no Kanban** (mover card por evento, cobrar retorno, etc.).
+7. **Disparo de e-mail** para o lead.
+8. **Assinatura de contrato** — é o que fecha o ciclo do escritório.
+9. **Front mais profissional.** O dono acha que ainda parece protótipo; é
+   trabalho de design, não de correção pontual.
+
+**Decisão de produto em aberto:** áudio. Cliente de escritório manda áudio o
+tempo todo, e hoje o agente pede para escrever (`anexos_habilitados`
+desligado, e a Anthropic não aceita áudio — vai pelo Gemini). Ligar custa a
+chave do Gemini e a transcrição.
+
+---
+
+## 7. Pendências técnicas
 
 Em ordem de valor, e a primeira vale mais que as outras juntas.
 
@@ -306,7 +344,7 @@ da paleta de dados, que passou pelo validador.
 
 ---
 
-## 7. Convenções
+## 8. Convenções
 
 - Comentários e mensagens de commit em **português**; nomes de código em inglês,
   exceto os campos que espelham a API.

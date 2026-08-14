@@ -38,7 +38,7 @@ export function StatTile({
             className={cn(
               "inline-flex items-center gap-1 text-xs font-medium",
               // Ícone + sinal junto da cor: a variação nunca é só cor.
-              isGood ? "text-green-700" : "text-red-700",
+              isGood ? "text-green-700 dark:text-green-200" : "text-red-700 dark:text-red-200",
             )}
           >
             <span aria-hidden="true">{delta! > 0 ? "▲" : "▼"}</span>

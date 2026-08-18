@@ -81,6 +81,55 @@ class GeminiClient:
     def configured(self) -> bool:
         return bool(self.api_key)
 
+    # O que se pede ao modelo quando o arquivo é um áudio.
+    #
+    # "Devolva só a transcrição" não é preciosismo: sem isso o modelo responde
+    # ao conteúdo do áudio em vez de transcrevê-lo — e o que precisa entrar na
+    # conversa é o que o **cliente** disse, não o que o modelo achou disso.
+    PROMPT_DE_TRANSCRICAO = (
+        "Transcreva este áudio em português do Brasil. Devolva apenas a "
+        "transcrição, palavra por palavra, sem comentar, sem resumir e sem "
+        "responder ao que foi dito. Se o áudio estiver inaudível, devolva "
+        "exatamente: (áudio inaudível)"
+    )
+
+    # Teto alto porque áudio de WhatsApp é longo: um cliente contando o caso
+    # dele fala dois, três minutos, e transcrição cortada no meio é pior que
+    # transcrição nenhuma — ninguém percebe que faltou o final.
+    MAX_TOKENS_DA_TRANSCRICAO = 4096
+
+    async def transcrever(self, anexo: dict, model: Optional[str] = None) -> str:
+        """
+        O que foi dito no áudio, em texto.
+
+        Existe separado do `generate` porque o destino do texto é outro: ele
+        vira **a mensagem do cliente** na conversa, gravada no banco, lida pela
+        memória no turno seguinte e pelo parecer depois. Mandar o áudio como
+        anexo de uma resposta qualquer resolveria só o turno atual — e era o
+        que acontecia: o histórico guardava "[o cliente enviou um áudio]" e o
+        relato inteiro se perdia.
+
+        Raises:
+            GeminiIndisponivel: sem chave, erro HTTP, ou resposta sem texto.
+        """
+        texto, uso = await self.generate(
+            system_prompt=None,
+            user_message=self.PROMPT_DE_TRANSCRICAO,
+            max_tokens=self.MAX_TOKENS_DA_TRANSCRICAO,
+            model=model or settings.gemini_transcricao_model or None,
+            anexo=anexo,
+        )
+
+        # `_ler_resposta` não devolve o modelo — quem o conhece é quem chamou.
+        # Ele entra no log porque a escolha entre `flash` e `flash-lite` muda
+        # qualidade e tempo, e sem isso não dá para saber qual respondeu.
+        logger.info(
+            f"🎧 Áudio transcrito ({len(texto)} chars, "
+            f"{uso.get('total_tokens')} tokens, "
+            f"{model or settings.gemini_transcricao_model or self.model})"
+        )
+        return texto.strip()
+
     async def generate(
         self,
         system_prompt: Optional[str],

@@ -79,7 +79,43 @@ class MessageOrchestrator:
             f"📎 Anexo lido: {midia['mimetype']} "
             f"({midia.get('tamanho') or '?'} bytes)"
         )
+
+        # Áudio vira texto antes de qualquer coisa.
+        #
+        # Mandar o áudio junto da pergunta resolvia só o turno atual: o que
+        # ficava gravado era "[o cliente enviou um áudio]", e o relato se
+        # perdia para todo o resto do sistema. No turno seguinte a memória lia
+        # a descrição e não o conteúdo; o parecer, que lê a transcrição das
+        # mensagens, nunca via o que a pessoa contou. Num escritório onde o
+        # cliente conta o caso inteiro falando, isso é perder o caso.
+        if (midia.get("mimetype") or "").startswith("audio/"):
+            transcricao = await self._transcrever(midia)
+            if transcricao:
+                return None, f"{descricao} {transcricao}".strip()
+
         return midia, texto
+
+    async def _transcrever(self, midia: dict) -> Optional[str]:
+        """
+        O que foi dito no áudio, ou `None` se não deu.
+
+        `None` não é erro fatal: sem transcrição o áudio segue como anexo da
+        pergunta, que é o comportamento antigo — pior, mas não mudo.
+
+        Só o Gemini transcreve. A API da Anthropic não aceita áudio de
+        entrada, e é por isso que este caminho não tem alternativa: sem
+        `GEMINI_API_KEY`, o agente pede que a pessoa escreva.
+        """
+        if not llm_service.gemini.configured:
+            logger.info("🎧 Sem GEMINI_API_KEY: áudio segue sem transcrição")
+            return None
+
+        try:
+            return await llm_service.gemini.transcrever(midia) or None
+        except Exception as e:
+            # Transcrição é acessório do atendimento, não o atendimento.
+            logger.warning(f"⚠️ Não foi possível transcrever o áudio: {e}")
+            return None
 
     async def process_incoming_message(
         self,

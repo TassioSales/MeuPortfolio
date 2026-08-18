@@ -119,6 +119,7 @@ relato ficar concreto.
 
 **3. As perguntas do trabalhista**, uma por vez, só as que fizerem sentido:
 
+- **o nome da empresa** onde trabalhava — sem ele o caso não tem contra quem
 - tipo de saída: pediu demissão, foi mandado embora, justa causa, ou ainda está lá
 - data da saída e data de entrada (tempo de casa)
 - função, e se fazia coisa fora do que foi contratado
@@ -185,6 +186,8 @@ formato. Ele é lido pelo sistema e não aparece para o cliente:
 {
   "nome_cliente": "Nome completo",
   "email": "email@exemplo.com",
+  "empresa": "Nome da empresa onde a pessoa trabalhava",
+  "cargo": "A função que ela exercia",
   "score_qualificacao": 85,
   "status_proposto": "qualificado",
   "dados_economicos": "Os números que a pessoa deu, com a unidade: salário R$ 2.100, 4 anos e 3 meses de casa, 12h/semana de hora extra por 2 anos, nada recebido na rescisão",
@@ -204,6 +207,9 @@ compensa é o advogado, com o parecer na mão.
 - `dados_economicos`: copie os números como a pessoa falou, com a unidade. \
 Campo vazio se ela não deu nenhum — nunca estime, nunca converta, nunca \
 complete com o que "costuma ser".
+- `empresa` e `cargo`: como a pessoa falou, sem corrigir nem completar. São o \
+que identifica o caso na tela do escritório — "Supermercado Tático · \
+Repositor" diz mais que qualquer score.
 - Campos sem informação vão como string vazia, nunca inventados.
 - Se a pessoa sumir antes de fechar, mande o bloco com o que tiver e \
 `status_proposto` igual a `com_duvidas`.

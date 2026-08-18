@@ -26,7 +26,15 @@ router = APIRouter(
 # ========== PYDANTIC MODELS ==========
 
 class LeadCardResponse(BaseModel):
-    """Lead card for Kanban display."""
+    """
+    Lead card for Kanban display.
+
+    Empresa, cargo e porte não são enfeite: num caso trabalhista, "Supermercado
+    Tático · Repositor · R$ 90–280 mil" diz a um advogado o que precisa ser
+    dito para ele decidir se pega o caso. Nome e score sozinhos obrigam a abrir
+    o card para descobrir do que se trata.
+    """
+
     id: str
     nome: str
     email: str | None
@@ -34,6 +42,18 @@ class LeadCardResponse(BaseModel):
     score_qualificacao: int
     status_funil: str
     ordem: int
+    # Vêm do bloco de qualificação, gravado no fim da triagem. Ficam aqui, e
+    # não no `Caso`, porque o caso só existe depois do parecer — dois minutos
+    # mais tarde — e o card precisa dizer de que empresa se trata no instante
+    # em que aparece no funil. Se um contato passar a ter casos de empregadores
+    # diferentes, isto tem que migrar para o `Caso`.
+    empresa: str | None = None
+    cargo: str | None = None
+    # Do parecer, quando ele já rodou. `None` é estado normal nos primeiros
+    # minutos, e não erro.
+    valor_estimado_min: int | None = None
+    valor_estimado_max: int | None = None
+    viabilidade: str | None = None
 
     class Config:
         from_attributes = True
@@ -112,49 +132,68 @@ async def get_kanban_board(
         )
         columns = result.scalars().all()
 
-        # Build response with cards for each column
-        columns_data = []
-        for column in columns:
-            # Get cards for this column
-            result = await db.execute(
-                select(KanbanCard)
-                .where(KanbanCard.column_id == column.id)
+        # Todos os cards do board em uma consulta, e não duas por card.
+        #
+        # Era `select(Lead)` mais `select(LeadDetails)` dentro do laço: um
+        # board com 150 leads numa coluna fazia mais de trezentas idas ao
+        # banco, e cada card novo somava duas. Agora são três consultas,
+        # qualquer que seja o tamanho do funil.
+        linhas = (
+            await db.execute(
+                select(KanbanCard, Lead, LeadDetails)
+                .join(Lead, Lead.id == KanbanCard.lead_id)
+                .outerjoin(LeadDetails, LeadDetails.lead_id == Lead.id)
+                .where(KanbanCard.column_id.in_([c.id for c in columns]))
                 .order_by(KanbanCard.ordem)
             )
-            cards_in_column = result.scalars().all()
+        ).all() if columns else []
 
-            # Build card data with lead info
-            cards_data = []
-            for card in cards_in_column:
-                # Get lead and details
-                lead_result = await db.execute(
-                    select(Lead).where(Lead.id == card.lead_id)
+        # O caso mais recente de cada lead, para o porte econômico. Fora do
+        # laço pela mesma razão.
+        casos_por_lead: dict[str, Caso] = {}
+        if linhas:
+            casos = (
+                await db.execute(
+                    select(Caso)
+                    .where(Caso.lead_id.in_([linha[1].id for linha in linhas]))
+                    .order_by(Caso.data_abertura.desc())
                 )
-                lead = lead_result.scalars().first()
+            ).scalars().all()
+            for caso in casos:
+                casos_por_lead.setdefault(caso.lead_id, caso)
 
-                if lead:
-                    details_result = await db.execute(
-                        select(LeadDetails).where(LeadDetails.lead_id == lead.id)
-                    )
-                    details = details_result.scalars().first()
+        por_coluna: dict[str, List[LeadCardResponse]] = {c.id: [] for c in columns}
+        for card, lead, details in linhas:
+            dados = _bloco_de_qualificacao(details)
+            caso = casos_por_lead.get(lead.id)
 
-                    cards_data.append(LeadCardResponse(
-                        id=lead.id,
-                        nome=lead.nome or "Sem nome",
-                        email=lead.email,
-                        phone_number=lead.phone_number,
-                        score_qualificacao=details.score_qualificacao if details else 0,
-                        status_funil=lead.status_funil,
-                        ordem=card.ordem,
-                    ))
+            por_coluna[card.column_id].append(
+                LeadCardResponse(
+                    id=lead.id,
+                    nome=lead.nome or "Sem nome",
+                    email=lead.email,
+                    phone_number=lead.phone_number,
+                    score_qualificacao=details.score_qualificacao if details else 0,
+                    status_funil=lead.status_funil,
+                    ordem=card.ordem,
+                    empresa=dados.get("empresa") or None,
+                    cargo=dados.get("cargo") or None,
+                    valor_estimado_min=caso.valor_estimado_min if caso else None,
+                    valor_estimado_max=caso.valor_estimado_max if caso else None,
+                    viabilidade=caso.viabilidade if caso else None,
+                )
+            )
 
-            columns_data.append(KanbanColumnResponse(
+        columns_data = [
+            KanbanColumnResponse(
                 id=column.id,
                 nome=column.nome,
                 ordem=column.ordem,
                 cor_hex=column.cor_hex,
-                cards=cards_data,
-            ))
+                cards=por_coluna[column.id],
+            )
+            for column in columns
+        ]
 
         logger.info(f"✅ Kanban board retrieved for agent {agent_id}")
 
@@ -642,14 +681,13 @@ async def get_lead_dossie(
         )
 
 
-def _dados_coletados(detalhes) -> Dict[str, Any]:
+def _bloco_de_qualificacao(detalhes) -> Dict[str, Any]:
     """
-    Os campos que a triagem gravou em `dados_json`.
+    O JSON cru que a triagem gravou em `dados_json`, ou vazio.
 
-    Eles não têm coluna própria: o bloco de qualificação muda com o prompt, e
-    criar coluna a cada campo novo transformaria uma edição de texto em
-    migração. Vazio quando não há nada — string vazia vira `None`, para o
-    painel ter um caso só de "não coletado" em vez de dois.
+    Os campos não têm coluna própria: o bloco de qualificação muda com o
+    prompt, e criar coluna a cada campo novo transformaria uma edição de texto
+    em migração.
     """
     if detalhes is None or not detalhes.dados_json:
         return {}
@@ -658,12 +696,19 @@ def _dados_coletados(detalhes) -> Dict[str, Any]:
         dados = json.loads(detalhes.dados_json)
     except (ValueError, TypeError):
         # `dados_json` guarda o que o modelo devolveu. JSON quebrado ali é
-        # motivo para o dossiê vir sem esses campos, não para ele falhar.
+        # motivo para o card vir sem esses campos, não para a tela falhar.
         logger.warning(f"⚠️ dados_json ilegível no lead {detalhes.lead_id}")
         return {}
 
-    if not isinstance(dados, dict):
-        return {}
+    return dados if isinstance(dados, dict) else {}
+
+
+def _dados_coletados(detalhes) -> Dict[str, Any]:
+    """
+    Os campos do dossiê. String vazia vira `None`, para o painel ter um caso
+    só de "não coletado" em vez de dois.
+    """
+    dados = _bloco_de_qualificacao(detalhes)
 
     return {
         chave: (dados.get(chave) or None)

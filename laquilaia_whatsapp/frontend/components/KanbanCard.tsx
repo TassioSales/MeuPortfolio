@@ -21,6 +21,59 @@ function scoreTone(score: number): string {
   return "bg-surface-muted text-fg-muted";
 }
 
+/**
+ * O porte do caso, em tarja.
+ *
+ * `indeterminado` não vira tarja: caso recém-chegado ainda não foi
+ * dimensionado, e uma tarja em todo card não informa nada. Também não vira
+ * tarja o que o parecer ainda não analisou — ele roda dois minutos depois de
+ * o card nascer, e "sem porte" é estado normal nesse intervalo.
+ */
+function Porte({ card }: { card: KanbanCardType }) {
+  if (
+    !card.viabilidade ||
+    card.viabilidade === "indeterminado" ||
+    card.viabilidade === "nao_se_aplica"
+  ) {
+    return null;
+  }
+
+  const abaixo = card.viabilidade === "abaixo_do_piso";
+  const faixa =
+    card.valor_estimado_min !== null && card.valor_estimado_max !== null
+      ? `${emReais(card.valor_estimado_min)}–${emReais(card.valor_estimado_max)}`
+      : abaixo
+        ? "abaixo do piso"
+        : "acima do piso";
+
+  return (
+    <span
+      className={cn(
+        "mt-2 inline-block rounded-full px-2 py-0.5 text-xs",
+        abaixo
+          ? "bg-surface-muted text-fg-soft ring-1 ring-surface-border"
+          : "bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100",
+      )}
+      title={
+        abaixo
+          ? "O parecer estimou o caso abaixo do piso do escritório. É estimativa preliminar, sem documentos."
+          : "O parecer estimou o caso acima do piso do escritório. É estimativa preliminar, sem documentos."
+      }
+    >
+      {faixa}
+    </span>
+  );
+}
+
+/** Sem centavos: a estimativa não tem essa precisão, e o card não tem espaço. */
+function emReais(valor: number): string {
+  return valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    maximumFractionDigits: 0,
+  });
+}
+
 export function KanbanCardItem({ card, isOverlay = false, onAbrir }: KanbanCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: card.id, data: { card } });
@@ -78,7 +131,17 @@ export function KanbanCardItem({ card, isOverlay = false, onAbrir }: KanbanCardP
           {formatarTelefone(card.phone_number)}
         </p>
       )}
+      {/* Empresa e cargo antes do e-mail: num caso trabalhista, é isso que
+          identifica o caso. O e-mail serve para contato, não para triar. */}
+      {(card.empresa || card.cargo) && (
+        <p className="mt-1 truncate text-xs text-fg-soft" title={[card.empresa, card.cargo].filter(Boolean).join(" · ")}>
+          {[card.empresa, card.cargo].filter(Boolean).join(" · ")}
+        </p>
+      )}
+
       {card.email && <p className="truncate text-xs text-fg-muted">{card.email}</p>}
+
+      <Porte card={card} />
     </article>
   );
 }

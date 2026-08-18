@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **451 testes no backend, 190 no frontend.**
+Estado atual: **457 testes no backend, 190 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -125,8 +125,15 @@ para o advogado discordar.
 na conversa; ler o arquivo é configuração por agente (`anexos_habilitados`,
 desligada por padrão — cada anexo é uma chamada a mais à Evolution e tokens a
 mais no modelo). Desligado, o agente pede que a pessoa escreva, em vez de
-ignorar em silêncio. Áudio vai direto ao Gemini: a Anthropic não aceita áudio
-de entrada.
+ignorar em silêncio.
+
+**Áudio é transcrito antes de qualquer coisa, e o texto vira a mensagem.**
+Mandar o áudio como anexo da pergunta resolvia só o turno atual: o que ficava
+gravado era "[o cliente enviou um áudio]", e o relato se perdia para o resto
+do sistema — a memória lia a descrição no turno seguinte, e o parecer, que lê
+a transcrição das mensagens, nunca via o que a pessoa contou. Quem transcreve
+é o **Gemini**, e não há alternativa: a API da Anthropic não aceita áudio de
+entrada, então sem `GEMINI_API_KEY` o agente pede que a pessoa escreva.
 
 **Papéis: admin configura, operador atende.** O cadastro público fecha no
 primeiro usuário, que vira administrador — é o que resolve o bootstrap sem

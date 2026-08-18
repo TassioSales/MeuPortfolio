@@ -42,6 +42,15 @@ class Settings(BaseSettings):
     # sobe como antes, em vez de virar uma resposta de outro modelo em silêncio.
     gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
     gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
+    # Modelo da transcrição de áudio. Vazio usa o `gemini_model`.
+    #
+    # Fica separado porque transcrever é tarefa mais simples que conversar, e
+    # o modelo menor faz igual: no relato de teste, `gemini-flash-lite-latest`
+    # transcreveu tão bem quanto o `flash` em 3,4s contra 9,2s. Foi medido com
+    # fala sintética limpa — com áudio de WhatsApp de verdade, gravado na rua,
+    # a diferença pode aparecer. Por isso o padrão continua sendo o modelo
+    # maior, e trocar é uma variável de ambiente.
+    gemini_transcricao_model: str = os.getenv("GEMINI_TRANSCRICAO_MODEL", "")
 
     # Parecer preliminar para o escritório (ver `legal_analyst.py`).
     # São duas chamadas ao LLM por lead qualificado em vez de uma — desligue

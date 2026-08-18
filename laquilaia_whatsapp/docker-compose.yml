@@ -59,6 +59,7 @@
       # reserva fica desligada sem ninguÃ©m perceber.
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-flash-latest}
+      GEMINI_TRANSCRICAO_MODEL: ${GEMINI_TRANSCRICAO_MODEL}
       TEMPERATURE: ${TEMPERATURE:-0.7}
       # O parecer jurídico: se roda, em que modelo, e o piso a partir do qual
       # o caso comporta o trabalho do escritório. Sem repasse, o container não

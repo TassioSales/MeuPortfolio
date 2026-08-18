@@ -196,3 +196,98 @@ class TestMontagemDaMensagem:
         assert partes[0]["inlineData"]["mimeType"] == "application/pdf"
         assert partes[0]["inlineData"]["data"] == PDF["base64"]
         assert partes[1]["text"] == "olha a cláusula 8"
+
+
+class TestTranscricaoDoAudio:
+    """
+    Áudio vira texto **na conversa**, não só na resposta daquele turno.
+
+    Antes, o que ficava gravado era "[o cliente enviou um áudio]": o áudio ia
+    ao modelo como anexo, ele respondia, e o relato sumia. No turno seguinte a
+    memória lia a descrição e não o conteúdo; o parecer, que lê a transcrição
+    das mensagens, nunca via o que a pessoa contou. Num escritório trabalhista,
+    onde o cliente conta o caso inteiro falando, isso é perder o caso.
+    """
+
+    orquestrador = MessageOrchestrator()
+
+    RELATO = (
+        "Oi, boa tarde. Trabalhei dois anos no Supermercado Tático sem "
+        "carteira assinada e fui mandado embora sem receber nada."
+    )
+
+    def _gemini(self, configurado=True, transcricao=None, erro=None):
+        """O cliente Gemini, com a transcrição já decidida."""
+        gemini = MagicMock()
+        gemini.configured = configurado
+        # `is None` e não `or`: string vazia é justamente um dos casos
+        # testados, e `"" or RELATO` devolveria o relato.
+        gemini.transcrever = AsyncMock(
+            side_effect=erro,
+            return_value=self.RELATO if transcricao is None else transcricao,
+        )
+        return gemini
+
+    async def _preparar(self, gemini, midia=AUDIO):
+        with patch(
+            "app.services.whatsapp_service.whatsapp_service.baixar_midia",
+            new_callable=AsyncMock,
+            return_value=midia,
+        ):
+            with patch("app.services.message_orchestrator.llm_service") as llm:
+                llm.gemini = gemini
+                return await self.orquestrador._preparar_anexo(
+                    _agente(anexos=True), "audio", {"id": "M1"}, ""
+                )
+
+    async def test_o_relato_falado_vira_a_mensagem(self):
+        anexo, texto = await self._preparar(self._gemini())
+
+        assert self.RELATO in texto
+        # E o áudio não segue junto: já virou texto, mandá-lo de novo seria
+        # pagar duas vezes pela mesma informação.
+        assert anexo is None
+
+    async def test_o_texto_diz_que_veio_de_audio(self):
+        """
+        Quem abre o atendimento depois precisa saber que aquilo foi falado, não
+        digitado — muda como se lê a pontuação e os erros.
+        """
+        _, texto = await self._preparar(self._gemini())
+
+        assert "enviou um áudio" in texto
+
+    async def test_sem_chave_do_gemini_o_audio_segue_como_anexo(self):
+        """
+        Comportamento antigo, de propósito: pior que transcrever, melhor que
+        descartar. A API da Anthropic não aceita áudio, então sem Gemini não
+        há quem ouça.
+        """
+        anexo, texto = await self._preparar(self._gemini(configurado=False))
+
+        assert anexo == AUDIO
+        assert self.RELATO not in texto
+
+    async def test_transcricao_que_falha_nao_derruba_o_atendimento(self):
+        anexo, _ = await self._preparar(
+            self._gemini(erro=RuntimeError("cota estourada"))
+        )
+
+        assert anexo == AUDIO
+
+    async def test_transcricao_vazia_nao_vira_mensagem_vazia(self):
+        """
+        O modelo pode devolver string vazia. Sem esta guarda, a mensagem do
+        cliente viraria só o rótulo, e o áudio já teria sido descartado.
+        """
+        anexo, _ = await self._preparar(self._gemini(transcricao=""))
+
+        assert anexo == AUDIO
+
+    async def test_imagem_e_pdf_nao_passam_pela_transcricao(self):
+        gemini = self._gemini()
+
+        anexo, _ = await self._preparar(gemini, midia=PDF)
+
+        gemini.transcrever.assert_not_awaited()
+        assert anexo == PDF

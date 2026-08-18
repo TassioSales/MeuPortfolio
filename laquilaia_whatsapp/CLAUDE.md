@@ -304,10 +304,16 @@ Decidido em conversa, não relitigar a prioridade sem falar com ele.
 9. **Front mais profissional.** O dono acha que ainda parece protótipo; é
    trabalho de design, não de correção pontual.
 
-**Decisão de produto em aberto:** áudio. Cliente de escritório manda áudio o
-tempo todo, e hoje o agente pede para escrever (`anexos_habilitados`
-desligado, e a Anthropic não aceita áudio — vai pelo Gemini). Ligar custa a
-chave do Gemini e a transcrição.
+**Áudio: resolvido no código, pendente de ligar.** A transcrição existe e foi
+medida (ver §3). Falta `anexos_habilitados` no agente que atende e
+`GEMINI_API_KEY` no ambiente — sem os dois, o agente continua pedindo que a
+pessoa escreva.
+
+**Decisão de produto em aberto:** honorários. O atendimento concorrente diz
+"30% do que você ganhar, se não ganhar não paga nada"; o nosso prompt **proíbe
+falar de honorários**, porque o número é compromisso comercial do escritório e
+inventá-lo seria assumir dívida em nome dele. Se o dono passar a regra real,
+entra no prompt.
 
 ---
 
@@ -324,20 +330,19 @@ Em ordem de valor, e a primeira vale mais que as outras juntas.
    triagem não coletar como se espera, o resto está resolvendo o problema
    errado.
 
-2. **A tela de conexão existe, mas nunca falou com a Evolution de verdade.**
-   `/dashboard/whatsapp` mostra estado e QR, e os testes usam transporte
-   mockado — provam que **nós** lemos a resposta certa, não que a Evolution
-   manda uma. Há um histórico de versões devolvendo `{"count": 0}` sem QR e sem
-   erro (issues #2380 e #2385, nas 2.0.10 a 2.2.3; estamos na 2.3.7). Rode
-   `python -m scripts.sondar_evolution` antes de confiar na tela.
+2. ~~A tela de conexão nunca falou com a Evolution de verdade.~~ **Falou.** O
+   número foi pareado pelo QR do painel, mensagens reais entraram pelo webhook
+   e foram respondidas em ~8s. O `logout` também foi exercitado — por comando,
+   não pelo botão novo, que continua sem um clique de gente.
 
-4. **O áudio depende do Gemini.** A API da Anthropic não aceita áudio de
-   entrada, então o roteamento manda áudio direto para a reserva. Sem
-   `GEMINI_API_KEY`, áudio não é lido — o agente pede que a pessoa escreva.
+4. **Áudio real, em OGG/Opus, nunca passou.** A transcrição foi medida com
+   um WAV gerado por `espeak-ng`; o WhatsApp manda `audio/ogg; codecs=opus`.
+   A documentação do Gemini lista OGG como suportado, e não houve como
+   converter aqui (sem `ffmpeg`). É o primeiro risco a checar.
 
-5. **A stack em container nunca subiu.** Fora de container ela já rodou inteira
-   (ver `GUIA_DEPLOY.md` §6), mas falta o `docker compose up`: os `Dockerfile`,
-   o healthcheck do `depends_on` e a rede do compose seguem sem exercício.
+5. ~~A stack em container nunca subiu.~~ **Subiu**, e é como o dono roda hoje:
+   Postgres, Redis, Evolution, backend e frontend pelo compose, com o webhook
+   entregando na rede interna.
 
 6. **`stream_response` não tem consumidor.** Virou gerador assíncrono junto com
    o limitador, mas nenhum endpoint o usa — só os testes.

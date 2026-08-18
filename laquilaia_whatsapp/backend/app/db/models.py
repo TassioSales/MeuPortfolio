@@ -61,6 +61,13 @@ class Agent(Base):
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     nome = Column(String(255), nullable=False)
+    # O nome pelo qual o cliente conhece quem o atende.
+    #
+    # Diferente de `nome`, que é o rótulo interno ("Triagem trabalhista"):
+    # ninguém no WhatsApp deve ouvir "meu nome é Triagem trabalhista". Vazio é
+    # estado válido e comum — aí o agente se apresenta como o escritório, sem
+    # inventar nome próprio.
+    nome_atendente = Column(String(80), nullable=True)
     descricao = Column(Text, nullable=True)
     system_prompt = Column(Text, nullable=False)
     modelo = Column(String(100), default="claude-sonnet-5")

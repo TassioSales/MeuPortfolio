@@ -49,6 +49,14 @@ export interface Agent {
   id: string;
   user_id: string;
   nome: string;
+  /**
+   * Como o agente se apresenta ao cliente no WhatsApp.
+   *
+   * Diferente de `nome`, que é o rótulo interno: ninguém deve ouvir "meu nome
+   * é Triagem trabalhista". Nulo é normal — aí ele se apresenta como o
+   * escritório, sem inventar nome próprio.
+   */
+  nome_atendente: string | null;
   descricao: string | null;
   system_prompt: string;
   temperatura: number;
@@ -63,6 +71,7 @@ export interface Agent {
 /** Corpo de `POST /api/v1/agents` (schema `AgentCreate`). */
 export interface AgentInput {
   nome: string;
+  nome_atendente?: string | null;
   descricao?: string | null;
   system_prompt: string;
   temperatura: number;

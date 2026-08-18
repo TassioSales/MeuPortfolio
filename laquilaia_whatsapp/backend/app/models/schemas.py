@@ -48,6 +48,10 @@ class UserCreateByAdmin(UserBase):
 class AgentBase(BaseModel):
     """Base agent model."""
     nome: str = Field(..., min_length=1, max_length=255)
+    # O nome pelo qual o cliente conhece quem o atende — diferente de `nome`,
+    # que é o rótulo interno. Ninguém no WhatsApp deve ouvir "meu nome é
+    # Triagem trabalhista". Vazio faz o agente se apresentar como o escritório.
+    nome_atendente: Optional[str] = Field(default=None, max_length=80)
     descricao: Optional[str] = None
     system_prompt: str
     temperatura: float = Field(default=0.7, ge=0, le=2)
@@ -66,6 +70,7 @@ class AgentCreate(AgentBase):
 class AgentUpdate(BaseModel):
     """Agent update model."""
     nome: Optional[str] = None
+    nome_atendente: Optional[str] = Field(default=None, max_length=80)
     descricao: Optional[str] = None
     system_prompt: Optional[str] = None
     temperatura: Optional[float] = None

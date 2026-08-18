@@ -91,6 +91,29 @@ def texto_da_resposta(response) -> str:
     return "".join(partes)
 
 
+def sistema_do_agente(agent: Agent) -> str:
+    """
+    O system prompt como o modelo o recebe.
+
+    O nome do atendente entra aqui, e não no texto do prompt, porque o prompt é
+    do dono do agente: ele pode reescrevê-lo inteiro pelo painel, e um nome
+    escondido no meio do texto se perderia na primeira edição. Anexado ao fim,
+    ele sobrevive a qualquer prompt.
+
+    Sem nome configurado, nada é anexado — e o prompt manda não inventar um.
+    Atendente que inventa nome próprio é atendente que mente sobre quem é.
+    """
+    nome = (getattr(agent, "nome_atendente", None) or "").strip()
+    if not nome:
+        return agent.system_prompt
+
+    return (
+        f"{agent.system_prompt}\n\n"
+        f"Você atende com o nome {nome}. É assim que você se apresenta e "
+        f"assina, se precisar assinar."
+    )
+
+
 class LLMService:
     """Service for managing Claude LLM interactions."""
 
@@ -194,7 +217,7 @@ class LLMService:
         modelo = model or self.model
         response = self.client.messages.create(
             model=modelo,
-            system=agent.system_prompt,
+            system=sistema_do_agente(agent),
             messages=messages,
             **self._parametros_do_modelo(agent, modelo),
         )
@@ -255,7 +278,7 @@ class LLMService:
 
         try:
             texto, uso = await self.gemini.generate(
-                system_prompt=agent.system_prompt,
+                system_prompt=sistema_do_agente(agent),
                 user_message=user_message,
                 conversation_history=conversation_history,
                 max_tokens=agent.max_tokens or settings.max_tokens,
@@ -376,7 +399,7 @@ class LLMService:
             # Stream from Claude API
             with self.client.messages.stream(
                 model=self.model,
-                system=agent.system_prompt,
+                system=sistema_do_agente(agent),
                 messages=messages,
                 **self._parametros_do_modelo(agent),
             ) as stream:

@@ -10,6 +10,7 @@ const AGENT: Agent = {
   id: "agent-1",
   user_id: "user-1",
   nome: "Qualificador",
+  nome_atendente: null,
   descricao: "Qualifica leads",
   system_prompt: "Você é um assistente...",
   temperatura: 0.7,
@@ -51,6 +52,8 @@ describe("AgentForm", () => {
     await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
     expect(onSubmit).toHaveBeenCalledWith({
       nome: "Novo agente",
+      // Sem nome de atendente, o agente se apresenta como o escritório.
+      nome_atendente: null,
       descricao: null,
       system_prompt: "Instruções",
       temperatura: 0.7,
@@ -186,5 +189,41 @@ describe("AgentForm", () => {
 
     expect(onCancel).toHaveBeenCalledTimes(1);
     expect(onSubmit).not.toHaveBeenCalled();
+  });
+});
+
+describe("Nome do atendente", () => {
+  /**
+   * Diferente do `nome`, que é o rótulo interno: ninguém no WhatsApp deve
+   * ouvir "meu nome é Triagem trabalhista".
+   */
+  it("envia o nome digitado", async () => {
+    const onSubmit = jest.fn().mockResolvedValue(undefined);
+    render(<AgentForm onSubmit={onSubmit} onCancel={() => {}} />);
+
+    await userEvent.type(screen.getByLabelText("Nome"), "Triagem trabalhista");
+    await userEvent.type(
+      screen.getByLabelText(/Nome do atendente/),
+      "Fernanda",
+    );
+    await userEvent.type(screen.getByLabelText(/System prompt/i), "Você atende.");
+    await userEvent.click(screen.getByRole("button", { name: /salvar|criar/i }));
+
+    await waitFor(() => expect(onSubmit).toHaveBeenCalled());
+    expect(onSubmit.mock.calls[0][0].nome_atendente).toBe("Fernanda");
+  });
+
+  it("em branco vira null, e não string vazia", async () => {
+    // "Sem nome" precisa ser um estado só. Dois jeitos de dizer a mesma coisa
+    // é como nasce um `if` errado do outro lado.
+    const onSubmit = jest.fn().mockResolvedValue(undefined);
+    render(<AgentForm onSubmit={onSubmit} onCancel={() => {}} />);
+
+    await userEvent.type(screen.getByLabelText("Nome"), "Triagem");
+    await userEvent.type(screen.getByLabelText(/System prompt/i), "Você atende.");
+    await userEvent.click(screen.getByRole("button", { name: /salvar|criar/i }));
+
+    await waitFor(() => expect(onSubmit).toHaveBeenCalled());
+    expect(onSubmit.mock.calls[0][0].nome_atendente).toBeNull();
   });
 });

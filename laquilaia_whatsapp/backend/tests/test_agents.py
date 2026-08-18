@@ -475,3 +475,64 @@ class TestAgentVariables:
         data = response.json()
         assert len(data) >= 1
         assert any(v["nome_variavel"] == "status_lead" for v in data)
+
+
+class TestNomeDoAtendente:
+    """
+    O nome pelo qual o cliente conhece quem o atende.
+
+    Diferente de `nome`, que é o rótulo interno: ninguém no WhatsApp deve ouvir
+    "meu nome é Triagem trabalhista".
+    """
+
+    def setup_method(self, method):
+        self.email = f"atendente-{method.__name__}@example.com"
+        criar_acesso(client, self.email, "TestPassword123!", "Dono")
+        r = client.post(
+            "/api/v1/auth/login",
+            json={"email": self.email, "senha": "TestPassword123!"},
+        )
+        self.headers = {"Authorization": f"Bearer {r.json()['access_token']}"}
+
+    def _criar(self, **extra):
+        corpo = {
+            "nome": "Triagem trabalhista",
+            "system_prompt": "x",
+            "temperatura": 0.7,
+            "max_tokens": 1024,
+            **extra,
+        }
+        return client.post("/api/v1/agents", json=corpo, headers=self.headers)
+
+    def test_o_nome_do_atendente_vai_e_volta(self):
+        criado = self._criar(nome_atendente="Fernanda")
+
+        assert criado.status_code in (200, 201), criado.text
+        assert criado.json()["nome_atendente"] == "Fernanda"
+
+        lido = client.get(
+            f"/api/v1/agents/{criado.json()['id']}", headers=self.headers
+        )
+        assert lido.json()["nome_atendente"] == "Fernanda"
+
+    def test_agente_sem_nome_de_atendente_continua_valendo(self):
+        """
+        Vazio é estado normal, não pendência: o agente se apresenta como o
+        escritório. Exigir o campo quebraria todo agente já criado.
+        """
+        criado = self._criar()
+
+        assert criado.status_code in (200, 201), criado.text
+        assert criado.json()["nome_atendente"] is None
+
+    def test_da_para_batizar_depois(self):
+        agente = self._criar().json()
+
+        atualizado = client.put(
+            f"/api/v1/agents/{agente['id']}",
+            json={"nome_atendente": "Fernanda"},
+            headers=self.headers,
+        )
+
+        assert atualizado.status_code == 200, atualizado.text
+        assert atualizado.json()["nome_atendente"] == "Fernanda"

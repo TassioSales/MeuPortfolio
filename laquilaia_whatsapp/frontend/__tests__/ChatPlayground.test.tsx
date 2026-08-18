@@ -21,6 +21,7 @@ const AGENT: Agent = {
   id: "agent-1",
   user_id: "user-1",
   nome: "Qualificador",
+  nome_atendente: null,
   descricao: null,
   system_prompt: "Você é um assistente.",
   temperatura: 0.7,

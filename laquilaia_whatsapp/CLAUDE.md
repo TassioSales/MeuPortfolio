@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **440 testes no backend, 186 no frontend.**
+Estado atual: **448 testes no backend, 186 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -96,6 +96,24 @@ identidade do caso, porque é o que o sistema reconhece sozinho. O parecer
 arquiva o caso pela `## Ficha`, que por isso é a **segunda** seção do prompt:
 no fim da lista ela seria a primeira coisa perdida quando o modelo estoura o
 teto de saída.
+
+**Só trabalhista, e a agente informa.** O escritório atende exclusivamente
+direito do trabalho: o menu de sete áreas saiu do prompt, e quem chega com
+outro assunto é registrado como `nao_qualificado` e encaminhado a um humano —
+não é dispensado na porta.
+
+A regra sobre o que a agente pode dizer **mudou**, e é a decisão mais delicada
+do projeto. A versão anterior proibia contar à pessoa o que estava em jogo; o
+resultado era um atendimento que só perguntava, e o dono viu um concorrente
+fazendo diferente. Agora a agente **informa, sempre atribuindo**: "em casos
+assim entram vínculo, FGTS com multa e horas extras — quem confirma o seu, com
+os documentos, é o advogado". A atribuição vai na mesma mensagem, não em
+outra.
+
+Continua proibido, sem exceção: prometer resultado, garantir ganho, cravar
+valor de indenização (nem faixa) e **falar de honorários** — este último
+porque é decisão comercial do escritório, não do prompt. Um percentual
+inventado aqui vira compromisso assumido com o cliente.
 
 **O porte econômico etiqueta, não descarta.** O parecer estima uma faixa em
 reais e a compara com `CASO_VALOR_MINIMO` (R$ 15.000 por padrão), sempre pelo

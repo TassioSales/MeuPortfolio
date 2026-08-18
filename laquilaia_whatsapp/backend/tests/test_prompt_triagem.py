@@ -18,10 +18,17 @@ from app.services.lead_processor import lead_processor
 class TestLimitesDoAtendimento:
     """O que a triagem não pode fazer, porque quem responde por isso é o advogado."""
 
-    def test_proibe_dar_parecer_e_estimar_valor(self):
-        assert 'dizer se a pessoa "tem direito"' in PROMPT_TRIAGEM_JURIDICA
-        assert "estimar valores de indenização" in PROMPT_TRIAGEM_JURIDICA
-        assert "prometer resultado" in PROMPT_TRIAGEM_JURIDICA
+    def test_proibe_prometer_e_cravar_valor(self):
+        assert "prometer resultado, ganho ou prazo de processo" in PROMPT_TRIAGEM_JURIDICA
+        assert "cravar valor de indenização" in PROMPT_TRIAGEM_JURIDICA
+        assert "vai ganhar" in PROMPT_TRIAGEM_JURIDICA
+
+    def test_proibe_falar_de_honorarios(self):
+        """
+        Quanto o escritório cobra é decisão comercial dele, não do prompt.
+        Um número inventado aqui vira compromisso assumido com o cliente.
+        """
+        assert "falar de honorários" in PROMPT_TRIAGEM_JURIDICA
 
     def test_proibe_dizer_ao_cliente_que_o_caso_e_pequeno(self):
         """
@@ -35,6 +42,78 @@ class TestLimitesDoAtendimento:
 
     def test_deixa_claro_que_nao_e_o_advogado(self):
         assert "Você NÃO é o advogado" in PROMPT_TRIAGEM_JURIDICA
+
+
+class TestInformarComAtribuicao:
+    """
+    O ponto que mudou o atendimento inteiro.
+
+    Antes o prompt proibia dizer à pessoa o que estava em jogo, e o resultado
+    era um atendimento que só perguntava: ela contava dois anos sem carteira e
+    recebia outra pergunta. Agora informa — sempre atribuindo ao advogado.
+    """
+
+    def test_manda_informar_em_vez_de_se_esconder(self):
+        assert "Não se esconda atrás do advogado" in PROMPT_TRIAGEM_JURIDICA
+        assert "não está atendendo, está empurrando" in PROMPT_TRIAGEM_JURIDICA
+
+    def test_exige_a_atribuicao_na_mesma_mensagem(self):
+        """
+        Informar sem atribuir compromete quem assina. É a diferença entre
+        "você tem direito a R$ 30 mil" e "em casos assim entram X e Y; quem
+        confirma o seu é o advogado".
+        """
+        assert "a atribuição, na mesma mensagem" in PROMPT_TRIAGEM_JURIDICA
+        assert "Quem confirma" in PROMPT_TRIAGEM_JURIDICA
+
+    def test_o_espelho_existe_e_tem_os_quatro_passos(self):
+        """
+        A mensagem que devolve o que foi entendido e explica o que está em
+        jogo. Sem ela, a parte consultiva vira intenção sem lugar no roteiro.
+        """
+        assert "**4. O espelho.**" in PROMPT_TRIAGEM_JURIDICA
+        assert "atribua ao advogado, na mesma mensagem" in PROMPT_TRIAGEM_JURIDICA
+
+    def test_manda_citar_so_o_que_os_fatos_sustentam(self):
+        """Listar todas as verbas em todo caso vira folheto."""
+        assert "só o que os fatos sustentam" in PROMPT_TRIAGEM_JURIDICA
+
+    def test_tem_vocabulario_para_informar(self):
+        """
+        Sem a lista, o modelo inventa nome de verba ou fica no genérico. Ela é
+        o repertório, não um roteiro para recitar inteiro.
+        """
+        for verba in (
+            "reconhecimento de vínculo",
+            "multa de 40%",
+            "horas extras",
+            "adicional noturno",
+            "insalubridade",
+            "dano moral",
+        ):
+            assert verba in PROMPT_TRIAGEM_JURIDICA
+
+
+class TestApenasTrabalhista:
+    def test_o_escritorio_e_de_trabalhista(self):
+        assert "exclusivamente causas trabalhistas" in PROMPT_TRIAGEM_JURIDICA
+
+    def test_nao_oferece_menu_de_areas(self):
+        """
+        Perguntar "seu caso é sobre o quê?" a quem escreveu por causa de uma
+        demissão é burocracia. O menu servia a um escritório generalista.
+        """
+        assert "Não ofereça menu de áreas" in PROMPT_TRIAGEM_JURIDICA
+        assert "Previdenciário (INSS" not in PROMPT_TRIAGEM_JURIDICA
+
+    def test_outro_assunto_nao_e_dispensado_na_porta(self):
+        """
+        Quem chega com divórcio não pode levar um "não é aqui" e ficar sem
+        resposta: registra-se o contato e um humano indica o caminho.
+        """
+        assert "não a dispense" in PROMPT_TRIAGEM_JURIDICA
+        assert "alguém retorna para" in PROMPT_TRIAGEM_JURIDICA
+        assert "nao_qualificado" in PROMPT_TRIAGEM_JURIDICA
 
 
 class TestFormatoDaConversa:
@@ -65,21 +144,17 @@ class TestColetaDosNumeros:
     do escritório — e o advogado descobre na primeira consulta.
     """
 
-    def test_pede_o_que_dimensiona_cada_area(self):
+    def test_pede_o_que_dimensiona_um_caso_trabalhista(self):
+        um_paragrafo = PROMPT_TRIAGEM_JURIDICA.replace("\n", " ")
         for dado in (
-            "último salário",          # trabalhista
+            "último salário",
             "tempo de casa",
-            "quantas \\\npor semana",  # horas extras
-            "quanto custou",           # consumidor
-            "tempo de contribuição",   # previdenciário
-            "bens em comum",           # família
-            "valor envolvido",         # cível
+            "quantas por semana",       # horas extras
+            "carteira assinada",
+            "salário por fora",
+            "o que já foi pago",
         ):
-            assert dado.replace("\\\n", "") in PROMPT_TRIAGEM_JURIDICA.replace("\n", " ")
-
-    def test_nao_pergunta_dinheiro_em_caso_criminal(self):
-        """Perguntar valores a quem está respondendo processo criminal é surdez."""
-        assert "**não pergunte valores**" in PROMPT_TRIAGEM_JURIDICA
+            assert dado in um_paragrafo
 
     def test_manda_registrar_o_numero_como_veio(self):
         """

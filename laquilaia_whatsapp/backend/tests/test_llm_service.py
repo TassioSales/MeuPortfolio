@@ -697,3 +697,52 @@ class TestConversationHistoryRetrieval:
         assert history[0]["content"] == "Hello"
         assert history[1]["role"] == "assistant"
         assert history[1]["content"] == "Hi there!"
+
+
+class TestSistemaDoAgente:
+    """
+    O nome do atendente entra no system prompt, e não no texto do prompt.
+
+    O prompt é do dono do agente: ele pode reescrevê-lo inteiro pelo painel, e
+    um nome escondido no meio do texto se perderia na primeira edição.
+    """
+
+    def _agente(self, nome_atendente=None, prompt="Você é o atendimento."):
+        a = MagicMock()
+        a.system_prompt = prompt
+        a.nome_atendente = nome_atendente
+        return a
+
+    def test_com_nome_o_modelo_recebe_o_nome(self):
+        from app.services.llm_service import sistema_do_agente
+
+        sistema = sistema_do_agente(self._agente("Fernanda"))
+
+        assert "Você é o atendimento." in sistema
+        assert "Fernanda" in sistema
+
+    def test_sem_nome_o_prompt_passa_intacto(self):
+        """
+        Nada anexado: o prompt manda não inventar nome, e uma frase vazia
+        ("Você atende com o nome .") seria pior que silêncio.
+        """
+        from app.services.llm_service import sistema_do_agente
+
+        assert sistema_do_agente(self._agente()) == "Você é o atendimento."
+
+    def test_nome_só_com_espaços_conta_como_sem_nome(self):
+        from app.services.llm_service import sistema_do_agente
+
+        assert sistema_do_agente(self._agente("   ")) == "Você é o atendimento."
+
+    def test_agente_antigo_sem_o_campo_nao_quebra(self):
+        """
+        Objeto sem `nome_atendente` — agente carregado antes da migração, ou
+        mock de teste antigo. Deve seguir como se não tivesse nome.
+        """
+        from app.services.llm_service import sistema_do_agente
+
+        class AgenteVelho:
+            system_prompt = "Você é o atendimento."
+
+        assert sistema_do_agente(AgenteVelho()) == "Você é o atendimento."

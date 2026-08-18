@@ -48,7 +48,11 @@ const ESCALAS_PROPRIAS: Record<string, string[]> = (() => {
   for (const nome of ["brand", "ink"]) {
     const bloco = new RegExp(`${nome}:\\s*\\{([^}]*)\\}`, "s").exec(config);
     if (bloco) {
-      escalas[nome] = [...bloco[1].matchAll(/(\d+):/g)].map((m) => m[1]);
+      const tons: string[] = [];
+      const numeros = /(\d+):/g;
+      let m: RegExpExecArray | null;
+      while ((m = numeros.exec(bloco[1])) !== null) tons.push(m[1]);
+      escalas[nome] = tons;
     }
   }
   return escalas;
@@ -65,7 +69,14 @@ describe("cores no tema escuro", () => {
     for (const arquivo of ARQUIVOS) {
       const fonte = semComentarios(fs.readFileSync(path.join(RAIZ, arquivo), "utf-8"));
       // Cada `<input`/`<textarea` até o fechamento da tag.
-      for (const m of fonte.matchAll(/<(input|textarea)\b[^>]*?\/?>/gs)) {
+      //
+      // `[\s\S]` em vez da flag `s`, e `exec` em vez de `matchAll`: o
+      // `target` do tsconfig é anterior a ES2018 e as duas coisas não
+      // compilam. Teste que não compila reprova o `npm run typecheck`, que é
+      // parte da CI.
+      const tags = /<(input|textarea)\b[^>]*?\/?>/g;
+      let m: RegExpExecArray | null;
+      while ((m = tags.exec(fonte)) !== null) {
         const tag = m[0];
         if (!/className=/.test(tag)) continue;
         if (!/\bbg-[\w[\]/.-]+/.test(tag)) semFundo.push(`${arquivo}: <${m[1]}>`);
@@ -85,7 +96,9 @@ describe("cores no tema escuro", () => {
     for (const arquivo of ARQUIVOS) {
       const fonte = semComentarios(fs.readFileSync(path.join(RAIZ, arquivo), "utf-8"));
       fonte.split("\n").forEach((linha, i) => {
-        for (const m of linha.matchAll(/(?<!dark:)\bbg-(\w+)-(50|100)\b/g)) {
+        const tarjas = /(?<!dark:)\bbg-(\w+)-(50|100)\b/g;
+        let m: RegExpExecArray | null;
+        while ((m = tarjas.exec(linha)) !== null) {
           const cor = m[1];
           if (!new RegExp(`dark:bg-${cor}-`).test(linha)) {
             semPar.push(`${arquivo}:${i + 1} — ${m[0]}`);
@@ -107,7 +120,9 @@ describe("cores no tema escuro", () => {
       const fonte = semComentarios(fs.readFileSync(path.join(RAIZ, arquivo), "utf-8"));
       fonte.split("\n").forEach((linha, i) => {
         for (const [escala, tons] of Object.entries(ESCALAS_PROPRIAS)) {
-          for (const m of linha.matchAll(new RegExp(`\\b${escala}-(\\d+)\\b`, "g"))) {
+          const usos = new RegExp(`\\b${escala}-(\\d+)\\b`, "g");
+          let m: RegExpExecArray | null;
+          while ((m = usos.exec(linha)) !== null) {
             if (!tons.includes(m[1])) {
               inexistentes.push(`${arquivo}:${i + 1} — ${m[0]}`);
             }

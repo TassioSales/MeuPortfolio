@@ -61,6 +61,7 @@ function validate(data: AgentInput): FieldErrors {
 
 export function AgentForm({ agent, onSubmit, onCancel }: AgentFormProps) {
   const [nome, setNome] = useState(agent?.nome ?? "");
+  const [nomeAtendente, setNomeAtendente] = useState(agent?.nome_atendente ?? "");
   const [descricao, setDescricao] = useState(agent?.descricao ?? "");
   const [systemPrompt, setSystemPrompt] = useState(agent?.system_prompt ?? "");
   const [temperatura, setTemperatura] = useState(
@@ -81,6 +82,9 @@ export function AgentForm({ agent, onSubmit, onCancel }: AgentFormProps) {
 
     const data: AgentInput = {
       nome: nome.trim(),
+      // Vazio vira `null`, e não string vazia: "sem nome" é um estado só, e
+      // dois jeitos de dizer a mesma coisa é como nasce um `if` errado.
+      nome_atendente: nomeAtendente.trim() || null,
       descricao: descricao.trim() || null,
       system_prompt: systemPrompt,
       // Campo vazio precisa virar NaN: `Number("")` é 0, o que passaria
@@ -113,6 +117,16 @@ export function AgentForm({ agent, onSubmit, onCancel }: AgentFormProps) {
         value={nome}
         onChange={(e) => setNome(e.target.value)}
         error={fieldErrors.nome}
+      />
+
+      <Input
+        label="Nome do atendente (opcional)"
+        name="nome_atendente"
+        placeholder="Ex: Fernanda"
+        maxLength={80}
+        value={nomeAtendente}
+        onChange={(e) => setNomeAtendente(e.target.value)}
+        hint="Como o agente se apresenta ao cliente no WhatsApp. Em branco, ele se apresenta como o escritório — e nunca inventa um nome."
       />
 
       <Input

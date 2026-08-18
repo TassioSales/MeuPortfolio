@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **448 testes no backend, 186 no frontend.**
+Estado atual: **451 testes no backend, 190 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -213,6 +213,7 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Responder mensagem de grupo | O `@g.us` no remoteJid: sem filtro, o agente responde ao grupo inteiro e qualifica o grupo como lead |
 | `textMessage` no envio da Evolution | É o nome da v1. A v2 responde `instance requires property "text"` e devolve 400 — depois de a chamada ao LLM já ter sido paga |
 | Arrancar o DDI do número antes de enviar | O `remoteJid` chega com `55` e é o identificador do contato: sem ele a resposta vai para outra pessoa. E mutilava DDD 55 (Santa Maria/RS) |
+| Consultar o banco dentro do laço dos cards | O board fazia `select(Lead)` e `select(LeadDetails)` **por card**: um funil com 150 leads numa coluna passava de trezentas idas ao banco, e cada card novo somava duas. Junte no `join` e agrupe em Python — `tests/test_kanban.py` conta as consultas |
 | Tarefa de segundo plano que ninguém espera, em teste | A tarefa abre sessão própria; quando o loop do teste fecha com ela pendente, a transação continua aberta e o `TRUNCATE` do teardown fica esperando por ela — **a suíte inteira trava**, sem erro. Nos testes, ou se espera a tarefa (`asyncio.gather(*_TAREFAS)`) ou se troca `_agendar_analise` pelo mock |
 | Campo sem classe de fundo | Sem `bg-`, o navegador pinta o campo com o padrão dele (branco) enquanto `text-fg` no escuro é claro: **texto claro em fundo branco**, e quem digita não lê o que escreve. Aconteceu no campo do chat de teste. `__tests__/tema-escuro.test.ts` trava a regra |
 | Tom de escala própria que não existe | `brand` vai só até 900. `bg-brand-950` não gera classe nenhuma — o Tailwind ignora **em silêncio**, o fundo claro fica e o texto escuro vira claro por cima dele. O silêncio é o que torna isto perigoso |

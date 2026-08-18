@@ -421,3 +421,226 @@ class TestKanbanIntegration:
         )
         assert stats_response.status_code == 200
         assert stats_response.json()["total_leads"] == 0
+
+
+class TestCardMostraOCaso:
+    """
+    O card precisa dizer de que caso se trata sem ser aberto.
+
+    "Supermercado Tático · Repositor · R$ 90–280 mil" diz a um advogado o que
+    ele precisa para decidir se pega o caso. Nome e score sozinhos obrigam a
+    abrir card por card — que é o que acontece num funil com cento e cinquenta
+    leads.
+    """
+
+    def setup_method(self, method):
+        self.email = f"card-{method.__name__}@example.com"
+        criar_acesso(client, self.email, "TestPassword123!", "Dono")
+        r = client.post(
+            "/api/v1/auth/login",
+            json={"email": self.email, "senha": "TestPassword123!"},
+        )
+        self.headers = {"Authorization": f"Bearer {r.json()['access_token']}"}
+        criacao = client.post(
+            "/api/v1/agents",
+            json={
+                "nome": "Triagem",
+                "system_prompt": "x",
+                "temperatura": 0.7,
+                "max_tokens": 1024,
+            },
+            headers=self.headers,
+        )
+        assert criacao.status_code in (200, 201), criacao.text
+        self.agent_id = criacao.json()["id"]
+
+    async def _semear(self, com_caso: bool = True):
+        """Um lead com card, bloco de qualificação e (opcionalmente) parecer."""
+        import json as _json
+
+        from sqlalchemy import select as _select
+
+        from app.db.database import AsyncSessionLocal
+        from app.db.models import (
+            Caso,
+            Conversation,
+            KanbanCard,
+            KanbanColumn,
+            Lead,
+            LeadDetails,
+        )
+
+        async with AsyncSessionLocal() as db:
+            # `Lead.conversation_id` é NOT NULL: lead sem conversa não existe
+            # neste sistema, porque todo lead nasce de alguém escrevendo.
+            db.add(
+                Conversation(
+                    id="card-conv",
+                    agent_id=self.agent_id,
+                    phone_number="5561955555555",
+                    status="ativa",
+                )
+            )
+            await db.flush()
+            lead = Lead(
+                id="card-lead",
+                conversation_id="card-conv",
+                phone_number="5561955555555",
+                nome="Tássio Sales",
+                status_funil="qualificado",
+            )
+            db.add(lead)
+            db.add(
+                LeadDetails(
+                    lead_id="card-lead",
+                    score_qualificacao=85,
+                    dados_json=_json.dumps(
+                        {
+                            "nome_cliente": "Tássio Sales",
+                            "empresa": "Supermercado Tático",
+                            "cargo": "Repositor",
+                            "dados_economicos": "salário R$ 1.800/mês",
+                        }
+                    ),
+                )
+            )
+            if com_caso:
+                db.add(
+                    Caso(
+                        lead_id="card-lead",
+                        area="trabalhista",
+                        valor_estimado_min=90000,
+                        valor_estimado_max=280000,
+                        viabilidade="acima_do_piso",
+                    )
+                )
+            coluna = (
+                await db.execute(
+                    _select(KanbanColumn)
+                    .where(KanbanColumn.agent_id == self.agent_id)
+                    .order_by(KanbanColumn.ordem)
+                )
+            ).scalars().first()
+            db.add(KanbanCard(column_id=coluna.id, lead_id="card-lead", ordem=0))
+            await db.commit()
+
+    def _card_do_board(self) -> dict:
+        resposta = client.get(
+            f"/api/v1/agents/{self.agent_id}/kanban", headers=self.headers
+        )
+        assert resposta.status_code == 200, resposta.text
+        board = resposta.json()
+        cards = [c for col in board["columns"] for c in col["cards"]]
+        assert len(cards) == 1
+        return cards[0]
+
+    @pytest.mark.asyncio
+    async def test_traz_empresa_cargo_e_porte(self):
+        await self._semear()
+
+        card = self._card_do_board()
+
+        assert card["empresa"] == "Supermercado Tático"
+        assert card["cargo"] == "Repositor"
+        assert card["valor_estimado_min"] == 90000
+        assert card["valor_estimado_max"] == 280000
+        assert card["viabilidade"] == "acima_do_piso"
+
+    @pytest.mark.asyncio
+    async def test_sem_parecer_ainda_o_card_aparece(self):
+        """
+        O parecer roda em segundo plano e leva ~2 minutos. Nesses minutos o
+        card já existe no funil, e empresa e cargo — que vêm da triagem — já
+        estão lá. Porte vazio é estado normal, não erro.
+        """
+        await self._semear(com_caso=False)
+
+        card = self._card_do_board()
+
+        assert card["empresa"] == "Supermercado Tático"
+        assert card["valor_estimado_min"] is None
+        assert card["viabilidade"] is None
+
+    @pytest.mark.asyncio
+    async def test_o_board_nao_consulta_o_banco_por_card(self):
+        """
+        Eram duas consultas por card: um funil com 150 leads numa coluna fazia
+        mais de trezentas idas ao banco, e cada card novo somava duas. Agora
+        são três, qualquer que seja o tamanho do funil.
+
+        O teste conta as consultas com dez cards; se voltar a ser por card,
+        o número explode e ele acusa.
+        """
+        import json as _json
+
+        from sqlalchemy import event, select as _select
+
+        from app.db.database import AsyncSessionLocal, engine
+        from app.db.models import (
+            Conversation,
+            KanbanCard,
+            KanbanColumn,
+            Lead,
+            LeadDetails,
+        )
+
+        async with AsyncSessionLocal() as db:
+            coluna = (
+                await db.execute(
+                    _select(KanbanColumn)
+                    .where(KanbanColumn.agent_id == self.agent_id)
+                    .order_by(KanbanColumn.ordem)
+                )
+            ).scalars().first()
+            for i in range(10):
+                db.add(
+                    Conversation(
+                        id=f"conv-{i}",
+                        agent_id=self.agent_id,
+                        phone_number=f"556199900{i:04d}",
+                        status="ativa",
+                    )
+                )
+                await db.flush()
+                db.add(
+                    Lead(
+                        id=f"lead-{i}",
+                        conversation_id=f"conv-{i}",
+                        phone_number=f"556199900{i:04d}",
+                        nome=f"Cliente {i}",
+                        status_funil="qualificado",
+                    )
+                )
+                db.add(
+                    LeadDetails(
+                        lead_id=f"lead-{i}",
+                        score_qualificacao=70,
+                        dados_json=_json.dumps({"empresa": "Empresa X", "cargo": "Cargo Y"}),
+                    )
+                )
+                db.add(KanbanCard(column_id=coluna.id, lead_id=f"lead-{i}", ordem=i))
+            await db.commit()
+
+        consultas = []
+
+        def contar(conn, cursor, statement, *args):
+            if statement.lstrip().upper().startswith("SELECT"):
+                consultas.append(statement)
+
+        event.listen(engine.sync_engine, "before_cursor_execute", contar)
+        try:
+            board = client.get(
+                f"/api/v1/agents/{self.agent_id}/kanban", headers=self.headers
+            ).json()
+        finally:
+            event.remove(engine.sync_engine, "before_cursor_execute", contar)
+
+        cards = [c for col in board["columns"] for c in col["cards"]]
+        assert len(cards) == 10
+
+        # Usuário, agente, colunas, cards+leads+detalhes, casos: um punhado
+        # fixo. Com duas por card seriam mais de vinte.
+        assert len(consultas) <= 8, (
+            f"{len(consultas)} consultas para 10 cards — voltou a consultar por card:\n"
+            + "\n".join(consultas)
+        )

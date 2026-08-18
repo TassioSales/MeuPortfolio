@@ -12,6 +12,7 @@ import { renderHook, act } from "@testing-library/react";
 import * as kanbanApi from "@/lib/kanban";
 import { useKanban } from "@/hooks/useKanban";
 import { KanbanBoard } from "@/components/KanbanBoard";
+import { KanbanCardItem } from "@/components/KanbanCard";
 import { setStoredToken, clearStoredTokens } from "@/lib/tokens";
 import type { KanbanBoard as Board } from "@/types";
 
@@ -305,5 +306,70 @@ describe("Dossiê do contato", () => {
     await userEvent.click(await screen.findByRole("link", { name: "+55 61 99999-0001" }));
 
     expect(screen.queryByText(/Porte estimado/)).not.toBeInTheDocument();
+  });
+});
+
+
+describe("O card diz de que caso se trata", () => {
+  /**
+   * Nome e score obrigam a abrir card por card para descobrir o assunto — e
+   * um funil real tem cento e cinquenta deles numa coluna só. Empresa, cargo
+   * e porte resolvem a triagem no olho.
+   */
+  const CARD = {
+    id: "lead-1",
+    nome: "Tássio Sales",
+    email: null,
+    phone_number: "5561955555555",
+    score_qualificacao: 85,
+    status_funil: "qualificado",
+    ordem: 0,
+    empresa: "Supermercado Tático",
+    cargo: "Repositor",
+    valor_estimado_min: 90000,
+    valor_estimado_max: 280000,
+    viabilidade: "acima_do_piso" as const,
+  };
+
+  it("mostra empresa, cargo e a faixa de valor", () => {
+    render(<KanbanCardItem card={CARD} />);
+
+    expect(screen.getByText("Supermercado Tático · Repositor")).toBeInTheDocument();
+    // Sem centavos: a estimativa não tem essa precisão.
+    expect(screen.getByText(/90\.000/)).toBeInTheDocument();
+    expect(screen.getByText(/280\.000/)).toBeInTheDocument();
+  });
+
+  it("sem parecer ainda, o card aparece sem tarja de porte", () => {
+    // O parecer roda dois minutos depois de o card nascer. Nesse intervalo,
+    // "sem porte" é estado normal — não é caso sem valor.
+    render(
+      <KanbanCardItem
+        card={{
+          ...CARD,
+          valor_estimado_min: null,
+          valor_estimado_max: null,
+          viabilidade: null,
+        }}
+      />,
+    );
+
+    expect(screen.getByText("Supermercado Tático · Repositor")).toBeInTheDocument();
+    expect(screen.queryByText(/piso/)).not.toBeInTheDocument();
+  });
+
+  it("indeterminado não vira tarja", () => {
+    // Tarja em todo card não informa nada.
+    render(<KanbanCardItem card={{ ...CARD, viabilidade: "indeterminado" }} />);
+
+    expect(screen.queryByText(/piso/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/90\.000/)).not.toBeInTheDocument();
+  });
+
+  it("sem empresa nem cargo, não sobra linha vazia", () => {
+    render(<KanbanCardItem card={{ ...CARD, empresa: null, cargo: null }} />);
+
+    expect(screen.queryByText("·")).not.toBeInTheDocument();
+    expect(screen.getByText("Tássio Sales")).toBeInTheDocument();
   });
 });

@@ -219,6 +219,19 @@ export interface KanbanCard {
   score_qualificacao: number;
   status_funil: string;
   ordem: number;
+  /**
+   * Onde a pessoa trabalhava e o que fazia lá.
+   *
+   * Num caso trabalhista, essas duas linhas são a identidade do caso —
+   * "Supermercado Tático · Repositor" diz a um advogado o que um score de 85
+   * não diz. Vêm da triagem, então existem desde que o card nasce.
+   */
+  empresa: string | null;
+  cargo: string | null;
+  /** Do parecer. Nulos nos primeiros minutos, enquanto ele não rodou. */
+  valor_estimado_min: number | null;
+  valor_estimado_max: number | null;
+  viabilidade: Viabilidade | null;
 }
 
 /** Resposta de `GET /agents/{id}/kanban/leads/{leadId}` (`LeadDossie`). */

@@ -148,3 +148,15 @@ export function IconeClientes(props: IconProps) {
     </Base>
   );
 }
+
+/** Escritório: um prédio com a porta no meio. */
+export function IconeEscritorio(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M4 20V5.5A1.5 1.5 0 0 1 5.5 4h9A1.5 1.5 0 0 1 16 5.5V20" />
+      <path d="M16 10h2.5A1.5 1.5 0 0 1 20 11.5V20" />
+      <path d="M3 20h18" />
+      <path d="M8 8h4M8 12h4M9.5 20v-3.5h1V20" />
+    </Base>
+  );
+}

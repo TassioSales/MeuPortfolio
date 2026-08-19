@@ -10,6 +10,7 @@ import {
   IconeAgente,
   IconeClientes,
   IconeConversa,
+  IconeEscritorio,
   IconeFunil,
   IconeMetricas,
   IconePainel,
@@ -42,6 +43,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard/clientes", label: "Clientes", Icone: IconeClientes },
   { href: "/dashboard/kanban", label: "Kanban CRM", Icone: IconeFunil },
   { href: "/dashboard/metrics", label: "Métricas", Icone: IconeMetricas },
+  { href: "/dashboard/escritorio", label: "Escritório", Icone: IconeEscritorio },
   { href: "/dashboard/usuarios", label: "Acessos", Icone: IconeAcessos, soAdmin: true },
 ];
 

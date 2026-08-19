@@ -69,6 +69,9 @@ describe("menu por papel", () => {
 
     expect(screen.getByText("Atendimentos")).toBeInTheDocument();
     expect(screen.getByText("Clientes")).toBeInTheDocument();
+    // O escritório o operador vê: é dele o telefone do suporte que ele
+    // repassa quando é ele atendendo.
+    expect(screen.getByText("Escritório")).toBeInTheDocument();
     expect(screen.getByText("Kanban CRM")).toBeInTheDocument();
     expect(screen.getByText("Métricas")).toBeInTheDocument();
   });

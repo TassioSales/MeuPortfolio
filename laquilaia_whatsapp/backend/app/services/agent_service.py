@@ -86,19 +86,27 @@ class AgentService:
     @staticmethod
     async def get_agent(
         agent_id: str,
-        user_id: str,
         db: AsyncSession,
     ) -> AgentResponse:
-        """Get agent by ID (only if owned by user)."""
-        result = await db.execute(
-            select(Agent).where(
-                (Agent.id == agent_id) & (Agent.user_id == user_id)
-            )
-        )
+        """
+        O agente pelo id. Do escritório, não de quem pergunta.
+
+        Antes havia um filtro por dono — `Agent.user_id == user_id` — e ele
+        parecia segurança, mas não era: esta instalação atende **um**
+        escritório, e ninguém se cadastra sozinho nela. O filtro não barrava
+        estranho nenhum; barrava o operador que o próprio administrador criou.
+        Na tela, isso era o atendente entrando no painel e lendo "Nenhum
+        agente ainda" — sem fila, sem Kanban, sem métrica, sem trabalho.
+
+        Quem pode **mexer** no agente continua sendo só o administrador, agora
+        pelo papel (`require_admin` nas rotas de escrita), que é onde essa
+        decisão pertence. `user_id` no agente vira registro de quem o criou.
+        """
+        result = await db.execute(select(Agent).where(Agent.id == agent_id))
         agent = result.scalars().first()
 
         if not agent:
-            logger.warning(f"⚠️ Agent not found: {agent_id} (user: {user_id})")
+            logger.warning(f"⚠️ Agent not found: {agent_id}")
             raise NotFoundException("Agent")
 
         return AgentResponse(
@@ -118,14 +126,13 @@ class AgentService:
 
     @staticmethod
     async def list_agents(
-        user_id: str,
         db: AsyncSession,
         skip: int = 0,
         limit: int = 100,
         status: Optional[str] = None,
     ) -> List[AgentResponse]:
-        """List all agents for a user."""
-        query = select(Agent).where(Agent.user_id == user_id)
+        """Os agentes do escritório — ver `get_agent` para o porquê de não filtrar por dono."""
+        query = select(Agent)
 
         if status:
             query = query.where(Agent.status == status)
@@ -156,22 +163,22 @@ class AgentService:
     @staticmethod
     async def update_agent(
         agent_id: str,
-        user_id: str,
         agent_data: AgentUpdate,
         db: AsyncSession,
     ) -> AgentResponse:
-        """Update agent by ID."""
+        """
+        Edita o agente. Quem chega aqui já passou por `require_admin` na rota.
+
+        Sem filtro por dono, pelo mesmo motivo de `get_agent`: um segundo
+        administrador do escritório não deve ficar impedido de corrigir o
+        prompt porque quem clicou em "criar" foi outra pessoa.
+        """
         try:
-            # Get agent first to verify ownership
-            result = await db.execute(
-                select(Agent).where(
-                    (Agent.id == agent_id) & (Agent.user_id == user_id)
-                )
-            )
+            result = await db.execute(select(Agent).where(Agent.id == agent_id))
             agent = result.scalars().first()
 
             if not agent:
-                logger.warning(f"⚠️ Agent not found: {agent_id} (user: {user_id})")
+                logger.warning(f"⚠️ Agent not found: {agent_id}")
                 raise NotFoundException("Agent")
 
             # Validate updates if provided
@@ -201,7 +208,7 @@ class AgentService:
             # Refresh agent data
             await db.refresh(agent)
 
-            logger.info(f"✅ Agent updated: {agent_id} (user: {user_id})")
+            logger.info(f"✅ Agent updated: {agent_id}")
 
             return AgentResponse(
                 id=agent.id,
@@ -229,28 +236,22 @@ class AgentService:
     @staticmethod
     async def delete_agent(
         agent_id: str,
-        user_id: str,
         db: AsyncSession,
     ) -> dict:
-        """Delete agent by ID."""
+        """Apaga o agente. Rota protegida por `require_admin`."""
         try:
-            # Check if agent exists and is owned by user
-            result = await db.execute(
-                select(Agent).where(
-                    (Agent.id == agent_id) & (Agent.user_id == user_id)
-                )
-            )
+            result = await db.execute(select(Agent).where(Agent.id == agent_id))
             agent = result.scalars().first()
 
             if not agent:
-                logger.warning(f"⚠️ Agent not found: {agent_id} (user: {user_id})")
+                logger.warning(f"⚠️ Agent not found: {agent_id}")
                 raise NotFoundException("Agent")
 
             # Delete agent (CASCADE will delete related records)
             await db.execute(delete(Agent).where(Agent.id == agent_id))
             await db.commit()
 
-            logger.info(f"✅ Agent deleted: {agent_id} (user: {user_id})")
+            logger.info(f"✅ Agent deleted: {agent_id}")
 
             return {"message": "Agent deleted successfully", "agent_id": agent_id}
 
@@ -265,18 +266,12 @@ class AgentService:
     @staticmethod
     async def add_variable(
         agent_id: str,
-        user_id: str,
         variable_data: dict,
         db: AsyncSession,
     ) -> dict:
-        """Add a variable to an agent."""
+        """Acrescenta uma variável ao agente. Rota protegida por `require_admin`."""
         try:
-            # Verify agent ownership
-            result = await db.execute(
-                select(Agent).where(
-                    (Agent.id == agent_id) & (Agent.user_id == user_id)
-                )
-            )
+            result = await db.execute(select(Agent).where(Agent.id == agent_id))
             agent = result.scalars().first()
 
             if not agent:
@@ -315,16 +310,10 @@ class AgentService:
     @staticmethod
     async def get_variables(
         agent_id: str,
-        user_id: str,
         db: AsyncSession,
     ) -> List[dict]:
-        """Get all variables for an agent."""
-        # Verify agent ownership
-        result = await db.execute(
-            select(Agent).where(
-                (Agent.id == agent_id) & (Agent.user_id == user_id)
-            )
-        )
+        """As variáveis do agente — leitura, liberada a quem tem conta."""
+        result = await db.execute(select(Agent).where(Agent.id == agent_id))
         agent = result.scalars().first()
 
         if not agent:

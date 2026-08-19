@@ -94,19 +94,17 @@ class KPIResponse(BaseModel):
 
 # ========== AUTORIZAÇÃO ==========
 
-async def _assert_agent_ownership(agent_id: str, user_id: str, db: AsyncSession) -> None:
+async def _assert_agent_existe(agent_id: str, db: AsyncSession) -> None:
     """
-    Garante que o agente pertence ao usuário do token.
+    404 para agente que não existe.
 
-    O `metrics_service` valida apenas que o agente existe, então sem esta
-    checagem qualquer usuário autenticado leria as métricas de qualquer outro.
-    Responde 404 (e não 403) para não revelar que o agente existe.
+    Era uma checagem de dono, e a métrica do escritório não tem dono: quem
+    atende precisa ver a própria taxa de qualificação. Autenticado e ativo
+    quem confere é o `get_current_user`, a cada requisição.
     """
-    result = await db.execute(
-        select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
-    )
+    result = await db.execute(select(Agent).where(Agent.id == agent_id))
     if result.scalars().first() is None:
-        logger.warning(f"⚠️ Agent not found or not owned: {agent_id} (user: {user_id})")
+        logger.warning(f"⚠️ Agent not found: {agent_id}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Agent not found"
         )
@@ -135,7 +133,7 @@ async def get_metrics_summary(
         Dict with total_atendimentos, taxa_qualificacao, tempo_medio_min, etc
     """
     try:
-        await _assert_agent_ownership(agent_id, user_id, db)
+        await _assert_agent_existe(agent_id, db)
 
         stats = await metrics_service.calculate_period_stats(
             agent_id, db, period, use_cache=True
@@ -200,7 +198,7 @@ async def get_period_stats(
         Detailed period statistics
     """
     try:
-        await _assert_agent_ownership(agent_id, user_id, db)
+        await _assert_agent_existe(agent_id, db)
 
         stats = await metrics_service.calculate_period_stats(
             agent_id, db, period, start_date, end_date, use_cache=True
@@ -243,7 +241,7 @@ async def get_qualification_metrics(
         Qualification rate with trend and status
     """
     try:
-        await _assert_agent_ownership(agent_id, user_id, db)
+        await _assert_agent_existe(agent_id, db)
 
         data = await metrics_service.get_qualification_rate(
             agent_id, db, period, use_cache=True
@@ -288,7 +286,7 @@ async def get_response_time_metrics(
         Response time statistics with percentiles
     """
     try:
-        await _assert_agent_ownership(agent_id, user_id, db)
+        await _assert_agent_existe(agent_id, db)
 
         data = await metrics_service.get_avg_response_time(
             agent_id, db, period, use_cache=True
@@ -329,7 +327,7 @@ async def get_lead_distribution(
         Counts for each status: novo, em_qualificacao, qualificado, agendado, arquivado
     """
     try:
-        await _assert_agent_ownership(agent_id, user_id, db)
+        await _assert_agent_existe(agent_id, db)
 
         data = await metrics_service.get_lead_distribution(
             agent_id, db, use_cache=True
@@ -372,7 +370,7 @@ async def get_kpis(
         KPIs with current/previous period data and variation percentages
     """
     try:
-        await _assert_agent_ownership(agent_id, user_id, db)
+        await _assert_agent_existe(agent_id, db)
 
         data = await metrics_service.get_kpis(
             agent_id, db, use_cache=True
@@ -427,7 +425,7 @@ async def get_metrics_timeseries(
     Dias sem movimento entram com zero, para a linha não pular datas.
     """
     try:
-        await _assert_agent_ownership(agent_id, user_id, db)
+        await _assert_agent_existe(agent_id, db)
 
         hoje = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
         inicio = hoje - timedelta(days=dias - 1)

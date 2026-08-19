@@ -11,6 +11,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import UsuariosPage from "@/app/dashboard/usuarios/page";
+import { SemAgente } from "@/components/SemAgente";
 import { Sidebar } from "@/components/Sidebar";
 import { useAuthStore } from "@/hooks/useAuth";
 import { setStoredToken, clearStoredTokens } from "@/lib/tokens";
@@ -166,5 +167,34 @@ describe("tela de acessos", () => {
       senha: "SenhaDaAna123",
       papel: "operador",
     });
+  });
+});
+
+describe("tela vazia sem agente", () => {
+  it("ao operador, não oferece a porta que ele não pode abrir", async () => {
+    // Foi o que o painel real fez: o operador entrou no Kanban, leu "Nenhum
+    // agente ainda" e ganhou um botão "Ir para Agentes" — uma tela onde o
+    // backend responde 404 para ele.
+    entrarComo(usuario("ana", "operador"));
+
+    render(
+      <SemAgente icone="🗂️" titulo="Nenhum agente ainda" paraOAdmin="Crie um agente." />,
+    );
+
+    expect(screen.queryByRole("link", { name: "Ir para Agentes" })).not.toBeInTheDocument();
+    expect(screen.getByText(/Peça isso a um administrador/)).toBeInTheDocument();
+  });
+
+  it("ao administrador, oferece — ele é quem resolve", () => {
+    entrarComo(usuario("dono", "admin"));
+
+    render(
+      <SemAgente icone="🗂️" titulo="Nenhum agente ainda" paraOAdmin="Crie um agente." />,
+    );
+
+    expect(screen.getByRole("link", { name: "Ir para Agentes" })).toHaveAttribute(
+      "href",
+      "/dashboard/agents",
+    );
   });
 });

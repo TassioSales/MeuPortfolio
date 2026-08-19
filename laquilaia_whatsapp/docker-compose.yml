@@ -1,7 +1,18 @@
-﻿services:
+﻿# `restart: unless-stopped` em todos os serviços.
+#
+# Sem isso, reiniciar o Windows deixava o sistema fora do ar até alguém
+# lembrar de rodar `docker compose up` — e o WhatsApp do escritório fica mudo
+# nesse intervalo, sem nada na tela dizendo por quê.
+#
+# `unless-stopped` e não `always`: se alguém derrubou o container de
+# propósito, ele continua derrubado depois do reboot. `always` ressuscitaria
+# o que foi parado a mão.
+
+services:
   postgres:
     image: postgres:16-alpine
     container_name: laquilaia_postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USER:-laquilaia}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-laquilaia_dev_pwd}
@@ -30,6 +41,7 @@
   redis:
     image: redis:7-alpine
     container_name: laquilaia_redis
+    restart: unless-stopped
     ports:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
@@ -47,6 +59,7 @@
       context: ./backend
       dockerfile: Dockerfile
     container_name: laquilaia_backend
+    restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://${DB_USER:-laquilaia}:${DB_PASSWORD:-laquilaia_dev_pwd}@postgres:5432/${DB_NAME:-laquilaia_db}
       REDIS_URL: redis://redis:6379
@@ -117,6 +130,7 @@
   evolution:
     image: evoapicloud/evolution-api:latest
     container_name: laquilaia_evolution
+    restart: unless-stopped
     profiles: ["whatsapp"]
     environment:
       SERVER_URL: ${EVOLUTION_SERVER_URL:-http://localhost:8080}
@@ -162,6 +176,7 @@
       context: ./frontend
       dockerfile: Dockerfile
     container_name: laquilaia_frontend
+    restart: unless-stopped
     environment:
       # URL usada pelo browser, por isso Ã© localhost e nÃ£o o host do serviÃ§o.
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}

@@ -1,3 +1,12 @@
+﻿<#
+    ATENÇÃO AO SALVAR ESTE ARQUIVO: ele precisa de BOM.
+
+    O PowerShell 5.1 lê `.ps1` como ANSI quando não há BOM. Sem ele, todo
+    acento e travessão deste arquivo chega ao parser como lixo e o script
+    morre com "Missing closing '}'" — um erro que não tem nada a ver com
+    chaves. É o inverso do `.env`, que quebra COM BOM.
+#>
+
 <#
 .SYNOPSIS
     Sobe o sistema e o publica na internet, em um comando.

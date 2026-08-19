@@ -7,6 +7,8 @@ from app.db.database import get_db_session
 from app.db.models import User
 from app.utils.auth_middleware import require_admin
 from app.models.schemas import (
+    TrocaDeSenha,
+    UserUpdateByAdmin,
     TokenResponse,
     UserCreate,
     UserCreateByAdmin,
@@ -324,3 +326,101 @@ async def criar_usuario(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Erro ao criar acesso",
         )
+
+
+@router.get("/users", response_model=list[UserResponse])
+async def listar_usuarios(
+    _admin: str = Depends(require_admin),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Quem tem acesso ao sistema — só o administrador enxerga.
+
+    A lista é o que torna o controle de acesso administrável: sem ela, saber
+    quem entra no painel exige consultar o banco, e o que exige terminal na
+    prática não é feito.
+    """
+    resultado = await db.execute(select(User).order_by(User.data_criacao))
+    return [UserResponse.model_validate(u) for u in resultado.scalars().all()]
+
+
+@router.patch("/users/{user_id}", response_model=UserResponse)
+async def alterar_usuario(
+    user_id: str,
+    dados: UserUpdateByAdmin,
+    admin_id: str = Depends(require_admin),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Muda papel ou status de um acesso — só o administrador.
+
+    Desativar é como se tira acesso de quem saiu do escritório, e vale na hora:
+    `get_current_user` confere o status a cada requisição, então o token que a
+    pessoa já tem para de funcionar imediatamente.
+
+    O administrador não pode desativar nem rebaixar a **si mesmo**. Não é
+    paternalismo: o sistema tem um único caminho para criar administrador (o
+    primeiro cadastro, que já fechou), e um admin que se rebaixa por engano
+    deixa a instalação sem ninguém que possa consertá-la.
+    """
+    resultado = await db.execute(select(User).where(User.id == user_id))
+    usuario = resultado.scalars().first()
+
+    if usuario is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+    if usuario.id == admin_id and (
+        dados.status == "inativo" or dados.papel == "operador"
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Você não pode remover o próprio acesso de administrador.",
+        )
+
+    if dados.papel is not None:
+        usuario.papel = dados.papel
+    if dados.status is not None:
+        usuario.status = dados.status
+
+    await db.commit()
+    await db.refresh(usuario)
+
+    logger.info(
+        f"👤 Acesso alterado por {admin_id}: {usuario.email} "
+        f"({usuario.papel}, {usuario.status})"
+    )
+    return UserResponse.model_validate(usuario)
+
+
+@router.post("/password", status_code=status.HTTP_204_NO_CONTENT)
+async def trocar_a_propria_senha(
+    dados: TrocaDeSenha,
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    A pessoa troca a própria senha.
+
+    Exige a senha atual mesmo com a sessão aberta: um navegador esquecido
+    aberto num computador do escritório não pode virar troca de senha — que é
+    como se toma uma conta de alguém sem que ele perceba.
+
+    O administrador **não** aparece aqui de propósito: ele cria e desativa
+    acessos, não troca a senha alheia. Trocar a senha de outro é poder entrar
+    como ele, e aí o registro do sistema passa a mentir sobre quem fez o quê.
+    """
+    resultado = await db.execute(select(User).where(User.id == user_id))
+    usuario = resultado.scalars().first()
+
+    if usuario is None or not auth_service.verify_password(
+        dados.senha_atual, usuario.senha_hash
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Senha atual incorreta.",
+        )
+
+    usuario.senha_hash = auth_service.hash_password(dados.senha_nova)
+    await db.commit()
+
+    logger.info(f"🔑 Senha trocada por {usuario.email}")

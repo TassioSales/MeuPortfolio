@@ -124,3 +124,15 @@ export function IconeWhatsapp(props: IconProps) {
     </Base>
   );
 }
+
+/** Acessos: duas pessoas — a de trás é o segundo usuário. */
+export function IconeAcessos(props: IconProps) {
+  return (
+    <Base {...props}>
+      <circle cx="9" cy="8" r="3.25" />
+      <path d="M3.5 19.5c0-3 2.5-4.75 5.5-4.75s5.5 1.75 5.5 4.75" />
+      <path d="M16.5 5.4a3.25 3.25 0 0 1 0 5.2" />
+      <path d="M18 15.1c1.7.6 2.9 1.9 2.9 4.4" />
+    </Base>
+  );
+}

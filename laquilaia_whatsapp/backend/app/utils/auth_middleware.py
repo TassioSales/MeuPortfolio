@@ -28,10 +28,19 @@ security = HTTPBearer(auto_error=False)
 
 async def get_current_user(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+    db: AsyncSession = Depends(get_db_session),
 ) -> str:
     """
-    Dependency to extract and verify JWT token from request headers.
-    Returns the user_id if token is valid, otherwise raises HTTPException.
+    Quem está falando, e se ainda pode falar.
+
+    O token diz quem é; o **banco** diz se a conta continua valendo. Só o token
+    não basta: ele vale 30 minutos, e quem foi desativado no minuto seguinte à
+    emissão continuaria entrando durante meia hora. Para revogar acesso — o
+    funcionário que saiu hoje, a conta comprometida — meia hora é uma
+    eternidade.
+
+    É a mesma razão pela qual `require_admin` lê o papel do banco: privilégio e
+    permanência não podem viver num papel que já foi impresso.
     """
     token = credentials.credentials if credentials else None
 
@@ -50,6 +59,20 @@ async def get_current_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    resultado = await db.execute(select(User).where(User.id == user_id))
+    usuario = resultado.scalars().first()
+
+    if usuario is None or usuario.status != "ativo":
+        # 401 e não 403: a sessão deixou de valer, e o painel trata 401
+        # tentando renovar — a renovação também vai falhar, e a pessoa cai no
+        # login, que é onde ela deve cair.
+        logger.warning(f"⚠️ Token de conta inativa ou removida: {user_id}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Conta inativa",
             headers={"WWW-Authenticate": "Bearer"},
         )
 

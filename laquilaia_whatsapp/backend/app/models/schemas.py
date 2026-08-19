@@ -37,6 +37,27 @@ class UserResponse(UserBase):
         from_attributes = True
 
 
+class UserUpdateByAdmin(BaseModel):
+    """
+    O que o administrador pode mudar num acesso alheio.
+
+    Senha não está aqui de propósito: administrador que troca a senha de outro
+    consegue entrar como ele, e o registro do sistema passa a dizer que **a
+    outra pessoa** fez o que ele fez. Quem esqueceu a senha recebe um acesso
+    novo; quem quer trocar a sua usa `POST /auth/password`.
+    """
+
+    papel: Optional[str] = Field(default=None, pattern="^(admin|operador)$")
+    status: Optional[str] = Field(default=None, pattern="^(ativo|inativo)$")
+
+
+class TrocaDeSenha(BaseModel):
+    """Corpo de `POST /auth/password` — a pessoa trocando a própria senha."""
+
+    senha_atual: str
+    senha_nova: str = Field(..., min_length=8, max_length=100)
+
+
 class UserCreateByAdmin(UserBase):
     """Corpo de `POST /auth/users` — o administrador criando um operador."""
     senha: str = Field(..., min_length=8, max_length=100)

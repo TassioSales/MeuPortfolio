@@ -83,3 +83,11 @@ docker-compose.override.yml
 .env.example.local
 *.bak
 *.tmp
+
+# Binário do túnel, baixado à mão para expor a stack em teste.
+#
+# São ~50 MB e ele é específico do sistema operacional de quem baixou —
+# versionar isso engorda o repositório para todo mundo e ainda entrega o
+# executável errado para quem está em outra plataforma.
+cloudflared.exe
+cloudflared

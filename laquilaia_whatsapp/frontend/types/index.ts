@@ -36,6 +36,31 @@ export interface RegisterRequest {
   senha: string;
 }
 
+/** Corpo de `POST /api/v1/auth/users` — o administrador criando um acesso. */
+export interface NovoAcesso {
+  email: string;
+  nome: string;
+  senha: string;
+  papel: Papel;
+}
+
+/**
+ * Corpo de `PATCH /api/v1/auth/users/{id}` (schema `UserUpdateByAdmin`).
+ *
+ * Senha não está aqui: o backend não deixa administrador trocar a senha de
+ * outro, porque quem troca a senha de alguém consegue entrar como ele.
+ */
+export interface AlteracaoDeAcesso {
+  papel?: Papel;
+  status?: "ativo" | "inativo";
+}
+
+/** Corpo de `POST /api/v1/auth/password` — a pessoa trocando a própria. */
+export interface TrocaDeSenha {
+  senha_atual: string;
+  senha_nova: string;
+}
+
 export interface TokenResponse {
   access_token: string;
   refresh_token: string | null;

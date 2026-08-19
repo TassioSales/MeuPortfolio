@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { Logo } from "./Logo";
 import {
+  IconeAcessos,
   IconeAgente,
   IconeConversa,
   IconeFunil,
@@ -39,6 +40,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard/chat-test", label: "Chat de teste", Icone: IconeTeste, soAdmin: true },
   { href: "/dashboard/kanban", label: "Kanban CRM", Icone: IconeFunil },
   { href: "/dashboard/metrics", label: "Métricas", Icone: IconeMetricas },
+  { href: "/dashboard/usuarios", label: "Acessos", Icone: IconeAcessos, soAdmin: true },
 ];
 
 export function Sidebar() {

@@ -15,6 +15,24 @@ import { ConversationsPanel } from "@/components/ConversationsPanel";
 import { setStoredToken, clearStoredTokens } from "@/lib/tokens";
 import type { ConversationSummary, ConversationTranscript } from "@/types";
 
+/**
+ * A faixa de "clientes esperando" vira um dublê aqui.
+ *
+ * Ela busca os alertas por conta própria no mount, e essa requisição entraria
+ * no meio da fila de respostas destes casos — deslocando cada
+ * `mockResolvedValueOnce` e também os índices de `mock.calls`, que vários
+ * deles conferem. Estes testes são sobre a fila e a transcrição; a faixa tem
+ * suíte própria em `alertas.test.tsx`.
+ *
+ * O dublê imprime o `agentId` recebido para que a ligação entre painel e
+ * faixa continue coberta — ver "leva a faixa de pendências junto".
+ */
+jest.mock("@/components/ClientesEsperando", () => ({
+  ClientesEsperando: ({ agentId }: { agentId: string }) => (
+    <div data-testid="faixa-de-pendencias">{agentId}</div>
+  ),
+}));
+
 const mockFetch = global.fetch as jest.Mock;
 
 function jsonResponse(body: unknown, status = 200): Response {
@@ -291,6 +309,17 @@ describe("ConversationsPanel", () => {
       await screen.findByRole("button", { name: "Devolver para a IA" }),
     ).toBeInTheDocument();
     expect(screen.getByText(/A IA parou de responder/)).toBeInTheDocument();
+  });
+
+  it("leva a faixa de pendências junto, para o agente certo", async () => {
+    // Quem esperou a noite toda não pode depender de o operador reparar numa
+    // linha no meio de trezentas. A faixa vem antes da fila — e presa ao
+    // agente que a tela está mostrando, senão apontaria pendência alheia.
+    mockFetch.mockResolvedValueOnce(jsonResponse([CONVERSA]));
+
+    render(<ConversationsPanel agentId="ag-1" />);
+
+    expect(await screen.findByTestId("faixa-de-pendencias")).toHaveTextContent("ag-1");
   });
 
   it("avisa quando ainda não há atendimentos", async () => {

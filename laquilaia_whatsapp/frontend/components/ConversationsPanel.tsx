@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/Button";
+import { ClientesEsperando } from "@/components/ClientesEsperando";
 import { EmptyState } from "@/components/EmptyState";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { useAgentEvents } from "@/hooks/useAgentEvents";
@@ -209,6 +210,11 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
 
   return (
     <div>
+      {/* Antes da fila, e não dentro dela: quem está esperando há duas horas
+          não pode depender de o operador reparar numa linha no meio de
+          trezentas. */}
+      <ClientesEsperando agentId={agentId} onAbrir={openConversation} />
+
       <p className="mb-3 flex items-center gap-2 text-xs text-fg-muted">
         <span
           aria-hidden="true"

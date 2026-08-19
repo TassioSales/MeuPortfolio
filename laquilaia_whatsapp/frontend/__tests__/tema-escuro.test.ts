@@ -35,7 +35,10 @@ const ARQUIVOS = [...arquivosTsx("components"), ...arquivosTsx("app")];
  */
 function semComentarios(fonte: string): string {
   return fonte
-    .replace(/\/\*[\s\S]*?\*\//g, "")
+    // As quebras de linha do comentário de bloco são preservadas: sem isso
+    // toda linha depois dele é reportada com o número errado, e a mensagem de
+    // falha manda o leitor para o lugar errado do arquivo.
+    .replace(/\/\*[\s\S]*?\*\//g, (bloco) => bloco.replace(/[^\n]/g, ""))
     .split("\n")
     .map((linha) => linha.replace(/(^|\s)\/\/.*$/, "$1"))
     .join("\n");
@@ -100,7 +103,10 @@ describe("cores no tema escuro", () => {
         let m: RegExpExecArray | null;
         while ((m = tarjas.exec(linha)) !== null) {
           const cor = m[1];
-          if (!new RegExp(`dark:bg-${cor}-`).test(linha)) {
+          // O par pode vir com variantes no meio — `dark:hover:bg-amber-900`
+          // é um par válido de `hover:bg-amber-100`. Exigir `dark:bg-` cru
+          // reprovava justamente o código que fez a coisa certa.
+          if (!new RegExp(`dark:(?:[\\w-]+:)*bg-${cor}-`).test(linha)) {
             semPar.push(`${arquivo}:${i + 1} — ${m[0]}`);
           }
         }

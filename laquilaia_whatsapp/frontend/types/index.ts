@@ -242,6 +242,36 @@ export interface ConversationStatus {
   ia_ativa: boolean;
 }
 
+// ========== Alertas ==========
+
+/**
+ * De quem é a resposta que não veio.
+ *
+ * Separados porque a ação é diferente: `ia_sem_resposta` é defeito (modelo
+ * fora do ar, cota estourada) e `humano_sem_resposta` é gente ocupada. Um
+ * alerta só juntaria "a IA caiu" com "o operador foi almoçar".
+ */
+export type TipoDeAlerta = "ia_sem_resposta" | "humano_sem_resposta";
+
+export interface ClienteEsperando {
+  tipo: TipoDeAlerta;
+  conversation_id: string;
+  phone_number: string;
+  lead_nome: string | null;
+  ultima_mensagem: string;
+  desde: string;
+  minutos_esperando: number;
+}
+
+export interface AlertasResponse {
+  agent_id: string;
+  minutos: number;
+  /** Contagem completa — a lista vem truncada, estes números não. */
+  total_ia: number;
+  total_humano: number;
+  conversas: ClienteEsperando[];
+}
+
 // ========== Kanban ==========
 
 /** Card de lead no board (`LeadCardResponse` no backend). */

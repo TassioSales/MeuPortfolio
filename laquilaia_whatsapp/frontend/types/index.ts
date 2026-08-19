@@ -346,6 +346,37 @@ export interface MoveCardRequest {
   new_order: number;
 }
 
+// ========== Marketing ==========
+
+export interface NovoLancamento {
+  /** ISO `YYYY-MM-DD`. */
+  data: string;
+  /** Em reais — o backend guarda em centavos inteiros. */
+  investimento_ads: number;
+  observacao?: string | null;
+}
+
+export interface LancamentoMarketing extends NovoLancamento {
+  id: string;
+  criado_por: string | null;
+}
+
+export interface ResumoMarketing {
+  agent_id: string;
+  dias: number;
+  investimento_ads: number;
+  /** Somado do banco, não digitado. */
+  tokens_consumidos: number;
+  leads: number;
+  leads_qualificados: number;
+  /**
+   * `null` quando não houve lead. Dividir por zero daria "infinito", e um
+   * painel que mostra ∞ como custo é um painel em que ninguém acredita.
+   */
+  custo_por_lead: number | null;
+  custo_por_lead_qualificado: number | null;
+}
+
 // ========== Finalizados ==========
 
 /**

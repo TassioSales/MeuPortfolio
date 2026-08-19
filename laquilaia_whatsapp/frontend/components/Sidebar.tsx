@@ -14,6 +14,7 @@ import {
   IconeFinalizados,
   IconeFunil,
   IconeHistorico,
+  IconeMarketing,
   IconeMetricas,
   IconePainel,
   IconeTeste,
@@ -47,6 +48,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard/metrics", label: "Métricas", Icone: IconeMetricas },
   { href: "/dashboard/finalizados", label: "Finalizados", Icone: IconeFinalizados },
   { href: "/dashboard/historico", label: "Histórico", Icone: IconeHistorico },
+  { href: "/dashboard/marketing", label: "Marketing", Icone: IconeMarketing, soAdmin: true },
   { href: "/dashboard/escritorio", label: "Escritório", Icone: IconeEscritorio },
   { href: "/dashboard/usuarios", label: "Acessos", Icone: IconeAcessos, soAdmin: true },
 ];

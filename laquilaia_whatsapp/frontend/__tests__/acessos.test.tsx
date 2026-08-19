@@ -60,6 +60,8 @@ describe("menu por papel", () => {
     expect(screen.queryByText("WhatsApp")).not.toBeInTheDocument();
     expect(screen.queryByText("Chat de teste")).not.toBeInTheDocument();
     expect(screen.queryByText("Acessos")).not.toBeInTheDocument();
+    // Marketing é dinheiro do escritório: o operador nem vê a tela.
+    expect(screen.queryByText("Marketing")).not.toBeInTheDocument();
   });
 
   it("operador continua vendo o que ele usa para trabalhar", () => {
@@ -83,7 +85,7 @@ describe("menu por papel", () => {
 
     render(<Sidebar />);
 
-    for (const item of ["Agentes", "WhatsApp", "Chat de teste", "Acessos"]) {
+    for (const item of ["Agentes", "WhatsApp", "Chat de teste", "Acessos", "Marketing"]) {
       expect(screen.getByText(item)).toBeInTheDocument();
     }
   });

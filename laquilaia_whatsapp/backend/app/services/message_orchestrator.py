@@ -240,6 +240,18 @@ class MessageOrchestrator:
                 conversation_id=conversation.id,
                 remetente="assistant",
                 conteudo=texto_para_o_cliente,
+                # O consumo da chamada, gravado na resposta que ela gerou.
+                #
+                # A coluna existia desde o schema inicial e ninguém nunca
+                # escreveu nela. Sem isso, "quanto a IA custou este mês?" só
+                # tinha resposta no painel da Anthropic — e lá o número vem
+                # somado com o do parecer, com os testes e com tudo mais, sem
+                # separar por conversa nem por período.
+                #
+                # Vai no total (entrada + saída) porque é o que se soma; a
+                # divisão entre os dois muda de preço por modelo e não cabe
+                # numa coluna só.
+                tokens_usados=token_usage.get("total_tokens"),
                 timestamp=datetime.utcnow(),
             )
             db.add(assistant_msg)

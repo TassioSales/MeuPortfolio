@@ -181,3 +181,14 @@ export function IconeFinalizados(props: IconProps) {
     </Base>
   );
 }
+
+/** Marketing: o megafone do anúncio. */
+export function IconeMarketing(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M4 10v4a1 1 0 0 0 1 1h2.5L14 19V5L7.5 9H5a1 1 0 0 0-1 1z" />
+      <path d="M17.5 9.5a3.5 3.5 0 0 1 0 5" />
+      <path d="M7.5 15v3.5" />
+    </Base>
+  );
+}

@@ -346,6 +346,64 @@ export interface MoveCardRequest {
   new_order: number;
 }
 
+// ========== Valor e produtividade ==========
+
+export interface ValorPorDia {
+  data: string;
+  casos: number;
+  /** Faixa somada. Duas colunas e não média — o parecer estima faixa. */
+  total_min: number;
+  total_max: number;
+}
+
+export interface PortePorFaixa {
+  porte: "alto" | "medio" | "baixo" | "indeterminado";
+  rotulo: string;
+  casos: number;
+  total_min: number;
+  total_max: number;
+}
+
+export interface ValorPorUF {
+  uf: string;
+  leads: number;
+  casos_dimensionados: number;
+  total_max: number;
+}
+
+export interface ValorResponse {
+  agent_id: string;
+  dias: number;
+  casos_dimensionados: number;
+  /** Casos sem faixa — no número para a soma não parecer o total quando não é. */
+  casos_sem_valor: number;
+  total_min: number;
+  total_max: number;
+  por_dia: ValorPorDia[];
+  por_porte: PortePorFaixa[];
+  por_uf: ValorPorUF[];
+}
+
+export interface PessoaProdutiva {
+  nome: string;
+  acoes: number;
+  conversas_assumidas: number;
+  conversas_devolvidas: number;
+  cards_movidos: number;
+  /** Contatos distintos: 15 ações num lead não é 1 ação em 15 leads. */
+  leads_atendidos: number;
+}
+
+export interface ProdutividadeResponse {
+  agent_id: string;
+  dias: number;
+  acoes_de_gente: number;
+  acoes_da_ia: number;
+  /** Quanto maior, mais o escritório empurra o funil à mão. */
+  percentual_humano: number;
+  pessoas: PessoaProdutiva[];
+}
+
 // ========== Agendamentos ==========
 
 export type SituacaoDoAgendamento = "pendente" | "realizado" | "cancelado";

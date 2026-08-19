@@ -6,7 +6,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from app.db.database import get_db_session
-from app.db.models import Agent, Caso, Conversation, KanbanColumn, KanbanCard, Lead, LeadDetails
+from app.db.models import (
+    Agent, Caso, Conversation, KanbanColumn, KanbanCard, Lead, LeadDetails,
+    LeadTimeline,
+)
 from app.models.caso_schemas import CasoDoContato, LeadDossie
 from app.services.kanban_defaults import COLUNAS_PADRAO, criar_colunas_padrao
 from app.utils.auth_middleware import get_current_user
@@ -307,14 +310,15 @@ async def move_lead_card(
         # Store old status for timeline
         old_status = lead.status_funil
 
-        # Update lead status based on column
-        status_map = {
-            "Novo Lead": "novo",
-            "Em Qualificação": "em_qualificacao",
-            "Lead Qualificado": "qualificado",
-            "Agendado": "agendado",
-            "Arquivado": "arquivado",
-        }
+        # O status do lead sai do nome da coluna, e o mapa vem de
+        # `COLUNAS_PADRAO` — a mesma lista que cria as colunas.
+        #
+        # Aqui havia um dicionário duplicado com os nomes antigos. Depois da
+        # renomeação das colunas ele deixou de casar com qualquer uma delas, e
+        # o `.get(..., lead.status_funil)` engolia isso em silêncio: o card
+        # andava na tela e o `status_funil` ficava para trás, então o board e
+        # as métricas passavam a contar coisas diferentes sobre o mesmo lead.
+        status_map = {nome: status for nome, status, _cor in COLUNAS_PADRAO}
         lead.status_funil = status_map.get(target_column.nome, lead.status_funil)
         lead.data_atualizacao = datetime.utcnow()
 
@@ -322,6 +326,22 @@ async def move_lead_card(
         card.column_id = target_column.id
         card.ordem = move_request.new_order
         card.data_movimentacao = datetime.utcnow()
+
+        # Quem moveu, para onde e quando.
+        #
+        # A trilha existia e só a IA escrevia nela: card arrastado por gente
+        # não deixava rastro nenhum. Num escritório com mais de uma pessoa no
+        # board, "quem mandou isso para o arquivo?" não tinha resposta.
+        db.add(
+            LeadTimeline(
+                lead_id=lead.id,
+                status_anterior=old_status,
+                status_novo=lead.status_funil,
+                mudado_por=user_id,
+                motivo=f"Movido para {target_column.nome} no painel",
+                timestamp=datetime.utcnow(),
+            )
+        )
 
         await db.commit()
 

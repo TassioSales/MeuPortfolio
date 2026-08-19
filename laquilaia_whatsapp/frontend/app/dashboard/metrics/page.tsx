@@ -7,6 +7,7 @@ import { SemAgente } from "@/components/SemAgente";
 import { FullPageLoader } from "@/components/LoadingSpinner";
 import { AtendimentosChart } from "@/components/charts/AtendimentosChart";
 import { FunilChart } from "@/components/charts/FunilChart";
+import { FunilDeVenda } from "@/components/FunilDeVenda";
 import { StatTile } from "@/components/charts/StatTile";
 import { formatSeconds } from "@/components/charts/theme";
 import { useAgents } from "@/hooks/useAgents";
@@ -19,8 +20,72 @@ const PERIODOS: Array<{ valor: MetricsPeriod; rotulo: string }> = [
   { valor: "month", rotulo: "Mês" },
 ];
 
+/**
+ * As duas perguntas que o painel responde.
+ *
+ * "Geral" conta volume — quantos atendimentos, quanto tempo de resposta.
+ * "Funil" conta passagem — de cada cem que escrevem, quantos viram caso.
+ * São leituras diferentes e não cabem na mesma tela sem uma virar ruído da
+ * outra.
+ */
+type Aba = "geral" | "funil";
+
+const ABAS: Array<{ valor: Aba; rotulo: string }> = [
+  { valor: "geral", rotulo: "Geral" },
+  { valor: "funil", rotulo: "Funil de venda" },
+];
+
 function Painel({ agentId }: { agentId: string }) {
+  const [aba, setAba] = useState<Aba>("geral");
   const [period, setPeriod] = useState<MetricsPeriod>("week");
+
+  return (
+    <div>
+      <div
+        className="mb-5 flex flex-wrap gap-1 border-b border-surface-border"
+        role="tablist"
+        aria-label="Visões do painel"
+      >
+        {ABAS.map((opcao) => (
+          <button
+            key={opcao.valor}
+            type="button"
+            role="tab"
+            aria-selected={aba === opcao.valor}
+            onClick={() => setAba(opcao.valor)}
+            className={
+              aba === opcao.valor
+                ? "-mb-px border-b-2 border-brand-600 px-4 py-2 text-sm font-medium text-fg"
+                : "-mb-px border-b-2 border-transparent px-4 py-2 text-sm text-fg-muted hover:text-fg-soft"
+            }
+          >
+            {opcao.rotulo}
+          </button>
+        ))}
+      </div>
+
+      {aba === "funil" ? (
+        <FunilDeVenda agentId={agentId} />
+      ) : (
+        <PainelGeral
+          agentId={agentId}
+          period={period}
+          setPeriod={setPeriod}
+        />
+      )}
+    </div>
+  );
+}
+
+function PainelGeral({
+  agentId,
+  period,
+  setPeriod,
+}: {
+  agentId: string;
+  period: MetricsPeriod;
+  setPeriod: (p: MetricsPeriod) => void;
+}) {
   const { summary, responseTime, pontos, isLoading, error, reload } = useMetrics(
     agentId,
     period,

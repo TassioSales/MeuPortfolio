@@ -296,6 +296,15 @@ export interface KanbanCard {
   valor_estimado_min: number | null;
   valor_estimado_max: number | null;
   viabilidade: Viabilidade | null;
+  /**
+   * Há quantos dias o card não muda de coluna.
+   *
+   * É o contador que sobrevive ao uso: num board de verdade, "ligações 0/5"
+   * fica zerado para sempre porque ninguém para de atender para registrar
+   * ligação — mas o tempo passa sozinho. Zero quer dizer "moveu hoje" ou
+   * "não sei", e nos dois casos não há nada a cobrar.
+   */
+  dias_parado: number;
 }
 
 /** Resposta de `GET /agents/{id}/kanban/leads/{leadId}` (`LeadDossie`). */

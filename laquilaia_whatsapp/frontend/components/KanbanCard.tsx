@@ -65,6 +65,33 @@ function Porte({ card }: { card: KanbanCardType }) {
   );
 }
 
+/**
+ * Há quantos dias este card não anda.
+ *
+ * Só aparece a partir de três dias. Um selo em todo card vira paisagem, e
+ * caso que entrou anteontem não está parado — está sendo trabalhado. O tom
+ * sobe com o tempo porque a leitura útil é periférica: o operador varre a
+ * coluna e o vermelho salta, sem precisar ler número por número.
+ */
+function DiasParado({ dias }: { dias: number }) {
+  if (dias < 3) return null;
+
+  const grave = dias >= 10;
+  return (
+    <span
+      className={cn(
+        "mt-2 ml-2 inline-block rounded-full px-2 py-0.5 text-xs tabular-nums",
+        grave
+          ? "bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-200"
+          : "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-200",
+      )}
+      title={`Este caso está nesta coluna há ${dias} dias.`}
+    >
+      parado há {dias}d
+    </span>
+  );
+}
+
 /** Sem centavos: a estimativa não tem essa precisão, e o card não tem espaço. */
 function emReais(valor: number): string {
   return valor.toLocaleString("pt-BR", {
@@ -142,6 +169,7 @@ export function KanbanCardItem({ card, isOverlay = false, onAbrir }: KanbanCardP
       {card.email && <p className="truncate text-xs text-fg-muted">{card.email}</p>}
 
       <Porte card={card} />
+      <DiasParado dias={card.dias_parado} />
     </article>
   );
 }

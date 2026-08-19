@@ -46,11 +46,25 @@ class LeadProcessor:
     }
 
     # Kanban column mapping
+    # Para onde cada veredito da IA leva o card.
+    #
+    # `nao_qualificado` estava **fora** deste mapa, e o efeito era silencioso:
+    # o `.get(status, "Em Qualificação")` mandava para a coluna de trabalho
+    # tudo que a triagem tinha descartado por não ser da área. A coluna que o
+    # escritório abre todo dia enchia de caso que já tinha sido recusado.
+    #
+    # `com_duvidas` também faltava, e esse cai em Closer de propósito: a IA
+    # não conseguiu decidir, então quem decide é gente — e gente decide no
+    # primeiro contato, não no meio da entrevista.
     COLUMN_MAPPING = {
-        "novo": "Novo Lead",
-        "em_qualificacao": "Em Qualificação",
-        "qualificado": "Lead Qualificado",
-        "agendado": "Agendado",
+        "novo": "Closer",
+        "com_duvidas": "Closer",
+        "em_qualificacao": "Entrevista",
+        "qualificado": "Viabilidade",
+        "agendado": "Coleta de documentos",
+        "saneamento": "Saneamento",
+        "revisao": "Revisão",
+        "nao_qualificado": "Arquivado",
         "arquivado": "Arquivado",
     }
 
@@ -469,7 +483,7 @@ class LeadProcessor:
             result = await db.execute(
                 select(KanbanColumn).where(
                     (KanbanColumn.agent_id == agent_id) &
-                    (KanbanColumn.nome.like(f"%{self.COLUMN_MAPPING.get(status, 'Em Qualificação')}%"))
+                    (KanbanColumn.nome.like(f"%{self.COLUMN_MAPPING.get(status, 'Entrevista')}%"))
                 )
             )
             column = result.scalars().first()
@@ -484,6 +498,21 @@ class LeadProcessor:
                 select(KanbanCard).where(KanbanCard.lead_id == lead.id)
             )
             card_atual = resultado.scalars().first()
+
+            # Já está onde deveria estar: sair daqui sem tocar em nada.
+            #
+            # Não é economia de escrita — é o "parado há N dias" do card. Ele
+            # sai de `data_movimentacao`, que o SQLAlchemy renova a cada
+            # UPDATE. Apagar e recriar o card na mesma coluna zerava esse
+            # relógio a cada requalificação, e um caso esquecido há duas
+            # semanas voltava a parecer recém-chegado — justamente o contrário
+            # do que a coluna serve para mostrar.
+            if card_atual is not None and card_atual.column_id == column.id:
+                logger.debug(
+                    f"⏭️ Lead {lead.phone_number} já está em {column.nome}"
+                )
+                return
+
             if card_atual is not None:
                 await db.delete(card_atual)
                 # O flush é necessário antes de inserir o novo: a tabela tem

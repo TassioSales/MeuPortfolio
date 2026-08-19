@@ -295,7 +295,7 @@ Decidido em conversa, não relitigar a prioridade sem falar com ele.
    diz a coluna do card e lista os casos já registrados, tudo por `SELECT` em
    chave indexada — nenhuma chamada de modelo. E instrui: assunto diferente é
    caso novo, não continuação.
-4. **Mais métricas.** As de hoje são básicas demais para decidir alguma coisa.
+4. ~~Mais métricas.~~ **Feito**, e virou nove telas — ver §6b.
 5. **"Digitando..." no WhatsApp** enquanto o modelo escreve — a Evolution
    expõe presença, e 8 segundos de silêncio parecem travamento.
 
@@ -303,9 +303,52 @@ Decidido em conversa, não relitigar a prioridade sem falar com ele.
 
 6. **Automações no Kanban** (mover card por evento, cobrar retorno, etc.).
 7. **Disparo de e-mail** para o lead.
-8. **Assinatura de contrato** — é o que fecha o ciclo do escritório.
+8. **Assinatura de contrato** — é o que fecha o ciclo do escritório. O
+   provedor que o concorrente usa é o **Autentique**.
 9. **Front mais profissional.** O dono acha que ainda parece protótipo; é
    trabalho de design, não de correção pontual.
+
+---
+
+## 6b. As telas construídas a partir dos prints do concorrente
+
+Nove telas entregues em uma noite (PRs #60 a #68), todas com teste e
+**nenhuma aberta por um humano ainda**. Essa é a pendência número um: são
+nove telas cuja única verificação foi jsdom e TestClient.
+
+| Tela | O que ela responde |
+|------|--------------------|
+| Faixa de pendências (em Atendimentos) | quem está esperando resposta agora |
+| Kanban com o fluxo do escritório | o que está travado, e há quantos dias |
+| Clientes | cadê o fulano (busca por nome, telefone, e-mail) |
+| Funil de venda (aba em Métricas) | de cada cem que escrevem, quantos viram caso |
+| Escritório | o que o agente responde sobre o escritório |
+| Histórico | quem fez o quê, e quando |
+| Finalizados | por que cada caso acabou |
+| Marketing | quanto custa trazer cada cliente |
+| Agendamentos | o que foi combinado e ninguém cumpriu |
+
+**Três colunas que existiam e ninguém preenchia** passaram a ser escritas
+neste lote — vale saber, porque o histórico anterior a elas está vazio e
+não há como recuperá-lo:
+
+- `lead_timeline` só registrava movimento da IA; arrasto no Kanban e
+  tomada de conversa agora entram.
+- `messages.tokens_usados` nunca foi escrita; é dela que sai o consumo de
+  IA na tela de Marketing.
+- `kanban_cards.data_movimentacao` era zerada a cada requalificação,
+  porque o card era apagado e recriado mesmo sem mudar de coluna.
+
+**Deliberadamente não feito:** a extração automática de agendamento pela
+IA. Mexer no prompt muda o que o agente diz a todo cliente e precisa ser
+testado contra conversas reais. A coluna `agendamentos.criado_por` já
+aceita nulo para quando isso existir.
+
+**Fora de alcance sem mudar o produto:** a aba "Jornada do Cliente" e o
+board "Jurídico" do concorrente dependem de cinco agentes em série
+(Closer → Entrevistador → Coletor → Saneador → Redator) e de geração de
+peça a partir de 46 modelos por tese. Nós temos um agente e nenhum
+gerador de peça.
 
 **Áudio: resolvido no código, pendente de ligar.** A transcrição existe e foi
 medida (ver §3). Falta `anexos_habilitados` no agente que atende e

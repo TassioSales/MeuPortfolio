@@ -414,3 +414,41 @@ class DailyStats(Base):
 
     def __repr__(self):
         return f"<DailyStats(id={self.id}, data={self.data})>"
+
+
+class ConfiguracaoEscritorio(Base):
+    """
+    Os dados do escritório que o agente precisa saber.
+
+    Uma linha só, sempre — esta instalação atende um escritório, a mesma
+    premissa que sustenta a autorização por papel. O `id` fixo (`"unica"`)
+    torna isso impossível de violar por engano: não há como criar a segunda.
+
+    Por que isto não vive dentro do `system_prompt`: o prompt é editável pelo
+    painel, e um telefone escondido no meio de nove mil caracteres se perde na
+    primeira reescrita. Pior — quem edita o prompt é quem cuida do
+    atendimento, e quem sabe o telefone do suporte é quem cuida do escritório.
+    São duas pessoas e duas telas.
+    """
+
+    __tablename__ = "configuracao_escritorio"
+
+    id = Column(String(36), primary_key=True, default="unica")
+    nome = Column(String(255), nullable=True)
+    cnpj = Column(String(32), nullable=True)
+    oab_responsavel = Column(String(64), nullable=True)
+    fundador = Column(String(255), nullable=True)
+    endereco = Column(Text, nullable=True)
+    email = Column(String(255), nullable=True)
+    telefone = Column(String(32), nullable=True)
+    # Número público entregue a quem **já é cliente** e escreveu no comercial
+    # por engano. Sem ele, o agente ou reabre uma triagem que não existe ou
+    # deixa a pessoa sem saída.
+    telefone_suporte = Column(String(32), nullable=True)
+    horario_atendimento = Column(String(255), nullable=True)
+    site = Column(String(255), nullable=True)
+    instagram = Column(String(255), nullable=True)
+    data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<ConfiguracaoEscritorio(nome={self.nome})>"

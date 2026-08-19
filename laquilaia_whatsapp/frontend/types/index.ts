@@ -346,6 +346,29 @@ export interface MoveCardRequest {
   new_order: number;
 }
 
+// ========== Escritório ==========
+
+/**
+ * Os dados que o agente usa para responder sobre o escritório.
+ *
+ * Todos opcionais: escritório com nada preenchido é o estado inicial, e o
+ * agente simplesmente não fala do que não sabe.
+ */
+export interface Escritorio {
+  nome: string | null;
+  cnpj: string | null;
+  oab_responsavel: string | null;
+  fundador: string | null;
+  endereco: string | null;
+  email: string | null;
+  telefone: string | null;
+  /** Número dado a quem **já é cliente** e escreveu no comercial por engano. */
+  telefone_suporte: string | null;
+  horario_atendimento: string | null;
+  site: string | null;
+  instagram: string | null;
+}
+
 // ========== Clientes ==========
 
 /** Uma linha da lista de contatos (`ClienteNaLista` no backend). */

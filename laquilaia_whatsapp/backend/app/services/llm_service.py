@@ -10,6 +10,7 @@ from app.services.gemini_client import GeminiClient, GeminiIndisponivel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.db.models import Agent, Message, Conversation
+from app.services import escritorio_service
 import asyncio
 
 
@@ -91,27 +92,77 @@ def texto_da_resposta(response) -> str:
     return "".join(partes)
 
 
-def sistema_do_agente(agent: Agent) -> str:
+# Como cada campo do escritório é apresentado ao modelo. A ordem é a de uso:
+# o que o cliente pergunta primeiro vem primeiro.
+CAMPOS_DO_ESCRITORIO = [
+    ("nome", "O escritório se chama {}."),
+    ("oab_responsavel", "Advogado responsável, OAB {}."),
+    ("telefone", "Telefone do escritório: {}."),
+    ("telefone_suporte", (
+        "Telefone do suporte: {}. É para quem **já é cliente** do escritório e "
+        "escreveu aqui por engano — passe este número e não recomece a triagem."
+    )),
+    ("horario_atendimento", "Horário de atendimento: {}."),
+    ("endereco", "Endereço: {}."),
+    ("email", "E-mail: {}."),
+    ("site", "Site: {}."),
+    ("instagram", "Instagram: {}."),
+]
+
+
+def bloco_do_escritorio(config) -> str:
+    """
+    O que o modelo precisa saber sobre o escritório, em texto.
+
+    Só entram os campos preenchidos. Um "Telefone: não informado" no prompt é
+    pior que a ausência: o modelo o lê como fato e chega a dizer ao cliente
+    que o escritório não tem telefone.
+    """
+    if config is None:
+        return ""
+
+    linhas = [
+        molde.format(valor.strip())
+        for campo, molde in CAMPOS_DO_ESCRITORIO
+        if (valor := getattr(config, campo, None)) and str(valor).strip()
+    ]
+    if not linhas:
+        return ""
+
+    return (
+        "## Dados do escritório\n\n"
+        + "\n".join(f"- {linha}" for linha in linhas)
+        + "\n\nUse isto quando perguntarem. Não invente o que não estiver aqui: "
+        "se não souber, diga que vai confirmar."
+    )
+
+
+def sistema_do_agente(agent: Agent, config=None) -> str:
     """
     O system prompt como o modelo o recebe.
 
-    O nome do atendente entra aqui, e não no texto do prompt, porque o prompt é
-    do dono do agente: ele pode reescrevê-lo inteiro pelo painel, e um nome
-    escondido no meio do texto se perderia na primeira edição. Anexado ao fim,
-    ele sobrevive a qualquer prompt.
+    O nome do atendente e os dados do escritório entram aqui, e não no texto do
+    prompt, porque o prompt é do dono do agente: ele pode reescrevê-lo inteiro
+    pelo painel, e um telefone escondido no meio de nove mil caracteres se
+    perderia na primeira edição. Anexados ao fim, sobrevivem a qualquer prompt.
 
     Sem nome configurado, nada é anexado — e o prompt manda não inventar um.
     Atendente que inventa nome próprio é atendente que mente sobre quem é.
     """
-    nome = (getattr(agent, "nome_atendente", None) or "").strip()
-    if not nome:
-        return agent.system_prompt
+    partes = [agent.system_prompt]
 
-    return (
-        f"{agent.system_prompt}\n\n"
-        f"Você atende com o nome {nome}. É assim que você se apresenta e "
-        f"assina, se precisar assinar."
-    )
+    nome = (getattr(agent, "nome_atendente", None) or "").strip()
+    if nome:
+        partes.append(
+            f"Você atende com o nome {nome}. É assim que você se apresenta e "
+            f"assina, se precisar assinar."
+        )
+
+    bloco = bloco_do_escritorio(config)
+    if bloco:
+        partes.append(bloco)
+
+    return "\n\n".join(partes)
 
 
 class LLMService:
@@ -190,7 +241,11 @@ class LLMService:
         return not self.gemini.configured
 
     async def _chamar_claude(
-        self, agent: Agent, messages: List[dict], model: Optional[str] = None
+        self,
+        agent: Agent,
+        messages: List[dict],
+        model: Optional[str] = None,
+        config=None,
     ) -> Tuple[str, dict]:
         """
         Uma resposta do Claude, **fora** do event loop.
@@ -209,15 +264,21 @@ class LLMService:
         contida numa linha por ponto de chamada, e o cliente síncrono é o que
         os testes usam.
         """
-        return await asyncio.to_thread(self._chamar_claude_sincrono, agent, messages, model)
+        return await asyncio.to_thread(
+            self._chamar_claude_sincrono, agent, messages, model, config
+        )
 
     def _chamar_claude_sincrono(
-        self, agent: Agent, messages: List[dict], model: Optional[str] = None
+        self,
+        agent: Agent,
+        messages: List[dict],
+        model: Optional[str] = None,
+        config=None,
     ) -> Tuple[str, dict]:
         modelo = model or self.model
         response = self.client.messages.create(
             model=modelo,
-            system=sistema_do_agente(agent),
+            system=sistema_do_agente(agent, config),
             messages=messages,
             **self._parametros_do_modelo(agent, modelo),
         )
@@ -256,6 +317,7 @@ class LLMService:
         causa: Optional[Exception],
         model: Optional[str] = None,
         anexo: Optional[dict] = None,
+        config=None,
     ) -> Tuple[str, dict]:
         """
         Tenta o provedor de reserva.
@@ -278,7 +340,7 @@ class LLMService:
 
         try:
             texto, uso = await self.gemini.generate(
-                system_prompt=sistema_do_agente(agent),
+                system_prompt=sistema_do_agente(agent, config),
                 user_message=user_message,
                 conversation_history=conversation_history,
                 max_tokens=agent.max_tokens or settings.max_tokens,
@@ -323,6 +385,11 @@ class LLMService:
             # Build messages array
             messages = self._build_messages(conversation_history, user_message, anexo)
 
+            # Os dados do escritório, lidos uma vez por mensagem. Vão para os
+            # três caminhos: o cliente não pode receber o telefone certo do
+            # Claude e nenhum telefone do Gemini só porque o principal caiu.
+            config = await escritorio_service.para_o_prompt()
+
             # Áudio é o caso em que a reserva não é reserva: é o único
             # provedor que sabe ler. Tentar o Claude antes seria gastar uma
             # chamada para receber 400.
@@ -330,20 +397,25 @@ class LLMService:
 
             if so_o_gemini_le:
                 response_text, token_usage = await self._chamar_reserva(
-                    agent, user_message, conversation_history, causa=None, anexo=anexo
+                    agent, user_message, conversation_history, causa=None,
+                    anexo=anexo, config=config,
                 )
             elif self._tentar_claude_primeiro():
                 try:
-                    response_text, token_usage = await self._chamar_claude(agent, messages)
+                    response_text, token_usage = await self._chamar_claude(
+                        agent, messages, config=config
+                    )
                 except (RateLimitError, APIConnectionError, APIError) as e:
                     # A reserva devolve a falha original se não puder assumir,
                     # para o tratamento lá embaixo continuar valendo.
                     response_text, token_usage = await self._chamar_reserva(
-                        agent, user_message, conversation_history, causa=e, anexo=anexo
+                        agent, user_message, conversation_history, causa=e,
+                        anexo=anexo, config=config,
                     )
             else:
                 response_text, token_usage = await self._chamar_reserva(
-                    agent, user_message, conversation_history, causa=None, anexo=anexo
+                    agent, user_message, conversation_history, causa=None,
+                    anexo=anexo, config=config,
                 )
 
             # Track usage

@@ -1,6 +1,6 @@
 """SQLAlchemy models for database ORM."""
 
-from sqlalchemy import Column, String, DateTime, Boolean, Integer, Float, Text, ForeignKey, Index, UniqueConstraint
+from sqlalchemy import Column, String, Date, DateTime, Boolean, Integer, Float, Text, ForeignKey, Index, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -452,3 +452,32 @@ class ConfiguracaoEscritorio(Base):
 
     def __repr__(self):
         return f"<ConfiguracaoEscritorio(nome={self.nome})>"
+
+
+class LancamentoMarketing(Base):
+    """
+    Um gasto do escritório em atrair cliente.
+
+    Só o escritório sabe quanto pagou de anúncio — não há de onde deduzir
+    isso. Já o consumo de IA o sistema conhece: fica em `Message.tokens_usados`
+    e é somado na hora de calcular, em vez de ser digitado. Pedir os dois à
+    mão daria o que os contadores do produto concorrente mostram: campo em
+    branco para sempre.
+
+    Dinheiro em **centavos inteiros**. Ponto flutuante em valor monetário
+    acumula erro na soma — `0.1 + 0.2` não é `0.3` —, e um relatório de custo
+    que não fecha com o extrato é um relatório que ninguém usa duas vezes.
+    """
+
+    __tablename__ = "lancamentos_marketing"
+    __table_args__ = (Index("idx_lancamento_data", "data"),)
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    data = Column(Date, nullable=False)
+    investimento_ads_centavos = Column(Integer, nullable=False, default=0)
+    observacao = Column(Text, nullable=True)
+    criado_por = Column(String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    data_criacao = Column(DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<LancamentoMarketing(data={self.data}, ads={self.investimento_ads_centavos})>"

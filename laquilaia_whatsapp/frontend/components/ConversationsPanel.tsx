@@ -122,7 +122,14 @@ function ItemDaFila({
  * mensagens do cliente continuam sendo registradas — é justamente elas que o
  * operador precisa ler.
  */
-export function ConversationsPanel({ agentId }: { agentId: string }) {
+export function ConversationsPanel({
+  agentId,
+  abrirConversa,
+}: {
+  agentId: string;
+  /** Id vindo da URL: abre este atendimento assim que a fila carrega. */
+  abrirConversa?: string;
+}) {
   const {
     conversations,
     selectedId,
@@ -146,6 +153,19 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
     [reload],
   );
   const { isConnected } = useAgentEvents(agentId, aoReceberEvento);
+
+  // Abre a conversa pedida na URL — uma vez só.
+  //
+  // Sem a trava, qualquer recarga da fila (e elas vêm do WebSocket, várias
+  // por conversa) reabriria a mesma conversa por cima do que o operador
+  // tivesse escolhido depois. A tela mudaria sozinha embaixo dele.
+  const jaAbriuDaUrl = useRef(false);
+  useEffect(() => {
+    if (jaAbriuDaUrl.current || !abrirConversa) return;
+    if (!conversations.some((c) => c.id === abrirConversa)) return;
+    jaAbriuDaUrl.current = true;
+    void openConversation(abrirConversa);
+  }, [abrirConversa, conversations, openConversation]);
 
   // A transcrição abria no começo: o operador via a primeira frase de um
   // atendimento de trinta mensagens e precisava rolar até o fim para achar o

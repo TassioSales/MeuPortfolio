@@ -8,6 +8,7 @@ import { Logo } from "./Logo";
 import {
   IconeAcessos,
   IconeAgente,
+  IconeClientes,
   IconeConversa,
   IconeFunil,
   IconeMetricas,
@@ -38,6 +39,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard/whatsapp", label: "WhatsApp", Icone: IconeWhatsapp, soAdmin: true },
   { href: "/dashboard/conversations", label: "Atendimentos", Icone: IconeConversa },
   { href: "/dashboard/chat-test", label: "Chat de teste", Icone: IconeTeste, soAdmin: true },
+  { href: "/dashboard/clientes", label: "Clientes", Icone: IconeClientes },
   { href: "/dashboard/kanban", label: "Kanban CRM", Icone: IconeFunil },
   { href: "/dashboard/metrics", label: "Métricas", Icone: IconeMetricas },
   { href: "/dashboard/usuarios", label: "Acessos", Icone: IconeAcessos, soAdmin: true },

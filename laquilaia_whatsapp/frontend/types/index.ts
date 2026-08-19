@@ -346,6 +346,33 @@ export interface MoveCardRequest {
   new_order: number;
 }
 
+// ========== Clientes ==========
+
+/** Uma linha da lista de contatos (`ClienteNaLista` no backend). */
+export interface ClienteNaLista {
+  lead_id: string;
+  nome: string | null;
+  phone_number: string;
+  email: string | null;
+  empresa: string | null;
+  cargo: string | null;
+  score_qualificacao: number;
+  /** A coluna do board. Nulo em lead criado antes de o funil existir. */
+  etapa: string | null;
+  dias_parado: number | null;
+  data_criacao: string | null;
+  conversation_id: string | null;
+}
+
+export interface ClientesResponse {
+  agent_id: string;
+  /** Total da **busca**, não da base — é o que a paginação precisa. */
+  total: number;
+  pagina: number;
+  por_pagina: number;
+  clientes: ClienteNaLista[];
+}
+
 // ========== Métricas ==========
 
 export interface MetricsSummary {

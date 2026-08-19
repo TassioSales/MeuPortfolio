@@ -291,3 +291,46 @@ class TestTranscricaoDoAudio:
 
         gemini.transcrever.assert_not_awaited()
         assert anexo == PDF
+
+
+class TestTamanhoDoAnexo:
+    """
+    O tamanho do arquivo, como a Evolution o entrega.
+
+    Ela devolve `size` de duas formas: inteiro, ou o objeto
+    `{"low": 6401, "high": 0, "unsigned": true}` — é assim que o Baileys
+    representa inteiro de 64 bits em JavaScript, onde todo número é ponto
+    flutuante. Sem converter, o log de produção saiu assim:
+
+        📎 Anexo lido: audio/ogg ({'fileLength': {'low': 6401, ...}} bytes)
+    """
+
+    def test_objeto_do_baileys_vira_numero(self):
+        from app.services.whatsapp_service import _tamanho_em_bytes
+
+        assert _tamanho_em_bytes({"low": 6401, "high": 0, "unsigned": True}) == 6401
+
+    def test_inteiro_passa_intacto(self):
+        from app.services.whatsapp_service import _tamanho_em_bytes
+
+        assert _tamanho_em_bytes(6401) == 6401
+
+    def test_parte_alta_entra_na_conta(self):
+        """
+        Anexo de WhatsApp não chega perto de 4 GB, mas montar o número certo
+        custa uma linha — e o dia em que chegar, o log não mente.
+        """
+        from app.services.whatsapp_service import _tamanho_em_bytes
+
+        assert _tamanho_em_bytes({"low": 1, "high": 1}) == 1 + (1 << 32)
+
+    def test_o_que_nao_da_para_ler_vira_none(self):
+        """
+        `None` faz o log escrever "?", que é honesto. Um zero inventado diria
+        que o arquivo tem tamanho zero.
+        """
+        from app.services.whatsapp_service import _tamanho_em_bytes
+
+        assert _tamanho_em_bytes(None) is None
+        assert _tamanho_em_bytes({"high": 0}) is None
+        assert _tamanho_em_bytes("6401") is None

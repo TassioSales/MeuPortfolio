@@ -31,6 +31,29 @@ def _com_prefixo_de_imagem(base64: Optional[str]) -> Optional[str]:
     return base64 if base64.startswith("data:") else f"data:image/png;base64,{base64}"
 
 
+def _tamanho_em_bytes(bruto) -> Optional[int]:
+    """
+    O tamanho do arquivo como número.
+
+    A Evolution devolve `size` de duas formas: um inteiro, ou o objeto
+    `{"low": 6401, "high": 0, "unsigned": true}` — é assim que o Baileys
+    representa um inteiro de 64 bits em JavaScript, onde todo número é ponto
+    flutuante. Sem esta conversão o log sai com o dicionário inteiro no lugar
+    do número, e qualquer conta sobre o valor estoura.
+
+    `high` é a parte alta do inteiro de 64 bits. Anexo de WhatsApp não chega
+    perto de 4 GB, mas montar o número certo custa uma linha.
+    """
+    if isinstance(bruto, dict):
+        baixo = bruto.get("low")
+        alto = bruto.get("high") or 0
+        if baixo is None:
+            return None
+        return baixo + (alto << 32)
+
+    return bruto if isinstance(bruto, int) else None
+
+
 class WhatsAppService:
     """Service for sending messages via Evolution API."""
 
@@ -314,7 +337,7 @@ class WhatsAppService:
             "base64": base64,
             "mimetype": dados.get("mimetype") or "application/octet-stream",
             "nome": dados.get("fileName"),
-            "tamanho": dados.get("size"),
+            "tamanho": _tamanho_em_bytes(dados.get("size")),
         }
 
     async def health_check(self) -> bool:

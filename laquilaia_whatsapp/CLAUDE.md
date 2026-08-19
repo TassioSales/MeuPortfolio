@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **473 testes no backend, 192 no frontend.**
+Estado atual: **477 testes no backend, 192 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -220,6 +220,7 @@ Estes bugs foram encontrados e corrigidos — não os reintroduza.
 | Responder mensagem de grupo | O `@g.us` no remoteJid: sem filtro, o agente responde ao grupo inteiro e qualifica o grupo como lead |
 | `textMessage` no envio da Evolution | É o nome da v1. A v2 responde `instance requires property "text"` e devolve 400 — depois de a chamada ao LLM já ter sido paga |
 | Arrancar o DDI do número antes de enviar | O `remoteJid` chega com `55` e é o identificador do contato: sem ele a resposta vai para outra pessoa. E mutilava DDD 55 (Santa Maria/RS) |
+| Número grande vindo do Baileys | A Evolution devolve `size` como `{"low": 6401, "high": 0, "unsigned": true}` — é assim que o JavaScript representa inteiro de 64 bits. Imprimir cru põe o dicionário no log no lugar do número, e conta sobre o valor estoura. Ver `_tamanho_em_bytes` |
 | `npm run typecheck` com a saída cortada | `npm run typecheck \| tail -5` mostra só os avisos de versão do npm e **esconde os erros de TypeScript** — dois PRs foram para o `main` com o typecheck vermelho antes de alguém notar. A CI roda `typecheck` e `build`; filtre por `grep "error TS"`, não por `tail` |
 | `matchAll` e flag `s` em regex, no frontend | O `target` do tsconfig é anterior a ES2018: os dois compilam no Jest e reprovam no `tsc`. Use `exec` em laço e `[\s\S]` |
 | Consultar o banco dentro do laço dos cards | O board fazia `select(Lead)` e `select(LeadDetails)` **por card**: um funil com 150 leads numa coluna passava de trezentas idas ao banco, e cada card novo somava duas. Junte no `join` e agrupe em Python — `tests/test_kanban.py` conta as consultas |

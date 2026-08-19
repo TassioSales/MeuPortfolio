@@ -481,3 +481,38 @@ class LancamentoMarketing(Base):
 
     def __repr__(self):
         return f"<LancamentoMarketing(data={self.data}, ads={self.investimento_ads_centavos})>"
+
+
+class Agendamento(Base):
+    """
+    Um retorno combinado com o cliente.
+
+    "Te ligo amanhã às 15h" era dito na conversa e morria ali: virava um
+    compromisso que só existia na cabeça de quem prometeu, e o cliente
+    esperava a ligação que ninguém marcou em lugar nenhum.
+
+    `criado_por` é nulo quando quem agendou foi a triagem — hoje ninguém, mas
+    a coluna existe para o dia em que o agente passar a extrair a combinação
+    da conversa. Sem ela, ligar isso depois exigiria migração.
+    """
+
+    __tablename__ = "agendamentos"
+    __table_args__ = (
+        Index("idx_agendamento_quando", "quando"),
+        Index("idx_agendamento_lead", "lead_id"),
+    )
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    lead_id = Column(
+        String(36), ForeignKey("leads.id", ondelete="CASCADE"), nullable=False
+    )
+    quando = Column(DateTime, nullable=False)
+    motivo = Column(Text, nullable=True)
+    # pendente, realizado, cancelado
+    status = Column(String(20), nullable=False, default="pendente")
+    criado_por = Column(String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    data_criacao = Column(DateTime, default=datetime.utcnow)
+    data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Agendamento(lead={self.lead_id}, quando={self.quando}, status={self.status})>"

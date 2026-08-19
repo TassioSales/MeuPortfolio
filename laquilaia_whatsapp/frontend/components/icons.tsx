@@ -192,3 +192,14 @@ export function IconeMarketing(props: IconProps) {
     </Base>
   );
 }
+
+/** Agendamentos: a folha do calendário. */
+export function IconeAgenda(props: IconProps) {
+  return (
+    <Base {...props}>
+      <rect x="3.5" y="5" width="17" height="15" rx="2" />
+      <path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" />
+      <path d="M8 13h3" />
+    </Base>
+  );
+}

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Logo } from "./Logo";
 import {
   IconeAcessos,
+  IconeAgenda,
   IconeAgente,
   IconeClientes,
   IconeConversa,
@@ -45,6 +46,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard/chat-test", label: "Chat de teste", Icone: IconeTeste, soAdmin: true },
   { href: "/dashboard/clientes", label: "Clientes", Icone: IconeClientes },
   { href: "/dashboard/kanban", label: "Kanban CRM", Icone: IconeFunil },
+  { href: "/dashboard/agendamentos", label: "Agendamentos", Icone: IconeAgenda },
   { href: "/dashboard/metrics", label: "Métricas", Icone: IconeMetricas },
   { href: "/dashboard/finalizados", label: "Finalizados", Icone: IconeFinalizados },
   { href: "/dashboard/historico", label: "Histórico", Icone: IconeHistorico },

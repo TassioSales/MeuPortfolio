@@ -238,11 +238,19 @@ class TestAcesso:
         assert _buscar(agent_id, lead_alheio, headers).status_code == 404
 
     @pytest.mark.asyncio
-    async def test_agente_de_outro_dono_e_404(self):
-        headers, _ = _login("b4")
-        agent_alheio, lead_alheio = await _semear("b3")
+    async def test_outro_acesso_do_escritorio_le_o_dossie(self):
+        """
+        O dossiê é do escritório.
 
-        assert _buscar(agent_alheio, lead_alheio, headers).status_code == 404
+        Este caso já afirmava 404 — "agente de outro dono". Não havia outro
+        dono: toda conta desta instalação é criada pelo mesmo administrador,
+        e o que o 404 barrava era o operador lendo o dossiê do lead que ele
+        precisa atender.
+        """
+        headers, _ = _login("b4")
+        agent_id, lead_id = await _semear("b3")
+
+        assert _buscar(agent_id, lead_id, headers).status_code == 200
 
     @pytest.mark.asyncio
     async def test_sem_token_e_401(self):

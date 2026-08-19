@@ -16,13 +16,14 @@ from app.main import app
 client = TestClient(app)
 
 
-def _register_and_login(suffix: str) -> dict:
+def _register_and_login(suffix: str, papel: str = "admin") -> dict:
     credentials = {
         "email": f"authz-{suffix}@example.com",
         "nome": "Authz User",
         "senha": "SenhaSegura123!",
     }
-    criar_acesso(client, credentials["email"], credentials["senha"], credentials.get("nome", "Teste"))
+    criar_acesso(client, credentials["email"], credentials["senha"],
+                 credentials.get("nome", "Teste"), papel=papel)
     login = client.post(
         "/api/v1/auth/login",
         json={"email": credentials["email"], "senha": credentials["senha"]},
@@ -110,29 +111,63 @@ class TestAnonymousAccessIsRejected:
         )
 
 
-class TestCrossUserAccessIsRejected:
-    """Um usuário autenticado não pode ler os dados de agente alheio."""
+class TestOperadorTrabalhaComOAgenteDoAdmin:
+    """
+    Kanban e métricas são do escritório, não de quem criou o agente.
+
+    Esta classe já afirmava o oposto: que um segundo usuário levava 404 em
+    todas essas rotas, sob o nome de "acesso cruzado". Não havia acesso
+    cruzado a impedir — o cadastro público fecha no primeiro usuário, então
+    **toda** conta desta instalação nasce da mão do administrador do mesmo
+    escritório. O 404 não barrava intruso; barrava o operador contratado para
+    trabalhar ali, e o sintoma na tela era "Nenhum agente ainda".
+
+    O que protege continua testado, e em outro lugar: anônimo é recusado
+    (classe acima), conta desativada perde o acesso na hora e operador não
+    escreve configuração (`test_controle_de_acesso.py` e `TestPapeis`).
+    """
 
     @pytest.mark.parametrize("method,path,body", ALL_ENDPOINTS)
-    def test_cannot_reach_another_users_agent(self, method, path, body):
-        owner_headers = _register_and_login(f"owner-{path.count('/')}-{method}")
-        agent_id = _create_agent(owner_headers, "Agente do dono")
+    def test_operador_alcanca_o_agente_do_escritorio(self, method, path, body):
+        admin_headers = _register_and_login(f"owner-{path.count('/')}-{method}")
+        agent_id = _create_agent(admin_headers, "Agente do escritório")
 
-        intruder_headers = _register_and_login(f"intruder-{path.count('/')}-{method}")
-
-        response = client.request(
-            method, path.format(agent_id=agent_id), headers=intruder_headers, json=body
+        operador = _register_and_login(
+            f"operador-{path.count('/')}-{method}", papel="operador"
         )
 
-        # 404 em vez de 403: não confirma sequer que o agente existe.
-        assert response.status_code == 404, (
-            f"{method} {path} vazou o agente de outro usuário "
+        response = client.request(
+            method, path.format(agent_id=agent_id), headers=operador, json=body
+        )
+
+        # O que não pode acontecer é o **agente** sumir para quem atende.
+        #
+        # O `move` desta lista aponta para uma coluna que não existe e
+        # responde "Column not found" — 404 legítimo, do corpo da requisição,
+        # não da autorização. Por isso a asserção olha de quê o 404 fala, e
+        # não só o número: um `!= 404` chapado daria falso positivo aqui, e um
+        # `== 200` daria falso negativo.
+        assert "Agent not found" not in response.text, (
+            f"{method} {path} escondeu do operador o agente do escritório "
             f"(status {response.status_code})"
         )
 
 
 class TestOwnerAccessStillWorks:
     """A proteção não pode quebrar o acesso legítimo."""
+
+    def test_agente_inexistente_continua_404(self):
+        """
+        O 404 que sobrou é o de verdade: id que não existe.
+
+        Vale registrar porque, ao afrouxar o filtro de dono, o risco era
+        transformar "não existe" em 500 ou em resposta vazia com 200.
+        """
+        headers = _register_and_login("inexistente")
+
+        assert client.get(
+            "/api/v1/agents/nao-existe/metrics/kpis", headers=headers
+        ).status_code == 404
 
     def test_owner_reads_own_kanban(self):
         headers = _register_and_login("owner-kanban")
@@ -171,16 +206,16 @@ class TestTimeseriesEndpoint:
 
         assert response.status_code in (401, 403)
 
-    def test_cannot_reach_another_users_agent(self):
-        owner = _register_and_login("ts-owner")
-        agent_id = _create_agent(owner)
-        intruder = _register_and_login("ts-intruder")
+    def test_operador_le_a_serie_do_agente_do_escritorio(self):
+        admin = _register_and_login("ts-owner")
+        agent_id = _create_agent(admin)
+        operador = _register_and_login("ts-operador", papel="operador")
 
         response = client.get(
-            f"/api/v1/agents/{agent_id}/metrics/timeseries", headers=intruder
+            f"/api/v1/agents/{agent_id}/metrics/timeseries", headers=operador
         )
 
-        assert response.status_code == 404
+        assert response.status_code == 200
 
     def test_returns_one_point_per_day_including_empty_days(self):
         headers = _register_and_login("ts-shape")

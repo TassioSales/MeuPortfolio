@@ -33,15 +33,20 @@ router = APIRouter(
 TEST_PHONE_NUMBER = "test_api"
 
 
-async def _get_agent_or_404(agent_id: str, user_id: str, db: AsyncSession) -> Agent:
-    """Fetch an agent owned by the user, or raise NotFound."""
-    result = await db.execute(
-        select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
-    )
+async def _get_agent_or_404(agent_id: str, db: AsyncSession) -> Agent:
+    """
+    O agente do escritório, ou 404.
+
+    Sem filtro por dono: esta instalação atende um escritório só e ninguém se
+    cadastra sozinho nela, então o filtro nunca barrou estranho — barrava o
+    operador que o próprio administrador criou. Quem pode **mexer** no agente
+    é decidido pelo papel, em `require_admin`, na rota.
+    """
+    result = await db.execute(select(Agent).where(Agent.id == agent_id))
     agent = result.scalars().first()
 
     if not agent:
-        logger.warning(f"⚠️ Agent not found: {agent_id} (user: {user_id})")
+        logger.warning(f"⚠️ Agent not found: {agent_id}")
         raise NotFoundException("Agent")
 
     return agent
@@ -94,16 +99,11 @@ async def chat_with_agent(
     5. Saves conversation and returns response
     """
     try:
-        # Verify agent exists and is owned by user
-        result = await db.execute(
-            select(Agent).where(
-                (Agent.id == agent_id) & (Agent.user_id == user_id)
-            )
-        )
+        result = await db.execute(select(Agent).where(Agent.id == agent_id))
         agent = result.scalars().first()
 
         if not agent:
-            logger.warning(f"⚠️ Agent not found: {agent_id} (user: {user_id})")
+            logger.warning(f"⚠️ Agent not found: {agent_id}")
             raise NotFoundException("Agent")
 
         # Get or create conversation
@@ -204,12 +204,12 @@ async def chat_with_agent(
 @router.get("/{agent_id}/chat/history", response_model=ChatHistoryResponse)
 async def get_chat_history(
     agent_id: str,
-    user_id: str = Depends(get_current_user),
+    _admin: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Return the playground conversation history, oldest message first."""
     try:
-        await _get_agent_or_404(agent_id, user_id, db)
+        await _get_agent_or_404(agent_id, db)
 
         conversation = await _find_test_conversation(agent_id, db)
         if conversation is None:
@@ -251,7 +251,7 @@ async def get_chat_history(
 @router.delete("/{agent_id}/chat/history", status_code=status.HTTP_200_OK)
 async def reset_chat_history(
     agent_id: str,
-    user_id: str = Depends(get_current_user),
+    _admin: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -261,7 +261,7 @@ async def reset_chat_history(
     manter a conversa vazia serviria só para ocupar a constraint única.
     """
     try:
-        await _get_agent_or_404(agent_id, user_id, db)
+        await _get_agent_or_404(agent_id, db)
 
         conversation = await _find_test_conversation(agent_id, db)
         if conversation is None:
@@ -311,16 +311,11 @@ async def test_agent(
     - Does NOT save conversation history
     """
     try:
-        # Verify agent exists and is owned by user
-        result = await db.execute(
-            select(Agent).where(
-                (Agent.id == agent_id) & (Agent.user_id == user_id)
-            )
-        )
+        result = await db.execute(select(Agent).where(Agent.id == agent_id))
         agent = result.scalars().first()
 
         if not agent:
-            logger.warning(f"⚠️ Agent not found: {agent_id} (user: {user_id})")
+            logger.warning(f"⚠️ Agent not found: {agent_id}")
             raise NotFoundException("Agent")
 
         # Generate response without conversation history
@@ -387,12 +382,7 @@ async def get_rate_limit_status(
     - tokens_remaining: Tokens left in current window
     """
     try:
-        # Verify agent exists and is owned by user
-        result = await db.execute(
-            select(Agent).where(
-                (Agent.id == agent_id) & (Agent.user_id == user_id)
-            )
-        )
+        result = await db.execute(select(Agent).where(Agent.id == agent_id))
         agent = result.scalars().first()
 
         if not agent:
@@ -486,7 +476,7 @@ async def list_agent_conversations(
     prompt, não de um cliente esperando atendimento.
     """
     try:
-        await _get_agent_or_404(agent_id, user_id, db)
+        await _get_agent_or_404(agent_id, db)
 
         result = await db.execute(
             select(Conversation)
@@ -553,19 +543,17 @@ async def list_agent_conversations(
         )
 
 
-async def _get_owned_conversation(
-    conversation_id: str, user_id: str, db: AsyncSession
-) -> Conversation:
+async def _get_conversa_ou_404(conversation_id: str, db: AsyncSession) -> Conversation:
     """
-    Fetch a conversation, ensuring it belongs to an agent of this user.
+    A conversa pelo id.
 
-    O join com Agent é o que impede um usuário pausar a conversa de outro:
-    sem ele, bastaria adivinhar o id.
+    Atender é justamente o trabalho do operador: ler a transcrição, assumir a
+    conversa e responder ao cliente. Filtrar por dono do agente tirava dele
+    exatamente isso — e não protegia ninguém, porque toda conta desta
+    instalação foi criada pelo administrador do mesmo escritório.
     """
     result = await db.execute(
-        select(Conversation)
-        .join(Agent, Conversation.agent_id == Agent.id)
-        .where((Conversation.id == conversation_id) & (Agent.user_id == user_id))
+        select(Conversation).where(Conversation.id == conversation_id)
     )
     conversation = result.scalars().first()
 
@@ -578,11 +566,13 @@ async def _get_owned_conversation(
 async def _set_conversation_status(
     conversation_id: str, user_id: str, novo_status: str, db: AsyncSession
 ) -> ConversationStatusResponse:
-    conversation = await _get_owned_conversation(conversation_id, user_id, db)
+    conversation = await _get_conversa_ou_404(conversation_id, db)
     conversation.status = novo_status
     await db.commit()
 
-    logger.info(f"🔄 Conversa {conversation_id} agora está '{novo_status}'")
+    # Quem assumiu vai no log: agora que a fila é do escritório inteiro,
+    # "a IA parou de responder" sem dizer por ordem de quem é meia informação.
+    logger.info(f"🔄 Conversa {conversation_id} agora está '{novo_status}' (por {user_id})")
     return ConversationStatusResponse(
         conversation_id=conversation.id,
         status=novo_status,
@@ -609,7 +599,7 @@ async def get_conversation_messages(
     chamada só para saber se o botão mostra "pausar" ou "retomar".
     """
     try:
-        conversation = await _get_owned_conversation(conversation_id, user_id, db)
+        conversation = await _get_conversa_ou_404(conversation_id, db)
 
         result = await db.execute(
             select(Message)
@@ -772,7 +762,7 @@ async def responder_como_operador(
     Evolution recusou faria a transcrição mentir para quem a lê.
     """
     try:
-        conversa = await _get_owned_conversation(conversation_id, user_id, db)
+        conversa = await _get_conversa_ou_404(conversation_id, db)
 
         if conversa.status != "pausada":
             raise HTTPException(
@@ -842,7 +832,7 @@ async def get_conversation_status(
 ):
     """Whether the AI is answering this conversation."""
     try:
-        conversation = await _get_owned_conversation(conversation_id, user_id, db)
+        conversation = await _get_conversa_ou_404(conversation_id, db)
         return ConversationStatusResponse(
             conversation_id=conversation.id,
             status=conversation.status,

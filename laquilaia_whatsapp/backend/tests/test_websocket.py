@@ -23,13 +23,14 @@ from app.ws.manager import (
 client = TestClient(app)
 
 
-def _register_and_login(suffix: str) -> tuple[dict, str]:
+def _register_and_login(suffix: str, papel: str = "admin") -> tuple[dict, str]:
     credentials = {
         "email": f"ws-{suffix}@example.com",
         "nome": "WS User",
         "senha": "SenhaSegura123!",
     }
-    criar_acesso(client, credentials["email"], credentials["senha"], credentials.get("nome", "Teste"))
+    criar_acesso(client, credentials["email"], credentials["senha"],
+                 credentials.get("nome", "Teste"), papel=papel)
     login = client.post(
         "/api/v1/auth/login",
         json={"email": credentials["email"], "senha": credentials["senha"]},
@@ -65,15 +66,56 @@ class TestWebSocketAuthorization:
             with client.websocket_connect("/ws/agents/qualquer?token=token-falso"):
                 pass
 
-    def test_rejects_another_users_agent(self):
-        owner_headers, _ = _register_and_login("owner")
-        agent_id = _create_agent(owner_headers)
-        _, intruder_token = _register_and_login("intruder")
+    def test_aceita_o_operador_no_agente_do_admin(self):
+        """
+        O socket é o que faz a fila de atendimentos se atualizar sozinha.
+
+        Este caso já esperava recusa, sob o nome de "agente de outro usuário".
+        Recusar aqui deixaria o operador com uma tela que só muda se ele
+        apertar F5 — justamente a pessoa que fica o dia inteiro nela.
+        """
+        admin_headers, _ = _register_and_login("owner")
+        agent_id = _create_agent(admin_headers)
+        _, token_do_operador = _register_and_login("operador", papel="operador")
+
+        with client.websocket_connect(
+            f"/ws/agents/{agent_id}?token={token_do_operador}"
+        ) as ws:
+            assert ws is not None
+
+    def test_recusa_agente_que_nao_existe(self):
+        _, token = _register_and_login("sem-agente")
 
         with pytest.raises(Exception):
-            with client.websocket_connect(
-                f"/ws/agents/{agent_id}?token={intruder_token}"
-            ):
+            with client.websocket_connect(f"/ws/agents/nao-existe?token={token}"):
+                pass
+
+    def test_recusa_conta_desativada(self):
+        """
+        A revogação imediata vale para o socket também.
+
+        O REST passou a conferir o status a cada requisição. Um socket já
+        aberto — ou aberto depois — com token de conta desativada faria essa
+        revogação valer pela metade: quem saiu do escritório continuaria
+        vendo lead novo chegar em tempo real.
+        """
+        admin_headers, _ = _register_and_login("dono-revoga")
+        agent_id = _create_agent(admin_headers)
+        _, token = _register_and_login("desativado", papel="operador")
+
+        alvo = next(
+            u
+            for u in client.get("/api/v1/auth/users", headers=admin_headers).json()
+            if u["email"] == "ws-desativado@example.com"
+        )
+        client.patch(
+            f"/api/v1/auth/users/{alvo['id']}",
+            json={"status": "inativo"},
+            headers=admin_headers,
+        )
+
+        with pytest.raises(Exception):
+            with client.websocket_connect(f"/ws/agents/{agent_id}?token={token}"):
                 pass
 
     def test_accepts_the_agent_owner(self):

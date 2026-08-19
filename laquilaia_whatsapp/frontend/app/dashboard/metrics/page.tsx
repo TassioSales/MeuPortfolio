@@ -1,10 +1,9 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/Button";
-import { EmptyState } from "@/components/EmptyState";
+import { SemAgente } from "@/components/SemAgente";
 import { FullPageLoader } from "@/components/LoadingSpinner";
 import { AtendimentosChart } from "@/components/charts/AtendimentosChart";
 import { FunilChart } from "@/components/charts/FunilChart";
@@ -172,18 +171,10 @@ function MetricsContent() {
 
   if (agents.length === 0) {
     return (
-      <EmptyState
-        icon="📈"
-        title="Nenhum agente ainda"
-        description="As métricas são calculadas por agente. Crie um para começar a acompanhar o desempenho."
-        action={
-          <Link
-            href="/dashboard/agents"
-            className="rounded-lg bg-ink-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-ink-800 dark:bg-ink-100 dark:text-ink-950 dark:hover:bg-white"
-          >
-            Ir para Agentes
-          </Link>
-        }
+      <SemAgente
+        icone="📈"
+        titulo="Nenhum agente ainda"
+        paraOAdmin="As métricas são calculadas por agente. Crie um para começar a acompanhar o desempenho."
       />
     );
   }

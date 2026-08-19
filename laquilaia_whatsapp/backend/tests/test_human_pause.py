@@ -21,13 +21,13 @@ from app.utils.exceptions import ValidationException
 client = TestClient(app)
 
 
-def _login(suffix: str) -> dict:
+def _login(suffix: str, papel: str = "admin") -> dict:
     creds = {
         "email": f"pause-{suffix}@example.com",
         "nome": "Pause User",
         "senha": "SenhaSegura123!",
     }
-    criar_acesso(client, creds["email"], creds["senha"], creds.get("nome", "Teste"))
+    criar_acesso(client, creds["email"], creds["senha"], creds.get("nome", "Teste"), papel=papel)
     r = client.post(
         "/api/v1/auth/login", json={"email": creds["email"], "senha": creds["senha"]}
     )
@@ -225,14 +225,22 @@ class TestPauseEndpoints:
 
         assert r.status_code in (401, 403)
 
-    def test_cannot_pause_another_users_conversation(self):
-        dono = _login("dono")
-        conv_id = self._agent_and_conversation(dono)
-        intruso = _login("intruso")
+    def test_operador_pausa_conversa_do_agente_do_admin(self):
+        """
+        Assumir a conversa é o trabalho do operador.
 
-        r = client.post(f"/api/v1/conversations/{conv_id}/pause", headers=intruso)
+        Este caso já dizia o contrário — 404, "conversa de outro usuário". O
+        agente é criado pelo administrador, sempre; se a conversa dele fosse
+        inalcançável, o operador não teria conversa nenhuma para assumir.
+        """
+        admin = _login("dono")
+        conv_id = self._agent_and_conversation(admin)
+        operador = _login("operador-pausa", papel="operador")
 
-        assert r.status_code == 404
+        r = client.post(f"/api/v1/conversations/{conv_id}/pause", headers=operador)
+
+        assert r.status_code == 200
+        assert r.json()["ia_ativa"] is False
 
     def test_unknown_conversation_is_404(self):
         headers = _login("desconhecida")
@@ -379,15 +387,17 @@ class TestListagemDeConversas:
         assert item["lead_nome"] is None
         assert item["phone_number"] == "5561900006666"
 
-    async def test_lista_de_agente_alheio_e_404(self):
-        dono = _login("dono-lista")
-        agent_id = self._agente(dono)
+    async def test_operador_ve_a_fila_do_agente_do_admin(self):
+        """A fila é o painel de trabalho dele; vazia, não há o que atender."""
+        admin = _login("dono-lista")
+        agent_id = self._agente(admin)
         await self._conversa_real(agent_id, "5561900007777", "X")
-        intruso = _login("intruso-lista")
+        operador = _login("operador-lista", papel="operador")
 
-        r = client.get(f"/api/v1/agents/{agent_id}/conversations", headers=intruso)
+        r = client.get(f"/api/v1/agents/{agent_id}/conversations", headers=operador)
 
-        assert r.status_code == 404
+        assert r.status_code == 200
+        assert len(r.json()) == 1
 
     def test_lista_exige_autenticacao(self):
         r = client.get("/api/v1/agents/qualquer/conversations")
@@ -449,16 +459,18 @@ class TestMensagensDaConversa:
         assert corpo["status"] == "pausada"
         assert corpo["ia_ativa"] is False
 
-    async def test_mensagens_de_conversa_alheia_sao_404(self):
-        dono = _login("dono-msgs")
-        conv_id = await self._conversa_com_mensagens(dono)
-        intruso = _login("intruso-msgs")
+    async def test_operador_le_a_transcricao(self):
+        """Ler o que já foi dito é pré-requisito de assumir sem repetir pergunta."""
+        admin = _login("dono-msgs")
+        conv_id = await self._conversa_com_mensagens(admin)
+        operador = _login("operador-msgs", papel="operador")
 
         r = client.get(
-            f"/api/v1/conversations/{conv_id}/messages", headers=intruso
+            f"/api/v1/conversations/{conv_id}/messages", headers=operador
         )
 
-        assert r.status_code == 404
+        assert r.status_code == 200
+        assert r.json()["messages"]
 
     def test_mensagens_exigem_autenticacao(self):
         r = client.get("/api/v1/conversations/qualquer/messages")
@@ -569,18 +581,32 @@ class TestOperadorResponde:
         assert transcricao["messages"] == []
 
     @pytest.mark.asyncio
-    async def test_conversa_de_outro_dono_e_404(self):
+    async def test_operador_responde_na_conversa_do_agente_do_admin(self):
+        """
+        O ponto do papel de operador: responder ao cliente.
+
+        Este caso já esperava 404. Com ele passando, o operador via a
+        conversa, via o botão de responder, digitava — e levava "não
+        encontrado" na cara.
+        """
         headers, agent_id = self._preparar("op-dono")
         await self._conversa(agent_id, "conv-opdono", "pausada")
-        alheio = _login("op-alheio")
+        operador = _login("op-operador", papel="operador")
 
-        r = client.post(
-            "/api/v1/conversations/conv-opdono/mensagens",
-            json={"conteudo": "oi"},
-            headers=alheio,
-        )
+        with patch(
+            "app.services.whatsapp_service.whatsapp_service.send_message",
+            new_callable=AsyncMock,
+        ) as envio:
+            envio.return_value = {"success": True, "message_id": "m1"}
 
-        assert r.status_code == 404
+            r = client.post(
+                "/api/v1/conversations/conv-opdono/mensagens",
+                json={"conteudo": "oi"},
+                headers=operador,
+            )
+
+        assert r.status_code == 201, r.text
+        assert r.json()["remetente"] == "operador"
 
     @pytest.mark.asyncio
     async def test_mensagem_vazia_e_recusada(self):

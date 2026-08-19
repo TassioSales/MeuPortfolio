@@ -180,31 +180,31 @@ class TestAgentRetrieval:
         data = response.json()
         assert isinstance(data, list)
 
-    def test_list_agents_empty(self):
-        """Test listing agents for user with no agents."""
-        # Register new user
-        new_user_data = {
-            "email": "empty-user@example.com",
-            "nome": "Empty User",
-            "senha": "TestPassword123!",
-        }
-        criar_acesso(client, new_user_data["email"], new_user_data["senha"], new_user_data.get("nome", "Teste"))
+    def test_acesso_novo_ve_os_mesmos_agentes(self):
+        """
+        O agente é do escritório, não de quem clicou em "criar".
 
-        login_response = client.post("/api/v1/auth/login", json={
-            "email": new_user_data["email"],
-            "senha": new_user_data["senha"],
+        Este teste já foi o contrário: afirmava que um acesso recém-criado
+        enxergava lista **vazia**. Era o comportamento real e era o defeito —
+        o operador entrava no painel e lia "Nenhum agente ainda", sem fila,
+        sem Kanban e sem trabalho, porque o agente tinha sido criado pelo
+        administrador.
+        """
+        criar_acesso(client, "operador-novo@example.com", "SenhaDoOperador123",
+                     "Operador Novo", papel="operador")
+        login = client.post("/api/v1/auth/login", json={
+            "email": "operador-novo@example.com",
+            "senha": "SenhaDoOperador123",
         })
-        new_token = login_response.json()["access_token"]
-        new_headers = {"Authorization": f"Bearer {new_token}"}
+        operador = {"Authorization": f"Bearer {login.json()['access_token']}"}
 
-        response = client.get(
-            "/api/v1/agents",
-            headers=new_headers,
-        )
+        do_admin = client.get("/api/v1/agents", headers=self.headers)
+        do_operador = client.get("/api/v1/agents", headers=operador)
 
-        assert response.status_code == 200
-        data = response.json()
-        assert len(data) == 0
+        assert do_operador.status_code == 200
+        assert [a["id"] for a in do_operador.json()] == [
+            a["id"] for a in do_admin.json()
+        ]
 
 
 class TestAgentUpdate:

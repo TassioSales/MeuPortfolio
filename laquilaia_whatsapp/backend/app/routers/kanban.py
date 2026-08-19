@@ -116,7 +116,7 @@ async def get_kanban_board(
     try:
         # Verify agent exists
         result = await db.execute(
-            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
+            select(Agent).where(Agent.id == agent_id)
         )
         agent = result.scalars().first()
 
@@ -239,7 +239,7 @@ async def move_lead_card(
     try:
         # Verify agent exists
         result = await db.execute(
-            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
+            select(Agent).where(Agent.id == agent_id)
         )
         agent = result.scalars().first()
 
@@ -355,7 +355,7 @@ async def list_kanban_columns(
     try:
         # Verify agent exists
         result = await db.execute(
-            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
+            select(Agent).where(Agent.id == agent_id)
         )
         agent = result.scalars().first()
 
@@ -422,7 +422,7 @@ async def initialize_kanban_columns(
     try:
         # Verify agent exists
         result = await db.execute(
-            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
+            select(Agent).where(Agent.id == agent_id)
         )
         agent = result.scalars().first()
 
@@ -503,7 +503,7 @@ async def get_kanban_stats(
     try:
         # Verify agent exists
         result = await db.execute(
-            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
+            select(Agent).where(Agent.id == agent_id)
         )
         agent = result.scalars().first()
 
@@ -601,7 +601,7 @@ async def get_lead_dossie(
     """
     try:
         resultado = await db.execute(
-            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
+            select(Agent).where(Agent.id == agent_id)
         )
         if resultado.scalars().first() is None:
             raise NotFoundException("Agent")

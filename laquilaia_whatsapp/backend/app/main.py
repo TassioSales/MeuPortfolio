@@ -9,7 +9,7 @@ from app.config import settings
 from sqlalchemy import select
 from app.db.database import init_db, close_db, AsyncSessionLocal
 from app.db.redis_client import redis_client
-from app.db.models import Agent
+from app.db.models import Agent, User
 from app.services.auth_service import auth_service
 from app.ws.manager import connection_manager
 from app.routers import auth, agents, chat, webhook, kanban, metrics, whatsapp
@@ -171,9 +171,14 @@ async def agent_events(websocket: WebSocket, agent_id: str, token: str = Query(N
 
     O token vem na query porque o navegador não permite definir cabeçalhos ao
     abrir um WebSocket. A conexão é recusada antes do `accept()` se o token
-    faltar, for inválido ou o agente não for do usuário — do contrário o socket
-    seria um caminho paralelo para ler dados de agente alheio, sem passar pela
-    checagem de dono que os endpoints REST fazem.
+    faltar, for inválido, se a conta não estiver ativa ou se o agente não
+    existir — do contrário o socket seria um caminho paralelo para receber
+    dados sem passar pelas checagens que os endpoints REST fazem.
+
+    A conta **desativada** é conferida aqui de propósito: o REST passou a
+    conferir isso a cada requisição, e um socket que ficasse aberto depois da
+    desativação faria a revogação imediata valer só metade — quem saiu do
+    escritório continuaria vendo lead novo chegando em tempo real.
     """
     user_id = auth_service.verify_token(token) if token else None
     if not user_id:
@@ -181,11 +186,19 @@ async def agent_events(websocket: WebSocket, agent_id: str, token: str = Query(N
         return
 
     async with AsyncSessionLocal() as db:
-        result = await db.execute(
-            select(Agent).where((Agent.id == agent_id) & (Agent.user_id == user_id))
-        )
+        usuario = (
+            await db.execute(select(User).where(User.id == user_id))
+        ).scalars().first()
+        if usuario is None or usuario.status != "ativo":
+            logger.warning(f"⚠️ WebSocket recusado: conta inativa ou removida ({user_id})")
+            await websocket.close(
+                code=status.WS_1008_POLICY_VIOLATION, reason="Unauthorized"
+            )
+            return
+
+        result = await db.execute(select(Agent).where(Agent.id == agent_id))
         if result.scalars().first() is None:
-            logger.warning(f"⚠️ WebSocket recusado: agente {agent_id} não é de {user_id}")
+            logger.warning(f"⚠️ WebSocket recusado: agente {agent_id} não existe")
             await websocket.close(
                 code=status.WS_1008_POLICY_VIOLATION, reason="Agent not found"
             )

@@ -43,12 +43,12 @@ async def create_agent(
 @router.get("/{agent_id}", response_model=AgentResponse)
 async def get_agent(
     agent_id: str,
-    user_id: str = Depends(get_current_user),
+    _: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Get agent by ID."""
     try:
-        return await agent_service.get_agent(agent_id, user_id, db)
+        return await agent_service.get_agent(agent_id, db)
     except NotFoundException as e:
         logger.warning(f"⚠️ {e.detail}")
         raise
@@ -66,7 +66,7 @@ async def get_agent(
 
 @router.get("", response_model=List[AgentResponse])
 async def list_agents(
-    user_id: str = Depends(get_current_user),
+    _: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
@@ -74,10 +74,10 @@ async def list_agents(
     # `status.HTTP_500_...` do except abaixo estoura AttributeError.
     status_filter: str = Query(None, alias="status"),
 ):
-    """List all agents for the current user."""
+    """Os agentes do escritório. Todo mundo que tem conta enxerga a lista."""
     try:
         return await agent_service.list_agents(
-            user_id, db, skip=skip, limit=limit, status=status_filter
+            db, skip=skip, limit=limit, status=status_filter
         )
     # Erros HTTP deliberados (404, 400, 403...) precisam subir intactos:
     # o catch-all abaixo os transformaria em 500.
@@ -95,12 +95,12 @@ async def list_agents(
 async def update_agent(
     agent_id: str,
     agent_data: AgentUpdate,
-    user_id: str = Depends(require_admin),
+    _admin: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Update agent by ID."""
     try:
-        return await agent_service.update_agent(agent_id, user_id, agent_data, db)
+        return await agent_service.update_agent(agent_id, agent_data, db)
     except NotFoundException as e:
         logger.warning(f"⚠️ {e.detail}")
         raise
@@ -122,12 +122,12 @@ async def update_agent(
 @router.delete("/{agent_id}", status_code=status.HTTP_200_OK)
 async def delete_agent(
     agent_id: str,
-    user_id: str = Depends(require_admin),
+    _admin: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Delete agent by ID."""
     try:
-        return await agent_service.delete_agent(agent_id, user_id, db)
+        return await agent_service.delete_agent(agent_id, db)
     except NotFoundException as e:
         logger.warning(f"⚠️ {e.detail}")
         raise
@@ -147,12 +147,12 @@ async def delete_agent(
 async def add_agent_variable(
     agent_id: str,
     variable_data: dict,
-    user_id: str = Depends(require_admin),
+    _admin: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Add a variable to an agent."""
     try:
-        return await agent_service.add_variable(agent_id, user_id, variable_data, db)
+        return await agent_service.add_variable(agent_id, variable_data, db)
     except NotFoundException as e:
         logger.warning(f"⚠️ {e.detail}")
         raise
@@ -171,12 +171,12 @@ async def add_agent_variable(
 @router.get("/{agent_id}/variables", response_model=List[dict])
 async def get_agent_variables(
     agent_id: str,
-    user_id: str = Depends(get_current_user),
+    _: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Get all variables for an agent."""
     try:
-        return await agent_service.get_variables(agent_id, user_id, db)
+        return await agent_service.get_variables(agent_id, db)
     except NotFoundException as e:
         logger.warning(f"⚠️ {e.detail}")
         raise

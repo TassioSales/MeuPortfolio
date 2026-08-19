@@ -416,6 +416,29 @@ export interface TimeseriesResponse {
   pontos: TimeseriesPoint[];
 }
 
+/** Uma etapa do funil (`EtapaDoFunil` no backend). */
+export interface EtapaDoFunil {
+  nome: string;
+  ordem: number;
+  /** Quantos estão nesta coluna agora. */
+  parados_aqui: number;
+  /** Quantos chegaram até aqui — esta coluna e todas as seguintes. */
+  chegaram: number;
+  percentual_do_topo: number;
+  /** Sobre a etapa anterior. Diz onde o funil aperta; o topo é sempre 100. */
+  conversao_da_etapa: number;
+  com_intervencao_humana: number;
+}
+
+export interface FunilResponse {
+  agent_id: string;
+  dias: number | null;
+  total_de_leads: number;
+  /** Fora da cadeia: quem foi arquivado no primeiro contato não avançou. */
+  arquivados: number;
+  etapas: EtapaDoFunil[];
+}
+
 export type MetricsPeriod = "day" | "week" | "month";
 
 // ========== Conexão do WhatsApp ==========

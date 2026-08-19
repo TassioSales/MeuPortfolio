@@ -8,6 +8,8 @@ import { FullPageLoader } from "@/components/LoadingSpinner";
 import { AtendimentosChart } from "@/components/charts/AtendimentosChart";
 import { FunilChart } from "@/components/charts/FunilChart";
 import { FunilDeVenda } from "@/components/FunilDeVenda";
+import { PainelDeProdutividade } from "@/components/PainelDeProdutividade";
+import { PainelDeValor } from "@/components/PainelDeValor";
 import { StatTile } from "@/components/charts/StatTile";
 import { formatSeconds } from "@/components/charts/theme";
 import { useAgents } from "@/hooks/useAgents";
@@ -28,11 +30,13 @@ const PERIODOS: Array<{ valor: MetricsPeriod; rotulo: string }> = [
  * São leituras diferentes e não cabem na mesma tela sem uma virar ruído da
  * outra.
  */
-type Aba = "geral" | "funil";
+type Aba = "geral" | "funil" | "valor" | "produtividade";
 
 const ABAS: Array<{ valor: Aba; rotulo: string }> = [
   { valor: "geral", rotulo: "Geral" },
   { valor: "funil", rotulo: "Funil de venda" },
+  { valor: "valor", rotulo: "Valor" },
+  { valor: "produtividade", rotulo: "Produtividade" },
 ];
 
 function Painel({ agentId }: { agentId: string }) {
@@ -66,12 +70,12 @@ function Painel({ agentId }: { agentId: string }) {
 
       {aba === "funil" ? (
         <FunilDeVenda agentId={agentId} />
+      ) : aba === "valor" ? (
+        <PainelDeValor agentId={agentId} />
+      ) : aba === "produtividade" ? (
+        <PainelDeProdutividade agentId={agentId} />
       ) : (
-        <PainelGeral
-          agentId={agentId}
-          period={period}
-          setPeriod={setPeriod}
-        />
+        <PainelGeral agentId={agentId} period={period} setPeriod={setPeriod} />
       )}
     </div>
   );

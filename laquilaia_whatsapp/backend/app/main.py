@@ -14,7 +14,8 @@ from app.services.auth_service import auth_service
 from app.ws.manager import connection_manager
 from app.routers import (
     agendamentos, agents, alertas, auth, chat, clientes, escritorio, finalizados,
-    funil, historico, kanban, marketing, metrics, webhook, whatsapp,
+    funil, historico, kanban, marketing, metrics, produtividade, valor, webhook,
+    whatsapp,
 )
 from app.jobs.metrics_aggregator import MetricsAggregator
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -171,6 +172,8 @@ app.include_router(historico.router)
 app.include_router(finalizados.router)
 app.include_router(marketing.router)
 app.include_router(agendamentos.router)
+app.include_router(valor.router)
+app.include_router(produtividade.router)
 
 
 # ========== WEBSOCKET ENDPOINTS ==========

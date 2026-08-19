@@ -29,8 +29,19 @@ class User(Base):
 
     # Relationships
     api_keys = relationship("ApiKey", back_populates="user", cascade="all, delete-orphan")
-    agents = relationship("Agent", back_populates="user", cascade="all, delete-orphan")
-    lead_timeline = relationship("LeadTimeline", back_populates="user", cascade="all, delete-orphan")
+    # Sem `delete-orphan`: apagar quem criou o agente **não** apaga o agente.
+    #
+    # O `user_id` do agente significava "dono" e passou a significar "quem
+    # criou" quando o agente virou do escritório. O CASCADE ficou para trás, e
+    # com ele um alçapão: remover a conta de quem saiu do escritório levaria
+    # junto o agente, as conversas, os leads e o histórico — tudo, em silêncio,
+    # por uma linha de SQL que ninguém associaria a isso.
+    agents = relationship("Agent", back_populates="user")
+    # Sem `delete-orphan`, de novo, e pelo mesmo motivo do `agents` acima: a
+    # coluna já é `ondelete=SET NULL` no banco, mas o cascade do ORM apagava as
+    # linhas antes de o banco ter chance de anulá-las — e o histórico do
+    # escritório perdia tudo que a pessoa fez, não só o nome dela.
+    lead_timeline = relationship("LeadTimeline", back_populates="user")
 
     def __repr__(self):
         return f"<User(id={self.id}, email={self.email}, nome={self.nome})>"
@@ -59,7 +70,12 @@ class Agent(Base):
     __tablename__ = "agents"
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    # Quem criou, não quem manda: o agente é do escritório (ver
+    # `agent_service.get_agent`). `SET NULL` e não `CASCADE` porque a saída de
+    # uma pessoa não pode apagar o atendimento do escritório inteiro.
+    user_id = Column(
+        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     nome = Column(String(255), nullable=False)
     # O nome pelo qual o cliente conhece quem o atende.
     #

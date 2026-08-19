@@ -346,6 +346,47 @@ export interface MoveCardRequest {
   new_order: number;
 }
 
+// ========== Finalizados ==========
+
+/**
+ * Por que o caso acabou.
+ *
+ * `sem_retorno` não é o mesmo que inviável: é a pessoa que parou de responder
+ * antes de a triagem dimensionar qualquer coisa. Juntar os dois esconderia a
+ * métrica que diz se o atendimento perde gente no meio da conversa.
+ */
+export type MotivoDeFim =
+  | "abaixo_do_piso"
+  | "fora_da_area"
+  | "sem_retorno"
+  | "outro";
+
+export interface CasoFinalizado {
+  lead_id: string;
+  nome: string | null;
+  phone_number: string;
+  empresa_ou_resumo: string | null;
+  valor_estimado_min: number | null;
+  valor_estimado_max: number | null;
+  arquivado_em: string | null;
+  /** Nulo quando foi a triagem. */
+  arquivado_por: string | null;
+}
+
+export interface GrupoFinalizado {
+  motivo: MotivoDeFim;
+  rotulo: string;
+  total: number;
+  casos: CasoFinalizado[];
+}
+
+export interface FinalizadosResponse {
+  agent_id: string;
+  dias: number;
+  total: number;
+  grupos: GrupoFinalizado[];
+}
+
 // ========== Histórico ==========
 
 /** Um movimento na trilha do lead (`Movimento` no backend). */

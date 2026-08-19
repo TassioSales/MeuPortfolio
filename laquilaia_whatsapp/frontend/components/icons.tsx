@@ -171,3 +171,13 @@ export function IconeHistorico(props: IconProps) {
     </Base>
   );
 }
+
+/** Finalizados: o círculo com o visto dentro. */
+export function IconeFinalizados(props: IconProps) {
+  return (
+    <Base {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m8.5 12 2.5 2.5 4.5-5" />
+    </Base>
+  );
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/Button";
 import { EmptyState } from "@/components/EmptyState";
@@ -146,6 +146,36 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
   );
   const { isConnected } = useAgentEvents(agentId, aoReceberEvento);
 
+  // A transcrição abria no começo: o operador via a primeira frase de um
+  // atendimento de trinta mensagens e precisava rolar até o fim para achar o
+  // que o cliente acabou de perguntar. Aqui ela abre onde a conversa está.
+  const caixaDeMensagens = useRef<HTMLDivElement>(null);
+  // Só arrasta para baixo quem já estava embaixo. Puxar a tela de quem subiu
+  // para reler uma mensagem antiga é pior do que não rolar nada.
+  const noFim = useRef(true);
+  const conversaAberta = transcript?.conversation_id ?? null;
+  const totalDeMensagens = transcript?.messages.length ?? 0;
+
+  useEffect(() => {
+    // Conversa nova sempre começa no fim, independente de onde a anterior
+    // estava.
+    noFim.current = true;
+  }, [conversaAberta]);
+
+  useEffect(() => {
+    const caixa = caixaDeMensagens.current;
+    if (!caixa || !noFim.current) return;
+    caixa.scrollTop = caixa.scrollHeight;
+  }, [conversaAberta, totalDeMensagens]);
+
+  function aoRolar() {
+    const caixa = caixaDeMensagens.current;
+    if (!caixa) return;
+    // Uma linha de folga: rolagem por trackpad raramente para no pixel exato.
+    const FOLGA = 40;
+    noFim.current = caixa.scrollHeight - caixa.scrollTop - caixa.clientHeight < FOLGA;
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-16">
@@ -272,7 +302,11 @@ export function ConversationsPanel({ agentId }: { agentId: string }) {
                 <ParecerPreliminar texto={transcript.analise_preliminar} />
               )}
 
-              <div className="max-h-[26rem] space-y-3 overflow-y-auto px-4 py-4">
+              <div
+                ref={caixaDeMensagens}
+                onScroll={aoRolar}
+                className="max-h-[26rem] space-y-3 overflow-y-auto px-4 py-4"
+              >
                 {transcript.messages.length === 0 ? (
                   <p className="py-8 text-center text-sm text-fg-muted">
                     Nenhuma mensagem nesta conversa ainda.

@@ -1,10 +1,34 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import * as conversationsApi from "@/lib/conversations";
 import { messageFrom } from "./useAgents";
 import type { ConversationSummary, ConversationTranscript } from "@/types";
+
+/**
+ * Devolve a fila do servidor rearranjada na ordem que o operador já vê.
+ *
+ * Sem ordem congelada (`null`), a do servidor passa direto — que é o certo
+ * enquanto ninguém está lendo nada.
+ *
+ * Conversa que não estava na foto é conversa que chegou agora: vai para o
+ * topo, porque cliente novo esperando é exatamente o que a fila existe para
+ * mostrar. Congelar a ordem não pode virar esconder quem chegou.
+ */
+export function aplicarOrdemCongelada(
+  vindas: ConversationSummary[],
+  ordem: string[] | null,
+): ConversationSummary[] {
+  if (!ordem) return vindas;
+
+  const posicao = new Map(ordem.map((id, indice) => [id, indice]));
+  // `-1` para as desconhecidas: elas ficam antes de todas as fotografadas, e
+  // entre si mantêm a ordem do servidor (o `sort` do JS é estável).
+  return [...vindas].sort(
+    (a, b) => (posicao.get(a.id) ?? -1) - (posicao.get(b.id) ?? -1),
+  );
+}
 
 /**
  * Fila de atendimentos de um agente e a conversa aberta.
@@ -22,15 +46,44 @@ export function useConversations(agentId: string) {
   const [isTogglingPause, setIsTogglingPause] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // A lista como está na tela agora, para congelar a ordem sem depender de
+  // um `setConversations` recém-chamado.
+  const listaRef = useRef<ConversationSummary[]>([]);
+  listaRef.current = conversations;
+
+  /**
+   * A ordem em que a fila estava quando o operador abriu uma conversa.
+   *
+   * O servidor devolve a fila da mensagem mais recente para a mais antiga, e
+   * isso está certo para quem chega: quem acabou de escrever precisa aparecer
+   * em cima. O problema é que a **própria** resposta do operador também é uma
+   * mensagem nova: ele escrevia, o WebSocket avisava, a fila era recarregada,
+   * e a conversa que ele estava lendo pulava para o topo — a lista se mexendo
+   * embaixo do cursor a cada frase digitada.
+   *
+   * Enquanto há conversa aberta, a fila fica parada. Ela se reordena de novo
+   * quando o operador troca de conversa, que é quando ele quer mesmo ver a
+   * fila atualizada.
+   */
+  const ordemCongelada = useRef<string[] | null>(null);
+  const agenteJaCarregado = useRef<string | null>(null);
+
   const loadConversations = useCallback(async () => {
-    setIsLoading(true);
+    // Só a primeira carga deste agente mostra o "Carregando atendimentos...".
+    // As recargas vêm do WebSocket, várias por conversa: trocar a tela inteira
+    // por um spinner a cada mensagem apaga o que o operador está lendo — e era
+    // essa remontagem que jogava a transcrição de volta para o começo.
+    const primeira = agenteJaCarregado.current !== agentId;
+    if (primeira) setIsLoading(true);
     setError(null);
     try {
-      setConversations(await conversationsApi.listConversations(agentId));
+      const vindas = await conversationsApi.listConversations(agentId);
+      setConversations(aplicarOrdemCongelada(vindas, ordemCongelada.current));
+      agenteJaCarregado.current = agentId;
     } catch (err) {
       setError(messageFrom(err, "Não foi possível carregar os atendimentos."));
     } finally {
-      setIsLoading(false);
+      if (primeira) setIsLoading(false);
     }
   }, [agentId]);
 
@@ -39,6 +92,9 @@ export function useConversations(agentId: string) {
   }, [loadConversations]);
 
   const openConversation = useCallback(async (conversationId: string) => {
+    // Trocar de conversa é o momento de aceitar a ordem nova: a fila que o
+    // operador vê a partir daqui é a do servidor, e é essa que ele congela.
+    ordemCongelada.current = listaRef.current.map((c) => c.id);
     setSelectedId(conversationId);
     setIsLoadingTranscript(true);
     setError(null);

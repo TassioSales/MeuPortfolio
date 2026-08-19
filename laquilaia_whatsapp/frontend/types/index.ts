@@ -346,6 +346,30 @@ export interface MoveCardRequest {
   new_order: number;
 }
 
+// ========== Histórico ==========
+
+/** Um movimento na trilha do lead (`Movimento` no backend). */
+export interface Movimento {
+  id: string;
+  lead_id: string;
+  lead_nome: string | null;
+  phone_number: string;
+  status_anterior: string | null;
+  status_novo: string;
+  motivo: string | null;
+  /** Nulo quando foi a IA — é a distinção que o histórico existe para mostrar. */
+  responsavel: string | null;
+  quando: string;
+}
+
+export interface HistoricoResponse {
+  agent_id: string;
+  total: number;
+  pagina: number;
+  por_pagina: number;
+  movimentos: Movimento[];
+}
+
 // ========== Escritório ==========
 
 /**

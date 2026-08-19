@@ -160,3 +160,14 @@ export function IconeEscritorio(props: IconProps) {
     </Base>
   );
 }
+
+/** Histórico: um relógio com a seta voltando. */
+export function IconeHistorico(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1" />
+      <path d="M3 4v4h4" />
+      <path d="M12 8v4.5l3 1.8" />
+    </Base>
+  );
+}

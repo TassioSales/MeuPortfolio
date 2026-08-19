@@ -11,7 +11,7 @@ from app.models.llm_models import (
     ChatHistoryMessage,
     ChatHistoryResponse,
 )
-from app.db.models import Agent, Caso, Conversation, Lead, LeadDetails, Message
+from app.db.models import LeadTimeline, Agent, Caso, Conversation, Lead, LeadDetails, Message
 from app.services.llm_service import llm_service
 from app.services.whatsapp_service import whatsapp_service
 from app.ws.manager import notify_new_message
@@ -567,7 +567,33 @@ async def _set_conversation_status(
     conversation_id: str, user_id: str, novo_status: str, db: AsyncSession
 ) -> ConversationStatusResponse:
     conversation = await _get_conversa_ou_404(conversation_id, db)
+    anterior = conversation.status
     conversation.status = novo_status
+
+    # Assumir e devolver a conversa entram na trilha do lead.
+    #
+    # Era o buraco maior do histórico: quem lia a transcrição via a IA parar
+    # de responder no meio e não tinha como saber quem tinha assumido, nem
+    # quando. Num escritório com plantão isso é a pergunta que se faz primeiro.
+    lead = (
+        await db.execute(select(Lead).where(Lead.conversation_id == conversation_id))
+    ).scalars().first()
+    if lead is not None and anterior != novo_status:
+        db.add(
+            LeadTimeline(
+                lead_id=lead.id,
+                status_anterior=lead.status_funil,
+                status_novo=lead.status_funil,
+                mudado_por=user_id,
+                motivo=(
+                    "Humano assumiu a conversa"
+                    if novo_status == "pausada"
+                    else "Conversa devolvida para a IA"
+                ),
+                timestamp=datetime.utcnow(),
+            )
+        )
+
     await db.commit()
 
     # Quem assumiu vai no log: agora que a fila é do escritório inteiro,

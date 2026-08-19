@@ -346,6 +346,31 @@ export interface MoveCardRequest {
   new_order: number;
 }
 
+// ========== Agendamentos ==========
+
+export type SituacaoDoAgendamento = "pendente" | "realizado" | "cancelado";
+
+export interface NovoAgendamento {
+  lead_id: string;
+  /** ISO com data e hora. */
+  quando: string;
+  motivo?: string | null;
+}
+
+export interface Agendamento {
+  id: string;
+  lead_id: string;
+  lead_nome: string | null;
+  phone_number: string;
+  quando: string;
+  motivo: string | null;
+  status: SituacaoDoAgendamento;
+  /** Nulo quando quem agendou foi a triagem. */
+  criado_por: string | null;
+  /** Positivo quando a hora passou e o retorno continua pendente. */
+  minutos_de_atraso: number;
+}
+
 // ========== Marketing ==========
 
 export interface NovoLancamento {

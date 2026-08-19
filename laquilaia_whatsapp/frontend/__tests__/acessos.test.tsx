@@ -75,6 +75,7 @@ describe("menu por papel", () => {
     // repassa quando é ele atendendo.
     expect(screen.getByText("Escritório")).toBeInTheDocument();
     expect(screen.getByText("Kanban CRM")).toBeInTheDocument();
+    expect(screen.getByText("Agendamentos")).toBeInTheDocument();
     expect(screen.getByText("Métricas")).toBeInTheDocument();
     expect(screen.getByText("Finalizados")).toBeInTheDocument();
     expect(screen.getByText("Histórico")).toBeInTheDocument();

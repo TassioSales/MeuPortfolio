@@ -176,14 +176,14 @@ class TestCardEmAndamento:
     """
 
     async def test_diz_em_que_coluna_o_card_esta(self):
-        card = (MagicMock(), "Lead Qualificado")
+        card = (MagicMock(), "Viabilidade")
 
         nota = await nota_de_atendimento_anterior(
             "5561999", "conv-1", _db(lead=_lead(), card=card)
         )
 
         assert "card no funil" in nota
-        assert "Lead Qualificado" in nota
+        assert "Viabilidade" in nota
 
     async def test_sem_card_nao_inventa(self):
         nota = await nota_de_atendimento_anterior(
@@ -288,7 +288,7 @@ class TestContraOBancoDeVerdade:
                 await db.execute(
                     _select(KanbanColumn)
                     .where(KanbanColumn.agent_id == "ctx-agent")
-                    .where(KanbanColumn.nome == "Lead Qualificado")
+                    .where(KanbanColumn.nome == "Viabilidade")
                 )
             ).scalars().first()
 
@@ -307,6 +307,6 @@ class TestContraOBancoDeVerdade:
                 "5561911111111", "ctx-conv", db
             )
 
-        assert "Lead Qualificado" in nota
+        assert "Viabilidade" in nota
         assert "trabalhista" in nota
         assert "caso novo" in nota

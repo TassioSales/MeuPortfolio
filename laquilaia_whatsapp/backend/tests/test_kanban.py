@@ -62,10 +62,12 @@ class TestKanbanBoard:
         data = response.json()
         assert data["agent_id"] == self.agent_id
         assert [c["nome"] for c in data["columns"]] == [
-            "Novo Lead",
-            "Em Qualificação",
-            "Lead Qualificado",
-            "Agendado",
+            "Closer",
+            "Entrevista",
+            "Viabilidade",
+            "Coleta de documentos",
+            "Saneamento",
+            "Revisão",
             "Arquivado",
         ]
         assert all(c["cards"] == [] for c in data["columns"])
@@ -133,7 +135,7 @@ class TestKanbanBoard:
         assert response.status_code == 200
         data = response.json()
         assert data["success"] is True
-        assert len(data["columns"]) == 5
+        assert len(data["columns"]) == 7
 
     def test_get_kanban_stats(self):
         """Test getting Kanban statistics."""
@@ -254,7 +256,7 @@ class TestMoveCard:
                 board = board_response.json()
                 if board["columns"] and board["columns"][0]["cards"]:
                     lead_id = board["columns"][0]["cards"][0]["id"]
-                    target_column_id = board["columns"][2]["id"]  # Lead Qualificado
+                    target_column_id = board["columns"][2]["id"]  # Viabilidade
 
                     # Move card
                     move_response = client.post(
@@ -341,14 +343,16 @@ class TestKanbanColumns:
         data = response.json()
 
         expected_columns = [
-            "Novo Lead",
-            "Em Qualificação",
-            "Lead Qualificado",
-            "Agendado",
+            "Closer",
+            "Entrevista",
+            "Viabilidade",
+            "Coleta de documentos",
+            "Saneamento",
+            "Revisão",
             "Arquivado",
         ]
 
-        assert len(data["columns"]) == 5
+        assert len(data["columns"]) == 7
         for i, col in enumerate(data["columns"]):
             assert col["nome"] == expected_columns[i]
             assert "ordem" in col
@@ -402,7 +406,7 @@ class TestKanbanIntegration:
             headers=self.headers,
         )
         assert list_response.status_code == 200
-        assert len(list_response.json()["columns"]) == 5
+        assert len(list_response.json()["columns"]) == 7
 
         # 3. Get full board
         board_response = client.get(
@@ -412,7 +416,7 @@ class TestKanbanIntegration:
         assert board_response.status_code == 200
         board = board_response.json()
         assert board["agent_id"] == self.agent_id
-        assert len(board["columns"]) == 5
+        assert len(board["columns"]) == 7
 
         # 4. Get stats
         stats_response = client.get(

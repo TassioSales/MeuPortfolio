@@ -23,6 +23,21 @@ router = APIRouter(
 )
 
 
+def _dias_parado(movido_em: datetime | None, agora: datetime) -> int:
+    """
+    Dias inteiros desde a última vez que o card mudou de coluna.
+
+    Card antigo pode não ter data — o campo nasceu depois de alguns deles.
+    Nesse caso o honesto é zero, e não um número inventado: dizer "parado há
+    0 dias" é dizer "não sei há quanto tempo", e ninguém age errado por causa
+    disso. Um chute alto mandaria o escritório correr atrás de um caso que
+    talvez tenha se movido ontem.
+    """
+    if movido_em is None:
+        return 0
+    return max(0, (agora - movido_em).days)
+
+
 # ========== PYDANTIC MODELS ==========
 
 class LeadCardResponse(BaseModel):
@@ -54,9 +69,17 @@ class LeadCardResponse(BaseModel):
     valor_estimado_min: int | None = None
     valor_estimado_max: int | None = None
     viabilidade: str | None = None
-
-    class Config:
-        from_attributes = True
+    # Há quantos dias o card não sai do lugar.
+    #
+    # É o único contador que sobrevive ao uso real: num board de escritório,
+    # "ligações 0/5" e "mensagens 0/5" ficam zerados porque ninguém registra
+    # ligação — mas o tempo passa sozinho. Um caso parado há 14 dias em
+    # "Coleta de documentos" é a informação que faz alguém agir, e ela não
+    # aparecia em lugar nenhum do painel.
+    #
+    # Zero quer dizer "moveu hoje", e é por isso que não é opcional: card sem
+    # data seria card sem idade, e a coluna existe para mostrar idade.
+    dias_parado: int = 0
 
 
 class KanbanColumnResponse(BaseModel):
@@ -162,6 +185,10 @@ async def get_kanban_board(
             for caso in casos:
                 casos_por_lead.setdefault(caso.lead_id, caso)
 
+        # Uma leitura do relógio para o board inteiro: com uma por card, dois
+        # cards movidos no mesmo instante poderiam sair com idades diferentes.
+        agora = datetime.utcnow()
+
         por_coluna: dict[str, List[LeadCardResponse]] = {c.id: [] for c in columns}
         for card, lead, details in linhas:
             dados = _bloco_de_qualificacao(details)
@@ -181,6 +208,7 @@ async def get_kanban_board(
                     valor_estimado_min=caso.valor_estimado_min if caso else None,
                     valor_estimado_max=caso.valor_estimado_max if caso else None,
                     viabilidade=caso.viabilidade if caso else None,
+                    dias_parado=_dias_parado(card.data_movimentacao, agora),
                 )
             )
 

@@ -22,12 +22,37 @@ from app.utils.logger import logger
 
 # (nome exibido, status do funil, cor). O nome é o que `lead_processor`
 # procura ao mover o card, via COLUMN_MAPPING — mudar aqui exige mudar lá.
+#
+# As colunas são o fluxo do escritório, não estados genéricos de CRM.
+# "Lead Qualificado" dizia o que o software achava; "Viabilidade" diz o que
+# alguém precisa fazer com o caso. A diferença aparece no uso: um board de
+# estados é lido, um board de tarefas é trabalhado.
+#
+# Só as três primeiras são automáticas — é até onde a IA vai. Da quarta em
+# diante quem arrasta é gente, e é por isso que elas existem: sem uma coluna
+# para "coletando documento" o caso ficava parado em "Qualificado" por duas
+# semanas parecendo que ninguém tinha feito nada.
+#
+# As cores: as cinco primeiras vêm do conjunto que já estava validado; as
+# duas novas (#86b6ef e #104281) saem de `FUNNEL_RAMP` em
+# `frontend/components/charts/theme.ts`, validadas contra a mesma superfície.
 COLUNAS_PADRAO: List[Tuple[str, str, str]] = [
-    ("Novo Lead", "novo", "#3164ff"),
-    ("Em Qualificação", "em_qualificacao", "#5598e7"),
-    ("Lead Qualificado", "qualificado", "#16a34a"),
-    ("Agendado", "agendado", "#eda100"),
+    ("Closer", "novo", "#3164ff"),
+    ("Entrevista", "em_qualificacao", "#5598e7"),
+    ("Viabilidade", "qualificado", "#16a34a"),
+    ("Coleta de documentos", "agendado", "#eda100"),
+    ("Saneamento", "saneamento", "#86b6ef"),
+    ("Revisão", "revisao", "#104281"),
     ("Arquivado", "arquivado", "#52514e"),
+]
+
+# Como as colunas se chamavam antes, para a migração e para quem for ler o
+# histórico do banco e não entender por que os nomes mudaram.
+NOMES_ANTIGOS: List[Tuple[str, str]] = [
+    ("Novo Lead", "Closer"),
+    ("Em Qualificação", "Entrevista"),
+    ("Lead Qualificado", "Viabilidade"),
+    ("Agendado", "Coleta de documentos"),
 ]
 
 

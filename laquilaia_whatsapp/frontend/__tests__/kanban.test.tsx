@@ -43,6 +43,7 @@ const BOARD: Board = {
           score_qualificacao: 85,
           status_funil: "novo",
           ordem: 0,
+          dias_parado: 0,
           empresa: null,
           cargo: null,
           valor_estimado_min: null,
@@ -329,6 +330,7 @@ describe("O card diz de que caso se trata", () => {
     score_qualificacao: 85,
     status_funil: "qualificado",
     ordem: 0,
+    dias_parado: 0,
     empresa: "Supermercado Tático",
     cargo: "Repositor",
     valor_estimado_min: 90000,
@@ -369,6 +371,30 @@ describe("O card diz de que caso se trata", () => {
 
     expect(screen.queryByText(/piso/)).not.toBeInTheDocument();
     expect(screen.queryByText(/90\.000/)).not.toBeInTheDocument();
+  });
+
+  it("caso recém-chegado não ganha selo de parado", () => {
+    // Selo em todo card vira paisagem, e caso que entrou anteontem não está
+    // parado — está sendo trabalhado.
+    render(<KanbanCardItem card={{ ...CARD, dias_parado: 2 }} />);
+
+    expect(screen.queryByText(/parado há/)).not.toBeInTheDocument();
+  });
+
+  it("a partir de três dias o selo aparece", () => {
+    render(<KanbanCardItem card={{ ...CARD, dias_parado: 5 }} />);
+
+    expect(screen.getByText("parado há 5d")).toBeInTheDocument();
+  });
+
+  it("o tom sobe quando passa de dez dias", () => {
+    // A leitura útil é periférica: o operador varre a coluna e o vermelho
+    // salta, sem ler número por número.
+    const { rerender } = render(<KanbanCardItem card={{ ...CARD, dias_parado: 5 }} />);
+    expect(screen.getByText("parado há 5d").className).toMatch(/amber/);
+
+    rerender(<KanbanCardItem card={{ ...CARD, dias_parado: 14 }} />);
+    expect(screen.getByText("parado há 14d").className).toMatch(/red/);
   });
 
   it("sem empresa nem cargo, não sobra linha vazia", () => {

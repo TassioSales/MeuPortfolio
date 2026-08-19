@@ -293,7 +293,7 @@ class TestLeadProcessorKanban:
         column = KanbanColumn(
             id="col-123",
             agent_id="agent-123",
-            nome="Lead Qualificado",
+            nome="Viabilidade",
             ordem=1,
         )
 
@@ -440,12 +440,37 @@ class TestLeadProcessorStatusMapping:
     """Test status to Kanban column mapping."""
 
     def test_column_mapping_novo(self):
-        """Test mapping for novo status."""
-        assert "Novo" in lead_processor.COLUMN_MAPPING["novo"]
+        """Lead que acabou de chegar cai no primeiro contato."""
+        assert lead_processor.COLUMN_MAPPING["novo"] == "Closer"
 
     def test_column_mapping_qualificado(self):
-        """Test mapping for qualificado status."""
-        assert "Qualificado" in lead_processor.COLUMN_MAPPING["qualificado"]
+        """Qualificado pela IA quer dizer: alguém precisa medir a viabilidade."""
+        assert lead_processor.COLUMN_MAPPING["qualificado"] == "Viabilidade"
+
+    def test_nao_qualificado_vai_para_o_arquivo(self):
+        """
+        Estava fora do mapa, e o `.get(status, ...)` mandava para a coluna de
+        trabalho tudo que a triagem tinha recusado por não ser da área. A
+        coluna que o escritório abre todo dia enchia de caso já descartado.
+        """
+        assert lead_processor.COLUMN_MAPPING["nao_qualificado"] == "Arquivado"
+
+    def test_com_duvidas_volta_para_o_primeiro_contato(self):
+        """
+        A IA não conseguiu decidir. Quem decide então é gente — e gente decide
+        no primeiro contato, não no meio da entrevista.
+        """
+        assert lead_processor.COLUMN_MAPPING["com_duvidas"] == "Closer"
+
+    def test_todo_veredito_da_ia_tem_coluna(self):
+        """
+        Os três vereditos que o prompt pode devolver, mais o default do
+        processador. Um deles faltando volta a cair no `.get(..., "Entrevista")`
+        — que é silencioso, e foi assim que `nao_qualificado` passou meses
+        indo para a coluna errada.
+        """
+        for veredito in ("qualificado", "nao_qualificado", "com_duvidas", "em_qualificacao"):
+            assert veredito in lead_processor.COLUMN_MAPPING, veredito
 
     def test_column_mapping_all_statuses(self):
         """Test all status mappings exist."""

@@ -311,6 +311,34 @@ describe("ConversationsPanel", () => {
     expect(screen.getByText(/A IA parou de responder/)).toBeInTheDocument();
   });
 
+  it("abre direto a conversa pedida na URL", async () => {
+    // É o que faz o "Ver atendimento" da lista de clientes chegar onde
+    // promete. Sem isso ele largava a pessoa na fila para caçar de novo o
+    // contato que ela tinha acabado de achar.
+    mockFetch
+      .mockResolvedValueOnce(jsonResponse([CONVERSA, PAUSADA]))
+      .mockResolvedValueOnce(
+        jsonResponse({ ...TRANSCRICAO, conversation_id: "conv-2" }),
+      );
+
+    render(<ConversationsPanel agentId="ag-1" abrirConversa="conv-2" />);
+
+    await waitFor(() =>
+      expect(mockFetch.mock.calls[1][0]).toContain("/api/v1/conversations/conv-2/messages"),
+    );
+  });
+
+  it("id da URL que não está na fila não abre nada", async () => {
+    // Conversa de outro agente, ou link velho. Pedir a transcrição levaria
+    // 404 e a tela abriria com um erro que ninguém provocou.
+    mockFetch.mockResolvedValueOnce(jsonResponse([CONVERSA]));
+
+    render(<ConversationsPanel agentId="ag-1" abrirConversa="conv-inexistente" />);
+
+    await screen.findByText("Maria Silva");
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
   it("leva a faixa de pendências junto, para o agente certo", async () => {
     // Quem esperou a noite toda não pode depender de o operador reparar numa
     // linha no meio de trezentas. A faixa vem antes da fila — e presa ao

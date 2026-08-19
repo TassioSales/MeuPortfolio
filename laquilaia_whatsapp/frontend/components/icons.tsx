@@ -136,3 +136,15 @@ export function IconeAcessos(props: IconProps) {
     </Base>
   );
 }
+
+/** Clientes: uma pessoa e a lupa de quem procura. */
+export function IconeClientes(props: IconProps) {
+  return (
+    <Base {...props}>
+      <circle cx="10" cy="7.5" r="3.25" />
+      <path d="M4 19.5c0-3.2 2.7-5 6-5 1 0 1.9.16 2.7.45" />
+      <circle cx="17" cy="16.5" r="3" />
+      <path d="M19.3 18.8 21.5 21" />
+    </Base>
+  );
+}

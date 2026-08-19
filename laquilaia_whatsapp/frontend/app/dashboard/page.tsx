@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   IconeAgente,
   IconeConversa,
+  IconeClientes,
   IconeFunil,
   IconeMetricas,
   IconeTeste,
@@ -43,6 +44,13 @@ const QUICK_LINKS: QuickLink[] = [
     Icone: IconeTeste,
     available: true,
     soAdmin: true,
+  },
+  {
+    href: "/dashboard/clientes",
+    title: "Clientes",
+    description: "Todo mundo que já escreveu. Busque por nome, telefone ou e-mail.",
+    Icone: IconeClientes,
+    available: true,
   },
   {
     href: "/dashboard/kanban",

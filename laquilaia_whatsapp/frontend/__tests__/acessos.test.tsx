@@ -68,6 +68,7 @@ describe("menu por papel", () => {
     render(<Sidebar />);
 
     expect(screen.getByText("Atendimentos")).toBeInTheDocument();
+    expect(screen.getByText("Clientes")).toBeInTheDocument();
     expect(screen.getByText("Kanban CRM")).toBeInTheDocument();
     expect(screen.getByText("Métricas")).toBeInTheDocument();
   });

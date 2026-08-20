@@ -171,6 +171,16 @@ class MessageOrchestrator:
                 agent_id, phone_number, db
             )
 
+            # O cliente escreveu: a contagem de follow-up volta a zero.
+            #
+            # A contagem é de silêncio **seguido**, não de cutucadas na vida
+            # toda. Sem este zeramento, quem some, volta e some de novo seria
+            # encerrado na primeira ausência seguinte, como se nunca tivesse
+            # respondido — e a pessoa que voltou é justamente a que tem
+            # interesse.
+            conversation.followups_enviados = 0
+            conversation.ultimo_followup_em = None
+
             # Conversa assumida por um humano: a mensagem é registrada, mas a
             # IA não responde. Sem esta checagem o agente responderia por cima
             # do operador, com os dois falando ao mesmo tempo com o cliente.

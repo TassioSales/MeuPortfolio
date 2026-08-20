@@ -149,6 +149,11 @@ class Conversation(Base):
     status = Column(String(50), default="ativa")  # ativa, pausada, encerrada
     data_inicio = Column(DateTime, default=datetime.utcnow)
     data_ultima_msg = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    # Quantas vezes o agente cutucou sem obter resposta, e quando foi a
+    # última. Zera assim que o cliente escreve — a contagem é de silêncio
+    # seguido, não de cutucadas na vida toda.
+    followups_enviados = Column(Integer, nullable=False, default=0)
+    ultimo_followup_em = Column(DateTime, nullable=True)
     # `metadata` é reservado pelo Declarative API do SQLAlchemy; o atributo
     # Python muda de nome, a coluna no banco continua sendo "metadata".
     metadados = Column("metadata", Text, nullable=True)

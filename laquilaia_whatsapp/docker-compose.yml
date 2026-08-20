@@ -82,6 +82,14 @@ services:
       ANALISE_CLAUDE_MODEL: ${ANALISE_CLAUDE_MODEL}
       ANALISE_GEMINI_MODEL: ${ANALISE_GEMINI_MODEL}
       CASO_VALOR_MINIMO: ${CASO_VALOR_MINIMO:-15000}
+      # O follow-up de conversa abandonada. Sem repassar, mexer no `.env` não
+      # teria efeito nenhum dentro do container — armadilha que já mordeu três
+      # vezes neste projeto.
+      FOLLOWUP_HABILITADO: ${FOLLOWUP_HABILITADO:-true}
+      FOLLOWUP_INTERVALOS_MIN: ${FOLLOWUP_INTERVALOS_MIN:-15,120,1440}
+      FOLLOWUP_HORA_INICIO: ${FOLLOWUP_HORA_INICIO:-8}
+      FOLLOWUP_HORA_FIM: ${FOLLOWUP_HORA_FIM:-20}
+      FOLLOWUP_FUSO: ${FOLLOWUP_FUSO:-America/Sao_Paulo}
       MAX_TOKENS: ${MAX_TOKENS:-1024}
       LLM_MAX_CALLS_PER_MINUTE: ${LLM_MAX_CALLS_PER_MINUTE:-60}
       LLM_MAX_TOKENS_PER_MINUTE: ${LLM_MAX_TOKENS_PER_MINUTE:-40000}

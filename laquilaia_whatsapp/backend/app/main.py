@@ -10,6 +10,7 @@ from sqlalchemy import select
 from app.db.database import init_db, close_db, AsyncSessionLocal
 from app.db.redis_client import redis_client
 from app.db.models import Agent, User
+from app.services import followup_service
 from app.services.auth_service import auth_service
 from app.ws.manager import connection_manager
 from app.routers import (
@@ -85,8 +86,31 @@ async def lifespan(app: FastAPI):
             minute=0,  # 02:00 UTC nightly
             id="metrics_cleanup",
         )
+        # O follow-up de conversa abandonada.
+        #
+        # Roda de cinco em cinco minutos, e não a cada minuto: os intervalos
+        # que ele respeita são de 15 minutos para cima, então acordar mais
+        # vezes só gastaria consulta. `max_instances=1` porque uma rodada lenta
+        # não pode ter outra por cima dela mandando o mesmo follow-up duas
+        # vezes.
+        if settings.followup_habilitado:
+            scheduler.add_job(
+                followup_service.rodada,
+                "interval",
+                minutes=5,
+                id="followup",
+                max_instances=1,
+                misfire_grace_time=300,
+            )
+
         scheduler.start()
         logger.info("✅ Metrics scheduler started (hourly, daily, cleanup jobs)")
+        if settings.followup_habilitado:
+            logger.info(
+                f"✅ Follow-up ligado: {settings.followup_intervalos} min, "
+                f"{settings.followup_hora_inicio}h–{settings.followup_hora_fim}h "
+                f"({settings.followup_fuso})"
+            )
     except Exception as e:
         logger.error(f"❌ Failed to start metrics scheduler: {e}")
         raise

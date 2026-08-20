@@ -74,6 +74,50 @@ class Settings(BaseSettings):
     analise_claude_model: str = os.getenv("ANALISE_CLAUDE_MODEL", "")
     analise_gemini_model: str = os.getenv("ANALISE_GEMINI_MODEL", "")
 
+    # ========== Follow-up de conversa abandonada ==========
+    #
+    # Quem some no meio da triagem ficava para sempre na primeira coluna, sem
+    # ninguém saber se desistiu ou se só não viu a mensagem. Estas variáveis
+    # governam o agente cutucar, e depois desistir.
+    followup_habilitado: bool = os.getenv(
+        "FOLLOWUP_HABILITADO", "True"
+    ).lower() == "true"
+
+    # Minutos de silêncio antes de cada tentativa, em ordem.
+    #
+    # Escalonado e não fixo, de propósito: quem não respondeu em quinze
+    # minutos provavelmente está trabalhando; quem não respondeu em dois dias
+    # foi embora. Três cutucadas de cinco em cinco minutos é o que faz a
+    # pessoa bloquear o número — e aí o escritório perde o lead E o número.
+    followup_intervalos_min: str = os.getenv("FOLLOWUP_INTERVALOS_MIN", "15,120,1440")
+
+    # A janela em que é aceitável escrever para alguém, hora local do
+    # escritório. Mensagem automática às 3h da manhã queima a reputação do
+    # número inteiro, e o WhatsApp não perdoa denúncia de spam.
+    followup_hora_inicio: int = int(os.getenv("FOLLOWUP_HORA_INICIO", "8"))
+    followup_hora_fim: int = int(os.getenv("FOLLOWUP_HORA_FIM", "20"))
+
+    # Fuso do escritório, para a janela acima significar alguma coisa.
+    followup_fuso: str = os.getenv("FOLLOWUP_FUSO", "America/Sao_Paulo")
+
+    @property
+    def followup_intervalos(self) -> list:
+        """
+        Os intervalos como lista de minutos.
+
+        Valor inválido vira a lista padrão em vez de derrubar o backend: uma
+        vírgula a mais no `.env` não pode impedir o sistema de subir.
+        """
+        try:
+            valores = [
+                int(x.strip())
+                for x in self.followup_intervalos_min.split(",")
+                if x.strip()
+            ]
+            return valores if valores else [15, 120, 1440]
+        except ValueError:
+            return [15, 120, 1440]
+
     # Piso, em reais, a partir do qual o caso comporta o trabalho do escritório.
     #
     # É critério comercial, não jurídico: um caso de mil reais pode ter razão

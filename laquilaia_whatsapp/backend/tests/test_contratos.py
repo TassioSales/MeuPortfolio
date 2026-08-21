@@ -24,6 +24,7 @@ from app.db.models import (
     Conversation,
     Lead,
     LeadDetails,
+    ModeloDeContrato,
 )
 from app.main import app
 from app.services import contrato_service
@@ -135,6 +136,61 @@ class TestRascunhoBase:
         import re
         assert re.search(r"percentual de ____", MODELO_BASE)
         assert not re.search(r"\d+\s*%", MODELO_BASE)
+
+
+class TestSimulacao:
+    """
+    O script que deixa tudo pronto para testar o fluxo inteiro.
+
+    Ele existe porque o dono pediu para não ter de digitar nove campos e um
+    percentual antes de ver o primeiro contrato sair. O risco dele é apagar
+    dado real, e é isso que estes testes travam.
+    """
+
+    @pytest.mark.asyncio
+    async def test_nao_sobrescreve_o_que_o_dono_ja_digitou(self):
+        from scripts.simular_contrato import simular
+
+        async with AsyncSessionLocal() as db:
+            db.add(ConfiguracaoEscritorio(id="unica", nome="Escritório de Verdade"))
+            await db.commit()
+
+        assert await simular() == 0
+
+        async with AsyncSessionLocal() as db:
+            from sqlalchemy import select
+            config = (
+                await db.execute(select(ConfiguracaoEscritorio))
+            ).scalars().first()
+            assert config.nome == "Escritório de Verdade"
+            # E o que estava vazio foi preenchido — senão o script não serviria
+            # para nada.
+            assert config.cidade
+
+    @pytest.mark.asyncio
+    async def test_o_exemplo_sai_com_o_percentual_preenchido(self):
+        """
+        A troca depende do texto exato do rascunho. Se ele mudar e ninguém
+        ajustar o script, a "simulação pronta" sairia com honorários em branco
+        e testaria outra coisa sem avisar.
+        """
+        from scripts.simular_contrato import NOME_DO_EXEMPLO, simular
+
+        assert await simular() == 0
+
+        async with AsyncSessionLocal() as db:
+            from sqlalchemy import select
+            modelo = (
+                await db.execute(
+                    select(ModeloDeContrato).where(
+                        ModeloDeContrato.nome == NOME_DO_EXEMPLO
+                    )
+                )
+            ).scalars().first()
+
+        assert modelo is not None and modelo.ativo is True
+        assert "30%" in modelo.corpo
+        assert "____________ por cento" not in modelo.corpo
 
 
 class TestPdf:

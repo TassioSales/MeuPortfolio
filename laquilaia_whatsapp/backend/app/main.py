@@ -14,9 +14,9 @@ from app.services import followup_service
 from app.services.auth_service import auth_service
 from app.ws.manager import connection_manager
 from app.routers import (
-    agendamentos, agents, alertas, auth, chat, clientes, contratos, escritorio,
-    finalizados, funil, historico, kanban, marketing, metrics, produtividade,
-    valor, webhook, whatsapp,
+    agendamentos, agents, alertas, assinatura, auth, chat, clientes, contratos,
+    escritorio, finalizados, funil, historico, kanban, marketing, metrics,
+    produtividade, valor, webhook, whatsapp,
 )
 from app.jobs.metrics_aggregator import MetricsAggregator
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -199,6 +199,8 @@ app.include_router(agendamentos.router)
 app.include_router(valor.router)
 app.include_router(produtividade.router)
 app.include_router(contratos.router)
+# Público, sem autenticação — ver o cabeçalho do módulo.
+app.include_router(assinatura.router)
 
 
 # ========== WEBSOCKET ENDPOINTS ==========

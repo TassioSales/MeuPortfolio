@@ -15,11 +15,19 @@ from datetime import datetime
 from io import BytesIO
 from typing import Dict, Optional
 
+from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
+from reportlab.platypus import (
+    PageBreak,
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
+)
 
 from app.utils.logger import logger
 
@@ -152,13 +160,105 @@ def preencher(corpo: str, contexto: Dict[str, str]) -> str:
     return _PADRAO.sub(lambda m: contexto.get(m.group(1), LACUNA), corpo)
 
 
-def em_pdf(corpo: str, titulo: str = "Contrato") -> bytes:
+def _numero_da_pagina(canvas, documento) -> None:
+    """
+    "página N" no rodapé.
+
+    Num contrato isso não é enfeite: folha solta sem número é folha que se
+    troca sem ninguém notar.
+    """
+    canvas.saveState()
+    canvas.setFont("Times-Roman", 8)
+    canvas.setFillColor(colors.HexColor("#666666"))
+    canvas.drawCentredString(A4[0] / 2, 1.3 * cm, f"página {documento.page}")
+    canvas.restoreState()
+
+
+def _folha_de_auditoria(assinatura: Dict[str, str]) -> list:
+    """
+    A página que sustenta a assinatura.
+
+    Uma assinatura eletrônica não se prova pelo rabisco — se prova pelo
+    registro: quem digitou o nome, quando, de qual endereço, em qual aparelho,
+    e o hash do texto que estava na tela naquele instante. Sem esta folha, o
+    PDF assinado é um PDF com um nome escrito embaixo.
+    """
+    base = getSampleStyleSheet()
+    titulo = ParagraphStyle(
+        "TituloAuditoria", parent=base["Heading2"], fontName="Times-Bold",
+        fontSize=12, alignment=TA_CENTER, spaceAfter=16,
+    )
+    nota = ParagraphStyle(
+        "NotaAuditoria", parent=base["Normal"], fontName="Times-Roman",
+        fontSize=8.5, leading=12, alignment=TA_JUSTIFY,
+        textColor=colors.HexColor("#444444"), spaceBefore=14,
+    )
+    celula = ParagraphStyle(
+        "CelulaAuditoria", parent=base["Normal"], fontName="Times-Roman",
+        fontSize=9, leading=12,
+    )
+
+    rotulos = [
+        ("Assinado por", "nome"),
+        ("Data e hora", "quando"),
+        ("Endereço IP", "ip"),
+        ("Dispositivo", "dispositivo"),
+        ("Identificador do documento", "contrato_id"),
+        ("Impressão digital do texto (SHA-256)", "hash"),
+    ]
+    linhas = [
+        [
+            Paragraph(f"<b>{rotulo}</b>", celula),
+            Paragraph(_para_html(str(assinatura.get(chave) or LACUNA)), celula),
+        ]
+        for rotulo, chave in rotulos
+    ]
+
+    tabela = Table(linhas, colWidths=[5.5 * cm, 10.5 * cm])
+    tabela.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("TOPPADDING", (0, 0), (-1, -1), 5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+                ("LINEBELOW", (0, 0), (-1, -2), 0.25, colors.HexColor("#cccccc")),
+                ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#999999")),
+                ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ]
+        )
+    )
+
+    return [
+        PageBreak(),
+        Paragraph("COMPROVANTE DE ASSINATURA ELETRÔNICA", titulo),
+        tabela,
+        Paragraph(
+            "Assinatura eletrônica coletada por meio de link individual e com "
+            "prazo de validade, enviado ao número de WhatsApp cadastrado do "
+            "signatário. A impressão digital acima identifica o texto exato "
+            "aceito no ato: qualquer alteração posterior no documento produz "
+            "impressão diferente. Registro nos termos do art. 10, §2º, da "
+            "Medida Provisória nº 2.200-2/2001 e da Lei nº 14.063/2020.",
+            nota,
+        ),
+    ]
+
+
+def em_pdf(
+    corpo: str,
+    titulo: str = "Contrato",
+    assinatura: Optional[Dict[str, str]] = None,
+) -> bytes:
     """
     O texto virando página A4.
 
     Linha começando com `#` é título centralizado; o resto é parágrafo
     justificado, que é como contrato se lê. Markdown de verdade seria uma
     dependência a mais para dois casos.
+
+    Com `assinatura`, ganha ao final a folha de auditoria — e é essa versão
+    que fica guardada no banco.
     """
     buffer = BytesIO()
     documento = SimpleDocTemplate(
@@ -168,7 +268,7 @@ def em_pdf(corpo: str, titulo: str = "Contrato") -> bytes:
         leftMargin=2.5 * cm,
         rightMargin=2.5 * cm,
         topMargin=2.5 * cm,
-        bottomMargin=2.5 * cm,
+        bottomMargin=2.2 * cm,
     )
 
     base = getSampleStyleSheet()
@@ -202,7 +302,12 @@ def em_pdf(corpo: str, titulo: str = "Contrato") -> bytes:
         else:
             partes.append(Paragraph(_para_html(texto), estilo_corpo))
 
-    documento.build(partes)
+    if assinatura:
+        partes.extend(_folha_de_auditoria(assinatura))
+
+    documento.build(
+        partes, onFirstPage=_numero_da_pagina, onLaterPages=_numero_da_pagina
+    )
     pdf = buffer.getvalue()
     buffer.close()
     logger.info(f"📄 Contrato gerado: {len(pdf)} bytes")

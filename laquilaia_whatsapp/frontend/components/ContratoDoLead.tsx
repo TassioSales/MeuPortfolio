@@ -6,7 +6,9 @@ import { messageFrom } from "@/hooks/useAgents";
 import {
   abrirPdf,
   buscarDados,
+  enviarParaAssinar,
   gerarContrato,
+  gerarLink,
   listarContratos,
   salvarDados,
 } from "@/lib/contratos";
@@ -42,6 +44,31 @@ const VAZIO: DadosDoContrato = {
   uf: null,
 };
 
+/**
+ * O estado do contrato em uma frase.
+ *
+ * `status` sozinho ("enviado") não responde o que quem olha quer saber, que é
+ * "estou esperando ou já acabou?". Assinado ganha destaque porque é o único
+ * estado em que não há nada a fazer.
+ */
+function Estado({ contrato }: { contrato: Contrato }) {
+  if (contrato.data_assinatura) {
+    return (
+      <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/50 dark:text-green-200">
+        assinado por {contrato.assinado_nome}
+      </span>
+    );
+  }
+  if (contrato.data_envio) {
+    return (
+      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900 dark:bg-amber-900/50 dark:text-amber-100">
+        aguardando assinatura
+      </span>
+    );
+  }
+  return <span className="text-xs text-fg-muted">gerado, não enviado</span>;
+}
+
 function quando(iso: string | null): string {
   if (!iso) return "";
   return new Date(iso).toLocaleString("pt-BR", {
@@ -61,6 +88,7 @@ export function ContratoDoLead({ leadId }: ContratoDoLeadProps) {
   const [ocupado, setOcupado] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [salvo, setSalvo] = useState(false);
+  const [linkCopiado, setLinkCopiado] = useState<string | null>(null);
 
   const carregar = useCallback(async () => {
     setCarregando(true);
@@ -139,6 +167,37 @@ export function ContratoDoLead({ leadId }: ContratoDoLeadProps) {
     }
   }
 
+  async function enviar(contrato: Contrato) {
+    setOcupado(true);
+    setErro(null);
+    try {
+      await enviarParaAssinar(contrato.id);
+      // Recarrega em vez de remendar o estado local: o backend é quem decide
+      // status, prazo e link, e adivinhá-los aqui criaria uma tela que discorda
+      // do banco.
+      await carregar();
+    } catch (e) {
+      setErro(messageFrom(e, "Não foi possível enviar o contrato."));
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  async function copiarLink(contrato: Contrato) {
+    setOcupado(true);
+    setErro(null);
+    try {
+      const { link } = await gerarLink(contrato.id);
+      await navigator.clipboard.writeText(link);
+      setLinkCopiado(link);
+      await carregar();
+    } catch (e) {
+      setErro(messageFrom(e, "Não foi possível gerar o link."));
+    } finally {
+      setOcupado(false);
+    }
+  }
+
   if (!aberto) {
     return (
       <button
@@ -213,24 +272,51 @@ export function ContratoDoLead({ leadId }: ContratoDoLeadProps) {
             </Button>
           </div>
 
+          {linkCopiado && (
+            <p role="status" className="mt-3 break-all rounded-lg bg-surface-muted px-3 py-2 text-xs text-fg-soft">
+              Link copiado: {linkCopiado}
+            </p>
+          )}
+
           {contratos.length > 0 && (
-            <ul className="mt-4 flex flex-col gap-1.5 border-t border-surface-border pt-3">
+            <ul className="mt-4 flex flex-col gap-3 border-t border-surface-border pt-3">
               {contratos.map((contrato) => (
-                <li
-                  key={contrato.id}
-                  className="flex flex-wrap items-center justify-between gap-2 text-sm"
-                >
-                  <span className="text-fg-soft">
-                    {quando(contrato.data_criacao)}
-                    <span className="ml-2 text-xs text-fg-muted">{contrato.status}</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => baixar(contrato)}
-                    className="text-sm font-medium text-brand-700 hover:underline dark:text-brand-300"
-                  >
-                    Abrir PDF
-                  </button>
+                <li key={contrato.id} className="flex flex-col gap-1.5">
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="text-fg-soft">{quando(contrato.data_criacao)}</span>
+                    <Estado contrato={contrato} />
+                  </div>
+                  <div className="flex flex-wrap gap-3 text-sm">
+                    <button
+                      type="button"
+                      onClick={() => baixar(contrato)}
+                      className="font-medium text-brand-700 hover:underline dark:text-brand-300"
+                    >
+                      Abrir PDF
+                    </button>
+                    {!contrato.data_assinatura && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => enviar(contrato)}
+                          disabled={ocupado}
+                          className="font-medium text-brand-700 hover:underline disabled:opacity-50 dark:text-brand-300"
+                        >
+                          {contrato.data_envio
+                            ? "Reenviar no WhatsApp"
+                            : "Enviar para assinar"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => copiarLink(contrato)}
+                          disabled={ocupado}
+                          className="text-fg-muted hover:underline disabled:opacity-50"
+                        >
+                          Copiar link
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>

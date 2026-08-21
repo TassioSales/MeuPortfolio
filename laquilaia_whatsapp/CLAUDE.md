@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **719 testes no backend, 305 no frontend.**
+Estado atual: **741 testes no backend, 314 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -49,11 +49,12 @@ falha — na CI o serviço existe, então um pulo significa conexão quebrada.
 ```
 backend/app/
   routers/     auth, agents, chat (+conversations), webhook, kanban, metrics,
-               whatsapp (estado da conexão e QR, só admin), contratos
+               whatsapp (estado da conexão e QR, só admin), contratos,
+               assinatura (**público, sem autenticação** — ver §6d)
   services/    llm (+ gemini_client, reserva), legal_analyst (parecer interno,
                com jurisprudência, provas e porte econômico),
                caso_service (um contato, vários casos),
-               contrato (lacunas → texto → PDF),
+               contrato (lacunas → texto → PDF), assinatura (token e prova),
                rate_limiter, memory, whatsapp, lead_processor,
                message_orchestrator, metrics, agent, auth
   models/      schemas.py, llm_models.py, caso_schemas.py (o caso nas telas)
@@ -65,12 +66,13 @@ backend/app/
   db/          models.py (SQLAlchemy), database.py, redis_client.py
   ws/          manager.py — canal de tempo real por agente
   jobs/        metrics_aggregator.py (APScheduler)
-  utils/       auth_middleware, webhook_security, exceptions, logger
+  utils/       auth_middleware, webhook_security, exceptions, logger, fuso
   alembic/     migrações — o schema é daqui, não da aplicação
 
 frontend/
   app/dashboard/  agents · whatsapp (conexão) · conversations (pausa humana)
                   chat-test · kanban · metrics · contratos (modelos)
+  app/assinar/    a página que o cliente abre — fora do painel, sem login
   components/     + charts/ (theme.ts tem a paleta validada)
                   Logo · icons · SeletorDeTema · LeadDossie · ParecerPreliminar
   hooks/          useAuth, useAgents, useChat, useConversations, useKanban, useMetrics, useAgentEvents
@@ -306,11 +308,10 @@ Decidido em conversa, não relitigar a prioridade sem falar com ele.
 
 6. **Automações no Kanban** (mover card por evento, cobrar retorno, etc.).
 7. **Disparo de e-mail** para o lead.
-8. **Assinatura de contrato.** A **geração** está feita (ver §6c); falta a
-   assinatura eletrônica. O provedor que o concorrente usa é o
-   **Autentique**, e o dono ainda não tem conta — sem ela não há o que
-   integrar. As colunas `link_assinatura` e `data_assinatura` já existem,
-   nulas.
+8. ~~**Assinatura de contrato.**~~ **Feita, e sem provedor externo** — ver
+   §6d. O dono não tem conta no Autentique e decidiu que o produto assina
+   sozinho. Falta a cobrança de quem não assinou, e o disparo automático
+   pela IA.
 9. **Front mais profissional.** O dono acha que ainda parece protótipo; é
    trabalho de design, não de correção pontual.
 
@@ -371,9 +372,8 @@ entra no prompt.
 
 ## 6c. O contrato
 
-O escritório fecha o caso com um contrato de honorários. Isso agora sai do
-sistema — o texto preenchido e o PDF. **A assinatura eletrônica não**, e a
-distinção é a coisa mais importante desta seção.
+O escritório fecha o caso com um contrato de honorários. O texto preenchido
+e o PDF saem daqui; a **assinatura** também, e ela tem seção própria (§6d).
 
 **O texto é do advogado, não do código.** O corpo do contrato é escrito no
 painel (Contratos → Modelos) e guardado em `modelos_contrato`. Não está
@@ -421,16 +421,21 @@ cidade de um endereço escrito livremente é adivinhação.
 **reportlab, não weasyprint.** O weasyprint precisa de cairo e pango, que a
 imagem `python:3.11-slim` não traz. O reportlab é Python puro.
 
+**`{{caso.resumo}}` ainda não serve para contrato.** No primeiro contrato real
+ele saiu com o texto da triagem — *"Contato relata contratação CLT como
+coordenador de estoque (R$ 4.000), 3 anos, seguida de 'promoção'…"*. É correto
+e é escrito **para o advogado ler**; num instrumento jurídico soa a ficha de
+atendimento. Ou o modelo usa `{{caso.area}}` e um objeto redigido à mão, ou
+alguém escreve um resumo curto próprio para isto.
+
 ### O que **não** existe
 
-- **Assinatura eletrônica.** `link_assinatura` e `data_assinatura` existem no
-  banco e ficam nulas; `status` só assume `gerado`. O provedor do concorrente
-  é o Autentique, o dono ainda não tem conta, e o proxy deste ambiente bloqueia
-  `api.autentique.com.br` — a integração não teria como ser testada daqui.
 - **A IA coletando CPF e endereço na conversa.** Foi decisão do dono que ela
   colete, e vai em PR separado: mexer no prompt muda o que o agente diz a
-  **todo** cliente, e isso precisa ser testado isolado.
-- **Envio do contrato pelo WhatsApp.** Hoje o PDF abre no painel.
+  **todo** cliente, e isso precisa ser testado isolado. Hoje quem preenche é
+  quem atende, no dossiê — e **isso é o que trava o disparo automático**.
+- **O disparo automático.** O dono foi explícito: *"a IA tem que gerar e
+  enviar, não o advogado"*. Falta a regra que dispara.
 
 ### O que foi verificado, e o que não foi
 
@@ -443,6 +448,105 @@ substituídas.
 **Não verificado:** nenhuma das duas telas foi aberta por um humano — nem a de
 modelos, nem a seção de contrato no dossiê. E o PDF nunca foi olhado por um
 advogado, que é quem sabe se o texto do rascunho serve.
+
+---
+
+## 6d. A assinatura, feita aqui dentro
+
+O dono não tem conta no Autentique e decidiu que o produto assina sozinho.
+Está feito, e o que segue são as decisões que dão a forma — não relitigar sem
+falar com ele.
+
+**O que ela vale, sem eufemismo.** É assinatura eletrônica simples/avançada na
+classificação da Lei 14.063/2020 — a **mesma categoria** do produto padrão do
+Autentique, que também não é ICP-Brasil. Não é downgrade em relação ao que o
+concorrente usa. Vale entre as partes que a aceitam, e o que lhe dá peso é a
+trilha de prova, não o carimbo.
+
+**O token é a única credencial, e é assim de propósito.** São 256 bits de
+`secrets.token_urlsafe`, entregues só no WhatsApp do próprio cliente, com
+prazo de 7 dias. Conferir CPF por cima disso pareceria mais seguro e não
+seria: **o CPF está impresso no contrato que a página mostra**, então quem tem
+o link já tem o CPF. Segundo fator que o próprio documento entrega não é
+segundo fator — e cobrá-lo só faria alguém que digitou errado desistir de
+assinar.
+
+**Contrato vencido, assinado ou inexistente respondem 404 igual.** Dizer
+"existe mas venceu" a um token adivinhado confirma que ele existe. A exceção é
+quem **já assinou**: aí o token já provou quem é, e a página mostra a
+confirmação — mandar quem assinou para uma tela de erro faria a pessoa achar
+que a assinatura se perdeu.
+
+**O contrato é absorvido no ato.** No mesmo commit da assinatura, o PDF com a
+folha de auditoria é gerado e gravado em `contratos.pdf_assinado`. Daí em
+diante o documento não depende de link, de nuvem nem de a pessoa continuar por
+perto — que era exatamente a objeção do dono: *"a pessoa pode assinar e
+sumir"*. O endpoint de PDF devolve **o arquivo guardado** quando ele existe, e
+só redesenha quando não há assinatura: o que a pessoa viu e aceitou foi
+*aquele* arquivo, e documento que se regenera não é documento.
+
+**A folha de auditoria é o que sustenta a assinatura.** Nome digitado, hora de
+Brasília, IP, aparelho, id do contrato e SHA-256 do texto. É esse hash que
+amarra a assinatura a este texto — e que denunciaria se ele tivesse mudado.
+
+**O botão só habilita depois de a pessoa rolar o contrato até o fim.**
+Assinatura de quem não leu é assinatura contestável, e é feio de fazer com um
+cliente. Há 40px de folga, porque em celular o último pixel raramente é
+alcançado.
+
+**O IP vem de `CF-Connecting-IP`.** Atrás do túnel do Cloudflare — que é como
+isto roda hoje — o IP do socket é o do próprio túnel, igual para todo mundo:
+sem ler o cabeçalho, a trilha registraria sempre o mesmo endereço. Cabeçalho é
+dado do cliente e pode ser forjado; isto é prova de contexto, não credencial, e
+nada autoriza coisa alguma com base nele.
+
+**Envio antes do commit; confirmação depois.** Mandar o link segue a regra que
+já valia para a resposta do operador — Evolution recusou, nada é gravado, e o
+token nem chega a existir. Já a confirmação de que assinou sai em tarefa
+própria **depois** do commit: uma Evolution fora do ar não pode fazer uma
+assinatura já registrada parecer que falhou.
+
+**`assinatura.py` é o único roteador sem autenticação do sistema.** Ao mexer
+nele, lembre que qualquer campo acrescentado à resposta vira campo público. O
+que sai hoje é o mínimo: texto do contrato, nome de quem assina, nome do
+escritório. Nada do dossiê, nada do parecer, nada do telefone.
+
+### O fluxo, ponta a ponta
+
+1. Contrato gerado no dossiê do card.
+2. **Enviar para assinar** → token criado, link no WhatsApp do cliente, e a
+   mensagem gravada na conversa.
+3. Cliente abre no celular, rola até o fim, digita o nome, aceita.
+4. Assinatura registrada, PDF absorvido, token morto.
+5. O agente confirma no WhatsApp e a confirmação entra na conversa.
+
+**Falta o passo 6:** cobrar quem não assinou. E falta o gatilho automático —
+o dono foi explícito que *"a IA tem que gerar e enviar, não o advogado"*, e
+hoje quem clica é gente. O que trava isso é a coleta de CPF/RG/endereço, que
+ainda é manual (ver §6c).
+
+**Decisão sobre o gatilho, já tomada:** quando ele existir, quem dispara será
+**regra determinística** — caso qualificado, viabilidade não descartada, dados
+completos e modelo ativo —, não o modelo decidindo. Um LLM com poder de mandar
+contrato com honorários é um LLM que um dia manda para a pessoa errada. Da
+parte do cliente é idêntico: ninguém do escritório encosta.
+
+### O que foi verificado, e o que não foi
+
+Verificado: migração ensaiada do zero com dados dentro (upgrade → downgrade →
+upgrade), token duplicado recusado pelo índice único, dois contratos sem token
+convivendo (`NULL` não colide), `--autogenerate` sem deriva, 20 testes de
+backend e 9 de frontend, e o ciclo inteiro rodado à mão num banco de ensaio —
+link, assinatura, PDF absorvido de 3.345 bytes, token morto depois.
+
+**Não verificado:** ninguém abriu a página de assinatura num celular de
+verdade, e nenhum link chegou a um WhatsApp real. O envio e a confirmação
+foram exercitados com a Evolution mockada — as duas chamadas que de fato
+saem para fora nunca saíram.
+
+**Atenção ao downgrade da migração `b7d4e91c25a8`:** ele derruba as colunas, e
+com elas os PDFs assinados e a trilha de prova — dado que não existe em nenhum
+outro lugar, justamente porque a ideia era não existir em nenhum outro lugar.
 
 ---
 

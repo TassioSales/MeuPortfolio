@@ -52,7 +52,11 @@ const CONTRATO: Contrato = {
   corpo: "# CONTRATO\nTássio Sales",
   status: "gerado",
   link_assinatura: null,
+  token_expira_em: null,
+  data_envio: null,
   data_assinatura: null,
+  assinado_nome: null,
+  hash_documento: null,
   data_criacao: "2026-08-20T14:30:00",
 };
 

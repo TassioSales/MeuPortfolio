@@ -1,6 +1,6 @@
 """SQLAlchemy models for database ORM."""
 
-from sqlalchemy import Column, String, Date, DateTime, Boolean, Integer, Float, Text, ForeignKey, Index, UniqueConstraint
+from sqlalchemy import Column, String, Date, DateTime, Boolean, Integer, Float, LargeBinary, Text, ForeignKey, Index, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -634,14 +634,45 @@ class Contrato(Base):
         String(36), ForeignKey("modelos_contrato.id", ondelete="SET NULL"), nullable=True
     )
     corpo = Column(Text, nullable=False)
-    # gerado, enviado, assinado, cancelado. `enviado` e `assinado` só passam a
-    # existir quando a assinatura eletrônica entrar.
+    # gerado → enviado → assinado. `cancelado` sai de qualquer um deles.
     status = Column(String(20), nullable=False, default="gerado")
-    # Preenchido pela integração de assinatura, quando existir.
-    link_assinatura = Column(String(500), nullable=True)
-    data_assinatura = Column(DateTime, nullable=True)
     gerado_por = Column(String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     data_criacao = Column(DateTime, default=datetime.utcnow)
+
+    # ---------------------------------------------------------- assinatura
+
+    # O segredo do fluxo inteiro. 256 bits de `secrets.token_urlsafe`, único,
+    # indexado — é por ele que a página pública acha o contrato, e é a única
+    # coisa que separa um estranho do documento. Nulo enquanto ninguém pediu
+    # para enviar: contrato gerado e não enviado não tem por que ter link vivo.
+    token_assinatura = Column(String(64), nullable=True, unique=True, index=True)
+    # Link tem prazo. Um endereço que assina contrato e vale para sempre é um
+    # endereço que continua valendo depois de o caso ser recusado, de o cliente
+    # desistir ou de o celular dele ser vendido.
+    token_expira_em = Column(DateTime, nullable=True)
+    link_assinatura = Column(String(500), nullable=True)
+    data_envio = Column(DateTime, nullable=True)
+
+    data_assinatura = Column(DateTime, nullable=True)
+    # O que a pessoa digitou. Não é conferido contra o cadastro de propósito:
+    # divergência de grafia é prova a ser lida por gente, não motivo para
+    # recusar a assinatura de quem escreveu o próprio nome sem acento.
+    assinado_nome = Column(String(255), nullable=True)
+    # IPv6 cabe em 45 caracteres.
+    assinado_ip = Column(String(45), nullable=True)
+    assinado_user_agent = Column(String(500), nullable=True)
+    # SHA-256 do `corpo` no instante da assinatura. É o que permite provar
+    # depois que o texto não mudou — e o que denunciaria se tivesse mudado.
+    hash_documento = Column(String(64), nullable=True)
+
+    # O contrato absorvido: os bytes do PDF, com a folha de auditoria, dentro
+    # do nosso banco.
+    #
+    # Redesenhar o PDF a partir do `corpo` daria o mesmo texto, mas não é a
+    # mesma coisa: o que a pessoa viu e aceitou foi *este* arquivo, e o que se
+    # apresenta num litígio é *este* arquivo. Guardar o resultado é o que
+    # significa "a pessoa pode sumir e o contrato fica".
+    pdf_assinado = Column(LargeBinary, nullable=True)
 
     def __repr__(self):
         return f"<Contrato(lead={self.lead_id}, status={self.status})>"

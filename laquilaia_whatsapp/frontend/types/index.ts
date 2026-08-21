@@ -539,6 +539,8 @@ export interface Escritorio {
   oab_responsavel: string | null;
   fundador: string | null;
   endereco: string | null;
+  /** Isolada do endereço: o contrato a usa sozinha (foro e assinatura). */
+  cidade: string | null;
   email: string | null;
   telefone: string | null;
   /** Número dado a quem **já é cliente** e escreveu no comercial por engano. */
@@ -683,4 +685,60 @@ export interface QrCode {
 export interface ResultadoDaDesconexao {
   desconectado: boolean;
   detalhe: string | null;
+}
+
+// ========== Contratos ==========
+
+/**
+ * O texto do contrato, com lacunas.
+ *
+ * O corpo é escrito pelo advogado; este sistema não decide cláusula nenhuma —
+ * e principalmente não decide o percentual de honorários, que é compromisso
+ * comercial do escritório.
+ */
+export interface ModeloDeContrato {
+  id: string;
+  nome: string;
+  corpo: string;
+  /** Só um ativo por vez: quem gera contrato usa o que vale hoje. */
+  ativo: boolean;
+  data_atualizacao: string | null;
+}
+
+/** Uma lacuna que o modelo pode usar. A lista vem do backend, não da tela. */
+export interface VariavelDeContrato {
+  nome: string;
+  descricao: string;
+}
+
+/**
+ * O que identifica a pessoa num instrumento jurídico.
+ *
+ * Separado do que a triagem apurou sobre o **caso**: são dados com ciclo e
+ * sensibilidade diferentes, e estes só fazem sentido depois que o caso foi
+ * aceito.
+ */
+export interface DadosDoContrato {
+  cpf: string | null;
+  rg: string | null;
+  nacionalidade: string | null;
+  estado_civil: string | null;
+  profissao: string | null;
+  endereco: string | null;
+  cep: string | null;
+  cidade: string | null;
+  uf: string | null;
+}
+
+/** Um contrato emitido. `corpo` é o texto **já preenchido**, congelado. */
+export interface Contrato {
+  id: string;
+  lead_id: string;
+  modelo_id: string | null;
+  corpo: string;
+  /** gerado, enviado, assinado, cancelado. */
+  status: string;
+  link_assinatura: string | null;
+  data_assinatura: string | null;
+  data_criacao: string | null;
 }

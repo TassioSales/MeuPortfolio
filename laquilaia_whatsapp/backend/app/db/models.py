@@ -301,6 +301,44 @@ class Caso(Base):
         return f"<Caso(id={self.id}, area={self.area}, lead={self.lead_id})>"
 
 
+class DadosDoContrato(Base):
+    """
+    O que um contrato exige e uma triagem não pergunta.
+
+    Nome e telefone bastam para atender; CPF, RG, estado civil e endereço só
+    fazem sentido quando já se decidiu que o caso é aceito. Perguntá-los na
+    triagem seria pedir documento a quem ainda não sabe se vai ser cliente —
+    e é onde a conversa morre.
+
+    Tabela separada de `LeadDetails` de propósito: aquela guarda o que a
+    triagem apurou sobre o **caso**, esta guarda o que identifica a **pessoa**
+    num instrumento jurídico. São dados com dono, ciclo e sensibilidade
+    diferentes.
+    """
+
+    __tablename__ = "dados_do_contrato"
+    __table_args__ = (UniqueConstraint("lead_id", name="uix_dados_do_contrato_lead"),)
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    lead_id = Column(
+        String(36), ForeignKey("leads.id", ondelete="CASCADE"), nullable=False
+    )
+    # Só dígitos, sem pontuação — a formatação é da tela, não do banco.
+    cpf = Column(String(14), nullable=True)
+    rg = Column(String(30), nullable=True)
+    nacionalidade = Column(String(60), nullable=True)
+    estado_civil = Column(String(40), nullable=True)
+    profissao = Column(String(120), nullable=True)
+    endereco = Column(Text, nullable=True)
+    cep = Column(String(9), nullable=True)
+    cidade = Column(String(120), nullable=True)
+    uf = Column(String(2), nullable=True)
+    data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<DadosDoContrato(lead_id={self.lead_id})>"
+
+
 class LeadDetails(Base):
     """Lead details model."""
     __tablename__ = "lead_details"
@@ -460,6 +498,11 @@ class ConfiguracaoEscritorio(Base):
     oab_responsavel = Column(String(64), nullable=True)
     fundador = Column(String(255), nullable=True)
     endereco = Column(Text, nullable=True)
+    # Cidade em campo próprio, apesar de já estar dentro de `endereco`. O
+    # contrato precisa dela isolada em dois lugares — a cláusula de foro e a
+    # linha "Cidade, 20 de agosto de 2026" acima da assinatura — e extraí-la
+    # de um endereço escrito livremente é adivinhação.
+    cidade = Column(String(120), nullable=True)
     email = Column(String(255), nullable=True)
     telefone = Column(String(32), nullable=True)
     # Número público entregue a quem **já é cliente** e escreveu no comercial
@@ -537,3 +580,68 @@ class Agendamento(Base):
 
     def __repr__(self):
         return f"<Agendamento(lead={self.lead_id}, quando={self.quando}, status={self.status})>"
+
+
+class ModeloDeContrato(Base):
+    """
+    O texto do contrato, com lacunas.
+
+    O corpo é escrito pelo advogado no painel, não por este código. É a única
+    forma defensável: as cláusulas, e principalmente o percentual de
+    honorários, são compromisso comercial e profissional do escritório — um
+    software que os inventasse estaria assumindo obrigação em nome de alguém.
+
+    As lacunas são `{{cliente.nome}}`, `{{escritorio.cnpj}}` e afins; a lista
+    completa vive em `contrato_service.VARIAVEIS`.
+    """
+
+    __tablename__ = "modelos_contrato"
+    __table_args__ = (UniqueConstraint("nome", name="uix_modelo_contrato_nome"),)
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    nome = Column(String(255), nullable=False)
+    corpo = Column(Text, nullable=False)
+    # Só um ativo por vez — quem gera contrato não escolhe entre versões, usa
+    # a que vale hoje. Rascunho e versão antiga ficam inativos.
+    ativo = Column(Boolean, default=False, nullable=False)
+    data_criacao = Column(DateTime, default=datetime.utcnow)
+    data_atualizacao = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<ModeloDeContrato(nome={self.nome}, ativo={self.ativo})>"
+
+
+class Contrato(Base):
+    """
+    Um contrato gerado para um lead.
+
+    `corpo` guarda o texto **já preenchido**, e não uma referência ao modelo.
+    O modelo muda — o advogado corrige uma cláusula em março — e o contrato
+    que alguém assinou em janeiro tem de continuar dizendo o que dizia em
+    janeiro. Documento que se altera depois de emitido não é documento.
+    """
+
+    __tablename__ = "contratos"
+    __table_args__ = (Index("idx_contrato_lead", "lead_id"),)
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    lead_id = Column(
+        String(36), ForeignKey("leads.id", ondelete="CASCADE"), nullable=False
+    )
+    # Só para saber de qual modelo veio; `SET NULL` porque apagar o modelo não
+    # pode apagar contrato emitido.
+    modelo_id = Column(
+        String(36), ForeignKey("modelos_contrato.id", ondelete="SET NULL"), nullable=True
+    )
+    corpo = Column(Text, nullable=False)
+    # gerado, enviado, assinado, cancelado. `enviado` e `assinado` só passam a
+    # existir quando a assinatura eletrônica entrar.
+    status = Column(String(20), nullable=False, default="gerado")
+    # Preenchido pela integração de assinatura, quando existir.
+    link_assinatura = Column(String(500), nullable=True)
+    data_assinatura = Column(DateTime, nullable=True)
+    gerado_por = Column(String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    data_criacao = Column(DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Contrato(lead={self.lead_id}, status={self.status})>"

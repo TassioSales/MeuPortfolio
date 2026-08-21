@@ -185,7 +185,44 @@ async function request<T>(
   return (await response.json()) as T;
 }
 
+/**
+ * Como `request`, mas devolve o binário.
+ *
+ * Existe por causa do PDF do contrato. A alternativa seria um `<a href>` para
+ * o endpoint, e ela não funciona: a autorização vai no cabeçalho `Bearer`, e
+ * uma aba nova não o manda. O link abriria um 401 em branco.
+ *
+ * Repete o fluxo de 401 do `request` de propósito — um download que expira aos
+ * 30 minutos e falha em silêncio seria o mesmo defeito, num lugar onde ninguém
+ * olharia.
+ */
+async function requestBlob(path: string): Promise<Blob> {
+  const url = `${API_URL}${path}`;
+  const init: RequestInit = { method: "GET", headers: buildHeaders(false, false) };
+
+  let response = await fetch(url, init);
+
+  if (response.status === 401) {
+    const original = await toApiError(response);
+    const renovacao = await refreshSession();
+
+    if (renovacao === "recusado") {
+      clearStoredTokens();
+      throw original;
+    }
+    if (renovacao === "indisponivel") throw original;
+
+    response = await fetch(url, { ...init, headers: buildHeaders(false, false) });
+  }
+
+  if (!response.ok) throw await toApiError(response);
+
+  return response.blob();
+}
+
 export const api = {
+  blob: (path: string) => requestBlob(path),
+
   get: <T>(path: string, options?: RequestOptions) =>
     request<T>("GET", path, undefined, options),
 

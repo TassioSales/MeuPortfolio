@@ -58,3 +58,11 @@ pytz==2023.3
 
 # CORS
 fastapi-cors==0.0.6
+
+# Geração do contrato em PDF.
+#
+# reportlab e não weasyprint: o weasyprint depende de bibliotecas de sistema
+# (cairo, pango) que não existem na imagem `python:3.11-slim` e dobrariam o
+# tamanho dela. O reportlab é Python puro e desenha texto justificado, que é
+# o que um contrato precisa.
+reportlab==5.0.1

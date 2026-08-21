@@ -10,6 +10,7 @@ import { api } from "./api";
 import type {
   Contrato,
   DadosDoContrato,
+  LinkDeAssinatura,
   ModeloDeContrato,
   VariavelDeContrato,
 } from "@/types";
@@ -84,4 +85,16 @@ export async function abrirPdf(contratoId: string): Promise<void> {
   // fecharia o PDF antes de ele abrir. Um minuto é folga suficiente e evita
   // segurar o arquivo em memória pela sessão inteira.
   window.setTimeout(() => URL.revokeObjectURL(endereco), 60_000);
+}
+
+/** Cria (ou renova) o link, sem enviar nada. Invalida o anterior. */
+export async function gerarLink(contratoId: string): Promise<LinkDeAssinatura> {
+  return api.post<LinkDeAssinatura>(`${ROTA}/${contratoId}/link`);
+}
+
+/** Manda o link pelo WhatsApp do cliente e grava a mensagem na conversa. */
+export async function enviarParaAssinar(
+  contratoId: string,
+): Promise<LinkDeAssinatura> {
+  return api.post<LinkDeAssinatura>(`${ROTA}/${contratoId}/enviar`);
 }

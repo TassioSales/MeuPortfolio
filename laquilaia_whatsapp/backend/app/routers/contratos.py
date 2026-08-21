@@ -29,12 +29,15 @@ from app.db.database import get_db_session
 from app.db.models import (
     Caso,
     Contrato,
+    Conversation,
     DadosDoContrato,
     Lead,
     LeadDetails,
+    Message,
     ModeloDeContrato,
 )
-from app.services import contrato_service, escritorio_service
+from app.services import assinatura_service, contrato_service, escritorio_service
+from app.services.whatsapp_service import whatsapp_service
 from app.utils.auth_middleware import get_current_user, require_admin
 from app.utils.exceptions import NotFoundException, ValidationException
 from app.utils.logger import logger
@@ -90,7 +93,11 @@ class ContratoResponse(BaseModel):
     corpo: str
     status: str
     link_assinatura: Optional[str] = None
+    token_expira_em: Optional[datetime] = None
+    data_envio: Optional[datetime] = None
     data_assinatura: Optional[datetime] = None
+    assinado_nome: Optional[str] = None
+    hash_documento: Optional[str] = None
     data_criacao: Optional[datetime] = None
 
     class Config:
@@ -400,21 +407,144 @@ async def baixar_pdf(
     db: AsyncSession = Depends(get_db_session),
 ):
     """
-    O PDF é desenhado na hora, a partir do `corpo` guardado.
+    Assinado, devolve **o arquivo guardado**; não assinado, desenha na hora.
 
-    Guardar o binário custaria armazenamento e mais uma coisa para sair de
-    sincronia; o texto é a fonte, e o desenho é determinístico.
+    A distinção é o ponto. Redesenhar um contrato assinado daria o mesmo
+    texto, mas não o mesmo documento: o que a pessoa viu e aceitou foi aquele
+    arquivo, com aquela folha de auditoria, e é ele que se apresenta se
+    alguém contestar. Documento que se regenera não é documento — é relatório.
+
+    Enquanto não há assinatura não há o que preservar, e desenhar na hora
+    evita guardar binário que ninguém vai comparar com nada.
     """
     resultado = await db.execute(select(Contrato).where(Contrato.id == contrato_id))
     contrato = resultado.scalars().first()
     if contrato is None:
         raise NotFoundException("Contrato")
 
-    pdf = contrato_service.em_pdf(contrato.corpo, titulo="Contrato")
+    if contrato.pdf_assinado:
+        pdf = contrato.pdf_assinado
+    else:
+        pdf = contrato_service.em_pdf(contrato.corpo, titulo="Contrato")
     return Response(
         content=pdf,
         media_type="application/pdf",
         headers={
             "Content-Disposition": f'inline; filename="contrato-{contrato_id[:8]}.pdf"'
         },
+    )
+
+
+# ------------------------------------------------------------- assinatura
+
+class LinkResponse(BaseModel):
+    link: str
+    expira_em: datetime
+    enviado: bool = False
+    detalhe: Optional[str] = None
+
+
+TEXTO_DO_ENVIO = (
+    "{saudacao}Seu contrato de honorários está pronto.\n\n"
+    "É só abrir o link abaixo, conferir os dados e assinar — leva menos de um "
+    "minuto e dá para fazer pelo próprio celular:\n\n{link}\n\n"
+    "O link é individual e vale por {dias} dias. Qualquer dúvida antes de "
+    "assinar, é só me chamar por aqui."
+)
+
+
+async def _contrato_ou_404(contrato_id: str, db: AsyncSession) -> Contrato:
+    resultado = await db.execute(select(Contrato).where(Contrato.id == contrato_id))
+    contrato = resultado.scalars().first()
+    if contrato is None:
+        raise NotFoundException("Contrato")
+    return contrato
+
+
+@router.post("/{contrato_id}/link", response_model=LinkResponse)
+async def gerar_link(
+    contrato_id: str,
+    _: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Dá ao contrato um link de assinatura, sem enviar nada.
+
+    Serve para copiar e mandar por outro canal — e para renovar um link que
+    venceu. Chamar de novo **invalida o anterior**: dois endereços vivos para
+    o mesmo contrato é um endereço a mais para vazar.
+    """
+    contrato = await _contrato_ou_404(contrato_id, db)
+
+    if assinatura_service.ja_assinado(contrato):
+        raise ValidationException("Este contrato já foi assinado.")
+
+    link = assinatura_service.preparar_para_envio(contrato)
+    await db.commit()
+    await db.refresh(contrato)
+
+    logger.info(f"🔗 Link de assinatura gerado para o contrato {contrato_id}")
+    return LinkResponse(link=link, expira_em=contrato.token_expira_em)
+
+
+@router.post("/{contrato_id}/enviar", response_model=LinkResponse)
+async def enviar(
+    contrato_id: str,
+    _: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Manda o link pelo WhatsApp do cliente e grava a mensagem na conversa.
+
+    O envio vem **antes** do commit, seguindo o que já vale para a resposta do
+    operador: gravar uma mensagem que a Evolution recusou faria a transcrição
+    mentir para quem a lê. Se a Evolution recusar, o link nem chega a existir —
+    e é melhor assim, porque link gerado e não entregue é link que vence sem
+    ninguém ter recebido.
+    """
+    contrato = await _contrato_ou_404(contrato_id, db)
+
+    if assinatura_service.ja_assinado(contrato):
+        raise ValidationException("Este contrato já foi assinado.")
+
+    lead = await _lead_ou_404(contrato.lead_id, db)
+    conversa = (
+        await db.execute(
+            select(Conversation).where(Conversation.id == lead.conversation_id)
+        )
+    ).scalars().first()
+    if conversa is None:
+        raise NotFoundException("Conversa")
+
+    link = assinatura_service.preparar_para_envio(contrato)
+
+    primeiro_nome = (lead.nome or "").strip().split(" ")[0]
+    texto = TEXTO_DO_ENVIO.format(
+        saudacao=f"Oi, {primeiro_nome}! " if primeiro_nome else "",
+        link=link,
+        dias=assinatura_service.DIAS_DE_VALIDADE,
+    )
+
+    envio = await whatsapp_service.send_message(
+        phone_number=conversa.phone_number, message_text=texto
+    )
+    if not envio.get("success"):
+        await db.rollback()
+        raise ValidationException("A Evolution não confirmou o envio.")
+
+    db.add(
+        Message(
+            conversation_id=conversa.id,
+            remetente="sistema",
+            conteudo=texto,
+            timestamp=datetime.utcnow(),
+        )
+    )
+    conversa.data_ultima_msg = datetime.utcnow()
+    await db.commit()
+    await db.refresh(contrato)
+
+    logger.info(f"📤 Contrato {contrato_id} enviado para assinatura")
+    return LinkResponse(
+        link=link, expira_em=contrato.token_expira_em, enviado=True
     )

@@ -736,9 +736,37 @@ export interface Contrato {
   lead_id: string;
   modelo_id: string | null;
   corpo: string;
-  /** gerado, enviado, assinado, cancelado. */
+  /** gerado → enviado → assinado. `cancelado` sai de qualquer um deles. */
   status: string;
   link_assinatura: string | null;
+  token_expira_em: string | null;
+  data_envio: string | null;
   data_assinatura: string | null;
+  assinado_nome: string | null;
+  /** SHA-256 do texto no instante da assinatura. */
+  hash_documento: string | null;
   data_criacao: string | null;
+}
+
+/** Resposta de gerar/enviar link de assinatura. */
+export interface LinkDeAssinatura {
+  link: string;
+  expira_em: string;
+  enviado: boolean;
+  detalhe: string | null;
+}
+
+/**
+ * O que a página pública de assinatura recebe.
+ *
+ * É deliberadamente pouco: o texto, quem assina e o escritório. Nada do
+ * dossiê, nada do parecer — quem tem o link tem o contrato, não o prontuário.
+ */
+export interface ContratoParaAssinar {
+  corpo: string;
+  nome_do_cliente: string | null;
+  nome_do_escritorio: string | null;
+  ja_assinado: boolean;
+  assinado_em: string | null;
+  assinado_por: string | null;
 }

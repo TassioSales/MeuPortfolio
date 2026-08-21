@@ -81,8 +81,20 @@ function Abrir-Tunel {
     #>
     param([int]$Porta, [string]$Rotulo)
 
+    # O log do túnel anterior pode continuar aberto por alguns instantes: o
+    # `Stop-Process` sinaliza e segue, sem esperar o Windows soltar o handle.
+    # Apagar na primeira tentativa falhava com "being used by another
+    # process" e derrubava o script inteiro.
     $log = Join-Path $PSScriptRoot "tunel-$Rotulo.log"
-    if (Test-Path $log) { Remove-Item $log -Force }
+    for ($i = 0; $i -lt 20 -and (Test-Path $log); $i++) {
+        try { Remove-Item $log -Force -ErrorAction Stop }
+        catch { Start-Sleep -Milliseconds 250 }
+    }
+    if (Test-Path $log) {
+        # Ainda preso depois de 5s: usa outro nome em vez de desistir. Um log
+        # a mais na pasta é melhor que não subir.
+        $log = Join-Path $PSScriptRoot "tunel-$Rotulo-$(Get-Date -Format 'HHmmss').log"
+    }
 
     $processo = Start-Process -FilePath $Cloudflared `
         -ArgumentList 'tunnel', '--url', "http://localhost:$Porta" `
@@ -122,7 +134,15 @@ if (-not (Test-Path $Cloudflared)) {
 
 # Túneis antigos morrem primeiro: dois cloudflared apontando para a mesma
 # porta funcionam, e aí sobram URLs válidas que ninguém sabe quais são.
-Get-Process cloudflared -ErrorAction SilentlyContinue | Stop-Process -Force
+#
+# O `Wait-Process` não é zelo: sem ele o script seguia enquanto o Windows
+# ainda segurava o log do túnel anterior, e a próxima linha morria tentando
+# apagá-lo.
+$antigos = Get-Process cloudflared -ErrorAction SilentlyContinue
+if ($antigos) {
+    $antigos | Stop-Process -Force
+    $antigos | Wait-Process -Timeout 10 -ErrorAction SilentlyContinue
+}
 
 Escrever "Abrindo o túnel do backend..." 'Cyan'
 $backend = Abrir-Tunel -Porta 8000 -Rotulo 'backend'

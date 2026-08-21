@@ -7,6 +7,7 @@ import { formatarTelefone, linkDoWhatsapp } from "@/lib/telefone";
 import { cn } from "@/lib/utils";
 import type { CasoDoContato, LeadDossie as Dossie } from "@/types";
 import { CasosDoContato } from "./CasosDoContato";
+import { ContratoDoLead } from "./ContratoDoLead";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { Modal } from "./Modal";
 
@@ -195,6 +196,8 @@ export function LeadDossiePanel({ agentId, leadId, onClose }: LeadDossieProps) {
           <Campo titulo="O que fazer primeiro" texto={dossie.recomendacoes} />
           <Campo titulo="O que ficou faltando" texto={dossie.inconsistencias} />
           <Campo titulo="Riscos apontados" texto={dossie.problemas_detectados} />
+
+          {leadId && <ContratoDoLead leadId={leadId} />}
 
           {dossie.casos.length > 0 ? (
             <CasosDoContato

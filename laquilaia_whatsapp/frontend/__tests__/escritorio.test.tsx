@@ -25,6 +25,7 @@ const VAZIO: Escritorio = {
   oab_responsavel: null,
   fundador: null,
   endereco: null,
+  cidade: null,
   email: null,
   telefone: null,
   telefone_suporte: null,

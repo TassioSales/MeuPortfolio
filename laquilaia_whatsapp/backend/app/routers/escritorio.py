@@ -27,6 +27,9 @@ class EscritorioBase(BaseModel):
     oab_responsavel: Optional[str] = Field(default=None, max_length=64)
     fundador: Optional[str] = Field(default=None, max_length=255)
     endereco: Optional[str] = Field(default=None, max_length=2000)
+    # Isolada do endereço porque o contrato a usa sozinha: cláusula de foro
+    # e linha de assinatura.
+    cidade: Optional[str] = Field(default=None, max_length=120)
     email: Optional[str] = Field(default=None, max_length=255)
     telefone: Optional[str] = Field(default=None, max_length=32)
     telefone_suporte: Optional[str] = Field(default=None, max_length=32)

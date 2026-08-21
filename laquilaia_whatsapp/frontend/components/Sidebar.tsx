@@ -10,6 +10,7 @@ import {
   IconeAgenda,
   IconeAgente,
   IconeClientes,
+  IconeContrato,
   IconeConversa,
   IconeEscritorio,
   IconeFinalizados,
@@ -51,6 +52,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard/finalizados", label: "Finalizados", Icone: IconeFinalizados },
   { href: "/dashboard/historico", label: "Histórico", Icone: IconeHistorico },
   { href: "/dashboard/marketing", label: "Marketing", Icone: IconeMarketing, soAdmin: true },
+  { href: "/dashboard/contratos", label: "Contratos", Icone: IconeContrato, soAdmin: true },
   { href: "/dashboard/escritorio", label: "Escritório", Icone: IconeEscritorio },
   { href: "/dashboard/usuarios", label: "Acessos", Icone: IconeAcessos, soAdmin: true },
 ];

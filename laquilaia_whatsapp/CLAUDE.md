@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **477 testes no backend, 192 no frontend.**
+Estado atual: **719 testes no backend, 305 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -49,15 +49,18 @@ falha — na CI o serviço existe, então um pulo significa conexão quebrada.
 ```
 backend/app/
   routers/     auth, agents, chat (+conversations), webhook, kanban, metrics,
-               whatsapp (estado da conexão e QR, só admin)
+               whatsapp (estado da conexão e QR, só admin), contratos
   services/    llm (+ gemini_client, reserva), legal_analyst (parecer interno,
                com jurisprudência, provas e porte econômico),
                caso_service (um contato, vários casos),
+               contrato (lacunas → texto → PDF),
                rate_limiter, memory, whatsapp, lead_processor,
                message_orchestrator, metrics, agent, auth
   models/      schemas.py, llm_models.py, caso_schemas.py (o caso nas telas)
   prompts/     triagem_juridica.py — o texto que o cliente encontra, versionado
+               modelo_contrato_base.py — rascunho de contrato, sem o percentual
   scripts/     seed.py, aplicar_prompt.py (grava o prompt canônico num agente),
+               semear_modelo_contrato.py (põe o rascunho no banco, inativo),
                sondar_evolution.py (prova o QR contra a Evolution de verdade)
   db/          models.py (SQLAlchemy), database.py, redis_client.py
   ws/          manager.py — canal de tempo real por agente
@@ -67,7 +70,7 @@ backend/app/
 
 frontend/
   app/dashboard/  agents · whatsapp (conexão) · conversations (pausa humana)
-                  chat-test · kanban · metrics
+                  chat-test · kanban · metrics · contratos (modelos)
   components/     + charts/ (theme.ts tem a paleta validada)
                   Logo · icons · SeletorDeTema · LeadDossie · ParecerPreliminar
   hooks/          useAuth, useAgents, useChat, useConversations, useKanban, useMetrics, useAgentEvents
@@ -303,8 +306,11 @@ Decidido em conversa, não relitigar a prioridade sem falar com ele.
 
 6. **Automações no Kanban** (mover card por evento, cobrar retorno, etc.).
 7. **Disparo de e-mail** para o lead.
-8. **Assinatura de contrato** — é o que fecha o ciclo do escritório. O
-   provedor que o concorrente usa é o **Autentique**.
+8. **Assinatura de contrato.** A **geração** está feita (ver §6c); falta a
+   assinatura eletrônica. O provedor que o concorrente usa é o
+   **Autentique**, e o dono ainda não tem conta — sem ela não há o que
+   integrar. As colunas `link_assinatura` e `data_assinatura` já existem,
+   nulas.
 9. **Front mais profissional.** O dono acha que ainda parece protótipo; é
    trabalho de design, não de correção pontual.
 
@@ -360,6 +366,83 @@ pessoa escreva.
 falar de honorários**, porque o número é compromisso comercial do escritório e
 inventá-lo seria assumir dívida em nome dele. Se o dono passar a regra real,
 entra no prompt.
+
+---
+
+## 6c. O contrato
+
+O escritório fecha o caso com um contrato de honorários. Isso agora sai do
+sistema — o texto preenchido e o PDF. **A assinatura eletrônica não**, e a
+distinção é a coisa mais importante desta seção.
+
+**O texto é do advogado, não do código.** O corpo do contrato é escrito no
+painel (Contratos → Modelos) e guardado em `modelos_contrato`. Não está
+embutido no código de propósito: as cláusulas — e principalmente o
+**percentual de honorários** — são compromisso comercial e profissional do
+escritório. Um número que este software inventasse viraria obrigação assumida
+em nome de alguém que nunca a escolheu. É a mesma regra que já proíbe o prompt
+de falar de honorários com o cliente.
+
+Há um rascunho para a tela não abrir vazia
+(`app/prompts/modelo_contrato_base.py`, semeado por
+`python -m scripts.semear_modelo_contrato`). Ele nasce **inativo** e o
+percentual é lacuna: nenhum contrato sai dele antes de alguém ler, preencher e
+ativar.
+
+**O contrato guarda o texto, não uma referência ao modelo.** `contratos.corpo`
+é o texto já preenchido. O modelo muda — o advogado corrige uma cláusula em
+março — e o contrato assinado em janeiro tem de continuar dizendo o que dizia
+em janeiro. Documento que se altera depois de emitido não é documento. Pela
+mesma razão, apagar o modelo é `SET NULL`, não `CASCADE`.
+
+**Dado que falta vira `____________`, não string vazia.** "portador do CPF nº "
+seguido de nada é o que faz alguém assinar sem reparar; a lacuna obriga a
+reparar. Vale também para variável digitada errada: `{{cliente.cpj}}` sai como
+lacuna e **não** desaparece do texto. Mas o erro deve aparecer antes disso — o
+`POST /modelos` recusa com 422 e nomeia a variável, porque descobrir na hora de
+gerar o contrato do cliente é tarde: alguém já prometeu o documento.
+
+**CPF e RG ficam em tabela própria** (`dados_do_contrato`), separada de
+`lead_details`. Aquela guarda o que a triagem apurou sobre o **caso**; esta, o
+que identifica a **pessoa** num instrumento jurídico. E a triagem não os
+pergunta: pedir documento a quem ainda não sabe se vai ser cliente é onde a
+conversa morre. Quem preenche é quem atende, no dossiê do card, depois de o
+caso ser aceito.
+
+**Permissões divididas:** escrever modelo exige admin; preencher os dados e
+emitir o contrato, não. Quem fecha o atendimento emite; quem define a cláusula
+é o escritório.
+
+**`escritorio.cidade` virou campo próprio**, apesar de já estar dentro de
+`endereco`. O contrato precisa dela isolada em dois lugares — a cláusula de
+foro e a linha "Cidade, 20 de agosto de 2026" acima da assinatura — e extrair
+cidade de um endereço escrito livremente é adivinhação.
+
+**reportlab, não weasyprint.** O weasyprint precisa de cairo e pango, que a
+imagem `python:3.11-slim` não traz. O reportlab é Python puro.
+
+### O que **não** existe
+
+- **Assinatura eletrônica.** `link_assinatura` e `data_assinatura` existem no
+  banco e ficam nulas; `status` só assume `gerado`. O provedor do concorrente
+  é o Autentique, o dono ainda não tem conta, e o proxy deste ambiente bloqueia
+  `api.autentique.com.br` — a integração não teria como ser testada daqui.
+- **A IA coletando CPF e endereço na conversa.** Foi decisão do dono que ela
+  colete, e vai em PR separado: mexer no prompt muda o que o agente diz a
+  **todo** cliente, e isso precisa ser testado isolado.
+- **Envio do contrato pelo WhatsApp.** Hoje o PDF abre no painel.
+
+### O que foi verificado, e o que não foi
+
+Verificado: a migração ensaiada do zero (upgrade → downgrade → upgrade) **com
+dados dentro**, incluindo os três `SET NULL`/`CASCADE`; `alembic --autogenerate`
+não acusa deriva; 32 testes de backend e 11 de frontend; e um PDF de duas
+páginas gerado de verdade a partir do rascunho, com todas as lacunas
+substituídas.
+
+**Não verificado:** nenhuma das duas telas foi aberta por um humano — nem a de
+modelos, nem a seção de contrato no dossiê. E o PDF nunca foi olhado por um
+advogado, que é quem sabe se o texto do rascunho serve.
 
 ---
 

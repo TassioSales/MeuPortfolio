@@ -17,6 +17,7 @@ const VAZIO: Escritorio = {
   oab_responsavel: null,
   fundador: null,
   endereco: null,
+  cidade: null,
   email: null,
   telefone: null,
   telefone_suporte: null,
@@ -138,8 +139,14 @@ export default function EscritorioPage() {
               {...campo("horario_atendimento")}
             />
           </div>
-          <div className="mt-4">
+          <div className="mt-4 grid gap-4">
             <Textarea label="Endereço" rows={2} maxLength={2000} {...campo("endereco")} />
+            <Input
+              label="Cidade"
+              maxLength={120}
+              hint="Usada no contrato: a cláusula de foro e a linha acima da assinatura."
+              {...campo("cidade")}
+            />
           </div>
         </fieldset>
 

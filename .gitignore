@@ -9,3 +9,4 @@ __pycache__/
 *.egg-info/
 nexus/**/__pycache__/
 .playwright-mcp/email/04_novo_pedido.png
+laquilaia_whatsapp/.env.backup

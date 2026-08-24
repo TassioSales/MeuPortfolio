@@ -10,7 +10,7 @@ from sqlalchemy import select
 from app.db.database import init_db, close_db, AsyncSessionLocal
 from app.db.redis_client import redis_client
 from app.db.models import Agent, User
-from app.services import followup_service
+from app.services import cobranca_service, followup_service
 from app.services.auth_service import auth_service
 from app.ws.manager import connection_manager
 from app.routers import (
@@ -103,6 +103,23 @@ async def lifespan(app: FastAPI):
                 misfire_grace_time=300,
             )
 
+        # A cobrança de assinatura.
+        #
+        # De quinze em quinze minutos, e não de cinco: o menor intervalo que
+        # ela respeita é de duas horas, então acordar com mais frequência só
+        # gastaria consulta. É job separado do follow-up de propósito — um
+        # erro numa rodada de cobrança não pode levar junto a cutucada de
+        # conversa, que é a que traz cliente.
+        if settings.cobranca_habilitada:
+            scheduler.add_job(
+                cobranca_service.rodada,
+                "interval",
+                minutes=15,
+                id="cobranca_assinatura",
+                max_instances=1,
+                misfire_grace_time=600,
+            )
+
         scheduler.start()
         logger.info("✅ Metrics scheduler started (hourly, daily, cleanup jobs)")
         if settings.followup_habilitado:
@@ -110,6 +127,11 @@ async def lifespan(app: FastAPI):
                 f"✅ Follow-up ligado: {settings.followup_intervalos} min, "
                 f"{settings.followup_hora_inicio}h–{settings.followup_hora_fim}h "
                 f"({settings.followup_fuso})"
+            )
+        if settings.cobranca_habilitada:
+            logger.info(
+                f"✅ Cobrança de assinatura ligada: "
+                f"{settings.cobranca_intervalos} min"
             )
     except Exception as e:
         logger.error(f"❌ Failed to start metrics scheduler: {e}")

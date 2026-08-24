@@ -116,6 +116,18 @@ function Abrir-Tunel {
 
 # ---------------------------------------------------------------- containers
 
+# O daemon, nao o binario.
+#
+# `where docker` passa com o Docker Desktop fechado, e o compose so falha
+# depois, com "failed to connect to the docker API at npipe://..." — uma
+# mensagem que nao diz o que fazer. `docker info` pergunta ao servidor, que
+# e a coisa que precisa estar de pe.
+docker info --format '{{.ServerVersion}}' 2>&1 | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    throw ("O Docker Desktop nao esta rodando. Abra-o, espere a baleia na " +
+           "bandeja parar de animar, e rode este script de novo.")
+}
+
 Escrever "Subindo os containers..." 'Cyan'
 docker compose --profile whatsapp up -d --build
 if ($LASTEXITCODE -ne 0) { throw "docker compose falhou." }

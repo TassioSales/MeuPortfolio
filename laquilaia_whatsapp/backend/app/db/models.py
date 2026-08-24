@@ -674,5 +674,14 @@ class Contrato(Base):
     # significa "a pessoa pode sumir e o contrato fica".
     pdf_assinado = Column(LargeBinary, nullable=True)
 
+    # Quantas vezes o agente já cobrou a assinatura, e quando foi a última.
+    #
+    # Contadas no contrato, e não na conversa, porque são coisas diferentes:
+    # o follow-up de conversa cutuca quem parou de responder, e este cobra
+    # quem recebeu um documento e não voltou. Um cliente pode estar em dia com
+    # a conversa e devendo assinatura.
+    cobrancas_enviadas = Column(Integer, nullable=False, default=0)
+    ultima_cobranca_em = Column(DateTime, nullable=True)
+
     def __repr__(self):
         return f"<Contrato(lead={self.lead_id}, status={self.status})>"

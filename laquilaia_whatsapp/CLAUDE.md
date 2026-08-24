@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **741 testes no backend, 314 no frontend.**
+Estado atual: **760 testes no backend, 314 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -55,6 +55,7 @@ backend/app/
                com jurisprudência, provas e porte econômico),
                caso_service (um contato, vários casos),
                contrato (lacunas → texto → PDF), assinatura (token e prova),
+               cobranca (contrato enviado e não assinado),
                rate_limiter, memory, whatsapp, lead_processor,
                message_orchestrator, metrics, agent, auth
   models/      schemas.py, llm_models.py, caso_schemas.py (o caso nas telas)
@@ -65,7 +66,10 @@ backend/app/
                sondar_evolution.py (prova o QR contra a Evolution de verdade)
   db/          models.py (SQLAlchemy), database.py, redis_client.py
   ws/          manager.py — canal de tempo real por agente
-  jobs/        metrics_aggregator.py (APScheduler)
+  jobs/        metrics_aggregator.py (APScheduler). O follow-up (5 min) e a
+               cobrança de assinatura (15 min) são jobs separados no mesmo
+               scheduler — um erro numa rodada de cobrança não pode levar
+               junto a cutucada de conversa, que é a que traz cliente.
   utils/       auth_middleware, webhook_security, exceptions, logger, fuso
   alembic/     migrações — o schema é daqui, não da aplicação
 
@@ -520,10 +524,31 @@ escritório. Nada do dossiê, nada do parecer, nada do telefone.
 4. Assinatura registrada, PDF absorvido, token morto.
 5. O agente confirma no WhatsApp e a confirmação entra na conversa.
 
-**Falta o passo 6:** cobrar quem não assinou. E falta o gatilho automático —
-o dono foi explícito que *"a IA tem que gerar e enviar, não o advogado"*, e
-hoje quem clica é gente. O que trava isso é a coleta de CPF/RG/endereço, que
-ainda é manual (ver §6c).
+6. Não assinou? O agente cobra — **`cobranca_service`**, três vezes, e a
+   segunda **pergunta o motivo**, que foi o pedido do dono: *"tem que
+   perguntar por que não assinou, se desistiu"*. Lembrar → perguntar →
+   oferecer a saída; três mensagens iguais são três mensagens ignoradas.
+
+**A cobrança e o follow-up de conversa não se atropelam, por construção.** O
+follow-up só pega conversas cuja última mensagem é do agente (`remetente ==
+"assistant"`), e tudo que a cobrança e o envio gravam entra como `sistema` —
+ninguém leva as duas cutucadas. Há teste travando isso.
+
+**A cobrança para quando o cliente escreve.** A pessoa está falando com a
+gente; cortar com "assina aí" é o movimento errado. O relógio passa a contar
+da fala dela, então a cobrança volta se a conversa esfriar — não some para
+sempre.
+
+**Intervalos muito mais largos que o follow-up** (2h, 1 dia, 3 dias, contra
+15 min, 2h, 1 dia). Lá se cobra uma resposta de uma linha; aqui a leitura de
+um contrato de honorários, que a pessoa vai querer conversar em casa. Quatro
+dias no total, dentro dos sete de validade do link — e se alguém alargar um
+intervalo no `.env`, a cobrança **renova o link vencido** antes de mandar, em
+vez de enviar endereço morto.
+
+**Falta o gatilho automático.** O dono foi explícito: *"a IA tem que gerar e
+enviar, não o advogado"*, e hoje quem clica é gente. O que trava isso é a
+coleta de CPF/RG/endereço, que ainda é manual (ver §6c).
 
 **Decisão sobre o gatilho, já tomada:** quando ele existir, quem dispara será
 **regra determinística** — caso qualificado, viabilidade não descartada, dados

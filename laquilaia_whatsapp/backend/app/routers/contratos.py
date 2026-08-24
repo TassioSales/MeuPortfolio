@@ -326,6 +326,18 @@ async def listar_do_lead(
     return [ContratoResponse.model_validate(c) for c in resultado.scalars().all()]
 
 
+async def _cabecalho_do_escritorio(db: AsyncSession) -> str:
+    """
+    O que vai no alto das páginas a partir da segunda.
+
+    Vazio quando o escritório não tem nome configurado — cabeçalho com um
+    traço e nada escrito é pior que folha sem cabeçalho.
+    """
+    config = await escritorio_service.obter(db)
+    nome = (getattr(config, "nome", None) or "").strip() if config else ""
+    return f"{nome} — Contrato de honorários" if nome else ""
+
+
 async def montar_contrato(
     db: AsyncSession, lead: Lead, modelo: ModeloDeContrato, gerado_por: Optional[str]
 ) -> Contrato:
@@ -442,7 +454,11 @@ async def baixar_pdf(
     if contrato.pdf_assinado:
         pdf = contrato.pdf_assinado
     else:
-        pdf = contrato_service.em_pdf(contrato.corpo, titulo="Contrato")
+        pdf = contrato_service.em_pdf(
+            contrato.corpo,
+            titulo="Contrato",
+            cabecalho=await _cabecalho_do_escritorio(db),
+        )
     return Response(
         content=pdf,
         media_type="application/pdf",

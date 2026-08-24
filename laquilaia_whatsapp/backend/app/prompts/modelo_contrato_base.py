@@ -20,7 +20,7 @@ As partes acima identificadas têm entre si justo e contratado o presente instru
 
 **CLÁUSULA 1ª — DO OBJETO**
 
-O CONTRATADO prestará ao CONTRATANTE serviços de advocacia na área de {{caso.area}}, referentes a: {{caso.resumo}}
+O CONTRATADO prestará ao CONTRATANTE serviços de advocacia consistentes no patrocínio de {{caso.objeto}}, com a prática de todos os atos necessários à defesa dos interesses do CONTRATANTE.
 
 **CLÁUSULA 2ª — DAS OBRIGAÇÕES DO CONTRATADO**
 

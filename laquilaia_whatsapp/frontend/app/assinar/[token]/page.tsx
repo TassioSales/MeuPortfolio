@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
+import { CampoDeAssinatura } from "@/components/CampoDeAssinatura";
 import { messageFrom } from "@/hooks/useAgents";
 import { assinar, buscarParaAssinar } from "@/lib/assinatura";
 import type { ContratoParaAssinar } from "@/types";
@@ -95,6 +96,7 @@ export default function AssinarPage() {
 
   const [nome, setNome] = useState("");
   const [aceite, setAceite] = useState(false);
+  const [rabisco, setRabisco] = useState<string | null>(null);
   const [leuAteOFim, setLeuAteOFim] = useState(false);
 
   const carregar = useCallback(async () => {
@@ -123,7 +125,7 @@ export default function AssinarPage() {
     setEnviando(true);
     setErro(null);
     try {
-      setContrato(await assinar(token, nome.trim()));
+      setContrato(await assinar(token, nome.trim(), rabisco));
     } catch (e) {
       setErro(messageFrom(e, "Não foi possível registrar a assinatura."));
     } finally {
@@ -168,6 +170,10 @@ export default function AssinarPage() {
   }
 
   const assinado = contrato.ja_assinado;
+  // O desenho **não** entra na condição de propósito. Quem não conseguir
+  // desenhar — navegador sem canvas, mouse ruim, mão trêmula — ainda tem de
+  // conseguir assinar: o que prova a assinatura é a trilha, não o rabisco.
+  // Travar o botão nele trocaria o essencial pelo enfeite.
   const podeAssinar = leuAteOFim && aceite && nome.trim().length >= 3;
 
   return (
@@ -227,6 +233,10 @@ export default function AssinarPage() {
               className="mt-1.5 w-full rounded-lg border border-surface-border bg-surface px-3 py-3 text-base text-fg placeholder:text-fg-faint focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
               placeholder="Como está no seu documento"
             />
+
+            <div className="mt-4">
+              <CampoDeAssinatura onChange={setRabisco} disabled={enviando} />
+            </div>
 
             <label className="mt-4 flex items-start gap-3 text-sm text-fg-soft">
               <input

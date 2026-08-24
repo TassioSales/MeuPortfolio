@@ -19,6 +19,30 @@ import type { ContratoParaAssinar } from "@/types";
 
 const mockFetch = global.fetch as jest.Mock;
 
+/**
+ * A página agora monta um `<canvas>` (desenhar) e usa `document.fonts`
+ * (digitar). O jsdom não tem nenhum dos dois.
+ */
+beforeEach(() => {
+  // A fila do `mockResolvedValueOnce` sobrevive entre testes: uma resposta
+  // enfileirada e não consumida vaza para o teste seguinte, que abre a página
+  // com o estado errado. Já aconteceu neste arquivo.
+  mockFetch.mockReset();
+
+  HTMLCanvasElement.prototype.getContext = jest.fn(() => ({
+    scale: jest.fn(), beginPath: jest.fn(), moveTo: jest.fn(), lineTo: jest.fn(),
+    stroke: jest.fn(), clearRect: jest.fn(), fillText: jest.fn(),
+    measureText: jest.fn(() => ({ width: 100 })),
+  })) as never;
+  HTMLCanvasElement.prototype.toDataURL = jest.fn(
+    () => "data:image/png;base64,AAAA",
+  ) as never;
+  Object.defineProperty(document, "fonts", {
+    configurable: true,
+    value: { load: jest.fn().mockResolvedValue([]), ready: Promise.resolve() },
+  });
+});
+
 jest.mock("next/navigation", () => ({
   useParams: () => ({ token: "tok-abc" }),
 }));
@@ -167,6 +191,61 @@ describe("página de assinatura", () => {
 
     expect(await screen.findByText("Assinatura registrada.")).toBeInTheDocument();
     expect(screen.getByText("Contrato assinado")).toBeInTheDocument();
+  });
+
+  it("oferece desenhar e digitar", async () => {
+    // Assinar com o dedo sai um garrancho e muita gente desiste. As duas
+    // opções são o que Autentique e DocuSign fazem.
+    mockFetch.mockResolvedValueOnce(jsonResponse(CONTRATO));
+
+    render(<AssinarPage />);
+    await screen.findByText(/Cláusula primeira/);
+
+    expect(screen.getByRole("tab", { name: "Desenhar" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Digitar" })).toBeInTheDocument();
+    // Desenhar é o padrão: é o que se parece com assinar.
+    expect(screen.getByRole("tab", { name: "Desenhar" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+  });
+
+  it("trocar de modo descarta o traço anterior", async () => {
+    // Manter um desenho invisível enquanto a pessoa escolhe uma letra faria
+    // ela assinar com o que não está vendo.
+    // Uma resposta só: este teste não chega a assinar. Enfileirar a segunda
+    // deixava-a pendurada na fila e o teste **seguinte** abria a página já
+    // como "assinado" — falha que só aparece na suíte inteira.
+    mockFetch.mockResolvedValueOnce(jsonResponse(CONTRATO));
+
+    render(<AssinarPage />);
+    await screen.findByText(/Cláusula primeira/);
+
+    await userEvent.click(screen.getByRole("tab", { name: "Digitar" }));
+    expect(screen.getByRole("tab", { name: "Digitar" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(screen.queryByLabelText("Área para assinar")).not.toBeInTheDocument();
+  });
+
+  it("assinar continua possível sem nenhum desenho", async () => {
+    // O que prova a assinatura é a trilha, não o rabisco. Navegador sem
+    // canvas, mouse ruim, mão trêmula — a pessoa ainda assina.
+    mockFetch
+      .mockResolvedValueOnce(jsonResponse(CONTRATO))
+      .mockResolvedValueOnce(
+        jsonResponse({ ...CONTRATO, ja_assinado: true, assinado_por: "Maria" }),
+      );
+
+    render(<AssinarPage />);
+    await screen.findByText(/Cláusula primeira/);
+
+    rolarAteOFim(oContrato());
+    await userEvent.click(screen.getByRole("checkbox"));
+    await userEvent.click(screen.getByRole("button", { name: "Assinar contrato" }));
+
+    expect(await screen.findByText("Assinatura registrada.")).toBeInTheDocument();
   });
 
   it("a página não manda cabeçalho de autorização", async () => {

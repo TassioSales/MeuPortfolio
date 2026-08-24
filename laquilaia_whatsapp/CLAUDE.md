@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **813 testes no backend, 320 no frontend.**
+Estado atual: **813 testes no backend, 329 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -699,6 +699,23 @@ assina no celular), Pointer Events em vez de `touch` + `mouse` separados (um
 traço vira dois), e redimensionamento por `devicePixelRatio` (senão o traço
 sai borrado, e assinatura borrada parece defeito).
 
+**Duas formas: desenhar ou digitar.** É o que Autentique e DocuSign
+oferecem, e por um motivo prático: assinar com o dedo sai um garrancho, e
+muita gente desiste ou fica com vergonha do resultado. Digitando, a pessoa
+escolhe entre três letras cursivas — e o resultado é **o mesmo PNG**, pintado
+num canvas no navegador. O backend não sabe (nem precisa saber) se o traço
+veio de um dedo ou de uma fonte, e não há um segundo formato para validar,
+guardar e desenhar no PDF.
+
+As fontes vêm por `next/font/google`, que **baixa na build e serve do nosso
+domínio** — em tempo de execução não há requisição ao Google. E o canvas
+espera `document.fonts.load` antes de pintar: sem isso o primeiro desenho sai
+na fonte de reserva, e a pessoa assina com o próprio nome em Times.
+
+**Digitar não é o sistema assinando por ninguém.** A pessoa digita o próprio
+nome, escolhe como ele aparece e confirma. O que sustenta a assinatura
+continua sendo a trilha.
+
 **O desenho é opcional, de propósito.** Navegador sem canvas, mouse ruim, mão
 trêmula — a pessoa ainda assina. Travar o botão nele trocaria o essencial pelo
 enfeite.
@@ -715,8 +732,10 @@ antes, porque os dados vieram da triagem. Não se sabe se a agente coleta bem:
 se pergunta um dado por vez, se aceita "não sei o RG" sem travar, se recomeça
 a triagem por engano.
 
-E a assinatura desenhada nunca foi feita com um dedo de verdade numa tela de
-verdade — só com Pointer Events sintéticos no jsdom.
+E a assinatura nunca foi feita com um dedo de verdade numa tela de verdade —
+só com Pointer Events sintéticos no jsdom, que não implementa canvas. O mesmo
+vale para a digitada: o jsdom não renderiza fonte nenhuma, então **ninguém
+viu** como as três letras ficam.
 
 ---
 

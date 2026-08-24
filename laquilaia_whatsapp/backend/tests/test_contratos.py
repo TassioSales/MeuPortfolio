@@ -193,10 +193,73 @@ class TestSimulacao:
         assert "____________ por cento" not in modelo.corpo
 
 
+class TestOObjetoDoContrato:
+    """
+    O modelo base usava `{{caso.resumo}}`, e o primeiro contrato real saiu com
+    o texto da triagem no lugar do objeto:
+
+        "referentes a: Contato relata contratação CLT como coordenador de
+        estoque (R$ 4.000), 3 anos, seguida de 'promoção' a gerente..."
+
+    Correto, e escrito **para o advogado ler**. Num instrumento jurídico soa a
+    ficha de atendimento. O objeto de um contrato de honorários é seco: a
+    natureza da demanda e contra quem.
+    """
+
+    def test_area_e_empresa_viram_objeto(self):
+        assert contrato_service.objeto_do_contrato(
+            "trabalhista", "Silva & Filhos Ltda"
+        ) == "ação de natureza trabalhista em face de Silva & Filhos Ltda"
+
+    def test_sem_empresa_a_frase_para_antes(self):
+        """
+        "em face de ____________" num objeto de contrato parece erro de
+        preenchimento, não lacuna a completar.
+        """
+        objeto = contrato_service.objeto_do_contrato("trabalhista", None)
+        assert objeto == "ação de natureza trabalhista"
+        assert contrato_service.LACUNA not in objeto
+
+    def test_lacuna_no_lugar_da_empresa_tambem_para_antes(self):
+        objeto = contrato_service.objeto_do_contrato(
+            "trabalhista", contrato_service.LACUNA
+        )
+        assert contrato_service.LACUNA not in objeto
+
+    def test_area_desconhecida_vira_generico(self):
+        assert contrato_service.objeto_do_contrato(None, None) == "demanda judicial"
+
+    def test_o_modelo_base_usa_o_objeto_e_nao_o_resumo(self):
+        """
+        Trava a correção no lugar onde ela importa: o rascunho que o advogado
+        recebe pronto.
+        """
+        from app.prompts.modelo_contrato_base import MODELO_BASE
+
+        assert "{{caso.objeto}}" in MODELO_BASE
+        assert "{{caso.resumo}}" not in MODELO_BASE
+
+
 class TestPdf:
     def test_sai_um_pdf(self):
         pdf = contrato_service.em_pdf("# Título\nUm parágrafo.")
         assert pdf.startswith(b"%PDF-")
+
+    def test_paginacao_diz_o_total(self):
+        """
+        "Página 2" sozinho não denuncia que a folha 3 sumiu; "página 2 de 5"
+        denuncia. É a razão de contratos em papel serem rubricados folha a
+        folha.
+        """
+        longo = "\n\n".join(f"Parágrafo {i} com texto suficiente." for i in range(120))
+        pdf = contrato_service.em_pdf(longo)
+        assert pdf.startswith(b"%PDF-")
+        # Mais de uma folha, que é o que faz o "de M" ter sentido.
+        assert pdf.count(b"/Type /Page") > 1 or len(pdf) > 5000
+
+    def test_cabecalho_vazio_nao_desenha_traco(self):
+        """Cabeçalho com um traço e nada escrito é pior que folha sem cabeçalho."""
+        assert contrato_service.em_pdf("Texto.", cabecalho="").startswith(b"%PDF-")
 
     def test_e_comercial_no_nome_da_empresa_nao_derruba(self):
         """

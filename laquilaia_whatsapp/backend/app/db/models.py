@@ -687,6 +687,15 @@ class Contrato(Base):
     # significa "a pessoa pode sumir e o contrato fica".
     pdf_assinado = Column(LargeBinary, nullable=True)
 
+    # O rabisco que a pessoa fez com o dedo na tela, em PNG.
+    #
+    # Juridicamente ele não acrescenta nada: o que prova a assinatura é a
+    # trilha — token individual, hora, IP, aparelho e hash do texto. Mas um
+    # contrato sem nada escrito na linha da assinatura **não parece assinado**,
+    # e o cliente que recebe esse PDF fica sem saber se aquilo valeu. A
+    # imagem existe para o documento parecer o que ele é.
+    assinatura_imagem = Column(LargeBinary, nullable=True)
+
     # Quantas vezes o agente já cobrou a assinatura, e quando foi a última.
     #
     # Contadas no contrato, e não na conversa, porque são coisas diferentes:

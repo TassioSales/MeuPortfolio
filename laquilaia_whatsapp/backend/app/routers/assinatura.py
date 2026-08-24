@@ -74,6 +74,13 @@ class Assinatura(BaseModel):
     # Caixa marcada, e obrigatoriamente `True`. Aceite é ato, não default: um
     # POST que assina sem esta linha assinaria por quem só abriu a página.
     aceite: bool
+    # O rabisco do `<canvas>`, como `data:image/png;base64,...`. Opcional: um
+    # navegador sem canvas, ou alguém que não conseguiu desenhar, ainda assina
+    # — o que prova a assinatura é a trilha, não o desenho.
+    #
+    # O teto aqui é o dobro do limite em bytes: o base64 cresce 4/3, e o
+    # `png_da_assinatura` recusa o que passar do tamanho real.
+    assinatura_png: Optional[str] = Field(default=None, max_length=800_000)
 
 
 async def _contrato_do_token(token: str, db: AsyncSession) -> Contrato:
@@ -180,11 +187,21 @@ async def assinar(token: str, entrada: Assinatura, request: Request):
             ip=ip,
             user_agent=request.headers.get("user-agent"),
         )
+        contrato.assinatura_imagem = assinatura_service.png_da_assinatura(
+            entrada.assinatura_png
+        )
 
+        nome_do_escritorio = await _nome_do_escritorio(db)
         contrato.pdf_assinado = contrato_service.em_pdf(
             contrato.corpo,
             titulo="Contrato assinado",
             assinatura=_para_a_folha(contrato),
+            cabecalho=(
+                f"{nome_do_escritorio} — Contrato de honorários"
+                if nome_do_escritorio
+                else ""
+            ),
+            rabisco=contrato.assinatura_imagem,
         )
 
         lead_id = contrato.lead_id

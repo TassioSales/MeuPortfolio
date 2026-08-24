@@ -228,6 +228,85 @@ class TestAbrirColeta:
         assert msgs == []
 
 
+class TestOSilencio:
+    """
+    Um recurso que não faz nada e não diz por quê é o pior tipo de defeito.
+
+    O dono ligou `CONTRATO_AUTOMATICO`, conduziu uma triagem inteira e nada
+    aconteceu — e a única explicação estava numa linha de `debug` que ninguém
+    tem ligada. Motivo corrigível agora sai em `warning`, com o comando do
+    diagnóstico junto.
+    """
+
+    @pytest.mark.asyncio
+    async def test_modelo_inativo_e_motivo_corrigivel(self):
+        """
+        O caso mais provável na prática: o dono liga a chave e esquece de
+        ativar um modelo. Sem aviso, ele conduz triagens inteiras achando que
+        o recurso está quebrado.
+        """
+        from app.services.gatilho_contrato import _CORRIGIVEIS, pode_abrir_coleta
+
+        lead_id, _ = await _cenario("s1", com_modelo=False)
+
+        async with AsyncSessionLocal() as db:
+            lead = (
+                await db.execute(select(Lead).where(Lead.id == lead_id))
+            ).scalars().first()
+            caso = (
+                await db.execute(select(Caso).where(Caso.lead_id == lead_id))
+            ).scalars().first()
+            with _ligado():
+                _, motivo = await pode_abrir_coleta(db, lead, caso)
+
+        assert motivo == "nenhum modelo de contrato ativo"
+        assert motivo in _CORRIGIVEIS
+
+    @pytest.mark.asyncio
+    async def test_funcionamento_normal_nao_polui_o_log(self):
+        """
+        "Já tem contrato" e "já em coleta" são o esperado. Avisar sobre eles
+        encheria o log até ninguém mais ler.
+        """
+        from app.services.gatilho_contrato import _CORRIGIVEIS, pode_abrir_coleta
+
+        lead_id, _ = await _cenario("s2", com_contrato=True)
+
+        async with AsyncSessionLocal() as db:
+            lead = (
+                await db.execute(select(Lead).where(Lead.id == lead_id))
+            ).scalars().first()
+            caso = (
+                await db.execute(select(Caso).where(Caso.lead_id == lead_id))
+            ).scalars().first()
+            with _ligado():
+                _, motivo = await pode_abrir_coleta(db, lead, caso)
+
+        assert motivo == "lead já tem contrato"
+        assert motivo not in _CORRIGIVEIS
+
+    @pytest.mark.asyncio
+    async def test_parecer_que_nao_saiu_e_motivo_corrigivel(self):
+        """
+        A dependência que não é óbvia: sem parecer não há caso, e sem caso o
+        gatilho nunca dispara. Se o analista estiver desligado ou falhar, o
+        contrato jamais sai — e ninguém liga uma coisa à outra.
+        """
+        from app.services.gatilho_contrato import _CORRIGIVEIS, pode_abrir_coleta
+
+        lead_id, _ = await _cenario("s3", com_caso=False)
+
+        async with AsyncSessionLocal() as db:
+            lead = (
+                await db.execute(select(Lead).where(Lead.id == lead_id))
+            ).scalars().first()
+            with _ligado():
+                _, motivo = await pode_abrir_coleta(db, lead, None)
+
+        assert motivo == "sem caso registrado"
+        assert motivo in _CORRIGIVEIS
+
+
 # --------------------------------------------------- emitir o contrato
 
 async def _emitir(lead_id: str):

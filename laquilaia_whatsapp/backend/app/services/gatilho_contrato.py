@@ -45,6 +45,16 @@ from app.utils.logger import logger
 # gatilho não disparar quase nunca.
 VETADOS = ("abaixo_do_piso",)
 
+# Motivos de não disparar que alguém consegue resolver — e que por isso
+# precisam ser vistos. "Já tem contrato" e "já em coleta" ficam de fora: são o
+# funcionamento normal, e avisar sobre eles encheria o log de ruído até
+# ninguém mais ler.
+_CORRIGIVEIS = {
+    "sem caso registrado",
+    "nenhum modelo de contrato ativo",
+    "lead não qualificado",
+}
+
 ABERTURA = (
     "{saudacao}Tenho uma boa notícia: seu caso foi analisado pelo escritório e "
     "**nós vamos aceitar**. 🎉\n\n"
@@ -126,7 +136,21 @@ async def abrir_coleta(db: AsyncSession, lead: Lead, caso: Optional[Caso]) -> bo
 
     pode, motivo = await pode_abrir_coleta(db, lead, caso)
     if not pode:
-        logger.debug(f"⏭️ Coleta não aberta para o lead {lead.id}: {motivo}")
+        # Motivo corrigível sai em `warning`, não em `debug`.
+        #
+        # Um recurso que não faz nada e não diz por quê é o pior tipo de
+        # defeito: o dono liga `CONTRATO_AUTOMATICO`, conduz uma triagem
+        # inteira, nada acontece, e a única explicação está numa linha de
+        # `debug` que ninguém tem ligada. Os motivos abaixo são todos
+        # resolvíveis por quem opera — merecem aparecer.
+        if motivo in _CORRIGIVEIS or motivo.startswith("viabilidade "):
+            logger.warning(
+                f"⚠️ Contrato automático não disparou para o lead {lead.id}: "
+                f"{motivo}. Rode `python -m scripts.diagnostico_contrato "
+                f"--telefone {lead.phone_number}` para o quadro completo."
+            )
+        else:
+            logger.debug(f"⏭️ Coleta não aberta para o lead {lead.id}: {motivo}")
         return False
 
     conversa = (

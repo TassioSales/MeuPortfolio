@@ -79,10 +79,10 @@ async def _cenario(sufixo: str, dono: str, com_token: bool = True) -> tuple[str,
     return f"k-{sufixo}", token
 
 
-def _assinar(token: str, nome="Maria Aparecida da Silva", aceite=True, **kwargs):
+def _assinar(token: str, nome="Maria Aparecida da Silva", aceite=True, png=None, **kwargs):
     return client.post(
         f"/api/v1/assinatura/{token}",
-        json={"nome": nome, "aceite": aceite},
+        json={"nome": nome, "aceite": aceite, "assinatura_png": png},
         **kwargs,
     )
 
@@ -264,6 +264,108 @@ class TestAssinar:
         async with AsyncSessionLocal() as db:
             c = (await db.execute(select(Contrato))).scalars().first()
         assert c.assinado_ip == "189.45.12.7"
+
+
+class TestOrabisco:
+    """
+    A assinatura desenhada com o dedo.
+
+    Juridicamente ela não acrescenta nada — o que prova a assinatura é a
+    trilha. Mas o dono abriu o primeiro contrato assinado de verdade e disse
+    "não assinou nada ali": um contrato sem nada escrito na linha **não parece
+    assinado**, e quem recebe fica sem saber se valeu.
+
+    Como é entrada pública, nada aqui confia no que chega.
+    """
+
+    def _png(self, extra: bytes = b"x" * 100) -> str:
+        import base64
+
+        bruto = b"\x89PNG\r\n\x1a\n" + extra
+        return "data:image/png;base64," + base64.b64encode(bruto).decode()
+
+    def test_png_valido_e_aceito(self):
+        assert assinatura_service.png_da_assinatura(self._png()) is not None
+
+    def test_o_que_nao_e_png_e_recusado(self):
+        """Guardar o que o cliente disse ser imagem é como se serve upload malicioso."""
+        import base64
+
+        gif = "data:image/png;base64," + base64.b64encode(b"GIF89a...").decode()
+        assert assinatura_service.png_da_assinatura(gif) is None
+        assert assinatura_service.png_da_assinatura("data:image/jpeg;base64,abc") is None
+        assert assinatura_service.png_da_assinatura("<script>") is None
+        assert assinatura_service.png_da_assinatura(None) is None
+
+    def test_grande_demais_e_recusado_antes_de_decodificar(self):
+        """Sem teto, um POST de 30 KB alocaria dezenas de MB ao decodificar."""
+        enorme = "data:image/png;base64," + "A" * (
+            assinatura_service.LIMITE_DA_ASSINATURA * 4
+        )
+        assert assinatura_service.png_da_assinatura(enorme) is None
+
+    @pytest.mark.asyncio
+    async def test_assina_com_desenho_e_ele_entra_no_pdf(self):
+        _, dono = _login("r1")
+        _, token = await _cenario("r1", dono)
+
+        with patch("app.routers.assinatura._agendar_confirmacao"):
+            r = _assinar(token, png=self._png())
+        assert r.status_code == 200
+
+        async with AsyncSessionLocal() as db:
+            c = (await db.execute(select(Contrato))).scalars().first()
+
+        assert c.assinatura_imagem is not None
+        assert c.assinatura_imagem.startswith(b"\x89PNG")
+        assert c.pdf_assinado.startswith(b"%PDF-")
+
+    @pytest.mark.asyncio
+    async def test_assina_sem_desenho_continua_valendo(self):
+        """
+        Navegador sem canvas, mouse ruim, mão trêmula. O que prova a
+        assinatura é a trilha — travar nela trocaria o essencial pelo enfeite.
+        """
+        _, dono = _login("r2")
+        _, token = await _cenario("r2", dono)
+
+        with patch("app.routers.assinatura._agendar_confirmacao"):
+            r = _assinar(token)
+        assert r.status_code == 200
+
+        async with AsyncSessionLocal() as db:
+            c = (await db.execute(select(Contrato))).scalars().first()
+
+        assert c.assinatura_imagem is None
+        assert c.status == "assinado" and c.pdf_assinado
+
+    @pytest.mark.asyncio
+    async def test_desenho_invalido_nao_derruba_a_assinatura(self):
+        """
+        Recusa silenciosa: o contrato vale sem o desenho, e derrubar uma
+        assinatura legítima porque o canvas de um navegador exótico produziu
+        algo diferente seria o pior desfecho.
+        """
+        _, dono = _login("r3")
+        _, token = await _cenario("r3", dono)
+
+        with patch("app.routers.assinatura._agendar_confirmacao"):
+            r = _assinar(token, png="data:image/png;base64,!!!nao-e-base64!!!")
+
+        assert r.status_code == 200
+        async with AsyncSessionLocal() as db:
+            c = (await db.execute(select(Contrato))).scalars().first()
+        assert c.status == "assinado" and c.assinatura_imagem is None
+
+    def test_pdf_com_desenho_ilegivel_ainda_sai(self):
+        """Um contrato não pode deixar de existir por causa de uma figura."""
+        from app.services import contrato_service
+
+        pdf = contrato_service.em_pdf(
+            "# CONTRATO\nTexto.\n\n____________________\nFulano",
+            rabisco=b"\x89PNG\r\n\x1a\nnao-e-uma-imagem-de-verdade",
+        )
+        assert pdf.startswith(b"%PDF-")
 
 
 # ----------------------------------------------------- confirmação no chat

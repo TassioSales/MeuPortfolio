@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **796 testes no backend, 314 no frontend.**
+Estado atual: **813 testes no backend, 320 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -665,15 +665,58 @@ configuração do escritório e modelos. Pede confirmação digitada e avisa em
 separado quando há contrato assinado — aquilo é documento, com PDF e trilha de
 prova, e não tem cópia.
 
-### O que não foi verificado
+### Rodou de verdade, com gente
 
-Nada disto rodou com o Claude de verdade. O bloco de coleta nunca foi lido por
-um modelo, e portanto **não se sabe se ele coleta bem**: se pergunta um dado
-por vez como manda o texto, se aceita "não sei o RG" sem travar, se recomeça a
-triagem por engano. O teste de ciclo completo prova a costura, não o
-comportamento do modelo — a resposta dele é simulada.
+**24/08/2026, primeira vez.** Triagem completa pelo WhatsApp (agressão no
+trabalho, cinco anos de casa, R$ 6.500), contrato emitido sozinho, assinado
+de um Android e absorvido — IP IPv6 real, hash, comprovante. O ciclo inteiro
+funcionou sem ninguém do escritório clicar.
 
-E nenhuma dessas mensagens chegou a um WhatsApp real.
+A triagem se comportou: conduziu com perguntas encadeadas, informou o que
+costuma entrar no caso **atribuindo ao advogado**, e recusou falar de
+honorários quando o cliente perguntou "não tem contrato?" — devolveu ao
+advogado, como o prompt manda.
+
+**O que a conversa real revelou, e foi corrigido no mesmo dia:**
+
+- O contrato saiu com o **CONTRATADO em branco** — ninguém tinha preenchido o
+  escritório. Não é defeito de código, mas é o primeiro contrato que sai e
+  ninguém confere isso antes.
+- O objeto trazia o **texto da triagem** (ver §6c).
+- **Não tinha assinatura nenhuma** na linha de assinar. Ver abaixo.
+
+### A assinatura desenhada
+
+Juridicamente o rabisco não acrescenta nada: o que prova a assinatura é a
+trilha — token individual, hora, IP, aparelho e hash. Mas o dono abriu o
+primeiro contrato assinado de verdade e disse *"não assinou nada ali"*. Um
+contrato sem nada escrito na linha **não parece assinado**, e quem recebe o
+PDF fica sem saber se valeu.
+
+Agora há um `<canvas>` na página pública. Três coisas que não são enfeite:
+`touch-none` (sem ele o dedo rola a página em vez de desenhar, e ninguém
+assina no celular), Pointer Events em vez de `touch` + `mouse` separados (um
+traço vira dois), e redimensionamento por `devicePixelRatio` (senão o traço
+sai borrado, e assinatura borrada parece defeito).
+
+**O desenho é opcional, de propósito.** Navegador sem canvas, mouse ruim, mão
+trêmula — a pessoa ainda assina. Travar o botão nele trocaria o essencial pelo
+enfeite.
+
+**E é entrada pública, então nada confia nele:** prefixo conferido, tamanho
+limitado antes de decodificar (o base64 cresce 4/3 — sem o teto, um POST de
+30 KB alocaria dezenas de MB), e os bytes têm de começar com a assinatura do
+PNG. Recusa é silenciosa: o contrato vale sem o desenho.
+
+### O que ainda não foi verificado
+
+**O bloco de coleta nunca chegou a rodar** — na conversa real o contrato saiu
+antes, porque os dados vieram da triagem. Não se sabe se a agente coleta bem:
+se pergunta um dado por vez, se aceita "não sei o RG" sem travar, se recomeça
+a triagem por engano.
+
+E a assinatura desenhada nunca foi feita com um dedo de verdade numa tela de
+verdade — só com Pointer Events sintéticos no jsdom.
 
 ---
 

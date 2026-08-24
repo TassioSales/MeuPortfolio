@@ -307,6 +307,86 @@ class TestOSilencio:
         assert motivo in _CORRIGIVEIS
 
 
+class TestABarreiraFicaVisivel:
+    """
+    Log não é tela.
+
+    Um caso barrado pelo piso não aparecia em lugar nenhum que gente olhasse:
+    o Histórico conta casos **arquivados**, e um caso barrado continua aberto
+    no funil. O painel mostrava um lead qualificado que misteriosamente não
+    virou contrato, e ninguém tinha como ligar uma coisa à outra sem abrir o
+    log do container. Foi a primeira pergunta do dono ao ver acontecer.
+    """
+
+    @pytest.mark.asyncio
+    async def test_barrado_pelo_piso_entra_na_trilha_do_lead(self):
+        from app.db.models import LeadTimeline
+
+        lead_id, _ = await _cenario("b1", viabilidade="abaixo_do_piso")
+
+        with _ligado(), _evolution_ok():
+            await _abrir(lead_id)
+
+        async with AsyncSessionLocal() as db:
+            trilha = (
+                await db.execute(
+                    select(LeadTimeline).where(LeadTimeline.lead_id == lead_id)
+                )
+            ).scalars().all()
+
+        assert len(trilha) == 1
+        assert "abaixo do piso" in trilha[0].motivo
+        # E diz o que fazer, não só o que aconteceu.
+        assert "humano decide" in trilha[0].motivo
+
+    @pytest.mark.asyncio
+    async def test_nao_repete_a_mesma_linha_a_cada_parecer(self):
+        """
+        O gatilho é avaliado depois de **cada** parecer, e uma requalificação
+        dispara outro. Sem guarda, a trilha encheria de linhas idênticas até
+        esconder tudo o mais que aconteceu com o lead.
+        """
+        from app.db.models import LeadTimeline
+
+        lead_id, _ = await _cenario("b2", viabilidade="abaixo_do_piso")
+
+        with _ligado(), _evolution_ok():
+            await _abrir(lead_id)
+            await _abrir(lead_id)
+            await _abrir(lead_id)
+
+        async with AsyncSessionLocal() as db:
+            trilha = (
+                await db.execute(
+                    select(LeadTimeline).where(LeadTimeline.lead_id == lead_id)
+                )
+            ).scalars().all()
+
+        assert len(trilha) == 1
+
+    @pytest.mark.asyncio
+    async def test_funcionamento_normal_nao_deixa_rastro(self):
+        """
+        "Já tem contrato" é o esperado, não uma barreira. Registrar isso
+        encheria a trilha de ruído.
+        """
+        from app.db.models import LeadTimeline
+
+        lead_id, _ = await _cenario("b3", com_contrato=True)
+
+        with _ligado(), _evolution_ok():
+            await _abrir(lead_id)
+
+        async with AsyncSessionLocal() as db:
+            trilha = (
+                await db.execute(
+                    select(LeadTimeline).where(LeadTimeline.lead_id == lead_id)
+                )
+            ).scalars().all()
+
+        assert trilha == []
+
+
 # --------------------------------------------------- emitir o contrato
 
 async def _emitir(lead_id: str):

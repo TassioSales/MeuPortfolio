@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **813 testes no backend, 329 no frontend.**
+Estado atual: **823 testes no backend, 329 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -736,6 +736,56 @@ E a assinatura nunca foi feita com um dedo de verdade numa tela de verdade —
 só com Pointer Events sintéticos no jsdom, que não implementa canvas. O mesmo
 vale para a digitada: o jsdom não renderiza fonte nenhuma, então **ninguém
 viu** como as três letras ficam.
+
+---
+
+## 6f. O atendimento do Lázaro, e o que ele ensinou
+
+Segunda triagem real, 24/08. O cliente abriu com **dois áudios**, e daí saíram
+dois defeitos que nenhum teste tinha pego — os dois com a mesma raiz: **o
+sistema entregava ao modelo um vazio em vez de dizer que era um vazio.** Um
+modelo aceita não saber quando lhe dizem que não sabe; não aceita quando lhe
+entregam um buraco para preencher.
+
+**Chamou o cliente de "Rafael" onze vezes.** Ele se chama Lázaro. Sem nome à
+mão — os áudios não foram transcritos —, o modelo escolheu um e o manteve por
+meia hora, por coerência com o que ele mesmo tinha dito antes. Só corrigiu
+quando a pessoa digitou o próprio nome.
+
+A correção não é só no prompt. O prompt é do dono do agente e pode ser
+reescrito; o que fecha a porta é o sistema **afirmar a cada turno o que ele de
+fato sabe** — `AVISO_SEM_NOME` em `atendimento_context`. Antes, número
+desconhecido não gerava nota nenhuma, e era por essa lacuna que "Rafael"
+entrava. Havia um teste travando esse comportamento (`test_numero_desconhecido
+_nao_gera_nota`); ele mudou de lado.
+
+**Fingiu ter ouvido o áudio.** Respondeu *"Entendo, é uma situação bem chata
+mesmo, ficar recebendo menos do que o combinado"* a um áudio que nunca ouviu,
+e conduziu a triagem inteira a partir da invenção.
+
+A causa: o `PEDIDO_DE_TEXTO` dizia *"Não consigo ouvir áudios por aqui. Pode
+me escrever o que você falou?"* — primeira pessoa, do agente — mas era anexado
+ao turno do **cliente**. O modelo lia o próprio cliente dizendo que não
+conseguia ouvir áudios. Agora é nota do sistema, e ela **afirma a ignorância**:
+"o áudio NÃO foi transcrito e você não tem acesso ao que foi dito nele".
+
+**O contrato não saiu, e aí o sistema acertou.** O parecer estimou R$ 8.000 a
+18.000; o piso é R$ 15.000 e a regra compara pelo **piso da faixa**. Barrou
+corretamente.
+
+O que estava errado era a **invisibilidade**: o caso barrado não aparecia em
+tela nenhuma. O Histórico conta casos `arquivado`, e um caso barrado continua
+aberto no funil — o painel mostrava um lead qualificado que misteriosamente
+não virou contrato. Agora entra na linha do tempo do lead, uma vez por motivo
+(o gatilho roda depois de **cada** parecer; sem guarda a trilha encheria de
+linhas idênticas).
+
+**Ainda em aberto, e é decisão do dono:** R$ 15.000 é o piso certo? Um caso de
+R$ 8.000 é recusado automaticamente hoje.
+
+**E os áudios continuam sem transcrição.** `anexos_habilitados` está desligado
+no agente que atende, ou falta `GEMINI_API_KEY` — sem os dois, todo cliente que
+manda áudio (e no WhatsApp são muitos) é atendido pedindo que escreva.
 
 ---
 

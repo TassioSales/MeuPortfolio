@@ -34,6 +34,25 @@ from app.db.models import Caso, KanbanCard, KanbanColumn, Lead, LeadDetails, Mes
 MENSAGENS_DE_CONTEXTO = 60
 
 
+# O aviso que impede o modelo de inventar o nome de quem está do outro lado.
+#
+# **Isto veio de produção.** Num atendimento real o cliente abriu a conversa
+# com dois áudios, que o agente não conseguiu ouvir — e o modelo, sem nome
+# nenhum à mão, começou a chamá-lo de "Rafael". Fez isso **onze vezes** ao
+# longo de meia hora, até a pessoa digitar o próprio nome no fim: Lázaro.
+#
+# Proibir no prompt ajuda, e não basta: o prompt é do dono do agente e pode
+# ser reescrito, e um modelo que já escolheu um nome tende a mantê-lo por
+# coerência com o que ele mesmo disse antes. O que fecha a porta é o sistema
+# afirmar, a cada turno, o que ele **de fato sabe** — inclusive quando não
+# sabe nada.
+AVISO_SEM_NOME = (
+    "O nome desta pessoa AINDA NÃO É CONHECIDO pelo sistema. Não a trate por "
+    "nome nenhum e não invente um: pergunte o nome, ou fale sem usar nome, "
+    "até que ela mesma diga qual é."
+)
+
+
 async def nota_de_atendimento_anterior(
     phone_number: str,
     conversation_id: str,
@@ -50,12 +69,24 @@ async def nota_de_atendimento_anterior(
         select(Lead).where(Lead.phone_number == phone_number)
     )
     lead = resultado.scalars().first()
+
     if lead is None:
-        return None
+        # Primeiro contato. A nota existe assim mesmo, e só por causa do nome —
+        # ver `AVISO_SEM_NOME`.
+        return f"[Nota do sistema, não é mensagem do cliente]\n{AVISO_SEM_NOME}"
 
     partes = ["[Nota do sistema, não é mensagem do cliente]"]
-    nome = lead.nome or "sem nome registrado"
-    partes.append(f"Este número já tem atendimento registrado: {nome}.")
+
+    nome = (lead.nome or "").strip()
+    if nome:
+        partes.append(
+            f"O nome deste contato é {nome}. Trate a pessoa por ele, e por "
+            f"nenhum outro."
+        )
+    else:
+        partes.append(AVISO_SEM_NOME)
+
+    partes.append("Este número já tem atendimento registrado.")
 
     if lead.status_funil:
         partes.append(f"Situação no funil: {lead.status_funil}.")

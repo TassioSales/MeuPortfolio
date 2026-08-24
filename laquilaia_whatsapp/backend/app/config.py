@@ -100,6 +100,35 @@ class Settings(BaseSettings):
     # Fuso do escritório, para a janela acima significar alguma coisa.
     followup_fuso: str = os.getenv("FOLLOWUP_FUSO", "America/Sao_Paulo")
 
+    # ------------------------------------------- cobrança de assinatura
+
+    cobranca_habilitada: bool = os.getenv(
+        "COBRANCA_HABILITADA", "True"
+    ).lower() == "true"
+
+    # Minutos entre as cobranças de um contrato enviado e não assinado.
+    #
+    # Muito mais espaçado que o follow-up de conversa (15 min, 2h, 24h), e de
+    # propósito. Lá o que se cobra é uma resposta de uma linha; aqui é a
+    # leitura de um contrato de honorários — decisão que a pessoa vai querer
+    # conversar em casa. Duas horas, um dia, três dias: quatro dias no total,
+    # dentro dos sete de validade do link.
+    cobranca_intervalos_min: str = os.getenv(
+        "COBRANCA_INTERVALOS_MIN", "120,1440,4320"
+    )
+
+    @property
+    def cobranca_intervalos(self) -> list:
+        """Os intervalos como lista de minutos, ignorando lixo na variável."""
+        valores = []
+        for item in self.cobranca_intervalos_min.split(","):
+            item = item.strip()
+            if item.isdigit() and int(item) > 0:
+                valores.append(int(item))
+        # Lista vazia desligaria a cobrança em silêncio, que é pior que um
+        # padrão herdado: quem escreveu lixo na variável não quis desligar.
+        return valores or [120, 1440, 4320]
+
     @property
     def followup_intervalos(self) -> list:
         """

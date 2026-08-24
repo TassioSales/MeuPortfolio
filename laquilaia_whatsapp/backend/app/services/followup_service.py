@@ -37,6 +37,28 @@ from app.utils.logger import logger
 LOTE = 50
 
 
+def tem_pergunta_pendente(texto: Optional[str]) -> bool:
+    """
+    Se a última fala do agente deixou de fato uma pergunta no ar.
+
+    **Isto veio de um defeito visto em produção.** O agente havia encerrado
+    com "Por nada, Diego. Fique tranquilo, o advogado vai te procurar ainda
+    hoje", e quinze minutos depois o follow-up devolveu essa despedida como se
+    fosse pergunta: *"Oi, Diego! Ficou faltando só isto aqui: Por nada,
+    Diego..."*. Além de sem sentido, estava errado no mérito — a bola estava
+    com o escritório, não com o cliente.
+
+    A causa é que o follow-up repete a última mensagem do agente, e isso só
+    funciona quando ela **é** uma pergunta. O critério é a interrogação, que
+    parece grosseiro e não é: uma pergunta pendente termina em "?" em
+    praticamente todo atendimento, e o que se perde é o caso raro do pedido
+    escrito como ordem ("Me diz seu CPF."). A assimetria decide — deixar de
+    cutucar custa um lembrete; cutucar com a própria despedida faz o produto
+    parecer quebrado para o cliente.
+    """
+    return "?" in (texto or "")
+
+
 def _agora_local() -> datetime:
     """A hora do escritório, não a do servidor."""
     try:
@@ -126,6 +148,11 @@ async def conversas_para_cutucar(
         )
         .outerjoin(Lead, Lead.conversation_id == Conversation.id)
         .where(Conversation.status == "ativa")
+        # Só a triagem. Em `coleta` a agente está perguntando os dados e a
+        # própria conversa anda; em `contratado` quem cobra é o
+        # `cobranca_service`, e dois serviços cutucando a mesma pessoa é o
+        # caminho para ela bloquear o número.
+        .where(Conversation.fase == "triagem")
         .where(Message.remetente == "assistant")
         .where(Conversation.followups_enviados <= len(intervalos))
         .order_by(ultima.c.quando)
@@ -139,6 +166,13 @@ async def conversas_para_cutucar(
         if conversa.id in vistas:
             continue
         vistas.add(conversa.id)
+
+        # Sem pergunta no ar não há o que cobrar — ver `tem_pergunta_pendente`.
+        # Isto sai da lista **antes** do cálculo de prazo, de propósito: a
+        # conversa não é "cutucada mais tarde", ela simplesmente não é caso de
+        # follow-up.
+        if not tem_pergunta_pendente(mensagem.conteudo):
+            continue
 
         # O relógio conta do último contato — a mensagem do agente ou o
         # follow-up mais recente, o que for mais novo. Sem isso, as três

@@ -60,6 +60,28 @@ class TestLeituraDaFicha:
 
         assert area == "previdenciario"
 
+    def test_ficha_enfeitada_com_markdown_ainda_e_lida(self):
+        """
+        O prompt pede "Área: trabalhista" em linha limpa, mas pedir "exatamente
+        neste formato" não impede um modelo de escrever `- **Área:**
+        trabalhista` — é o que ele faz com listas o tempo todo.
+
+        Quando não era lido, o caso não era arquivado e **ninguém ficava
+        sabendo**: sem erro, só um lead sem caso. Depois que o gatilho do
+        contrato passou a ler a viabilidade do caso, uma ficha enfeitada virou
+        contrato que nunca sai.
+        """
+        variacoes = [
+            "- **Área:** trabalhista\n- **Titular:** Maria da Silva",
+            "**Área**: trabalhista\n**Titular**: Maria da Silva",
+            "• Área: trabalhista\n• Titular: Maria da Silva",
+            "* Área: trabalhista\n* Titular: Maria da Silva",
+        ]
+        for texto in variacoes:
+            area, titular = ler_ficha(texto)
+            assert area == "trabalhista", f"não leu a área em: {texto!r}"
+            assert titular == "Maria da Silva", f"não leu o titular em: {texto!r}"
+
     def test_parecer_sem_ficha_nao_quebra(self):
         area, titular = ler_ficha("## Resumo\nCaso confuso, faltam dados.")
 

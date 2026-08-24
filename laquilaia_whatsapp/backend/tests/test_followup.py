@@ -41,6 +41,7 @@ async def _cenario(
     ultimo_followup_min: int | None = None,
     com_lead: bool = True,
     texto: str = PERGUNTA,
+    fase: str = "triagem",
 ) -> str:
     quando = datetime.utcnow() - timedelta(minutes=minutos_atras)
     async with AsyncSessionLocal() as db:
@@ -60,6 +61,7 @@ async def _cenario(
                     if ultimo_followup_min is not None
                     else None
                 ),
+                fase=fase,
             )
         )
         await db.flush()
@@ -168,6 +170,61 @@ class TestQuandoNaoCutucar:
         assert not dentro_do_horario(datetime(2026, 8, 19, 3, 0, tzinfo=fuso))
         assert not dentro_do_horario(datetime(2026, 8, 19, 22, 0, tzinfo=fuso))
         assert dentro_do_horario(datetime(2026, 8, 19, 10, 0, tzinfo=fuso))
+
+
+class TestDespedidaNaoEPergunta:
+    """
+    O defeito que o dono viu em produção.
+
+    O agente encerrou com "Por nada, Diego. Fique tranquilo, o advogado vai te
+    procurar ainda hoje", e quinze minutos depois o follow-up devolveu a
+    própria despedida como se fosse pergunta:
+
+        "Oi, Diego! Ficou faltando só isto aqui: Por nada, Diego. Fique
+        tranquilo, o advogado vai te procurar ainda hoje..."
+
+    Sem sentido, e errado no mérito: quem devia a próxima ação era o
+    escritório, não o cliente.
+    """
+
+    DESPEDIDA = (
+        "Por nada, Diego. Fique tranquilo, o advogado vai te procurar ainda "
+        "hoje por causa da urgência. Qualquer novidade sobre o bloqueio, pode "
+        "me avisar aqui."
+    )
+
+    @pytest.mark.asyncio
+    async def test_a_despedida_do_diego_nao_vira_followup(self):
+        await _cenario("d1", minutos_atras=60, texto=self.DESPEDIDA)
+
+        async with AsyncSessionLocal() as db:
+            assert await followup_service.conversas_para_cutucar(db) == []
+
+    @pytest.mark.asyncio
+    async def test_pergunta_de_verdade_continua_valendo(self):
+        """A correção não pode desligar o recurso."""
+        await _cenario("d2", minutos_atras=60)
+
+        async with AsyncSessionLocal() as db:
+            devidas = await followup_service.conversas_para_cutucar(db)
+        assert len(devidas) == 1
+
+    def test_o_criterio_e_a_interrogacao(self):
+        assert followup_service.tem_pergunta_pendente(self.DESPEDIDA) is False
+        assert followup_service.tem_pergunta_pendente(PERGUNTA) is True
+        assert followup_service.tem_pergunta_pendente(None) is False
+
+    @pytest.mark.asyncio
+    async def test_conversa_em_coleta_nao_e_do_followup(self):
+        """
+        Em coleta a agente está perguntando os dados e a conversa anda; em
+        `contratado` quem cobra é o `cobranca_service`. Dois serviços cutucando
+        a mesma pessoa é o caminho para ela bloquear o número.
+        """
+        await _cenario("d3", minutos_atras=60, fase="coleta")
+
+        async with AsyncSessionLocal() as db:
+            assert await followup_service.conversas_para_cutucar(db) == []
 
 
 class TestOTexto:

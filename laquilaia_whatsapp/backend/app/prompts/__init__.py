@@ -11,6 +11,7 @@ está experimentando, e é para experimentar mesmo. O que este módulo garante �
 que existe um texto de referência para onde voltar.
 """
 
+from app.prompts.coleta_contrato import BLOCO_DE_COLETA
 from app.prompts.triagem_juridica import PROMPT_TRIAGEM_JURIDICA
 
-__all__ = ["PROMPT_TRIAGEM_JURIDICA"]
+__all__ = ["BLOCO_DE_COLETA", "PROMPT_TRIAGEM_JURIDICA"]

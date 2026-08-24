@@ -10,6 +10,8 @@ from app.services.gemini_client import GeminiClient, GeminiIndisponivel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.db.models import Agent, Message, Conversation
+from app.prompts import BLOCO_DE_COLETA
+from app.services.coleta_service import FASE_COLETA
 from app.services import escritorio_service
 import asyncio
 
@@ -137,7 +139,7 @@ def bloco_do_escritorio(config) -> str:
     )
 
 
-def sistema_do_agente(agent: Agent, config=None) -> str:
+def sistema_do_agente(agent: Agent, config=None, fase: str = "triagem") -> str:
     """
     O system prompt como o modelo o recebe.
 
@@ -148,6 +150,13 @@ def sistema_do_agente(agent: Agent, config=None) -> str:
 
     Sem nome configurado, nada é anexado — e o prompt manda não inventar um.
     Atendente que inventa nome próprio é atendente que mente sobre quem é.
+
+    **A fase entra pelo mesmo caminho, e por um motivo mais forte.** O bloco de
+    coleta é anexado só quando a conversa está em `coleta`; na triagem ele nem
+    chega ao modelo. Pôr as instruções de coleta no prompt base — mesmo com um
+    "faça isto só quando..." — deixaria o modelo a um mal-entendido de distância
+    de pedir CPF a quem acabou de dizer "oi", que é onde a conversa morre.
+    Instrução que não deve valir agora é instrução que não deve estar lá.
     """
     partes = [agent.system_prompt]
 
@@ -161,6 +170,9 @@ def sistema_do_agente(agent: Agent, config=None) -> str:
     bloco = bloco_do_escritorio(config)
     if bloco:
         partes.append(bloco)
+
+    if fase == FASE_COLETA:
+        partes.append(BLOCO_DE_COLETA)
 
     return "\n\n".join(partes)
 
@@ -246,6 +258,7 @@ class LLMService:
         messages: List[dict],
         model: Optional[str] = None,
         config=None,
+        fase: str = "triagem",
     ) -> Tuple[str, dict]:
         """
         Uma resposta do Claude, **fora** do event loop.
@@ -265,7 +278,7 @@ class LLMService:
         os testes usam.
         """
         return await asyncio.to_thread(
-            self._chamar_claude_sincrono, agent, messages, model, config
+            self._chamar_claude_sincrono, agent, messages, model, config, fase
         )
 
     def _chamar_claude_sincrono(
@@ -274,11 +287,12 @@ class LLMService:
         messages: List[dict],
         model: Optional[str] = None,
         config=None,
+        fase: str = "triagem",
     ) -> Tuple[str, dict]:
         modelo = model or self.model
         response = self.client.messages.create(
             model=modelo,
-            system=sistema_do_agente(agent, config),
+            system=sistema_do_agente(agent, config, fase),
             messages=messages,
             **self._parametros_do_modelo(agent, modelo),
         )
@@ -318,6 +332,7 @@ class LLMService:
         model: Optional[str] = None,
         anexo: Optional[dict] = None,
         config=None,
+        fase: str = "triagem",
     ) -> Tuple[str, dict]:
         """
         Tenta o provedor de reserva.
@@ -340,7 +355,7 @@ class LLMService:
 
         try:
             texto, uso = await self.gemini.generate(
-                system_prompt=sistema_do_agente(agent, config),
+                system_prompt=sistema_do_agente(agent, config, fase),
                 user_message=user_message,
                 conversation_history=conversation_history,
                 max_tokens=agent.max_tokens or settings.max_tokens,
@@ -363,9 +378,16 @@ class LLMService:
         user_message: str,
         conversation_history: Optional[List[dict]] = None,
         anexo: Optional[dict] = None,
+        fase: str = "triagem",
     ) -> Tuple[str, dict]:
         """
         Generate response using Claude with context.
+
+        `fase` decide se o bloco de coleta vai anexado ao system prompt. Ela
+        atravessa os três caminhos — Claude, reserva por queda e reserva por
+        áudio — porque o cliente não pode ser perguntado sobre o CPF pelo
+        Claude e receber uma triagem recomeçada do Gemini só porque o
+        principal caiu no meio da coleta.
 
         Args:
             agent: Agent model instance
@@ -398,24 +420,24 @@ class LLMService:
             if so_o_gemini_le:
                 response_text, token_usage = await self._chamar_reserva(
                     agent, user_message, conversation_history, causa=None,
-                    anexo=anexo, config=config,
+                    anexo=anexo, config=config, fase=fase,
                 )
             elif self._tentar_claude_primeiro():
                 try:
                     response_text, token_usage = await self._chamar_claude(
-                        agent, messages, config=config
+                        agent, messages, config=config, fase=fase
                     )
                 except (RateLimitError, APIConnectionError, APIError) as e:
                     # A reserva devolve a falha original se não puder assumir,
                     # para o tratamento lá embaixo continuar valendo.
                     response_text, token_usage = await self._chamar_reserva(
                         agent, user_message, conversation_history, causa=e,
-                        anexo=anexo, config=config,
+                        anexo=anexo, config=config, fase=fase,
                     )
             else:
                 response_text, token_usage = await self._chamar_reserva(
                     agent, user_message, conversation_history, causa=None,
-                    anexo=anexo, config=config,
+                    anexo=anexo, config=config, fase=fase,
                 )
 
             # Track usage

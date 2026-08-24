@@ -100,6 +100,19 @@ class Settings(BaseSettings):
     # Fuso do escritório, para a janela acima significar alguma coisa.
     followup_fuso: str = os.getenv("FOLLOWUP_FUSO", "America/Sao_Paulo")
 
+    # --------------------------------------------- contrato automático
+
+    # A IA abre a coleta de dados e emite o contrato sozinha, sem ninguém do
+    # escritório clicar.
+    #
+    # **Nasce desligado**, e não por timidez: ligado, o próximo lead real
+    # recebe um contrato de honorários sem o dono ter escolhido a hora. Ligar
+    # é uma linha no `.env`; desligar depois de um contrato ter saído para a
+    # pessoa errada não desfaz nada.
+    contrato_automatico: bool = os.getenv(
+        "CONTRATO_AUTOMATICO", "False"
+    ).lower() == "true"
+
     # ------------------------------------------- cobrança de assinatura
 
     cobranca_habilitada: bool = os.getenv(

@@ -1,8 +1,9 @@
 """Message orchestrator for handling WhatsApp messages end-to-end."""
 
-from app.db.models import Agent, Conversation, Message
+from app.db.models import Agent, Conversation, Lead, Message
 from app.services.llm_service import llm_service
 from app.services.whatsapp_service import whatsapp_service
+from app.services import coleta_service
 from app.services.lead_processor import lead_processor
 from app.services.atendimento_context import (
     MENSAGENS_DE_CONTEXTO,
@@ -229,6 +230,9 @@ class MessageOrchestrator:
                 user_message=message_text,
                 conversation_history=history,
                 anexo=anexo,
+                # A fase decide se o bloco de coleta vai no system prompt. Na
+                # triagem ele nem chega ao modelo — ver `sistema_do_agente`.
+                fase=conversation.fase,
             )
 
             # Step 5: Save user message
@@ -293,6 +297,17 @@ class MessageOrchestrator:
                 message_text=texto_para_o_cliente,
             )
 
+            # Os dados civis que a agente recolheu, quando a conversa está
+            # em coleta.
+            #
+            # Depois do envio, e em transação própria: a resposta ao cliente
+            # não pode esperar por isto, e uma falha aqui não pode desfazer
+            # uma mensagem que já saiu para o WhatsApp.
+            if conversation.fase == coleta_service.FASE_COLETA:
+                await self._guardar_dados_do_contrato(
+                    response_text, conversation.id, db
+                )
+
             # Step 8: Process lead qualification (extract JSON if present)
             lead_result = await lead_processor.process_response(
                 response_text=response_text,
@@ -331,6 +346,57 @@ class MessageOrchestrator:
             logger.error(f"❌ Error processing message: {e}")
             await db.rollback()
             raise ValidationException(f"Error processing message: {str(e)}")
+
+    async def _guardar_dados_do_contrato(
+        self, response_text: str, conversation_id: str, db
+    ) -> None:
+        """
+        Grava o que a agente apurou sobre a pessoa, se houver bloco.
+
+        Falha aqui não derruba o atendimento: a mensagem já foi enviada, e um
+        dado que não gravou é um dado que a agente vai perguntar de novo — o
+        que é chato, e nada perto de a conversa quebrar.
+        """
+        try:
+            dados = coleta_service.extrair(response_text)
+            if not dados:
+                return
+
+            lead = (
+                await db.execute(
+                    select(Lead).where(Lead.conversation_id == conversation_id)
+                )
+            ).scalars().first()
+            if lead is None:
+                # Coleta sem lead não deveria acontecer — a fase só muda
+                # depois da qualificação —, mas se acontecer é melhor perder o
+                # dado que estourar.
+                logger.warning(
+                    f"⚠️ Bloco de dados sem lead na conversa {conversation_id}"
+                )
+                return
+
+            if dados.get("nome"):
+                # O nome mora no lead, não em `dados_do_contrato`: é o mesmo
+                # nome que aparece no card e na lista de clientes.
+                lead.nome = dados["nome"]
+
+            await coleta_service.gravar(db, lead.id, dados)
+            await db.commit()
+
+            # Completou? O contrato sai agora, sem ninguém do escritório
+            # clicar — é o ponto do recurso inteiro.
+            #
+            # Depois do commit dos dados, e não junto: se a emissão falhar, o
+            # que a pessoa acabou de informar continua gravado, e a próxima
+            # mensagem tenta emitir de novo em vez de perguntar tudo outra vez.
+            from app.services import gatilho_contrato
+
+            if await gatilho_contrato.talvez_emitir(db, lead):
+                await db.commit()
+        except Exception as e:
+            logger.error(f"❌ Falha ao gravar dados do contrato: {e}")
+            await db.rollback()
 
     async def _get_or_create_conversation(
         self,

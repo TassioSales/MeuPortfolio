@@ -9,6 +9,12 @@ import webbrowser
 from pathlib import Path
 from threading import Timer
 
+# Windows consoles default to the cp1252 codepage, which can't encode
+# characters like "→" or "Ô" used in the messages below.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 
 def get_local_ip():
     try:
@@ -87,5 +93,8 @@ if __name__ == "__main__":
         import traceback
         traceback.print_exc()
         print(f"\nERRO CRÍTICO: {exc}")
-        input("Pressione Enter para sair...")
+        try:
+            input("Pressione Enter para sair...")
+        except EOFError:
+            pass
         sys.exit(1)

@@ -49,6 +49,11 @@ class TransactionForm(forms.ModelForm):
             'payment_method': forms.Select(attrs={'onchange': 'toggleCreditCardFields(this)'}),
         }
 
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['category'].queryset = Category.objects.filter(user=user)
+
     def clean_amount(self):
         amount = self.cleaned_data.get('amount')
         # If the field is already a Decimal (Django might have tried its own cleaning), handle it
@@ -90,6 +95,11 @@ class BudgetForm(forms.ModelForm):
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
         }
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['category'].queryset = Category.objects.filter(user=user)
 
     def clean_limit(self):
         return clean_currency_value(self.data.get('limit'))

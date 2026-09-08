@@ -4133,7 +4133,208 @@ git commit -m "feat(internal): redesign login/register with a dedicated auth lay
 
 ---
 
-### Task 22: Final verification pass
+### Task 22: Restore budget alert banners on the dashboard
+
+**Context (found while establishing the clean test baseline before starting this plan):** `views_dashboard.py`'s `dashboard()` view already computes an `alerts` list (budgets ≥90% consumed) and passes it in the template context, but `templates/core/dashboard.html` never renders it anywhere — the feature is fully wired on the backend and silently dead on the frontend. `core/tests_alerts.py::test_alert_near_limit` and `::test_alert_over_limit` fail against a clean checkout because of this. User-approved as in-scope for this pass since it sits directly next to Task 12's changes to this same `alerts` computation.
+
+**Files:**
+- Modify: `templates/core/dashboard.html`
+
+- [ ] **Step 1: Confirm the tests fail before the fix**
+
+Run: `python manage.py test core.tests_alerts -v 2`
+Expected: `test_alert_near_limit` and `test_alert_over_limit` fail; `test_no_alert_within_budget` passes (it only asserts the *absence* of alert text, which trivially holds when nothing is ever rendered).
+
+- [ ] **Step 2: Render the alerts in `dashboard.html`**
+
+Replace:
+
+```html
+    </div>
+
+    <!-- Main KPIs Row -->
+```
+
+with:
+
+```html
+    </div>
+
+    {% if alerts %}
+    <div class="row mb-4">
+        <div class="col-12">
+            {% for alert in alerts %}
+            <div class="alert alert-{{ alert.level }} d-flex align-items-center mb-2 border-0 shadow-sm" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <div>
+                    Atenção: Você já consumiu <strong>{{ alert.percent }}%</strong> do orçamento de
+                    <strong>{{ alert.category }}</strong> ({{ alert.used|brl }} de {{ alert.limit|brl }}).
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main KPIs Row -->
+```
+
+(`{% load core_extras %}` is already at the top of this file, so `|brl` is available; `alert.level` is `"danger"` or `"warning"` per `views_dashboard.py`, matching Bootstrap's `alert-danger`/`alert-warning` classes directly.)
+
+- [ ] **Step 3: Run the tests to see them pass**
+
+Run: `python manage.py test core.tests_alerts -v 2`
+Expected: all three pass.
+
+- [ ] **Step 4: Run the full suite**
+
+Run: `python manage.py test core`
+Expected: all green.
+
+- [ ] **Step 5: Manual smoke check**
+
+Log in, create a budget near/over its limit for the current month, open `/` and confirm the alert banner now appears above the KPI cards.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add templates/core/dashboard.html
+git commit -m "fix: render the budget alert banners on the dashboard (were computed but never displayed)"
+```
+
+---
+
+### Task 23: Fix stale two-step assumption in the CSV import tests
+
+**Context (found while establishing the clean test baseline before starting this plan):** `core/tests_import.py` posts the CSV file once and immediately asserts `Transaction` rows exist, but `import_transactions` (see `core/views_transactions.py`) is a two-step flow: step 1 uploads and renders a preview (nothing is saved yet, rows are stashed in the session), step 2 (`POST {"action": "confirm"}`) actually creates the `Transaction` rows. The tests predate this two-step design and never got updated. User-approved as in-scope for this pass since it sits directly next to Task 6's changes to the same import flow.
+
+**Files:**
+- Modify: `core/tests_import.py`
+
+- [ ] **Step 1: Confirm the tests fail before the fix**
+
+Run: `python manage.py test core.tests_import -v 2`
+Expected: both tests fail with `0 != 3` / `0 != 1` — the single POST only completes the preview step.
+
+- [ ] **Step 2: Update the tests to perform both steps**
+
+Replace:
+
+```python
+    def test_import_with_categories(self):
+        csv_content = (
+            "Data,Descricao,Valor,Categoria\n"
+            "2023-10-01,Salário,5000.00,Salário\n"
+            "2023-10-05,Aluguel,-1500.00,Moradia\n"
+            "2023-10-10,Uber,-25.90,Transporte"
+        ).encode('utf-8')
+        
+        file = SimpleUploadedFile("test.csv", csv_content, content_type="text/csv")
+        
+        response = self.client.post(self.url, {'file': file}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        
+        # Check transactions
+        self.assertEqual(Transaction.objects.count(), 3)
+        
+        # Check categories created
+        self.assertTrue(Category.objects.filter(name='Salário', type='RECEITA').exists())
+        self.assertTrue(Category.objects.filter(name='Moradia', type='DESPESA').exists())
+        self.assertTrue(Category.objects.filter(name='Transporte', type='DESPESA').exists())
+        
+        # Check transaction association
+        tx_uber = Transaction.objects.get(description='Uber')
+        self.assertEqual(tx_uber.category.name, 'Transporte')
+
+    def test_import_without_categories(self):
+        csv_content = (
+            "Data,Descricao,Valor\n"
+            "2023-10-01,Salário,5000.00\n"
+        ).encode('utf-8')
+        
+        file = SimpleUploadedFile("test_simple.csv", csv_content, content_type="text/csv")
+        
+        response = self.client.post(self.url, {'file': file}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        
+        self.assertEqual(Transaction.objects.count(), 1)
+        tx = Transaction.objects.first()
+        self.assertIsNone(tx.category)
+```
+
+with:
+
+```python
+    def test_import_with_categories(self):
+        csv_content = (
+            "Data,Descricao,Valor,Categoria\n"
+            "2023-10-01,Salário,5000.00,Salário\n"
+            "2023-10-05,Aluguel,-1500.00,Moradia\n"
+            "2023-10-10,Uber,-25.90,Transporte"
+        ).encode('utf-8')
+
+        file = SimpleUploadedFile("test.csv", csv_content, content_type="text/csv")
+
+        # Step 1: upload → preview (nothing saved yet, rows stashed in session)
+        preview_response = self.client.post(self.url, {'file': file})
+        self.assertEqual(preview_response.status_code, 200)
+        self.assertTemplateUsed(preview_response, 'core/import_preview.html')
+
+        # Step 2: confirm → actually creates the transactions
+        response = self.client.post(self.url, {'action': 'confirm'}, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        # Check transactions
+        self.assertEqual(Transaction.objects.count(), 3)
+
+        # Check categories created
+        self.assertTrue(Category.objects.filter(name='Salário', type='RECEITA').exists())
+        self.assertTrue(Category.objects.filter(name='Moradia', type='DESPESA').exists())
+        self.assertTrue(Category.objects.filter(name='Transporte', type='DESPESA').exists())
+
+        # Check transaction association
+        tx_uber = Transaction.objects.get(description='Uber')
+        self.assertEqual(tx_uber.category.name, 'Transporte')
+
+    def test_import_without_categories(self):
+        csv_content = (
+            "Data,Descricao,Valor\n"
+            "2023-10-01,Salário,5000.00\n"
+        ).encode('utf-8')
+
+        file = SimpleUploadedFile("test_simple.csv", csv_content, content_type="text/csv")
+
+        preview_response = self.client.post(self.url, {'file': file})
+        self.assertEqual(preview_response.status_code, 200)
+
+        response = self.client.post(self.url, {'action': 'confirm'}, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(Transaction.objects.count(), 1)
+        tx = Transaction.objects.first()
+        self.assertIsNone(tx.category)
+```
+
+- [ ] **Step 3: Run the tests to see them pass**
+
+Run: `python manage.py test core.tests_import -v 2`
+Expected: both pass.
+
+- [ ] **Step 4: Run the full suite**
+
+Run: `python manage.py test core`
+Expected: all green.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add core/tests_import.py
+git commit -m "fix: update CSV import tests to follow the real two-step upload-then-confirm flow"
+```
+
+---
+
+### Task 24: Final verification pass
 
 **Files:** none (verification only)
 

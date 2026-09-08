@@ -22,6 +22,7 @@ from .market_data import (
 )
 from .models import Investment
 from .views_shared import get_price_manual
+from loguru import logger as log
 
 
 def _cached_ticker_fetch(symbol: str) -> dict:
@@ -79,16 +80,16 @@ def _cached_ticker_fetch(symbol: str) -> dict:
         result["day_low"] = getattr(fi, "day_low", None)
         result["year_high"] = getattr(fi, "year_high", None)
         result["year_low"] = getattr(fi, "year_low", None)
-    except Exception:
-        pass
+    except Exception as e:
+        log.warning(f"yfinance fast_info failed for {symbol}: {e}")
 
     if result["price"] is None:
         try:
             hist1d = ticker.history(period="1d")
             if not hist1d.empty:
                 result["price"] = float(hist1d["Close"].iloc[-1])
-        except Exception:
-            pass
+        except Exception as e:
+            log.warning(f"yfinance 1d history failed for {symbol}: {e}")
 
     try:
         hist = ticker.history(period="6mo")
@@ -96,8 +97,8 @@ def _cached_ticker_fetch(symbol: str) -> dict:
             result["history"] = hist
             result["chart_dates"] = [d.strftime("%d/%m/%Y") for d in hist.index]
             result["chart_prices"] = [round(float(v), 4) for v in hist["Close"]]
-    except Exception:
-        pass
+    except Exception as e:
+        log.warning(f"yfinance 6mo history failed for {symbol}: {e}")
 
     # Last resort
     if result["price"] is None:
@@ -268,7 +269,8 @@ def investment_dashboard(request):
 
                 if current_price is None:
                     current_price = avg_price
-            except Exception:
+            except Exception as e:
+                log.warning(f"Price lookup failed for {symbol}, using avg_price as fallback: {e}")
                 current_price = avg_price
 
         current_value = quantity * float(current_price)
@@ -445,6 +447,7 @@ class InvestmentDetailView(LoginRequiredMixin, TemplateView):
                 ),
             })
         except Exception as e:
+            log.error(f"Failed to build investment detail context for {symbol}: {e}")
             context["error"] = str(e)
 
         return context

@@ -1,6 +1,8 @@
 from django import forms
 from .models import Category, Transaction, Budget, Investment, RecurringTransaction, Goal, BankAccount, Transfer, Loan, LoanPayment, LoanDisbursement
 from decimal import Decimal
+import yfinance as yf
+from loguru import logger as log
 
 def clean_currency_value(value):
     if isinstance(value, str):
@@ -151,12 +153,11 @@ class InvestmentForm(forms.ModelForm):
             # Name fetch logic (simplified here, but can be triggered by JS too)
             if not cleaned_data.get('name'):
                 try:
-                    import yfinance as yf
                     ticker = yf.Ticker(symbol)
                     info = ticker.info
                     cleaned_data['name'] = info.get('shortName') or info.get('longName') or symbol
-                except:
-                    pass
+                except Exception as e:
+                    log.warning(f"yfinance name lookup failed for {symbol}: {e}")
         
         elif category_type == 'CURRENCY':
             # Normalize common currency names to pairs if needed, 

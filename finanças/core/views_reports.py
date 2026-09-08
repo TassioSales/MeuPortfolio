@@ -2,7 +2,6 @@
 import csv
 import io
 import json
-import logging
 from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
@@ -19,8 +18,7 @@ from django.utils import timezone
 from xhtml2pdf import pisa
 
 from .models import Budget, Category, Transaction
-
-logger = logging.getLogger("core")
+from loguru import logger
 
 
 def _filter_transactions(request, start_date, end_date, category_id):

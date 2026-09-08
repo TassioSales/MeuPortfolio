@@ -1,11 +1,9 @@
-import logging
 import os
 import requests
 import yfinance as yf
 from datetime import datetime, timedelta
 from functools import lru_cache
-
-logger = logging.getLogger('core')
+from loguru import logger
 
 _BRAPI_TOKEN = os.environ.get("BRAPI_TOKEN", "")
 

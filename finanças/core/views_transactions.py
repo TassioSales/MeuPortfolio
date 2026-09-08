@@ -13,6 +13,7 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import ImportFileForm, TransactionForm
 from .models import Category, RecurringTransaction, Transaction
+from loguru import logger as log
 
 _DATE_FORMATS = [
     "%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y",
@@ -216,7 +217,8 @@ def import_transactions(request):
                     category=category,
                 )
                 count += 1
-            except Exception:
+            except Exception as e:
+                log.warning(f"Skipped import row {r.get('row', '?')} for user {request.user.username}: {e}")
                 continue
         messages.success(request, f"{count} transações importadas com sucesso!")
         return redirect("transaction_list")

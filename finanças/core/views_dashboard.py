@@ -39,13 +39,6 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    processed_count = process_recurring_transactions(request.user)
-    if processed_count > 0:
-        messages.info(
-            request,
-            f"{processed_count} transações recorrentes foram geradas automaticamente.",
-        )
-
     today = timezone.now().date()
     try:
         month = int(request.GET.get("month", today.month))
@@ -57,6 +50,17 @@ def dashboard(request):
     _, last_day = calendar.monthrange(year, month)
     start_date = today.replace(year=year, month=month, day=1)
     end_date = today.replace(year=year, month=month, day=last_day)
+
+    # Materialize recurring transactions up through whichever is later: real
+    # "today" (normal catch-up) or the end of the month being browsed to
+    # (so navigating ahead projects recurring debts forward immediately,
+    # the same way credit-card installments are already pre-created).
+    processed_count = process_recurring_transactions(request.user, up_to_date=max(end_date, today))
+    if processed_count > 0:
+        messages.info(
+            request,
+            f"{processed_count} transações recorrentes foram geradas automaticamente.",
+        )
 
     recent_transactions = Transaction.objects.filter(
         user=request.user, date__range=[start_date, end_date]

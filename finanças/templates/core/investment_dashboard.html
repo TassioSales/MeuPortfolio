@@ -152,16 +152,6 @@
     </div>
 </div>
 
-<style>
-    .bg-light-soft {
-        background: rgba(0, 0, 0, 0.02);
-    }
-
-    [data-theme="dark"] .bg-light-soft {
-        background: rgba(255, 255, 255, 0.03);
-    }
-</style>
-
 {{ chart_labels|json_script:"portfolio-chart-labels" }}
 {{ chart_data|json_script:"portfolio-chart-data" }}
 <script>

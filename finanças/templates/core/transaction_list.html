@@ -25,28 +25,28 @@
     <div class="glass-card mb-5 p-4">
         <form method="get" class="row g-4 align-items-end">
             <div class="col-md-3">
-                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Busca inteligente</label>
+                <label for="filter-search" class="form-label small fw-bold text-muted text-uppercase mb-2">Busca inteligente</label>
                 <div class="input-group">
                     <span class="input-group-text border-0 bg-transparent text-muted"><i
                             class="bi bi-search"></i></span>
-                    <input type="text" class="form-control border-0 bg-light-soft rounded-3" name="search"
+                    <input type="text" id="filter-search" class="form-control border-0 bg-light-soft rounded-3" name="search"
                         value="{{ filter_search }}" placeholder="Pagar aluguel...">
                 </div>
             </div>
 
             <div class="col-md-4">
-                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Período</label>
+                <label for="filter-start-date" class="form-label small fw-bold text-muted text-uppercase mb-2">Período</label>
                 <div class="d-flex gap-2">
-                    <input type="date" class="form-control border-0 bg-light-soft rounded-3" name="start_date"
+                    <input type="date" id="filter-start-date" class="form-control border-0 bg-light-soft rounded-3" name="start_date"
                         value="{{ filter_start_date }}">
                     <input type="date" class="form-control border-0 bg-light-soft rounded-3" name="end_date"
-                        value="{{ filter_end_date }}">
+                        value="{{ filter_end_date }}" aria-label="Data final">
                 </div>
             </div>
 
             <div class="col-md-2">
-                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Tipo</label>
-                <select class="form-select border-0 bg-light-soft rounded-3" name="type">
+                <label for="filter-type" class="form-label small fw-bold text-muted text-uppercase mb-2">Tipo</label>
+                <select id="filter-type" class="form-select border-0 bg-light-soft rounded-3" name="type">
                     <option value="">Todos</option>
                     <option value="RECEITA" {% if filter_type == 'RECEITA' %}selected{% endif %}>Receitas</option>
                     <option value="DESPESA" {% if filter_type == 'DESPESA' %}selected{% endif %}>Despesas</option>
@@ -54,8 +54,8 @@
             </div>
 
             <div class="col-md-2">
-                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Categoria</label>
-                <select class="form-select border-0 bg-light-soft rounded-3" name="category">
+                <label for="filter-category" class="form-label small fw-bold text-muted text-uppercase mb-2">Categoria</label>
+                <select id="filter-category" class="form-select border-0 bg-light-soft rounded-3" name="category">
                     <option value="">Todas</option>
                     {% for cat in categories %}
                     <option value="{{ cat.id }}" {% if filter_category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>

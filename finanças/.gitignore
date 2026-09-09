@@ -35,6 +35,7 @@ static/collected/
 
 # Environment
 .env
+.secret_key
 .venv
 ENV/
 env.bak/

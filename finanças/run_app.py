@@ -16,6 +16,17 @@ for _stream in (sys.stdout, sys.stderr):
         _stream.reconfigure(encoding="utf-8", errors="replace")
 
 
+def _read_env_value(env_path: Path, key: str) -> str | None:
+    """Read a single KEY=value line from a .env-style file without importing decouple."""
+    if not env_path.exists():
+        return None
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line.startswith(f"{key}="):
+            return line.split("=", 1)[1].strip()
+    return None
+
+
 def get_local_ip():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -53,6 +64,27 @@ def main():
     db_path = data_dir / "patrimonio.db"
     os.environ.setdefault("SQLITE_DB_PATH", str(db_path))
 
+    # ── Production hardening ───────────────────────────────────────────────────
+    # run_app.py (whether launched via run.bat or as the packaged .exe) is the
+    # real "production" entry point of this app — manage.py runserver stays the
+    # only place that keeps the permissive dev defaults from settings.py.
+    os.environ.setdefault("DEBUG", "False")
+
+    if not os.environ.get("SECRET_KEY"):
+        env_path = data_dir / ".env"
+        existing_key = _read_env_value(env_path, "SECRET_KEY")
+        if existing_key:
+            os.environ["SECRET_KEY"] = existing_key
+        else:
+            secret_key_file = data_dir / ".secret_key"
+            if secret_key_file.exists():
+                os.environ["SECRET_KEY"] = secret_key_file.read_text(encoding="utf-8").strip()
+            else:
+                from django.core.management.utils import get_random_secret_key
+                new_key = get_random_secret_key()
+                secret_key_file.write_text(new_key, encoding="utf-8")
+                os.environ["SECRET_KEY"] = new_key
+
     # ── Django bootstrap ──────────────────────────────────────────────────────
     import django
     django.setup()
@@ -64,6 +96,12 @@ def main():
         call_command("migrate", verbosity=0)
     except Exception as exc:
         print(f"Aviso ao migrar: {exc}")
+
+    print("Verificando arquivos estáticos...")
+    try:
+        call_command("collectstatic", verbosity=0, interactive=False)
+    except Exception as exc:
+        print(f"Aviso ao coletar arquivos estáticos: {exc}")
 
     # ── Start server ──────────────────────────────────────────────────────────
     local_ip = get_local_ip()

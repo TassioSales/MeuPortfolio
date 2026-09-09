@@ -143,22 +143,18 @@ class Investment(models.Model):
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
-        super().save(*args, **kwargs)
-        
-        # Check if we should skip transaction creation
-        if getattr(self, '_skip_transaction', False):
-            return
+        skip_transaction = getattr(self, '_skip_transaction', False)
 
-        # Create or update associated transaction
-        if not self.transaction:
-            # Find or create 'Investimentos' category
+        if is_new and not skip_transaction:
+            # Create the linked transaction first (it needs no FK back to this
+            # Investment row) so the Investment itself only needs a single INSERT
+            # with transaction_id already populated — no extra UPDATE afterwards.
             category, _ = Category.objects.get_or_create(
-                user=self.user, 
-                name='Investimentos', 
+                user=self.user,
+                name='Investimentos',
                 defaults={'type': 'DESPESA'}
             )
-            
-            transaction = Transaction.objects.create(
+            self.transaction = Transaction.objects.create(
                 user=self.user,
                 category=category,
                 type='DESPESA',
@@ -166,10 +162,16 @@ class Investment(models.Model):
                 date=self.date,
                 description=f"Compra de {self.symbol} ({self.quantity} un.)"
             )
-            self.transaction = transaction
-            self.save()
-        else:
-            # Update existing transaction
+            super().save(*args, **kwargs)
+            return
+
+        super().save(*args, **kwargs)
+
+        if skip_transaction:
+            return
+
+        if self.transaction_id:
+            # Keep the linked transaction in sync on update
             self.transaction.amount = self.total_cost
             self.transaction.date = self.date
             self.transaction.description = f"Compra de {self.symbol} ({self.quantity} un.)"

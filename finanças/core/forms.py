@@ -189,10 +189,22 @@ class InvestmentForm(forms.ModelForm):
         return clean_currency_value(self.data.get('purchase_price'))
 
 class ImportFileForm(forms.Form):
+    MAX_UPLOAD_SIZE = 5 * 1024 * 1024  # 5 MB
+    ALLOWED_EXTENSIONS = ('.csv', '.xlsx')
+
     file = forms.FileField(
         label="Arquivo de Extrato",
-        help_text="Formatos aceitos: CSV ou XLSX",
+        help_text="Formatos aceitos: CSV ou XLSX (máx. 5 MB)",
     )
+
+    def clean_file(self):
+        uploaded = self.cleaned_data['file']
+        name = uploaded.name.lower()
+        if not name.endswith(self.ALLOWED_EXTENSIONS):
+            raise forms.ValidationError("Envie um arquivo .csv ou .xlsx.")
+        if uploaded.size > self.MAX_UPLOAD_SIZE:
+            raise forms.ValidationError("Arquivo muito grande (máximo 5 MB).")
+        return uploaded
 
 class GoalForm(forms.ModelForm):
     target_amount = forms.CharField(label="Valor Alvo", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}))

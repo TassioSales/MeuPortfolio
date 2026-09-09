@@ -29,12 +29,24 @@ def _parse_ofx(file_bytes: bytes) -> list[dict]:
     return results
 
 
+MAX_OFX_UPLOAD_SIZE = 5 * 1024 * 1024  # 5 MB
+ALLOWED_OFX_EXTENSIONS = (".ofx", ".qfx")
+
+
 @login_required
 def import_ofx(request):
     if request.method == "POST":
         uploaded = request.FILES.get("ofx_file")
         if not uploaded:
             messages.error(request, "Nenhum arquivo enviado.")
+            return redirect("import_ofx")
+
+        if not uploaded.name.lower().endswith(ALLOWED_OFX_EXTENSIONS):
+            messages.error(request, "Envie um arquivo .ofx ou .qfx.")
+            return redirect("import_ofx")
+
+        if uploaded.size > MAX_OFX_UPLOAD_SIZE:
+            messages.error(request, "Arquivo muito grande (máximo 5 MB).")
             return redirect("import_ofx")
 
         try:

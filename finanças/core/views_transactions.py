@@ -137,6 +137,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
         recurring = form.cleaned_data.get("recurring")
         if recurring:
             frequency = form.cleaned_data.get("frequency")
+            recurrence_end_date = form.cleaned_data.get("recurrence_end_date")
             response = super().form_valid(form)
 
             next_date = form.instance.date
@@ -164,6 +165,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
                 frequency=frequency,
                 description=form.instance.description,
                 next_run_date=next_date,
+                end_date=recurrence_end_date,
                 active=True,
             )
             messages.success(self.request, "Transação recorrente criada com sucesso!")

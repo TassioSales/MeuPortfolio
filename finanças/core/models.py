@@ -71,6 +71,7 @@ class RecurringTransaction(models.Model):
     frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, default='MENSAL', verbose_name='Frequência')
     description = models.CharField(max_length=255, blank=True, verbose_name='Descrição')
     next_run_date = models.DateField(verbose_name='Próxima Execução')
+    end_date = models.DateField(null=True, blank=True, verbose_name='Repetir até', help_text='Deixe vazio para repetir indefinidamente.')
     active = models.BooleanField(default=True, verbose_name='Ativo')
 
     class Meta:

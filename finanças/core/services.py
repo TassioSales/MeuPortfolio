@@ -41,6 +41,11 @@ def process_recurring_transactions(user, up_to_date=None):
     count = 0
     for recurring in recurring_txs:
         while recurring.next_run_date <= up_to_date:
+            if recurring.end_date and recurring.next_run_date > recurring.end_date:
+                recurring.active = False
+                recurring.save()
+                break
+
             # Create the actual transaction
             Transaction.objects.create(
                 user=user,
@@ -79,6 +84,8 @@ def process_recurring_transactions(user, up_to_date=None):
 
             # Update the recurring transaction
             recurring.next_run_date = next_date
+            if recurring.end_date and next_date > recurring.end_date:
+                recurring.active = False
             recurring.save()
 
     return count

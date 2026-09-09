@@ -208,6 +208,11 @@ def calendar_view(request):
     start_date = datetime.date(year, month, 1)
     end_date = datetime.date(year, month, last_day)
 
+    # Same forward-projection as the dashboard: browsing the calendar ahead
+    # must also materialize recurring transactions up through the viewed
+    # month, not just up to today.
+    process_recurring_transactions(request.user, up_to_date=max(end_date, today))
+
     transactions = Transaction.objects.filter(
         user=request.user, date__range=[start_date, end_date]
     )

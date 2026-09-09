@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load core_extras %}
 
 {% block content %}
 <div class="row mb-4 align-items-center">
@@ -35,7 +36,7 @@
                         <td class="ps-4 fw-bold text-primary">{{ investment.symbol }}</td>
                         <td>{{ investment.name|default:"-" }}</td>
                         <td>{{ investment.quantity|floatformat:4 }}</td>
-                        <td>R$ {{ investment.purchase_price|floatformat:2 }}</td>
+                        <td>{{ investment.purchase_price|brl }}</td>
                         <td>{{ investment.date|date:"d/m/Y" }}</td>
                         <td class="pe-4 text-end">
                             <a href="{% url 'investment_edit' investment.pk %}"

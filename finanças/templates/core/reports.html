@@ -87,7 +87,7 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
                 <h6 class="text-uppercase text-muted small fw-bold mb-2">Total Receitas</h6>
-                <h3 class="fw-bold text-success mb-0">R$ {{ total_income|floatformat:2 }}</h3>
+                <h3 class="fw-bold text-success mb-0">{{ total_income|brl }}</h3>
             </div>
         </div>
     </div>
@@ -95,7 +95,7 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
                 <h6 class="text-uppercase text-muted small fw-bold mb-2">Total Despesas</h6>
-                <h3 class="fw-bold text-danger mb-0">R$ {{ total_expense|floatformat:2 }}</h3>
+                <h3 class="fw-bold text-danger mb-0">{{ total_expense|brl }}</h3>
             </div>
         </div>
     </div>
@@ -104,7 +104,7 @@
             <div class="card-body">
                 <h6 class="text-uppercase text-muted small fw-bold mb-2">Saldo Líquido</h6>
                 <h3 class="fw-bold {% if net_balance >= 0 %}text-primary{% else %}text-warning{% endif %} mb-0">
-                    R$ {{ net_balance|floatformat:2 }}
+                    {{ net_balance|brl }}
                 </h3>
             </div>
         </div>
@@ -264,7 +264,7 @@
                                     </small>
                                 </td>
                                 <td class="text-end pe-3 text-danger fw-bold">
-                                    R$ {{ expense.amount|floatformat:2 }}
+                                    {{ expense.amount|brl }}
                                 </td>
                             </tr>
                             {% empty %}

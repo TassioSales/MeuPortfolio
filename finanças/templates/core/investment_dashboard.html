@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load core_extras %}
 
 {% block content %}
 <div class="animate-entrance">
@@ -21,7 +22,7 @@
             <div class="glass-card p-4">
                 <h6 class="text-muted fw-bold small text-uppercase mb-2">Total Investido</h6>
                 <div class="d-flex align-items-baseline gap-2">
-                    <h2 class="fw-bold mb-0">R$ {{ total_invested|floatformat:2 }}</h2>
+                    <h2 class="fw-bold mb-0">{{ total_invested|brl }}</h2>
                 </div>
             </div>
         </div>
@@ -29,7 +30,7 @@
             <div class="glass-card p-4">
                 <h6 class="text-muted fw-bold small text-uppercase mb-2">Valor Atual</h6>
                 <div class="d-flex align-items-baseline gap-2">
-                    <h2 class="fw-bold text-primary mb-0">R$ {{ total_current_value|floatformat:2 }}</h2>
+                    <h2 class="fw-bold text-primary mb-0">{{ total_current_value|brl }}</h2>
                 </div>
             </div>
         </div>
@@ -39,7 +40,7 @@
                 <h6 class="text-muted fw-bold small text-uppercase mb-2">Resultado (ROI)</h6>
                 <div class="d-flex align-items-center gap-3">
                     <h2 class="fw-bold mb-0 {% if roi >= 0 %}text-success{% else %}text-danger{% endif %}">
-                        {% if roi >= 0 %}+{% endif %}R$ {{ roi|floatformat:2 }}
+                        {% if roi >= 0 %}+{% endif %}{{ roi|brl }}
                     </h2>
                     <span class="indicator-pill {% if roi >= 0 %}indicator-up{% else %}indicator-down{% endif %}">
                         {{ roi_pct|floatformat:2 }}%
@@ -117,15 +118,15 @@
                         </td>
                         <td class="fw-medium" data-label="Quantidade">{{ item.investment.quantity|floatformat:"-4" }}
                         </td>
-                        <td class="text-muted" data-label="Preço Médio">R$ {{ item.investment.purchase_price|floatformat:2 }}</td>
+                        <td class="text-muted" data-label="Preço Médio">{{ item.investment.purchase_price|brl }}</td>
                         <td data-label="Valor Atual">
-                            <div class="fw-bold">R$ {{ item.current_value|floatformat:2 }}</div>
-                            <small class="text-muted">Cotação: R$ {{ item.current_price|floatformat:2 }}</small>
+                            <div class="fw-bold">{{ item.current_value|brl }}</div>
+                            <small class="text-muted">Cotação: {{ item.current_price|brl }}</small>
                         </td>
                         <td class="pe-4 text-end" data-label="Lucro / Perda">
                             <div
                                 class="fw-bold {% if item.profit_loss >= 0 %}text-success{% else %}text-danger{% endif %}">
-                                {% if item.profit_loss >= 0 %}+{% endif %}R$ {{ item.profit_loss|floatformat:2 }}
+                                {% if item.profit_loss >= 0 %}+{% endif %}{{ item.profit_loss|brl }}
                             </div>
                             <span
                                 class="indicator-pill {% if item.profit_loss >= 0 %}indicator-up{% else %}indicator-down{% endif %} py-0 px-2 mt-1"

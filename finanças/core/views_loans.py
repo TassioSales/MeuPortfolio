@@ -5,6 +5,7 @@ from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -345,36 +346,37 @@ def loan_make_payment(request, pk):
                 principal_paid = amount - interest
                 balance_after = max(float(loan.current_balance) - principal_paid, 0)
 
-            payment = form.save(commit=False)
-            payment.loan = loan
-            payment.interest_paid = round(interest_paid, 2)
-            payment.principal_paid = round(principal_paid, 2)
-            payment.balance_after = round(balance_after, 2)
-            payment.save()
+            with transaction.atomic():
+                payment = form.save(commit=False)
+                payment.loan = loan
+                payment.interest_paid = round(interest_paid, 2)
+                payment.principal_paid = round(principal_paid, 2)
+                payment.balance_after = round(balance_after, 2)
+                payment.save()
 
-            loan.current_balance = Decimal(str(round(balance_after, 2)))
-            if loan.current_balance <= 0:
-                loan.is_active = False
-            loan.save()
+                loan.current_balance = Decimal(str(round(balance_after, 2)))
+                if loan.current_balance <= 0:
+                    loan.is_active = False
+                loan.save()
 
-            category, _ = Category.objects.get_or_create(
-                user=request.user, name="Pagamento de Empréstimo",
-                defaults={"type": "DESPESA"}
-            )
-            Transaction.objects.create(
-                user=request.user,
-                category=category,
-                type="DESPESA",
-                amount=Decimal(str(amount)),
-                date=form.cleaned_data['payment_date'],
-                description=f"Pagamento — {loan.name} (juros: R$ {interest_paid:.2f} / amort: R$ {principal_paid:.2f})",
-            )
+                category, _ = Category.objects.get_or_create(
+                    user=request.user, name="Pagamento de Empréstimo",
+                    defaults={"type": "DESPESA"}
+                )
+                Transaction.objects.create(
+                    user=request.user,
+                    category=category,
+                    type="DESPESA",
+                    amount=Decimal(str(amount)),
+                    date=form.cleaned_data['payment_date'],
+                    description=f"Pagamento — {loan.name} (juros: R$ {interest_paid:.2f} / amort: R$ {principal_paid:.2f})",
+                )
 
-            AuditLog.objects.create(
-                user=request.user, action="UPDATE", model_name="Loan",
-                object_id=loan.pk,
-                description=f"Pagamento R$ {amount:.2f} em {loan.name}. Saldo: R$ {balance_after:.2f}"
-            )
+                AuditLog.objects.create(
+                    user=request.user, action="UPDATE", model_name="Loan",
+                    object_id=loan.pk,
+                    description=f"Pagamento R$ {amount:.2f} em {loan.name}. Saldo: R$ {balance_after:.2f}"
+                )
 
             if balance_after <= 0:
                 messages.success(request, f"Parabéns! O empréstimo '{loan.name}' foi quitado!")

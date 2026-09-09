@@ -2,6 +2,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -72,19 +73,20 @@ def transfer_create(request):
     if request.method == "POST":
         form = TransferForm(request.user, request.POST)
         if form.is_valid():
-            transfer = form.save(commit=False)
-            transfer.user = request.user
-            transfer.save()
-            # Update account balances
-            transfer.from_account.balance -= transfer.amount
-            transfer.from_account.save()
-            transfer.to_account.balance += transfer.amount
-            transfer.to_account.save()
-            AuditLog.objects.create(
-                user=request.user, action="CREATE", model_name="Transfer",
-                object_id=transfer.pk,
-                description=f"Transferência R$ {transfer.amount} de {transfer.from_account} para {transfer.to_account}"
-            )
+            with transaction.atomic():
+                transfer = form.save(commit=False)
+                transfer.user = request.user
+                transfer.save()
+                # Update account balances
+                transfer.from_account.balance -= transfer.amount
+                transfer.from_account.save()
+                transfer.to_account.balance += transfer.amount
+                transfer.to_account.save()
+                AuditLog.objects.create(
+                    user=request.user, action="CREATE", model_name="Transfer",
+                    object_id=transfer.pk,
+                    description=f"Transferência R$ {transfer.amount} de {transfer.from_account} para {transfer.to_account}"
+                )
             messages.success(request, "Transferência realizada com sucesso!")
             return redirect("account_list")
     else:

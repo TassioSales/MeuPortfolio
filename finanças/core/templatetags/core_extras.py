@@ -2,16 +2,14 @@ from django import template
 
 register = template.Library()
 
-@register.filter
+@register.filter(name='multiply')
+@register.filter(name='mul')
 def multiply(value, arg):
+    """Multiply two template values; registered under both 'multiply' and 'mul' since both are used across templates."""
     try:
         return float(value) * float(arg)
     except (ValueError, TypeError):
         return 0
-
-@register.filter(name='mul')
-def mul(value, arg):
-    return multiply(value, arg)
 
 @register.filter
 def get_item(dictionary, key):

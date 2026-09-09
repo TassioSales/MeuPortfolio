@@ -90,7 +90,7 @@ class TransactionListView(LoginRequiredMixin, ListView):
     context_object_name = "transactions"
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user).order_by("-date")
+        return Transaction.objects.filter(user=self.request.user).select_related("category", "account").order_by("-date")
 
 
 class TransactionCreateView(LoginRequiredMixin, CreateView):

@@ -22,7 +22,7 @@ from loguru import logger
 
 
 def _filter_transactions(request, start_date, end_date, category_id):
-    qs = Transaction.objects.filter(user=request.user).order_by("-date")
+    qs = Transaction.objects.filter(user=request.user).select_related("category").order_by("-date")
     if start_date:
         qs = qs.filter(date__gte=start_date)
     if end_date:

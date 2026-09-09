@@ -208,6 +208,12 @@
         const searchBtn = document.getElementById('searchButton');
         const searchInput = document.getElementById('tickerInput');
 
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str ?? '';
+            return div.innerHTML;
+        }
+
         async function runSearch() {
             const ticker = searchInput.value.trim().toUpperCase();
             if (!ticker) return;
@@ -228,8 +234,8 @@
                     <div class="widget-result glass-card p-3 border-0 bg-light-soft">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
-                                <h4 class="fw-bold mb-0">${d.symbol}</h4>
-                                <small class="text-muted">${d.name || ''}</small>
+                                <h4 class="fw-bold mb-0">${escapeHtml(d.symbol)}</h4>
+                                <small class="text-muted">${escapeHtml(d.name || '')}</small>
                             </div>
                             <div class="text-end">
                                 <div class="fs-4 fw-bold">R$ ${d.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>

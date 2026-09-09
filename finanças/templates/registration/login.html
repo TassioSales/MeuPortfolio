@@ -1,33 +1,33 @@
-{% extends 'base.html' %}
+{% extends 'base_auth.html' %}
 {% load crispy_forms_tags %}
 
+{% block title %}Entrar{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h3>Entrar</h3>
+<div class="card glass-card border-0 shadow-lg">
+    <div class="card-body p-4 p-md-5">
+        <h3 class="fw-bold text-center mb-1">Bem-vindo de volta</h3>
+        <p class="text-muted text-center mb-4">Entre para continuar gerenciando suas finanças.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="showPassword">
+                <label class="form-check-label" for="showPassword">
+                    Mostrar senha
+                </label>
             </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="showPassword">
-                        <label class="form-check-label" for="showPassword">
-                            Mostrar senha
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Entrar</button>
-                </form>
-            </div>
-            <div class="card-footer text-muted">
-                Não tem uma conta? <a href="{% url 'register' %}">Cadastre-se aqui</a>
-            </div>
-        </div>
+            <button type="submit" class="btn-premium w-100 justify-content-center">Entrar</button>
+        </form>
+    </div>
+    <div class="card-footer text-center border-0 bg-transparent pb-4">
+        Não tem uma conta? <a href="{% url 'register' %}">Cadastre-se aqui</a>
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script>
     document.getElementById('showPassword').addEventListener('change', function () {
         var passwordInput = document.getElementById('id_password');

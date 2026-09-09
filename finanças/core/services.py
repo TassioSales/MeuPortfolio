@@ -1,5 +1,7 @@
 import datetime
 import calendar
+from decimal import Decimal
+from django.db.models import Sum
 from django.utils import timezone
 from .models import Transaction, RecurringTransaction
 
@@ -59,5 +61,49 @@ def process_recurring_transactions(user):
         # Update the recurring transaction
         recurring.next_run_date = next_date
         recurring.save()
-        
+
     return count
+
+
+def budget_spent_map(user, budgets):
+    """
+    Given an iterable of Budget objects belonging to `user`, return
+    {budget.id: spent_amount} computed with at most 2 grouped queries
+    (one for MENSAL budgets, one for ANUAL) instead of one query per budget.
+    """
+    budgets = list(budgets)
+    today = timezone.now().date()
+    result = {b.id: Decimal('0') for b in budgets}
+
+    mensal = [b for b in budgets if b.period == 'MENSAL']
+    anual = [b for b in budgets if b.period == 'ANUAL']
+
+    if mensal:
+        totals = (
+            Transaction.objects.filter(
+                user=user, type='DESPESA',
+                category_id__in=[b.category_id for b in mensal],
+                date__year=today.year, date__month=today.month,
+            )
+            .values('category_id')
+            .annotate(total=Sum('amount'))
+        )
+        by_category = {t['category_id']: t['total'] for t in totals}
+        for b in mensal:
+            result[b.id] = by_category.get(b.category_id) or Decimal('0')
+
+    if anual:
+        totals = (
+            Transaction.objects.filter(
+                user=user, type='DESPESA',
+                category_id__in=[b.category_id for b in anual],
+                date__year=today.year,
+            )
+            .values('category_id')
+            .annotate(total=Sum('amount'))
+        )
+        by_category = {t['category_id']: t['total'] for t in totals}
+        for b in anual:
+            result[b.id] = by_category.get(b.category_id) or Decimal('0')
+
+    return result

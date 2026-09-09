@@ -1,12 +1,11 @@
 """Budget CRUD views."""
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum
 from django.urls import reverse_lazy
-from django.utils import timezone
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import BudgetForm
-from .models import Budget, Transaction
+from .models import Budget
+from .services import budget_spent_map
 
 
 class BudgetListView(LoginRequiredMixin, ListView):
@@ -15,31 +14,15 @@ class BudgetListView(LoginRequiredMixin, ListView):
     context_object_name = "budgets"
 
     def get_queryset(self):
-        return Budget.objects.filter(user=self.request.user)
+        return Budget.objects.filter(user=self.request.user).select_related("category")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         budgets = context["budgets"]
-        today = timezone.now().date()
+        spent_map = budget_spent_map(self.request.user, budgets)
 
         for budget in budgets:
-            if budget.period == "MENSAL":
-                transactions = Transaction.objects.filter(
-                    user=self.request.user,
-                    category=budget.category,
-                    type="DESPESA",
-                    date__year=today.year,
-                    date__month=today.month,
-                )
-            else:
-                transactions = Transaction.objects.filter(
-                    user=self.request.user,
-                    category=budget.category,
-                    type="DESPESA",
-                    date__year=today.year,
-                )
-
-            spent = transactions.aggregate(Sum("amount"))["amount__sum"] or 0
+            spent = spent_map.get(budget.id) or 0
             budget.spent = spent
             budget.percentage = (spent / budget.limit) * 100 if budget.limit > 0 else 0
 

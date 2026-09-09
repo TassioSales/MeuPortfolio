@@ -12,7 +12,7 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 
 from .models import Budget, Goal, Loan, Transaction
-from .services import process_recurring_transactions
+from .services import budget_spent_map, process_recurring_transactions
 import datetime
 
 
@@ -136,17 +136,10 @@ def dashboard(request):
     current_month_name = f"{month_names[month]} {year}"
 
     alerts = []
-    budgets = Budget.objects.filter(user=request.user, period="MENSAL")
+    budgets = Budget.objects.filter(user=request.user, period="MENSAL").select_related("category")
+    spent_map = budget_spent_map(request.user, budgets)
     for budget in budgets:
-        expense_sum = (
-            Transaction.objects.filter(
-                user=request.user,
-                category=budget.category,
-                type="DESPESA",
-                date__range=[start_date, end_date],
-            ).aggregate(Sum("amount"))["amount__sum"]
-            or 0
-        )
+        expense_sum = spent_map.get(budget.id) or 0
         if budget.limit > 0:
             percent_used = (expense_sum / budget.limit) * 100
             if percent_used >= 90:

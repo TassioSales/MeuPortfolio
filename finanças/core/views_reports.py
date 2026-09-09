@@ -104,17 +104,20 @@ def reports(request):
             daily_labels.append(entry["day"].strftime("%d/%m"))
             daily_expenses.append(float(entry["total"] or 0))
 
-    budgets = Budget.objects.filter(user=request.user)
+    budgets = Budget.objects.filter(user=request.user).select_related("category")
+    budget_category_ids = [b.category_id for b in budgets]
+    actual_totals = (
+        transactions.filter(type="DESPESA", category_id__in=budget_category_ids)
+        .values("category_id")
+        .annotate(total=Sum("amount"))
+    )
+    actual_by_category = {t["category_id"]: (t["total"] or 0) for t in actual_totals}
+
     budget_labels = []
     budget_limits = []
     budget_actuals = []
     for budget in budgets:
-        actual = (
-            transactions.filter(
-                category=budget.category, type="DESPESA"
-            ).aggregate(Sum("amount"))["amount__sum"]
-            or 0
-        )
+        actual = actual_by_category.get(budget.category_id) or 0
         budget_labels.append(budget.category.name)
         budget_limits.append(float(budget.limit))
         budget_actuals.append(float(actual))

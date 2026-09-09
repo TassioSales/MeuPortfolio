@@ -6,7 +6,7 @@ from datetime import timedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django.db.models.functions import TruncMonth
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -14,6 +14,15 @@ from django.utils import timezone
 from .models import Budget, Goal, Loan, Transaction
 from .services import process_recurring_transactions
 import datetime
+
+
+def _income_expense_totals(queryset):
+    """Sum RECEITA/DESPESA amounts for a Transaction queryset in a single query."""
+    totals = queryset.aggregate(
+        income=Sum("amount", filter=Q(type="RECEITA")),
+        expense=Sum("amount", filter=Q(type="DESPESA")),
+    )
+    return totals["income"] or 0, totals["expense"] or 0
 
 
 def register(request):
@@ -54,37 +63,15 @@ def dashboard(request):
         user=request.user, date__range=[start_date, end_date]
     ).order_by("-date")[:5]
 
-    monthly_income = (
-        Transaction.objects.filter(
-            user=request.user, type="RECEITA", date__range=[start_date, end_date]
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
-    )
-    monthly_expense = (
-        Transaction.objects.filter(
-            user=request.user, type="DESPESA", date__range=[start_date, end_date]
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
+    monthly_income, monthly_expense = _income_expense_totals(
+        Transaction.objects.filter(user=request.user, date__range=[start_date, end_date])
     )
 
     prev_month_end = start_date - timedelta(days=1)
     prev_month_start = prev_month_end.replace(day=1)
 
-    previous_income_for_change = (
-        Transaction.objects.filter(
-            user=request.user,
-            type="RECEITA",
-            date__range=[prev_month_start, prev_month_end],
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
-    )
-    previous_expense_for_change = (
-        Transaction.objects.filter(
-            user=request.user,
-            type="DESPESA",
-            date__range=[prev_month_start, prev_month_end],
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
+    previous_income_for_change, previous_expense_for_change = _income_expense_totals(
+        Transaction.objects.filter(user=request.user, date__range=[prev_month_start, prev_month_end])
     )
 
     monthly_income_change = (
@@ -103,17 +90,8 @@ def dashboard(request):
         else 0
     )
 
-    previous_income = (
-        Transaction.objects.filter(
-            user=request.user, type="RECEITA", date__lt=start_date
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
-    )
-    previous_expense = (
-        Transaction.objects.filter(
-            user=request.user, type="DESPESA", date__lt=start_date
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
+    previous_income, previous_expense = _income_expense_totals(
+        Transaction.objects.filter(user=request.user, date__lt=start_date)
     )
 
     accumulated_balance = previous_income - previous_expense

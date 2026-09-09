@@ -1,6 +1,4 @@
 """Investment views: dashboard, safe haven, ticker search, and CRUD."""
-import json
-
 import yfinance as yf
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
@@ -304,8 +302,8 @@ def investment_dashboard(request):
         "total_current_value": total_current_value,
         "roi": roi,
         "roi_pct": roi_pct,
-        "chart_labels": json.dumps(labels),
-        "chart_data": json.dumps(data_values),
+        "chart_labels": labels,
+        "chart_data": data_values,
     }
     return render(request, "core/investment_dashboard.html", context)
 
@@ -418,8 +416,8 @@ class InvestmentDetailView(LoginRequiredMixin, TemplateView):
         try:
             fetched = _cached_ticker_fetch(symbol)
 
-            context["chart_labels"] = json.dumps(fetched.get("chart_dates", []))
-            context["chart_data"] = json.dumps(fetched.get("chart_prices", []))
+            context["chart_labels"] = fetched.get("chart_dates", [])
+            context["chart_data"] = fetched.get("chart_prices", [])
 
             current_price = fetched.get("price") or 0
             previous_close = fetched.get("previous_close")

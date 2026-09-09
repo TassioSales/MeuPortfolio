@@ -280,16 +280,15 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Helper to parse JSON safely
-    function safeJson(value, defaultValue = []) {
-        try {
-            return JSON.parse(value || JSON.stringify(defaultValue));
-        } catch (e) {
-            return defaultValue;
-        }
-    }
+    {{ evolution_labels|json_script:"evolution-labels" }}
+    {{ evolution_income|json_script:"evolution-income" }}
+    {{ evolution_expense|json_script:"evolution-expense" }}
+    {{ daily_labels|json_script:"daily-labels" }}
+    {{ daily_expenses|json_script:"daily-expenses" }}
+    {{ budget_labels|json_script:"budget-labels" }}
+    {{ budget_limits|json_script:"budget-limits" }}
+    {{ budget_actuals|json_script:"budget-actuals" }}
 
     Chart.defaults.font.family = "'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif";
     Chart.defaults.color = '#6c757d';
@@ -297,9 +296,9 @@
     // 1. Evolution Chart (Bar)
     const ctxEvolution = document.getElementById('evolutionChart');
     if (ctxEvolution) {
-        const labels = safeJson('{{ evolution_labels|safe }}');
-        const incomeData = safeJson('{{ evolution_income|safe }}');
-        const expenseData = safeJson('{{ evolution_expense|safe }}');
+        const labels = parseChartJson('evolution-labels');
+        const incomeData = parseChartJson('evolution-income');
+        const expenseData = parseChartJson('evolution-expense');
 
         new Chart(ctxEvolution, {
             type: 'bar',
@@ -337,8 +336,8 @@
     // 2. Daily Expenses Chart (Line)
     const ctxDaily = document.getElementById('dailyExpensesChart');
     if (ctxDaily) {
-        const labels = safeJson('{{ daily_labels|safe }}');
-        const data = safeJson('{{ daily_expenses|safe }}');
+        const labels = parseChartJson('daily-labels');
+        const data = parseChartJson('daily-expenses');
 
         new Chart(ctxDaily, {
             type: 'line',
@@ -370,9 +369,9 @@
     // 3. Budget vs Actual Chart (Bar)
     const ctxBudget = document.getElementById('budgetChart');
     if (ctxBudget) {
-        const labels = safeJson('{{ budget_labels|safe }}');
-        const limits = safeJson('{{ budget_limits|safe }}');
-        const actuals = safeJson('{{ budget_actuals|safe }}');
+        const labels = parseChartJson('budget-labels');
+        const limits = parseChartJson('budget-limits');
+        const actuals = parseChartJson('budget-actuals');
 
         new Chart(ctxBudget, {
             type: 'bar',

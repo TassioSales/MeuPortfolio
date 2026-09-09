@@ -162,15 +162,17 @@
     }
 </style>
 
+{{ chart_labels|json_script:"portfolio-chart-labels" }}
+{{ chart_data|json_script:"portfolio-chart-data" }}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const { isDark } = chartTheme();
 
         // Distribution Chart
         const pieCtx = document.getElementById('portfolioPieChart');
         if (pieCtx) {
-            const labels = JSON.parse('{{ chart_labels|safe }}'.replace(/'/g, '"') || '[]');
-            const data = JSON.parse('{{ chart_data|safe }}'.replace(/'/g, '"') || '[]');
+            const labels = parseChartJson('portfolio-chart-labels');
+            const data = parseChartJson('portfolio-chart-data');
 
             if (labels.length > 0) {
                 new Chart(pieCtx, {

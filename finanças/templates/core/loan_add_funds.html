@@ -89,7 +89,7 @@ const currentBalance = {{ loan.current_balance }};
 const monthlyRate = {{ loan.monthly_rate }};
 
 function fmt(v) {
-    return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+    return brlTick(v, 2);
 }
 
 function parseMoney(s) {

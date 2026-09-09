@@ -1,5 +1,4 @@
 """Loan management views — create, track, and simulate loans with full amortization."""
-import json
 from decimal import Decimal
 
 from django.contrib import messages
@@ -313,11 +312,11 @@ def loan_detail(request, pk):
         "total_future_interest_sim": round(total_future_interest_sim, 2) if total_future_interest_sim else None,
         "total_future_insurance": round(total_future_insurance, 2),
         "cet": cet,
-        "chart_labels": json.dumps(chart_labels),
-        "chart_balance": json.dumps(chart_balance),
-        "chart_interest": json.dumps(chart_interest),
-        "chart_principal": json.dumps(chart_principal),
-        "chart_sim_balance": json.dumps(chart_sim_balance) if chart_sim_balance else "null",
+        "chart_labels": chart_labels,
+        "chart_balance": chart_balance,
+        "chart_interest": chart_interest,
+        "chart_principal": chart_principal,
+        "chart_sim_balance": chart_sim_balance,
     }
     return render(request, "core/loan_detail.html", context)
 

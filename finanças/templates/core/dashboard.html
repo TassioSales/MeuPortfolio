@@ -209,13 +209,16 @@
     }
 </style>
 
+{{ chart_labels|json_script:"dashboard-chart-labels" }}
+{{ chart_income|json_script:"dashboard-chart-income" }}
+{{ chart_expense|json_script:"dashboard-chart-expense" }}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const { isDark } = chartTheme();
         const ctx = document.getElementById('cashFlowChart').getContext('2d');
-        const labels = JSON.parse('{{ chart_labels|safe }}');
-        const dataIncome = JSON.parse('{{ chart_income|safe }}');
-        const dataExpense = JSON.parse('{{ chart_expense|safe }}');
+        const labels = parseChartJson('dashboard-chart-labels');
+        const dataIncome = parseChartJson('dashboard-chart-income');
+        const dataExpense = parseChartJson('dashboard-chart-expense');
 
         new Chart(ctx, {
             type: 'bar',

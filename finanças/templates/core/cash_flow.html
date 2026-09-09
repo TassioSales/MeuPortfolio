@@ -183,7 +183,7 @@ new Chart(document.getElementById('balanceChart'), {
     interaction: { mode: 'index', intersect: false },
     plugins: { legend: { position: 'top' } },
     scales: {
-      y: { ticks: { callback: v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2}) } },
+      y: { ticks: { callback: v => brlTick(v, 2) } },
     },
   },
 });
@@ -203,7 +203,7 @@ new Chart(document.getElementById('projChart'), {
     responsive: true,
     plugins: { legend: { position: 'top' } },
     scales: {
-      y: { ticks: { callback: v => 'R$ ' + v.toLocaleString('pt-BR') } },
+      y: { ticks: { callback: v => brlTick(v) } },
     },
   },
 });

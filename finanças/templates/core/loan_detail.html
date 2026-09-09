@@ -235,10 +235,13 @@
 </style>
 
 {% block scripts %}
+{{ chart_labels|json_script:"loan-chart-labels" }}
+{{ chart_balance|json_script:"loan-chart-balance" }}
+{{ chart_sim_balance|json_script:"loan-chart-sim-balance" }}
 <script>
-const labels = {{ chart_labels|safe }};
-const balances = {{ chart_balance|safe }};
-const simBalances = {{ chart_sim_balance|safe }};
+const labels = parseChartJson('loan-chart-labels');
+const balances = parseChartJson('loan-chart-balance');
+const simBalances = parseChartJson('loan-chart-sim-balance', null);
 
 new Chart(document.getElementById('loanChart'), {
     type: 'line',
@@ -273,7 +276,7 @@ new Chart(document.getElementById('loanChart'), {
         scales: {
             y: {
                 beginAtZero: true,
-                ticks: { callback: v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:0}) }
+                ticks: { callback: v => brlTick(v) }
             },
         },
     },

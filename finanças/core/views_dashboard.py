@@ -1,6 +1,5 @@
 """Dashboard, registration, and calendar views."""
 import calendar
-import json
 from datetime import timedelta
 
 from django.contrib import messages
@@ -169,9 +168,9 @@ def dashboard(request):
         "net_balance": net_balance,
         "accumulated_balance": accumulated_balance,
         "total_balance": total_balance,
-        "chart_labels": json.dumps(labels),
-        "chart_income": json.dumps(data_income),
-        "chart_expense": json.dumps(data_expense),
+        "chart_labels": labels,
+        "chart_income": data_income,
+        "chart_expense": data_expense,
         "current_month_name": current_month_name,
         "previous_month": previous_month,
         "next_month": next_month,

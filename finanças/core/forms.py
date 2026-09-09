@@ -58,9 +58,12 @@ class TransactionForm(forms.ModelForm):
         amount = self.cleaned_data.get('amount')
         # If the field is already a Decimal (Django might have tried its own cleaning), handle it
         if isinstance(amount, Decimal):
-            return amount
-        # Otherwise clean the string
-        return clean_currency_value(self.data.get('amount'))
+            value = amount
+        else:
+            value = clean_currency_value(self.data.get('amount'))
+        if value is not None and value <= 0:
+            raise forms.ValidationError("O valor deve ser maior que zero.")
+        return value
 
     def clean(self):
         cleaned_data = super().clean()
@@ -102,7 +105,10 @@ class BudgetForm(forms.ModelForm):
             self.fields['category'].queryset = Category.objects.filter(user=user)
 
     def clean_limit(self):
-        return clean_currency_value(self.data.get('limit'))
+        value = clean_currency_value(self.data.get('limit'))
+        if value is not None and value <= 0:
+            raise forms.ValidationError("O limite deve ser maior que zero.")
+        return value
 
 class InvestmentForm(forms.ModelForm):
     purchase_price = forms.CharField(
@@ -225,16 +231,25 @@ class GoalForm(forms.ModelForm):
         }
 
     def clean_target_amount(self):
-        return clean_currency_value(self.data.get('target_amount'))
+        value = clean_currency_value(self.data.get('target_amount'))
+        if value is not None and value <= 0:
+            raise forms.ValidationError("O valor alvo deve ser maior que zero.")
+        return value
 
     def clean_current_amount(self):
-        return clean_currency_value(self.data.get('current_amount'))
+        value = clean_currency_value(self.data.get('current_amount'))
+        if value is not None and value < 0:
+            raise forms.ValidationError("O valor guardado não pode ser negativo.")
+        return value
 
     def clean_monthly_target(self):
         val = self.data.get('monthly_target', '').strip()
         if not val:
             return None
-        return clean_currency_value(val)
+        value = clean_currency_value(val)
+        if value is not None and value <= 0:
+            raise forms.ValidationError("O aporte mensal deve ser maior que zero.")
+        return value
 
 
 class GoalDepositForm(forms.Form):
@@ -245,7 +260,10 @@ class GoalDepositForm(forms.Form):
     note = forms.CharField(label="Observação", max_length=255, required=False)
 
     def clean_amount(self):
-        return clean_currency_value(self.data.get('amount'))
+        value = clean_currency_value(self.data.get('amount'))
+        if value is not None and value <= 0:
+            raise forms.ValidationError("O valor do aporte deve ser maior que zero.")
+        return value
 
 
 class BankAccountForm(forms.ModelForm):

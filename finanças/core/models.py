@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
 from django.utils import timezone
 from decimal import Decimal
 
@@ -40,7 +41,7 @@ class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions', verbose_name='Usuário')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions', verbose_name='Categoria')
     type = models.CharField(max_length=15, choices=TRANSACTION_TYPES, verbose_name='Tipo')
-    amount = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Valor')
+    amount = models.DecimalField(max_digits=15, decimal_places=2, validators=[MinValueValidator(Decimal('0.01'))], verbose_name='Valor')
     date = models.DateField(default=timezone.now, verbose_name='Data')
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS, default='DINHEIRO', verbose_name='Método de Pagamento')
     description = models.CharField(max_length=255, blank=True, verbose_name='Descrição')
@@ -87,7 +88,7 @@ class Budget(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='budgets', verbose_name='Usuário')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='budgets', verbose_name='Categoria')
-    limit = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Limite')
+    limit = models.DecimalField(max_digits=15, decimal_places=2, validators=[MinValueValidator(Decimal('0.01'))], verbose_name='Limite')
     period = models.CharField(max_length=10, choices=PERIOD_CHOICES, default='MENSAL', verbose_name='Período')
     start_date = models.DateField(default=timezone.now, verbose_name='Data de Início')
     rollover = models.BooleanField(default=False, verbose_name='Acumular saldo não gasto?')
@@ -177,9 +178,9 @@ class Investment(models.Model):
 class Goal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='goals', verbose_name='Usuário')
     name = models.CharField(max_length=100, verbose_name='Nome da Meta')
-    target_amount = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Valor Alvo')
-    current_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0, verbose_name='Valor Atual')
-    monthly_target = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True, verbose_name='Aporte Mensal Planejado')
+    target_amount = models.DecimalField(max_digits=15, decimal_places=2, validators=[MinValueValidator(Decimal('0.01'))], verbose_name='Valor Alvo')
+    current_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0, validators=[MinValueValidator(Decimal('0'))], verbose_name='Valor Atual')
+    monthly_target = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(Decimal('0.01'))], verbose_name='Aporte Mensal Planejado')
     deadline = models.DateField(verbose_name='Data Limite')
     description = models.TextField(blank=True, verbose_name='Descrição')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')

@@ -15,6 +15,46 @@
         </div>
     </div>
 
+    <!-- Filters Section -->
+    <div class="glass-card mb-4 p-4">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="filter-cat-search" class="form-label small fw-bold text-muted text-uppercase mb-2">Buscar por nome</label>
+                <div class="input-group">
+                    <span class="input-group-text border-0 bg-transparent text-muted"><i class="bi bi-search"></i></span>
+                    <input type="text" id="filter-cat-search" class="form-control border-0 bg-light-soft rounded-3"
+                        name="search" value="{{ filter_search }}" placeholder="Ex: Mercado, Transporte...">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label for="filter-cat-type" class="form-label small fw-bold text-muted text-uppercase mb-2">Fluxo</label>
+                <select id="filter-cat-type" class="form-select border-0 bg-light-soft rounded-3" name="type">
+                    <option value="">Todos</option>
+                    <option value="RECEITA" {% if filter_type == 'RECEITA' %}selected{% endif %}>Receita</option>
+                    <option value="DESPESA" {% if filter_type == 'DESPESA' %}selected{% endif %}>Despesa</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label for="filter-cat-parent" class="form-label small fw-bold text-muted text-uppercase mb-2">Categoria pai</label>
+                <select id="filter-cat-parent" class="form-select border-0 bg-light-soft rounded-3" name="parent">
+                    <option value="">Todas</option>
+                    <option value="none" {% if filter_parent == 'none' %}selected{% endif %}>Somente nível principal</option>
+                    {% for parent_cat in parent_categories %}
+                    <option value="{{ parent_cat.id }}" {% if filter_parent == parent_cat.id|stringformat:"s" %}selected{% endif %}>{{ parent_cat.name }} (e subcategorias)</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100 rounded-3 shadow-none" title="Filtrar">
+                    <i class="bi bi-funnel"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
     <!-- Table Section -->
     <div class="glass-card p-0 overflow-hidden">
         <div class="table-responsive">

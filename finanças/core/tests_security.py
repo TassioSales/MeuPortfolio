@@ -36,3 +36,18 @@ class CrossUserCategoryLeakTests(TestCase):
         response = self.client.get(reverse("budget_add"))
         form = response.context["form"]
         self.assertNotIn(self.category_b, form.fields["category"].queryset)
+
+
+class PublicRegistrationDisabledTests(TestCase):
+    def test_register_get_redirects_to_login_without_creating_a_form(self):
+        response = self.client.get(reverse("register"))
+        self.assertRedirects(response, reverse("login"))
+
+    def test_register_post_does_not_create_a_user(self):
+        response = self.client.post(reverse("register"), {
+            "username": "invasor",
+            "password1": "senhaSuperForte123",
+            "password2": "senhaSuperForte123",
+        })
+        self.assertRedirects(response, reverse("login"))
+        self.assertFalse(User.objects.filter(username="invasor").exists())

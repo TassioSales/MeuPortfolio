@@ -4,7 +4,6 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q, Sum
 from django.db.models.functions import TruncMonth
 from django.shortcuts import redirect, render
@@ -25,16 +24,11 @@ def _income_expense_totals(queryset):
 
 
 def register(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get("username")
-            messages.success(request, f"Conta criada para {username}!")
-            return redirect("login")
-    else:
-        form = UserCreationForm()
-    return render(request, "registration/register.html", {"form": form})
+    # Public self-registration is disabled — this app may be exposed on the
+    # public internet (e.g. via a Cloudflare tunnel); new accounts must be
+    # created by a staff user via /admin/ instead.
+    messages.info(request, "O cadastro público está desabilitado. Peça a um administrador para criar sua conta.")
+    return redirect("login")
 
 
 @login_required

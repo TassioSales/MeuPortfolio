@@ -29,6 +29,17 @@ DEBUG = config("DEBUG", default=True, cast=bool)
 # Allow * for LAN access (tablet/phone on same network); restrict in production via .env
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*", cast=Csv())
 
+# Origins Django trusts for unsafe (POST/PUT/DELETE) requests — needed when the
+# app is reachable under a hostname other than localhost/LAN IP (e.g. the
+# random *.trycloudflare.com URL from scripts/subir.ps1), since Django's CSRF
+# check compares the request's Origin against this list. Empty by default —
+# no effect for plain local/LAN use.
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="", cast=Csv())
+
+# When served through a TLS-terminating tunnel (Cloudflare), trust its
+# X-Forwarded-Proto header so request.is_secure() reports correctly.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 
 # Application definition
 

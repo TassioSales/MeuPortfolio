@@ -35,8 +35,12 @@ static/collected/
 
 # Environment
 .env
+.env.backup
 .secret_key
 .venv
+
+# Cloudflare tunnel (subir.ps1)
+tunel-financas*.log
 ENV/
 env.bak/
 venv.bak/

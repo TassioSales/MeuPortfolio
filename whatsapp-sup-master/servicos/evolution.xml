@@ -1,0 +1,65 @@
+<!--
+  A EVOLUTION API como serviço do Windows, ao lado do bot e do painel.
+
+  É o TERCEIRO processo do projeto. Os outros dois são bot.xml e painel.xml.
+  A diferença: bot e painel moram na pasta do projeto; a Evolution é software
+  de terceiro e mora fora dela (por padrão C:\evolution).
+
+  ESTE ARQUIVO É UM MODELO. O `instalar-evolution.ps1` copia-o para a pasta da
+  Evolution trocando `__RAIZ_EVOLUTION__` e `__ENTRADA__` pelos valores reais.
+  Editar a cópia à mão funciona; editar este aqui só afeta a próxima instalação.
+
+  Por que não `npm run start:prod` no <executable>: o npm cria um processo
+  filho e o serviço passaria a vigiar o npm, não o Node. Quando o Node morre,
+  o npm às vezes sobrevive — e o WinSW não reinicia nada, porque o que ele
+  observa continua de pé. Apontando para o node direto, o que o Windows vigia é
+  o processo que de fato atende.
+-->
+<service>
+  <id>painel-evolution</id>
+  <name>Painel de Chamados - evolution</name>
+  <description>Ponte com o WhatsApp (Evolution API). Mantem a sessao e chama o webhook do bot. Ver whatsapp-suporte/docs/WA Evolution no Windows.md</description>
+
+  <executable>node</executable>
+  <arguments>__ENTRADA__</arguments>
+
+  <!-- O .env da Evolution e o diretorio instances/ sao resolvidos a partir daqui. -->
+  <workingdirectory>__RAIZ_EVOLUTION__</workingdirectory>
+
+  <startmode>Automatic</startmode>
+
+  <!--
+    A Evolution depende do Postgres. `depend` faz o Windows subir o banco
+    primeiro no boot - sem isso ela sobe antes, nao conecta e entra em ciclo de
+    restart ate o banco aparecer, poluindo o log com erro que nao e erro.
+
+    O NOME DO SERVICO DO POSTGRES VARIA com a versao do instalador
+    (postgresql-x64-16, postgresql-x64-15...). O instalar-evolution.ps1 detecta
+    o que existe na maquina e corrige esta linha; se nenhum for achado, ele a
+    remove, e ai vale o ciclo de restart abaixo.
+  -->
+  <depend>__SERVICO_POSTGRES__</depend>
+
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="30 sec"/>
+  <onfailure action="restart" delay="60 sec"/>
+  <resetfailure>1 hour</resetfailure>
+
+  <log mode="roll-by-size">
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>8</keepFiles>
+  </log>
+  <logpath>__RAIZ_EVOLUTION__\logs</logpath>
+
+  <serviceaccount>
+    <username>NT SERVICE\painel-evolution</username>
+    <allowservicelogon>true</allowservicelogon>
+  </serviceaccount>
+
+  <!--
+    Mais generoso que os 20s do bot: no encerramento a Evolution fecha a sessao
+    do Baileys, e uma sessao fechada na marra volta pedindo QR Code - refazer o
+    pareamento e muito mais caro que esperar dez segundos a mais no shutdown.
+  -->
+  <stoptimeout>30 sec</stoptimeout>
+</service>

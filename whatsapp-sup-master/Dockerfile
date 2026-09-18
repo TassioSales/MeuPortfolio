@@ -93,3 +93,42 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 # SQLite fechar limpo importa mais: é o que faz o WAL ser incorporado ao arquivo
 # em vez de ficar pendente.
 CMD ["node", "dist/server.js"]
+
+# ---------- etapa 3: painel ----------
+#
+# O painel de chamados (servidor-painel.mjs + activity-dashboard) roda como um
+# SEGUNDO contêiner, ao lado do bot. Fora de contêiner os dois sobem juntos pelo
+# `iniciar.mjs`, num processo só; aqui eles se separam porque no compose cada
+# serviço tem o seu ciclo de vida, e derrubar o painel para reiniciar o bot (ou
+# o contrário) não faz sentido nenhum.
+#
+# O que os liga é `BOT_HOST`: o painel repassa `/webhook` e `/internal/*` para
+# `${BOT_HOST}:${BOT_PORT}` — no compose, o nome do serviço do bot na rede
+# interna. Sem a variável ele usa 127.0.0.1 e o comportamento antigo continua
+# valendo (ver o comentário em servidor-painel.mjs).
+#
+# Não há build aqui: os arquivos do painel são .mjs, executados como estão. A
+# única dependência que ele importa de node_modules é o dotenv, e por isso a
+# camada vem pronta da etapa de build, já sem devDependencies.
+FROM node:24-slim AS painel
+
+ENV NODE_ENV=production
+WORKDIR /app
+
+COPY --from=build /app/node_modules ./node_modules
+
+COPY package.json ./
+COPY servidor-painel.mjs painel-entra.mjs painel-metricas.mjs ./
+COPY activity-dashboard ./activity-dashboard
+
+USER node
+
+EXPOSE 8511
+
+# O painel serve a si mesmo em `/`; se ele responde, está de pé. O estado do bot
+# é problema do healthcheck do bot — o painel sobe e fica útil (mostrando o erro
+# de proxy) mesmo com o bot fora, o que é melhor que os dois reiniciando juntos.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PAINEL_PORT||8511)+'/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
+CMD ["node", "servidor-painel.mjs"]

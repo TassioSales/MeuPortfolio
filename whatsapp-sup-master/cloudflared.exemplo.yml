@@ -1,0 +1,72 @@
+# ===========================================================================
+#  Cloudflare Tunnel - suportebio.portalbiomundo.com.br
+#
+#  ANTES DE USAR ESTE ARQUIVO, descubra se o seu tunel e LOCAL ou REMOTO. Os
+#  dois existem, e num deles este arquivo e simplesmente ignorado:
+#
+#    Get-CimInstance Win32_Service -Filter "Name='cloudflared'" ^|
+#      Select-Object Name, StartName, PathName ^| Format-List
+#
+#    - Se o PathName tiver  --config <caminho>  -> tunel LOCAL. O arquivo esta
+#      NAQUELE caminho (nao necessariamente na sua pasta de usuario), e e ele
+#      que manda. Edite-o, ou aponte-o para este.
+#
+#    - Se o PathName tiver  --token eyJhIjoi...  -> tunel REMOTO. A configuracao
+#      mora no painel da Cloudflare, e o cloudflared NEM LE arquivo de config.
+#      Mudar porta e em:
+#         Zero Trust > Networks > Tunnels > (o tunel) > Public Hostname
+#         > Edit > Service = http://localhost:8511
+#
+#  Por que voce pode nao ter achado o config.yml: rodando como SERVICO, o
+#  cloudflared roda como LocalSystem, e o "home" dele nao e o seu. O padrao
+#  vira  C:\Windows\System32\config\systemprofile\.cloudflared\config.yml  -
+#  e nao  C:\Users\Administrator\.cloudflared\.
+#
+#  ------------------------------------------------------------------------
+#  POR QUE UMA REGRA SO
+#
+#  O servidor-painel.mjs ja faz o roteamento de caminho sozinho:
+#
+#      /webhook/... -> bot, porta 9511   (a Evolution; passa POR FORA do login do
+#                                         Entra, porque ela se autentica pelo
+#                                         segredo que vai no proprio caminho)
+#      /internal/*  -> bot, porta 9511   (a API do quadro)
+#      todo o resto -> os arquivos do painel
+#
+#  Entao o tunel entrega TUDO na 8511 e nao precisa saber de nada disso.
+#
+#  APONTAR PARA A 9511 E O ERRO A EVITAR: o bot nao tem rota `/`, entao o
+#  dominio responde {"erro":"rota nao encontrada"}, o painel fica inacessivel
+#  e o login do Entra quebra (o /auth/retorno cai nesse 404). O webhook ate
+#  funciona assim, por acidente - o que faz o problema passar despercebido.
+# ===========================================================================
+
+# Os dois valores saem do `cloudflared tunnel create <nome>`. Se o tunel ja
+# existe, `cloudflared tunnel list` mostra o UUID, e o .json fica na pasta
+# .cloudflared de quem rodou o create.
+tunnel: PREENCHER_UUID_DO_TUNEL
+credentials-file: C:\Users\Administrator\.cloudflared\PREENCHER_UUID_DO_TUNEL.json
+
+ingress:
+  - hostname: suportebio.portalbiomundo.com.br
+    service: http://localhost:8511
+
+    originRequest:
+      # O painel fala HTTP em claro com o tunel, dentro da mesma maquina. Quem
+      # faz HTTPS com o navegador e com a Evolution e a Cloudflare - por isso
+      # PAINEL_TLS_CERT e PAINEL_TLS_KEY ficam VAZIOS no .env. O cookie de
+      # sessao ganha o atributo Secure de qualquer forma: quem decide isso e o
+      # PAINEL_URL_BASE comecar com https.
+      #
+      # O Origin Certificate da Cloudflare tambem NAO e usado neste arranjo.
+      # Ele serve para o outro caso (nuvem laranja batendo direto no servidor).
+      noTLSVerify: false
+
+      # A conversa do WhatsApp e curta, mas o painel carrega ate 500 chamados
+      # de uma vez na primeira pintura. 30s cobre com folga.
+      connectTimeout: 30s
+
+  # Regra de fechamento, obrigatoria: sem ela o cloudflared recusa o arquivo.
+  # Qualquer outro nome que aponte para este tunel leva 404 em vez de cair no
+  # painel por engano.
+  - service: http_status:404

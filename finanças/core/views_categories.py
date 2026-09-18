@@ -35,11 +35,17 @@ class CategoryListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["parent_categories"] = Category.objects.filter(
-            user=self.request.user, parent__isnull=True
-        ).order_by("name")
+
+        parent_categories = Category.objects.filter(user=self.request.user, parent__isnull=True)
+        type_ = self.request.GET.get("type", "")
+        if type_ in ("RECEITA", "DESPESA"):
+            # Only offer parent categories matching the selected Fluxo filter,
+            # so picking "Receita" doesn't still list Despesa parents.
+            parent_categories = parent_categories.filter(type=type_)
+
+        context["parent_categories"] = parent_categories.order_by("name")
         context["filter_search"] = self.request.GET.get("search", "")
-        context["filter_type"] = self.request.GET.get("type", "")
+        context["filter_type"] = type_
         context["filter_parent"] = self.request.GET.get("parent", "")
         return context
 

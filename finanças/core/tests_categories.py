@@ -49,3 +49,12 @@ class CategoryFilterTests(TestCase):
         response = self.client.get(reverse("category_list"))
         parent_options = set(response.context["parent_categories"])
         self.assertEqual(parent_options, {self.moradia, self.transporte, self.salario})
+
+    def test_parent_dropdown_respects_selected_type_filter(self):
+        response = self.client.get(reverse("category_list"), {"type": "RECEITA"})
+        parent_options = set(response.context["parent_categories"])
+        self.assertEqual(parent_options, {self.salario})
+
+        response = self.client.get(reverse("category_list"), {"type": "DESPESA"})
+        parent_options = set(response.context["parent_categories"])
+        self.assertEqual(parent_options, {self.moradia, self.transporte})

@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist-test",
+    "types": ["node"]
+  },
+  // `exclude: []` desfaz o exclude do tsconfig.json: aqui as ferramentas de
+  // desenvolvimento em src/dev TAMBÉM são checadas.
+  "exclude": [],
+  "include": ["src", "test"]
+}

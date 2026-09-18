@@ -1,0 +1,200 @@
+{
+  "version": "7.3",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "ASSUNTO": ["SUBASSUNTO", "DADOS"],
+    "SUBASSUNTO": ["DADOS"],
+    "DADOS": []
+  },
+  "screens": [
+    {
+      "id": "ASSUNTO",
+      "title": "Abrir chamado",
+      "data": {
+        "assuntos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" }
+            }
+          },
+          "__example__": [
+            { "id": "1", "title": "Suporte ao sistema Vetor" },
+            { "id": "2", "title": "Infraestrutura e rede" },
+            { "id": "3", "title": "Acesso e senha" },
+            { "id": "4", "title": "Outro assunto" }
+          ]
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form_assunto",
+            "children": [
+              {
+                "type": "TextBody",
+                "text": "Escolha o assunto do atendimento."
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "assunto",
+                "label": "Assunto",
+                "data-source": "${data.assuntos}",
+                "required": true
+              },
+              {
+                "type": "Footer",
+                "label": "Continuar",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "etapa": "assunto",
+                    "assunto": "${form_assunto.assunto}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "SUBASSUNTO",
+      "title": "Abrir chamado",
+      "data": {
+        "assunto_escolhido": {
+          "type": "string",
+          "__example__": "1"
+        },
+        "caminho": {
+          "type": "string",
+          "__example__": "Suporte ao sistema Vetor"
+        },
+        "subassuntos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" }
+            }
+          },
+          "__example__": [
+            { "id": "11", "title": "PDV / frente de caixa" },
+            { "id": "12", "title": "Estoque" },
+            { "id": "13", "title": "Relatórios" }
+          ]
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form_subassunto",
+            "children": [
+              {
+                "type": "TextBody",
+                "text": "${data.caminho}"
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "subassunto",
+                "label": "Escolha a opção mais específica",
+                "data-source": "${data.subassuntos}",
+                "required": true
+              },
+              {
+                "type": "Footer",
+                "label": "Continuar",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "etapa": "subassunto",
+                    "assunto": "${data.assunto_escolhido}",
+                    "subassunto": "${form_subassunto.subassunto}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DADOS",
+      "title": "Abrir chamado",
+      "terminal": true,
+      "success": true,
+      "data": {
+        "categoria_id": {
+          "type": "string",
+          "__example__": "11"
+        },
+        "caminho": {
+          "type": "string",
+          "__example__": "Suporte ao sistema Vetor / PDV / frente de caixa"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form_dados",
+            "children": [
+              {
+                "type": "TextCaption",
+                "text": "Assunto: ${data.caminho}"
+              },
+              {
+                "type": "TextInput",
+                "name": "nome",
+                "label": "Seu nome",
+                "input-type": "text",
+                "required": true,
+                "min-chars": 2,
+                "max-chars": 120
+              },
+              {
+                "type": "TextInput",
+                "name": "resumo",
+                "label": "Resumo",
+                "helper-text": "Uma frase curta sobre o problema",
+                "input-type": "text",
+                "required": true,
+                "min-chars": 2,
+                "max-chars": 200
+              },
+              {
+                "type": "TextArea",
+                "name": "descricao",
+                "label": "Descrição",
+                "helper-text": "Conte o que aconteceu, com o máximo de detalhe que puder",
+                "required": true,
+                "max-length": 2000
+              },
+              {
+                "type": "Footer",
+                "label": "Abrir chamado",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "categoria_id": "${data.categoria_id}",
+                    "nome": "${form_dados.nome}",
+                    "resumo": "${form_dados.resumo}",
+                    "descricao": "${form_dados.descricao}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

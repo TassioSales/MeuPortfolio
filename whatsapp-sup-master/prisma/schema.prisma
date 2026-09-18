@@ -1,0 +1,898 @@
+generator client {
+  provider = "prisma-client"
+
+  // O Prisma 7 não gera mais dentro de node_modules: o caminho é obrigatório.
+  // Fica sob `src` para o `tsc` compilar junto e o `dist` manter a estrutura.
+  // Não é versionado (ver .gitignore) - o CI roda `prisma:generate`.
+  output = "../src/generated/prisma"
+
+  // O projeto é CommonJS. Sem isto o gerador infere ESM, e os testes quebram:
+  // eles injetam o dublê com `dbClient.prisma = fake`, e namespace de módulo
+  // ESM é somente leitura.
+  moduleFormat        = "cjs"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "sqlite"
+  // A URL não mora mais aqui: o Prisma 7 a lê do `prisma.config.ts` (para o
+  // Migrate) e do adaptador passado ao PrismaClient (em runtime, ver
+  // src/db/client.ts).
+  //
+  // É um caminho de arquivo (`file:./dados/whatsapp-suporte.db`), não um
+  // servidor. Quem resolve esse caminho para absoluto - para o CLI e o runtime
+  // nunca abrirem arquivos diferentes por causa do diretório de trabalho - é
+  // `src/db/caminho.ts`.
+}
+
+// A ordem aqui e a de `proximaEtapa` (conversation/flows.ts) sao a mesma coisa
+// dita duas vezes; `categoria` entra ANTES de `nome` porque e a primeira
+// pergunta depois da saudacao - e o valor guardado durante ela nao e um campo de
+// texto, e um no da arvore de `Categoria`.
+enum Etapa {
+  categoria
+  nome
+  resumo
+  descricao
+  confirmacao
+}
+
+// As situações pelas quais um chamado passa - e as colunas do quadro, que usam
+// literalmente estes valores como id (ver `columns` em activity-dashboard/data.js).
+//
+// `aguardando_resposta` e `fechado` entraram com a classificação. As duas cobrem
+// estados que antes eram indistinguíveis de outra coisa:
+//
+//   - `aguardando_resposta` é o chamado parado por FALTA DE RESPOSTA DE QUEM
+//     PEDIU, e não por falta de atendimento. Sem ele, o chamado ficava em
+//     `em_andamento` e o tempo de espera do solicitante entrava na conta da
+//     equipe, que é exatamente o número que o SLA não deve punir.
+//   - `fechado` é o encerramento ADMINISTRATIVO depois de resolvido (avaliado,
+//     sem retorno do solicitante, contabilizado). `resolvido` continua sendo "o
+//     problema acabou"; misturar os dois fazia "resolvido" significar duas coisas
+//     e a avaliação pós-fechamento não ter momento próprio para existir.
+//
+// A ordem aqui é a do ciclo de vida, e é a ordem em que as colunas aparecem no
+// quadro. `cancelado` fica no fim porque é saída, não etapa.
+enum Situacao {
+  aberto
+  em_andamento
+  aguardando_resposta
+  resolvido
+  fechado
+  cancelado
+}
+
+// Prioridade TÉCNICA: em que ordem a equipe puxa o chamado da fila.
+//
+// Vive separada de `UrgenciaComercial`, e a separação foi pedida com estas
+// palavras: "loja parada é diferente de dúvida sobre material". Um chamado pode
+// ser tecnicamente simples e comercialmente crítico ao mesmo tempo - com um
+// campo só, uma das duas leituras mente.
+//
+// `media` é o default porque é o único valor que não afirma nada: nem "pode
+// esperar" nem "pare o que está fazendo". Chamado que nasce da conversa no
+// WhatsApp não passa por ninguém que decida isso, e nascer `alta` ou `baixa`
+// seria o bot opinando sobre a fila.
+enum Prioridade {
+  baixa
+  media
+  alta
+  urgente
+}
+
+// Interno ou de franquia. É o DISCRIMINADOR do chamado: é ele que decide qual
+// dos dois blocos de campos específicos se aplica.
+//
+// Nulo é estado legítimo, não esquecimento. Quem abre pelo WhatsApp não responde
+// isso - o fluxo da conversa não ganhou pergunta nova de propósito, para não
+// custar mais uma mensagem a todo atendimento -, então o chamado nasce sem tipo e
+// um atendente classifica no painel. A alternativa era o bot adivinhar, e
+// adivinhar aqui joga o chamado no formulário errado.
+enum TipoChamado {
+  interno
+  franquia
+}
+
+// Por onde a pessoa CHEGOU até o atendimento.
+//
+// Não é a mesma coisa que `Origem`, e as duas colunas coexistem porque
+// respondem perguntas diferentes:
+//
+//   - `Origem` é técnica: por qual PORTA a linha do banco nasceu (a conversa do
+//     bot ou o formulário do painel). É ela que diz se existe telefone, sessão e
+//     log de conversa.
+//   - `Canal` é de negócio: por onde o pedido veio. Um chamado digitado no painel
+//     por quem atendeu o telefone tem `origem = painel` e `canal = telefone`.
+//
+// Juntar as duas faria todo chamado registrado à mão contar como "presencial" no
+// relatório, que é falso na maioria dos casos.
+enum Canal {
+  whatsapp
+  email
+  telefone
+  presencial
+}
+
+// O que o solicitante interno está pedindo. Separa "não sei usar" de "está
+// quebrado" de "queria que fizesse mais" - três coisas que caem na mesma fila e
+// têm expectativa de prazo completamente diferente.
+enum TipoSolicitacao {
+  duvida
+  bug
+  melhoria
+  tarefa
+  projeto
+}
+
+// Quanto o problema atrapalha o negócio - a resposta a "está travando algo?".
+//
+// É uma escala, e não um booleano, porque a pergunta que o painel precisa
+// responder não é "trava ou não trava" e sim "trava mais que aquele outro".
+// `bloqueia_operacao` é o topo e existe para ser o critério de furar fila.
+enum Impacto {
+  sem_impacto
+  baixo
+  medio
+  alto
+  bloqueia_operacao
+}
+
+// Assunto do chamado de franquia, na linguagem da rede.
+//
+// É enum, e não tabela como `Categoria`, porque esta lista não é o menu que o
+// cliente lê no WhatsApp: ela é a chave de leitura dos relatórios da franqueadora
+// e mudar um valor aqui muda o significado do histórico. Precisa de migração
+// justamente para que ninguém a reescreva sem perceber.
+enum TipoFranquia {
+  financeiro
+  suprimentos
+  sistema_pdv
+  treinamento
+  manutencao_predial
+  marketing_local
+  juridico_contrato
+}
+
+// Urgência COMERCIAL: o quanto a loja está sangrando enquanto o chamado espera.
+//
+// Escala própria, separada de `Prioridade`, porque mede outra coisa: quanto o
+// atraso custa ao franqueado, e não em que ordem a equipe técnica trabalha.
+// `loja_parada` é o topo e é o caso que o pedido nomeou.
+enum UrgenciaComercial {
+  rotina
+  atencao
+  loja_impactada
+  loja_parada
+}
+
+enum Remetente {
+  usuario
+  sistema
+}
+
+// De onde o chamado veio. `whatsapp` é o fluxo de conversa; `painel` é uma tarefa
+// criada à mão por quem atende.
+//
+// A distinção existe porque tarefa não tem telefone, e telefone é o que amarra um
+// chamado a uma conversa: sem ele não há sessão, não há `Mensagem`, e notificar o
+// solicitante é impossível — ver `mudarSituacao` em internal/chamados.ts, que
+// recusa o aviso quando não há para quem enviar.
+//
+// O `default` é `whatsapp` e não é neutralidade: toda linha que existia antes
+// desta coluna veio da conversa, então o padrão faz a migração não precisar de
+// UPDATE nenhum.
+enum Origem {
+  whatsapp
+  painel
+}
+
+// Assunto do chamado: o que o menu numerado da conversa oferece e o que separa
+// os dados para o dashboard.
+//
+// E TABELA, e nao mais um `enum`, por uma razao concreta: a lista veio dos
+// grupos de atendimento da empresa e muda por decisao de negocio (entra um
+// canal novo, um deixa de existir, o nome de exibicao e reescrito). Enum do
+// Prisma so muda com migracao e deploy; tabela muda no painel, por quem atende.
+//
+// A auto-relacao `pai`/`filhas` e a arvore: uma categoria pode ser um assunto
+// guarda-chuva com sub-assuntos embaixo. O menu do WhatsApp desce um nivel por
+// vez (ver conversation/categorias.ts) e o `Chamado` guarda a FOLHA escolhida -
+// o caminho ate a raiz e reconstruido pela arvore, entao mudar o pai depois nao
+// reescreve chamado nenhum.
+model Categoria {
+  id Int @id @default(autoincrement())
+
+  // Identificador estavel para integracao e para os testes: o `nome` e o
+  // `rotulo` sao editaveis no painel e vao mudar, o `codigo` nao. E o que
+  // permite um relatorio externo casar categoria por chave e nao por texto.
+  codigo String @unique
+
+  // `nome` e o nome interno (a coluna "Nome" da tela de grupos de chat);
+  // `rotulo` e o "Nome para exibicao", que e o que o usuario le no WhatsApp.
+  // Sao dois porque na pratica divergem: "PROBLEMAS RELACIONADOS AO SISTEMA
+  // VETOR" internamente, "SUPORTE AO SISTEMA VETOR" para quem escolhe.
+  nome   String
+  rotulo String
+
+  // Posicao no menu. NAO e o numero que o usuario digita: o numero e a posicao
+  // dentro da lista de irmas ATIVAS (1..N, sem buracos), calculada na hora de
+  // montar o menu. Desativar uma categoria nao pode deslocar a numeracao para
+  // um estado com furo, e reordenar no painel nao pode exigir renumerar tudo.
+  ordem Int
+
+  // Desativar em vez de apagar: chamado antigo continua apontando para ela, e o
+  // dashboard continua somando o historico. Apagar de verdade so quando nenhum
+  // chamado usa (ver DELETE em internal/categorias.ts).
+  ativa Boolean @default(true)
+
+  // Se o assunto aparece no menu do WhatsApp. `false` e o ASSUNTO DE USO INTERNO:
+  // existe, classifica chamado e soma no relatorio, mas nunca e oferecido a quem
+  // escreve para o bot.
+  //
+  // E um EIXO SEPARADO de `ativa`, e nao um terceiro estado dela, porque as duas
+  // respondem perguntas diferentes:
+  //   - `ativa` = o assunto existe. Desativado, ele some de TODO lugar de
+  //     escolha (menu e painel) e so sobrevive nos chamados que ja o usam.
+  //   - `visivelNoWhatsapp` = quem pode escolher. Interno continua na lista do
+  //     painel para a TI classificar a mao - que e o motivo de ele existir.
+  // Juntar as duas num campo so custaria o caso que motivou isto: assunto vivo,
+  // usado todo dia pela equipe, invisivel para o cliente.
+  //
+  // Nao ha cascata para as filhas, e nao precisa: o menu desce um nivel por vez
+  // (ver `filhasNoMenu` em conversation/categorias.ts), entao um pai fora do menu
+  // ja torna a subarvore inteira inalcancavel na conversa. O painel MOSTRA isso
+  // na linha da filha em vez de reescrever o campo dela - assim, religar o pai
+  // devolve o ramo inteiro sem ter que lembrar o que estava marcado antes.
+  //
+  // O `default` e `true` porque toda categoria que existia antes desta coluna
+  // era oferecida no menu: o padrao faz a migracao nao precisar de UPDATE.
+  //
+  // NAO vale para o portal de abertura: quem for filtrar la decide por conta
+  // propria, e o nome da coluna diz exatamente o canal que ela governa.
+  visivelNoWhatsapp Boolean @default(true)
+
+  paiId  Int?
+  pai    Categoria?  @relation("ArvoreCategorias", fields: [paiId], references: [id], onDelete: SetNull)
+  filhas Categoria[] @relation("ArvoreCategorias")
+
+  chamados Chamado[]
+  sessoes  SessaoConversa[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  // Serve exatamente a consulta que monta o menu: filtra por `ativa` e
+  // `visivelNoWhatsapp` e ja devolve na ordem, sem sort. As duas colunas vem
+  // antes de `ordem` porque sao as igualdades; `ordem` fecha so a ordenacao.
+  @@index([ativa, visivelNoWhatsapp, ordem])
+  @@index([paiId])
+}
+
+// Setores da empresa: TI, Financeiro, Operacoes, Marketing, Manutencao, RH e o
+// que mais a rede tiver. E a lista que responde "de quem e esse chamado".
+//
+// E TABELA e nao enum, pela mesma razao de `Categoria`: organograma muda por
+// decisao de negocio, e enum do Prisma so muda com migracao e deploy. Aqui um
+// setor novo entra pelo painel, por quem atende, e passa a valer no chamado
+// seguinte.
+//
+// NAO e a arvore de `Categoria`. As duas classificam o mesmo chamado por eixos
+// diferentes e as duas coexistem de proposito:
+//
+//   - `Categoria` e o ASSUNTO que o cliente escolhe no menu numerado do WhatsApp.
+//     Ela existe para o cliente ler, e o texto dela e escrito para ele.
+//   - `Setor` e a AREA INTERNA que atende. Ela nunca aparece na conversa, e o
+//     nome dela e escrito para quem trabalha aqui.
+//
+// Um chamado aponta para um setor DUAS vezes - `setorId` (quem resolve) e
+// `setorOrigemId` (quem pediu) -, e e por isso que existem duas relacoes
+// nomeadas em vez de uma lista `chamados`.
+model Setor {
+  id Int @id @default(autoincrement())
+
+  // Chave estavel para integracao e relatorio, como o `codigo` de `Categoria`: o
+  // `nome` e editavel na tela e vai mudar, este nao.
+  codigo String @unique
+
+  nome String
+
+  // Posicao nos seletores do painel. Nao e identificador: empatar e permitido, e
+  // o desempate na leitura e o `nome` (ver a rota de listagem).
+  ordem Int
+
+  // Desativar em vez de apagar, pelo mesmo motivo de `Categoria`: chamado antigo
+  // continua apontando para o setor, e o relatorio continua somando o historico.
+  // Apagar de verdade so quando nenhum chamado usa.
+  ativo Boolean @default(true)
+
+  chamados Chamado[] @relation("SetorResponsavel")
+  origens  Chamado[] @relation("SetorOrigem")
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  // Serve exatamente a consulta que monta os seletores: filtra por `ativo` e ja
+  // devolve na ordem, sem sort.
+  @@index([ativo, ordem])
+}
+
+// Controla o progresso da coleta de dados antes do chamado existir de fato.
+// Uma linha por telefone, apagada assim que o chamado é confirmado.
+model SessaoConversa {
+  telefone String  @id
+  etapa    Etapa   @default(categoria)
+  editando Boolean @default(false)
+
+  // Enquanto `etapa` for `categoria`, esta coluna é ONDE A PESSOA ESTÁ NA
+  // ÁRVORE - o nó cujas filhas o menu está oferecendo -, e não a escolha final.
+  // Ela vira a escolha no momento em que o nó não tem filha ativa e a etapa
+  // avança. Os dois significados não se misturam porque só um deles é possível
+  // por etapa; ver `decidirCategoria` em conversation/handler.ts.
+  //
+  // `SetNull` é o único comportamento aceitável aqui: apagar uma categoria no
+  // painel não pode derrubar a conversa de quem está no meio do formulário.
+  categoriaId Int?
+  categoria   Categoria? @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
+
+  nome         String?
+  resumo       String?
+  descricao    String?
+  // Marca o início desta coleta. Serve para vincular ao chamado apenas as
+  // mensagens desta conversa, e não todo o histórico do telefone.
+  //
+  // Sobre como o SQLite guarda data - e por que a armadilha de fuso que
+  // existia no Postgres não existe aqui: ver o comentário no model Mensagem.
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  // Sessão abandonada guarda nome/resumo/descrição - dado pessoal - até ser
+  // varrida por `limparSessoesExpiradas`. O índice é o que torna essa varredura
+  // barata mesmo com a tabela grande.
+  @@index([atualizadoEm])
+}
+
+model Chamado {
+  id   Int    @id @default(autoincrement())
+  nome String
+
+  // Nulo em tarefa criada no painel, e só nela. Era `String` NOT NULL quando o
+  // único jeito de um chamado nascer era pela conversa no WhatsApp.
+  //
+  // O que isto NÃO afrouxa: o fluxo de conversa continua sempre preenchendo
+  // (handler.ts monta o chamado a partir da sessão, que é indexada por telefone),
+  // e `esquecerTitular` da retenção filtra por telefone — tarefa simplesmente
+  // nunca casa, que é o comportamento correto: ela não tem titular.
+  telefone String?
+
+  origem Origem @default(whatsapp)
+
+  // A categoria escolhida no menu numerado da conversa, ou definida à mão no
+  // painel. Nula em três casos legítimos: chamado aberto antes desta coluna
+  // existir, tarefa criada no painel sem escolher assunto, e categoria apagada
+  // depois (`SetNull`). O dashboard trata os três como "sem categoria" em vez
+  // de descartar a linha - chamado sem assunto continua sendo atendimento.
+  categoriaId Int?
+  categoria   Categoria? @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
+
+  // --- Marcos de SLA ------------------------------------------------------
+  // `dataAbertura` já era o início; faltavam os dois instantes que fecham as
+  // duas contas que um suporte mede: quanto tempo até ALGUÉM PEGAR o chamado, e
+  // quanto tempo até ele ser RESOLVIDO.
+  //
+  // São colunas, e não um `SELECT` sobre `MudancaSituacao` - que registra o
+  // mesmo evento e continua sendo a auditoria. A diferença é de custo e de
+  // significado: derivar exigiria varrer o histórico inteiro a cada consulta do
+  // painel, e "primeiro atendimento" é uma REGRA (a primeira saída de `aberto`,
+  // que não se repete se o chamado reabrir) que ficaria reimplementada em cada
+  // consumidor. Aqui ela é aplicada em UM lugar: `alterarSituacao`.
+  //
+  // Nulo quando o marco ainda não aconteceu. `resolvidoEm` volta a ser nulo se o
+  // chamado sair de `resolvido`, porque chamado reaberto não está resolvido - e
+  // sem isso a média de tempo de resolução contaria uma resolução desfeita.
+  dataAbertura          DateTime  @default(now())
+  primeiroAtendimentoEm DateTime?
+  resolvidoEm           DateTime?
+
+  resumo       String
+  descricao    String
+  situacao     Situacao          @default(aberto)
+  atualizadoEm DateTime          @updatedAt
+  mensagens    Mensagem[]
+  mudancas     MudancaSituacao[]
+
+  // --- Classificacao comum ------------------------------------------------
+  // Vale para os dois tipos de chamado. O que e especifico de um deles mora nos
+  // dois blocos mais abaixo, e o `tipo` e o que decide qual deles se aplica.
+
+  // O discriminador. Nulo ate alguem classificar - ver o comentario do enum.
+  tipo TipoChamado?
+
+  // O SETOR RESPONSAVEL: quem resolve. E o campo que o pedido chamou de
+  // "categoria (TI, financeiro, operacoes, marketing, manutencao, RH)".
+  //
+  // Nao se confunde com `categoriaId`, e e por isso que sao duas colunas:
+  // `Categoria` e o ASSUNTO que o cliente escolhe no menu do WhatsApp ("SUPORTE
+  // AO SISTEMA VETOR"); `Setor` e a AREA DA EMPRESA que vai atender. O mesmo
+  // assunto pode cair em setores diferentes conforme o caso, e um setor atende
+  // varios assuntos - juntar os dois num campo perderia uma das duas leituras.
+  setorId Int?
+  setor   Setor? @relation("SetorResponsavel", fields: [setorId], references: [id], onDelete: SetNull)
+
+  prioridade Prioridade @default(media)
+
+  // Por onde o pedido chegou. `whatsapp` de default pelo mesmo motivo de
+  // `origem`: toda linha que existia antes desta coluna veio da conversa, entao o
+  // padrao dispensa UPDATE na migracao.
+  canal Canal @default(whatsapp)
+
+  // Contato do solicitante COMO FOI INFORMADO - e-mail, ramal, telefone
+  // comercial. E campo de texto de proposito: em chamado registrado a mao o que
+  // se tem e "ramal 402" ou "maria@...", e nao um numero de WhatsApp.
+  //
+  // NAO substitui `telefone`, que continua sendo o titular da conversa do
+  // WhatsApp e a chave de `esquecerTitular`. Este aqui e dado de contato digitado
+  // pelo atendente, e por isso nunca e usado para enviar mensagem: mandar para um
+  // campo livre seria despachar para um endereco que ninguem validou.
+  contato String?
+
+  // Quem esta atendendo, apontando para o cadastro de pessoas do painel.
+  //
+  // `SetNull` e nao `Cascade`: tirar alguem do cadastro nao pode apagar o
+  // chamado que estava com ela. O chamado volta a ficar sem responsavel, que e o
+  // estado correto - e e o que a rota DELETE de pessoa registra no log.
+  responsavelId Int?
+  responsavel   Pessoa? @relation(fields: [responsavelId], references: [id], onDelete: SetNull)
+
+  // Prazo de SLA: quando este chamado DEVERIA estar resolvido.
+  //
+  // E uma data gravada, e nao um calculo em cima de `dataAbertura` + prazo do
+  // setor, porque prazo se negocia: o painel deixa esticar o de um chamado
+  // especifico sem mexer na regra dos outros. Nulo = sem prazo combinado, que e
+  // diferente de prazo vencido e precisa aparecer diferente na tela.
+  //
+  // A data de CONCLUSAO continua sendo `resolvidoEm`, logo acima - nao ha uma
+  // terceira coluna para isso.
+  prazoEm DateTime?
+
+  // --- Bloco interno ------------------------------------------------------
+  // So faz sentido quando `tipo = interno`. Ficam nulos nos outros casos em vez
+  // de morar numa tabela separada: sao 6 colunas escalares num banco de um
+  // arquivo, e a juncao obrigatoria em toda leitura do painel custaria mais do
+  // que as colunas nulas ocupam.
+
+  // O setor que ABRIU o chamado, que e outra pergunta que `setorId`: um pedido do
+  // Financeiro para o TI tem origem Financeiro e responsavel TI. Com uma coluna
+  // so, o relatorio "quem mais nos demanda" e o "quem mais atende" viram o mesmo
+  // numero.
+  setorOrigemId Int?
+  setorOrigem   Setor? @relation("SetorOrigem", fields: [setorOrigemId], references: [id], onDelete: SetNull)
+
+  tipoSolicitacao TipoSolicitacao?
+  impacto         Impacto?
+
+  // Qual sistema ou processo esta afetado ("Vetor", "fechamento de caixa"). Texto
+  // livre e nao FK: a lista de sistemas da empresa nao existe em lugar nenhum
+  // deste banco, e inventar uma tabela vazia para ela seria pedir cadastro antes
+  // de o campo poder ser usado.
+  sistemaAfetado String?
+
+  // Em MINUTOS, os dois. Opcionais - o pedido os marcou como tais - e servem uma
+  // conta so: estimado x gasto. Guardar em minutos (e nao "2h30" como texto) e o
+  // que permite somar; a tela formata na hora de mostrar.
+  tempoEstimadoMin Int?
+  tempoGastoMin    Int?
+
+  // --- Bloco franquia ----------------------------------------------------
+  // So faz sentido quando `tipo = franquia`, pelo mesmo desenho do bloco acima.
+
+  // Codigo e nome da unidade. Sao dois campos de texto, e nao uma FK para uma
+  // tabela `Franquia` que este projeto nao tem: a rede e cadastrada em OUTRO
+  // sistema, e uma tabela local seria uma segunda verdade sobre quais lojas
+  // existem. Quando houver integracao, isto vira FK numa migracao propria.
+  franquiaCodigo String?
+  franquiaNome   String?
+
+  franqueadoNome    String?
+  franqueadoContato String?
+
+  // Regiao/cidade da unidade, para agrupar chamado por praca.
+  localizacao String?
+
+  tipoFranquia TipoFranquia?
+
+  // "Afeta atendimento ao cliente final?" - loja parada, sistema fora do ar.
+  //
+  // Booleano com default `false`, e nao nulavel: a pergunta tem resposta em todo
+  // chamado de franquia, e "nao informado" viraria na pratica "nao afeta" na
+  // primeira soma do relatorio. Melhor que o default seja explicito.
+  afetaAtendimento Boolean @default(false)
+
+  // Custo/reembolso. `envolveCusto` e a chave que liga os outros dois: sem ela,
+  // valor nulo seria ambiguo entre "nao envolve dinheiro" e "envolve, mas ninguem
+  // estimou ainda" - e sao coisas diferentes para quem aprova.
+  envolveCusto Boolean @default(false)
+
+  // Em CENTAVOS, inteiro. Dinheiro em float acumula erro de arredondamento, e
+  // este valor entra em soma de aprovacao. A tela divide por 100 para mostrar.
+  valorEstimadoCentavos Int?
+
+  precisaAprovacao Boolean @default(false)
+
+  urgenciaComercial UrgenciaComercial?
+
+  // --- Avaliacao pos-fechamento ------------------------------------------
+  // Preenchida DEPOIS do encerramento, por quem pediu o chamado. Nota de 1 a 5 -
+  // a faixa e conferida na rota, porque o SQLite nao tem CHECK que o Prisma
+  // declare - e o comentario e opcional: nota sem texto continua sendo avaliacao.
+  //
+  // `avaliadoEm` existe para distinguir "ainda nao avaliou" de "avaliou e nao
+  // escreveu nada", que com dois campos nulos seria indistinguivel.
+  avaliacaoNota       Int?
+  avaliacaoComentario String?
+  avaliadoEm          DateTime?
+
+  // --- Filhos -------------------------------------------------------------
+  comentarios Comentario[]
+  anexos      Anexo[]
+  tags        Tag[]
+
+  // As duas pontas da dependencia, na MESMA tabela `Dependencia`. Os nomes de
+  // relacao sao o que diz qual ponta e qual: `bloqueadoPor` lista as linhas em
+  // que ESTE chamado e o travado; `bloqueia`, as em que ele e o que trava.
+  bloqueadoPor Dependencia[] @relation("ChamadoBloqueado")
+  bloqueia     Dependencia[] @relation("ChamadoBloqueador")
+
+  @@index([situacao])
+  @@index([telefone])
+  // A view de cards ordena por `dataAbertura` e a retenção filtra por ela.
+  @@index([dataAbertura])
+  // O dashboard agrupa por categoria e o DELETE de categoria conta os chamados
+  // que a usam; sem índice, as duas viram varredura da tabela inteira.
+  @@index([categoriaId])
+  // Serve a janela do dashboard ("resolvidos entre X e Y").
+  @@index([resolvidoEm])
+  // Os tres sao FK: a rota que apaga um setor ou uma pessoa precisa CONTAR
+  // quantos chamados apontam para ela antes de decidir, e sem indice isso e
+  // varredura da tabela inteira a cada tentativa.
+  @@index([setorId])
+  @@index([setorOrigemId])
+  @@index([responsavelId])
+  // Serve a pergunta "o que vence primeiro", que e como uma fila com SLA e lida.
+  @@index([prazoEm])
+  // O quadro filtra por tipo, e os dois formularios de detalhe divergem por ele.
+  @@index([tipo])
+}
+
+// Log bruto de tudo que foi trocado, inclusive antes do chamado ser criado
+// (por isso chamadoId é opcional - é preenchido quando o chamado é confirmado).
+model Mensagem {
+  id        Int       @id @default(autoincrement())
+  chamadoId Int?
+  telefone  String
+  chamado   Chamado?  @relation(fields: [chamadoId], references: [id])
+  remetente Remetente
+  texto     String
+
+  // Id da mensagem no WhatsApp: o `key.id` que a Evolution entrega (já foi o
+  // `wamid.*` da Meta — mudou a forma, não o papel). A entrega de webhook é
+  // "pelo menos uma vez": a mesma mensagem pode chegar duas vezes. O índice
+  // único faz a segunda tentativa falhar, e é assim que descartamos a duplicata
+  // sem avançar o fluxo duas vezes.
+  // Nulo nas mensagens de saída (o SQLite, como o Postgres, permite vários NULL
+  // sob UNIQUE - dois NULL nunca são considerados iguais).
+  whatsappMessageId String? @unique
+
+  // No SQLite não existe tipo de data: a coluna é declarada `DATETIME` e o
+  // Prisma grava TEXTO ISO-8601 com o deslocamento explícito, sempre em UTC -
+  // `2026-08-27T19:57:00.604+00:00`. Não há fuso de sessão para herdar, e é por
+  // isso que este schema não tem mais o `@db.Timestamptz(3)` que TODA coluna de
+  // data carregava no Postgres: lá, `TIMESTAMP` sem fuso comparado com `now()`
+  // era reinterpretado como hora LOCAL e, em UTC-3, deixou o varredor da outbox
+  // inerte por 3h (a migração `20260817190000_datas_com_fuso`, hoje só no
+  // histórico do git, existia para corrigir isso).
+  //
+  // O que a troca de banco NÃO apagou: SQL crua continua sem poder comparar
+  // esta coluna com data como TEXTO. `datetime('now')` devolve
+  // `2026-08-27 19:57:00` (espaço, sem milissegundo, sem offset), e comparar
+  // string com string diz que a linha é MAIOR que agora - o mesmo sintoma de
+  // antes, por outro motivo. A regra em SQL crua é converter as duas pontas
+  // para número com `unixepoch(coluna, 'subsec')`; ver `reservarLote` em
+  // whatsapp/outbox.ts.
+  timestamp DateTime @default(now())
+
+  // --- Outbox (só para remetente = sistema) ---
+  // A linha de saída é gravada DENTRO da mesma transação que muda o estado da
+  // conversa. Se o envio falhar depois do commit, ela fica pendente
+  // (`enviadaEm IS NULL`) e o varredor tenta de novo - é o que evita o usuário
+  // ficar esperando uma pergunta que nunca chegou.
+  // Corpo exato a ser postado na Evolution, para reenvio fiel:
+  // `{ number, text }`. Linha gravada antes da migração guarda o formato da
+  // Meta; o varredor reconstrói a partir de `telefone` e `texto` em vez de
+  // deixá-la morrer contra um 400 (ver `corpoParaEnvio` em whatsapp/outbox.ts).
+  payload    Json?
+  enviadaEm  DateTime?
+  tentativas Int       @default(0)
+
+  // Quando a última tentativa de envio aconteceu. Sem esta coluna o varredor só
+  // tinha `timestamp` (a criação, que nunca muda) para decidir se já era hora de
+  // tentar de novo - então a linha ficava elegível em TODA varredura e as
+  // tentativas se esgotavam em poucos minutos. Com ela o intervalo entre
+  // tentativas cresce e a mensagem sobrevive a uma queda longa da Evolution.
+  ultimaTentativaEm DateTime?
+
+  @@index([telefone])
+  @@index([chamadoId])
+  @@index([telefone, timestamp])
+  // Serve exatamente a busca do varredor: filtra remetente + `enviadaEm IS NULL`
+  // e já devolve na ordem de `timestamp`, sem sort e parando no LIMIT.
+  @@index([remetente, enviadaEm, timestamp])
+}
+
+// Auditoria de atendimento: quem mudou o quê, quando.
+//
+// Antes isto vivia só na linha de log da aplicação - que rotaciona, não é
+// consultável por chamado e some junto com o contêiner. `atualizadoEm` no
+// Chamado diz QUANDO mudou pela última vez, mas não DE onde para onde nem por
+// quem: um chamado que foi `resolvido` e voltou para `aberto` era
+// indistinguível de um que nunca saiu de `aberto`.
+//
+// `onDelete: Cascade` de propósito: é registro filho do chamado e não tem
+// prazo de retenção próprio, então tem que sair junto quando a retenção
+// (LGPD) apaga o chamado - sem isso sobraria `autor` órfão no banco para
+// sempre, e `apagarChamadosAntigos` passaria a falhar na FK.
+model MudancaSituacao {
+  id        Int      @id @default(autoincrement())
+  chamadoId Int
+  chamado   Chamado  @relation(fields: [chamadoId], references: [id], onDelete: Cascade)
+  de        Situacao
+  para      Situacao
+
+  // Quem fez a mudança, informado por quem chama a API (o painel manda o nome
+  // do atendente). Opcional: uma integração que não tem esse dado continua
+  // funcionando, e a linha ainda registra o de/para.
+  autor String?
+
+  criadoEm DateTime @default(now())
+
+  // A consulta é sempre "o histórico DESTE chamado, do mais novo ao mais
+  // velho" - o índice serve o filtro e a ordenação de uma vez.
+  @@index([chamadoId, criadoEm])
+}
+
+// Cadastro de pessoas do painel: quem aparece nas bolhas de perfil.
+//
+// Mora no banco, e nao no navegador, porque a lista e COMPARTILHADA. Antes ela
+// vivia no `localStorage` de cada maquina (chave `painel-chamados.v1`), entao
+// cada atendente mantinha o seu proprio cadastro e nenhum via o do outro - o
+// oposto do que uma bolha de perfil serve para fazer.
+//
+// NAO e a lista de quem pode ENTRAR no painel: isso quem decide e o Entra ID,
+// na atribuicao do App Registration. Por isso aqui nao ha e-mail, identificador
+// de diretorio nem nada que sirva para autenticar - e cadastro de exibicao.
+//
+// Desde a classificacao de chamados existe relacao com `Chamado`: um chamado tem
+// RESPONSAVEL, e ele aponta para esta tabela (`Chamado.responsavelId`). O
+// comentario que ficava aqui dizia o contrario - "chamado nao tem responsavel,
+// so solicitante" - e era verdade enquanto a regra nao existia; ela passou a
+// existir, e a chave estrangeira veio com ela.
+//
+// O que NAO mudou: continua sendo cadastro de EXIBICAO, sem e-mail nem
+// identificador de diretorio. Ser responsavel por um chamado nao da acesso a
+// nada; quem entra no painel e o Entra ID que decide.
+model Pessoa {
+  id Int @id @default(autoincrement())
+
+  // Pode ser vazio: o painel cria a linha primeiro e nomeia depois, e a bolha
+  // ja sabe desenhar "?" enquanto nao ha nome (initials(), em app.js).
+  nome String
+
+  // Hexadecimal #RRGGBB, escolhido na tela. Guardada em vez de derivada do nome
+  // porque AQUI a cor e editavel - o avatar do solicitante, esse sim, tira a cor
+  // do proprio nome (corDoNome(), em app.js).
+  cor String
+
+  // --- Quem entrou pelo Entra ID -----------------------------------------
+  //
+  // O `oid` e o identificador do usuario no diretorio da Microsoft. E por ele
+  // que o login cria/reencontra o perfil: nome e e-mail mudam (casamento,
+  // troca de dominio, correcao de grafia), o oid nao. Casar por e-mail daria
+  // um perfil novo a cada mudanca desse tipo, e os chamados ficariam com o
+  // antigo.
+  //
+  // NULO em quem foi cadastrado a mao, pelo botao "+ Adicionar pessoa" - o
+  // cadastro manual continua valendo para quem atende e nao tem conta, ou para
+  // criar o perfil antes do primeiro login.
+  //
+  // Isto NAO autentica nada: quem decide quem entra e a atribuicao no App
+  // Registration do Entra (ver painel-entra.mjs). Aqui e so identificacao, para
+  // o perfil ser o mesmo entre sessoes.
+  oid   String? @unique
+  email String?
+
+  // Os chamados de que esta pessoa e a responsavel. `SetNull` do outro lado: sair
+  // do cadastro devolve os chamados para "sem responsavel", nao os apaga.
+  chamados Chamado[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  // A tela lista em ordem alfabetica; o indice serve essa consulta direto.
+  @@index([nome])
+}
+
+// Conversa da EQUIPE sobre o chamado: o "comentarios/historico (pra time trocar
+// info sem perder o rastro)" do pedido.
+//
+// Nao se confunde com `Mensagem`, e as duas tabelas coexistem porque tem
+// destinatarios diferentes:
+//
+//   - `Mensagem` e a conversa COM O SOLICITANTE, no WhatsApp. Tudo que entra la
+//     e enviado para uma pessoa de fora, e a tabela carrega outbox, id do
+//     tentativa de entrega.
+//   - `Comentario` e a nota INTERNA. Nunca sai deste banco, nunca vira mensagem,
+//     e por isso pode dizer o que a equipe precisa dizer.
+//
+// Escrever um comentario na tabela de mensagens teria despachado a nota interna
+// para o cliente na primeira varredura da outbox.
+//
+// `onDelete: Cascade` como `MudancaSituacao`: e registro filho do chamado, sem
+// prazo de retencao proprio, e sai junto quando a retencao (LGPD) apaga o
+// chamado.
+model Comentario {
+  id        Int     @id @default(autoincrement())
+  chamadoId Int
+  chamado   Chamado @relation(fields: [chamadoId], references: [id], onDelete: Cascade)
+
+  // Quem escreveu, informado por quem chama a rota (o painel manda o nome de
+  // quem entrou). Texto e nao FK para `Pessoa`: quem comenta pode nao estar no
+  // cadastro de exibicao, e um comentario nao pode ficar sem autor por causa
+  // disso. O mesmo desenho de `MudancaSituacao.autor`.
+  autor String?
+
+  texto String
+
+  criadoEm DateTime @default(now())
+
+  // A consulta e sempre "os comentarios DESTE chamado, do mais antigo para o
+  // mais novo" - e uma conversa, e conversa se le na ordem em que aconteceu.
+  @@index([chamadoId, criadoEm])
+}
+
+// Anexo do chamado: foto, print, documento.
+//
+// O binario mora DENTRO do SQLite, na coluna `conteudo`. E uma escolha com
+// contrapartida conhecida e foi feita de proposito: o banco deste projeto e um
+// arquivo unico que o `run.bat` copia e o backup leva inteiro, e uma pasta de
+// arquivos ao lado seria uma segunda coisa para sincronizar, com a chance de
+// existir linha sem arquivo e arquivo sem linha. O preco e o .db crescer com as
+// imagens - por isso o teto de tamanho e conferido na rota, nao aqui.
+//
+// `Cascade` pelo mesmo motivo de `Comentario`: anexo de chamado apagado nao pode
+// sobreviver ao chamado, e um print de tela costuma ser dado pessoal.
+model Anexo {
+  id        Int     @id @default(autoincrement())
+  chamadoId Int
+  chamado   Chamado @relation(fields: [chamadoId], references: [id], onDelete: Cascade)
+
+  // Nome como veio da maquina de quem enviou, so para a tela mostrar e o download
+  // sugerir. NUNCA e usado como caminho de arquivo - nao ha arquivo - e por isso
+  // nao ha travessia de diretorio a temer aqui.
+  nome String
+
+  // O content-type declarado no upload. Guardado porque e o que o download
+  // devolve; a rota mantem uma lista do que aceita.
+  mime String
+
+  // Tamanho em bytes. Redundante com `length(conteudo)` e gravado de proposito:
+  // a listagem de anexos mostra o tamanho de cada um, e sem esta coluna cada
+  // listagem teria de ler os BLOBs inteiros do disco so para dizer "2,4 MB".
+  bytes Int
+
+  // O binario. E o unico campo que a listagem NAO devolve: quem quer o conteudo
+  // pede o download de um anexo especifico.
+  conteudo Bytes
+
+  // Quem subiu, mesmo desenho de `Comentario.autor`.
+  enviadoPor String?
+
+  criadoEm DateTime @default(now())
+
+  @@index([chamadoId, criadoEm])
+}
+
+// Etiqueta livre, fora das listas fixas.
+//
+// Existe porque classificacao fechada sempre chega tarde: quando aparece um
+// assunto que ninguem previu ("black friday", "troca de maquininha"), criar setor
+// ou categoria para ele suja a lista que todo mundo ve. A tag e barata, some do
+// caminho de quem nao usa, e ainda agrupa o relatorio depois - que e exatamente o
+// que o pedido pediu.
+//
+// A relacao com `Chamado` e muitos-para-muitos IMPLICITA: o Prisma mantem a
+// tabela de juncao sozinho. Nao ha nada a guardar sobre a ligacao em si (nem
+// quem etiquetou, nem quando), e uma tabela explicita seria um modelo a manter
+// para carregar duas chaves.
+model Tag {
+  id Int @id @default(autoincrement())
+
+  // Normalizado em minusculas pela rota antes de gravar, e unico. Sem isso
+  // "PDV", "Pdv" e "pdv" viram tres etiquetas na tela e tres linhas no
+  // relatorio - o oposto de agrupar.
+  nome String @unique
+
+  chamados Chamado[]
+
+  criadoEm DateTime @default(now())
+}
+
+// "Dependencia de outra area (bloqueado por / bloqueia)".
+//
+// E ligacao entre CHAMADOS, e nao um campo de texto dizendo "esperando o
+// Financeiro". A diferenca aparece na hora que importa: quando o chamado que
+// travava e resolvido, quem estava travado por ele e localizavel por consulta,
+// em vez de depender de alguem lembrar.
+//
+// Uma linha significa: `bloqueado` esta parado esperando `bloqueador`. As duas
+// pontas caem na mesma tabela, e os nomes de relacao em `Chamado` sao o que
+// separa "quem me trava" de "quem eu travo".
+//
+// `Cascade` nas duas FKs: apagar qualquer uma das pontas apaga a ligacao. Sem
+// isso a retencao (LGPD) esbarraria na FK ao apagar um chamado antigo que
+// aparecia numa dependencia.
+model Dependencia {
+  id Int @id @default(autoincrement())
+
+  bloqueadoId Int
+  bloqueado   Chamado @relation("ChamadoBloqueado", fields: [bloqueadoId], references: [id], onDelete: Cascade)
+
+  bloqueadorId Int
+  bloqueador   Chamado @relation("ChamadoBloqueador", fields: [bloqueadorId], references: [id], onDelete: Cascade)
+
+  criadoEm DateTime @default(now())
+
+  // A mesma dependencia registrada duas vezes nao e informacao nova; e um par
+  // repetido na tela. O unico e o que impede o duplo clique de criar as duas.
+  //
+  // O que ele NAO impede: A bloquear B e B bloquear A ao mesmo tempo (sao dois
+  // pares diferentes). Esse ciclo e recusado na rota, onde da para olhar as duas
+  // pontas.
+  @@unique([bloqueadoId, bloqueadorId])
+  @@index([bloqueadorId])
+}
+
+// A identidade do painel e os rotulos do periodo: o que antes vivia no
+// localStorage de cada navegador.
+//
+// Por que sair do navegador: `Categoria`, `Setor` e `Pessoa` ja tinham migrado
+// para ca, e estes cinco campos ficaram sendo os unicos ajustaveis na tela que
+// NAO eram compartilhados. Dois atendentes na mesma instalacao podiam ver nomes
+// de projeto diferentes, e ninguem tinha como saber qual era "o" nome. Agora ha
+// uma resposta so.
+//
+// Linha unica, sempre id = 1. Nao e tabela de configuracao generica em
+// chave/valor de proposito: com colunas nomeadas, o `diasRestantes` e um
+// inteiro de verdade e um relatorio consegue ler `periodoRotulo` sem parsear
+// nada.
+//
+// Aqui houve, por um momento, uma coluna `areas` com os rotulos da secao
+// "Areas" do painel. Ela saiu junto com a secao: AREA e SETOR eram o mesmo
+// conceito (TI, Financeiro, Operacoes...), e `Setor` ja e tabela, com FK nos
+// chamados e filtro no quadro. Duas taxonomias para a mesma coisa divergem - a
+// pergunta "esse chamado e da area ou do setor de TI?" nao tem resposta boa.
+model ConfiguracaoPainel {
+  id Int @id @default(autoincrement())
+
+  // O que aparece na barra lateral e no caminho de navegacao.
+  nome  String @default("Chamados")
+  sigla String @default("CH")
+
+  // Os tres campos que antes nao apareciam em lugar nenhum da tela. Agora saem
+  // no cabecalho da aba Chamados, e sao strings livres porque e assim que os
+  // dashboards futuros vao querer le-los - sem enum, sem lista fechada.
+  periodoRotulo String @default("")
+  periodoTexto  String @default("")
+  diasRestantes Int    @default(0)
+
+  atualizadoEm DateTime @updatedAt
+}

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quadro · Chamados do WhatsApp</title>
+<!-- O .ico é 16x16 e serve a aba; o PNG de 192 é o que navegador e celular usam
+     quando querem um ícone grande (favorito, atalho na tela inicial). Sem o
+     segundo, o de 16 é esticado e a folha sai serrilhada. -->
+<link rel="icon" href="favicon.ico" sizes="16x16">
+<link rel="icon" type="image/png" href="marca.png" sizes="192x192">
+<link rel="apple-touch-icon" href="marca.png">
+<link rel="stylesheet" href="styles.css">
+<!-- Sem `defer` e antes de qualquer conteúdo: este script estampa o tema no
+     <html> ANTES do primeiro paint. Com defer, quem usa o tema escuro veria a
+     tela nascer clara e virar escura um quadro depois. -->
+<script src="tema.js"></script>
+</head>
+<body>
+
+<!-- ================= Navegação superior ================= -->
+<nav class="topnav">
+  <button class="icon-btn" id="menu-toggle" aria-label="Alternar barra lateral" aria-expanded="true">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+
+  <a class="topnav__logo" href="#">
+    <!-- A marca da Bio Mundo. `alt=""` porque o nome vem escrito ao lado, em
+         texto: repetir "Bio Mundo" no alt faria o leitor de tela dizer duas
+         vezes. Servida em 192px e desenhada em 24 para ficar nítida em tela de
+         alta densidade. -->
+    <img class="topnav__marca" src="marca.png" alt="" width="24" height="24" decoding="async">
+    Quadro de Chamados
+  </a>
+
+  <button class="nav-btn nav-btn--primary" id="create-issue">Criar</button>
+
+  <div class="topnav__search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <label class="sr-only" for="global-search">Pesquisar</label>
+    <input id="global-search" type="search" placeholder="Pesquisar">
+  </div>
+
+  <span class="topnav__spacer"></span>
+
+  <button class="icon-btn" aria-label="Notificações" data-soon="Você está em dia — sem novas notificações">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+  </button>
+  <!-- Troca de tema. Qual dos dois ícones aparece é decidido no CSS pelo
+       `data-theme` do <html>, não no JS: o ícone é função direta do tema, e
+       deixá-lo no CSS evita um segundo lugar onde ele poderia sair de sincronia.
+       O `aria-label`, que é texto, o app.js mantém em dia. -->
+  <button class="icon-btn tema-btn" id="tema-toggle" aria-label="Mudar para o tema escuro">
+    <svg class="tema-btn__escuro" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a6.8 6.8 0 0 0 10.8 10.8z"/></svg>
+    <svg class="tema-btn__claro" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></svg>
+  </button>
+  <button class="icon-btn" id="help-btn" aria-label="Ajuda">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.4v.4"/><path d="M12 17h.01"/></svg>
+  </button>
+  <!-- Com login pelo Entra ligado, o app.js troca iniciais, cor, título e a ação
+       desta bolha pelos dados de quem entrou. Sem login, ela fica como está. -->
+  <button class="avatar" id="conta-avatar" style="background:var(--acento)" title="Natan Ferreira" aria-label="Sua conta" data-soon="Perfil de Natan Ferreira — em breve">NF</button>
+</nav>
+
+<div class="layout">
+
+  <!-- ================= Barra lateral ================= -->
+  <aside class="sidebar">
+    <div class="sidebar__project">
+      <div class="sidebar__avatar" id="project-initials">PS</div>
+      <div>
+        <div class="sidebar__name" id="project-name">Projeto</div>
+        <div class="sidebar__type">Painel semanal</div>
+      </div>
+    </div>
+
+    <div class="sidebar__label">Principal</div>
+
+    <!-- Dashboard e Chamados são as duas visões do painel: gestão (números
+         agregados) e operação (a fila de trabalho). O clique é tratado no
+         mesmo despachante por rótulo que já existia em setupChrome(). -->
+    <a class="sidebar__item" href="#">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="7" width="4" height="13"/><rect x="17" y="3" width="4" height="17"/></svg>
+      Dashboard
+    </a>
+    <a class="sidebar__item is-active" href="#" aria-current="page">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>
+      Chamados
+    </a>
+
+    <div class="sidebar__label">Gestão</div>
+
+    <!--
+      Assuntos é a árvore de `Categoria`: o que o menu numerado do WhatsApp
+      oferece logo depois da saudação, e o que separa os números do resumo.
+      Editar aqui muda o menu na hora, sem migração e sem deploy - é por isso que
+      ele é tabela e não um enum do Prisma.
+    -->
+    <a class="sidebar__item" href="#">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5h6l2 2h10v12H3z"/><path d="M8 12h8"/></svg>
+      Assuntos
+    </a>
+
+    <!--
+      Setores é a lista de ÁREAS DA EMPRESA (TI, Financeiro, Operações...) — quem
+      atende o chamado. Não se confunde com Assuntos, logo acima: assunto é o que
+      o cliente escolhe no menu do WhatsApp, setor nunca aparece na conversa.
+      Editar aqui vale para todo mundo no chamado seguinte, sem migração.
+    -->
+    <a class="sidebar__item" href="#">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg>
+      Setores
+    </a>
+
+    <a class="sidebar__item" href="#">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M17 11a3 3 0 1 0-1-5.8"/><path d="M18 20a6 6 0 0 0-2-4.5"/></svg>
+      Pessoas
+    </a>
+    <a class="sidebar__item" href="#">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.2A1.6 1.6 0 0 0 7.5 19l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3 13.5H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.7 7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 2.7-1.1V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3z"/></svg>
+      Configurações do projeto
+    </a>
+  </aside>
+
+  <!-- ================= Conteúdo ================= -->
+  <main class="content">
+    <div class="breadcrumb">
+      <a href="#">Projetos</a> / <a href="#" id="breadcrumb-project">Projeto</a>
+    </div>
+
+    <section class="view is-active" id="view-chamados">
+      <div class="content__head">
+        <div class="content__head-title">
+          <h1>Chamados</h1>
+          <p class="content__head-sub">Acompanhamento e atendimento das solicitações</p>
+        </div>
+        <!-- Rótulo, período e dias restantes das Configurações. Fica oculto
+             enquanto os três estiverem vazios: chip em branco ao lado do título
+             só ocupa espaço. -->
+        <span class="sprint-chip" id="periodo-chip" hidden></span>
+        <button class="sprint-chip conn-status" id="conn-status" type="button" title="Estado da conexão — clique para trocar o token">—</button>
+        <span class="content__head-spacer"></span>
+
+        <label class="conn-toggle" title="Ao mover um chamado, enviar mensagem ao usuário no WhatsApp">
+          <input type="checkbox" id="conn-avisar">
+          <span>Avisar usuário ao mover</span>
+        </label>
+
+        <button class="nav-btn" id="conn-refresh">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6"/></svg>
+          Atualizar
+        </button>
+      </div>
+
+      <!-- Total / A fazer / Em andamento / Resolvidos — leitura instantânea da
+           fila, sem precisar contar coluna por coluna. Calculado no cliente
+           sobre os mesmos `issues` que alimentam o board, sem chamada extra. -->
+      <div class="kpi-strip" id="kpi-strip"></div>
+
+      <!-- Só aparece quando existe chamado 'aberto' sem 1º atendimento há mais
+           do limiar (ver LIMIAR_ATENCAO_MS em app.js). Fala de TEMPO DE ESPERA:
+           é o chamado que ninguém pegou ainda, inclusive quando não há prazo
+           definido para o chip do cartão mostrar. -->
+      <div class="atencao" id="atencao-necessaria" hidden></div>
+
+      <div class="toolbar">
+        <div class="filter-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <label class="sr-only" for="filter-text">Filtrar chamados</label>
+          <input id="filter-text" type="search" placeholder="Número, resumo, solicitante ou descrição">
+        </div>
+
+        <!--
+          Filtro por ASSUNTO. É o único filtro de campo que sobrou na tela porque é
+          o único que existe no banco: `Chamado.categoriaId`. As opções são
+          preenchidas pelo app.js com a árvore vinda de /internal/categorias.
+        -->
+        <label class="sr-only" for="filter-categoria">Filtrar por assunto</label>
+        <select class="select" id="filter-categoria"><option value="all">Assunto</option></select>
+
+        <!--
+          Os filtros abaixo entraram com a classificação, e cada um corresponde a
+          uma COLUNA que existe de verdade em `Chamado` — a mesma regra de sempre:
+          filtro que não tem coluna atrás filtra propriedade inventada.
+
+          `all` = sem filtro; `none` = só os que não têm o campo preenchido (que é
+          uma pergunta real numa fila: "o que ainda ninguém classificou").
+        -->
+        <label class="sr-only" for="filter-setor">Filtrar por setor</label>
+        <select class="select" id="filter-setor"><option value="all">Setor</option></select>
+
+        <label class="sr-only" for="filter-tipo">Filtrar por tipo</label>
+        <select class="select" id="filter-tipo"><option value="all">Tipo</option></select>
+
+        <label class="sr-only" for="filter-prioridade">Filtrar por prioridade</label>
+        <select class="select" id="filter-prioridade"><option value="all">Prioridade</option></select>
+
+        <!--
+          Responsável: as bolhas de perfil voltaram a ter função. Antes ficavam
+          ocultas porque chamado não tinha responsável; agora tem
+          (`Chamado.responsavelId` -> `Pessoa`).
+        -->
+        <div class="avatar-group" id="avatar-group"></div>
+
+        <!--
+          Sobrou do quadro genérico e continua oculto: `filter-type` foi
+          substituído por `filter-tipo` acima. O elemento permanece porque o
+          app.js o referencia ao limpar os filtros.
+
+          O `filter-epic` (área) saiu de vez: ÁREA e SETOR eram o mesmo
+          conceito, e o filtro de setor logo acima é o que ficou.
+        -->
+        <select class="select" id="filter-type" hidden><option value="all">Tipo</option></select>
+
+        <button class="link-btn" id="clear-filters">Limpar</button>
+
+        <span class="toolbar__spacer"></span>
+        <span class="card__meta" id="issue-count"></span>
+      </div>
+
+      <div class="board" id="board"></div>
+    </section>
+
+    <!-- ================= Dashboard =================
+         Mesma rota que já existia por trás do antigo modal "Resumo"
+         (/internal/metricas, agregada no servidor). Vira visão de página em
+         vez de modal - as funções `metricasHtml`/`atualizarMetricas` em
+         app.js não mudam de lógica, só de onde escrevem. -->
+    <section class="view" id="view-dashboard">
+      <div class="content__head">
+        <div class="content__head-title">
+          <h1>Dashboard</h1>
+          <p class="content__head-sub">Visão geral do atendimento</p>
+        </div>
+        <span class="content__head-spacer"></span>
+        <label class="sr-only" for="metricas-periodo">Período</label>
+        <select class="select" id="metricas-periodo">
+          <option value="7">Últimos 7 dias</option>
+          <option value="30" selected>Últimos 30 dias</option>
+          <option value="90">Últimos 90 dias</option>
+          <option value="0">Todo o histórico</option>
+        </select>
+      </div>
+      <div class="dashboard-body" id="metricas-body"></div>
+    </section>
+  </main>
+</div>
+
+<!-- ================= Modal de configurações ================= -->
+<div class="modal-backdrop" id="settings-backdrop"></div>
+<div class="modal" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true">
+  <div class="modal__dialog">
+    <header class="modal__head">
+      <span class="modal__heading" id="settings-title">Configurações</span>
+      <span class="topnav__spacer"></span>
+      <button class="icon-btn" id="settings-close" aria-label="Fechar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="modal__body">
+      <div class="settings-section">
+        <div class="settings-label">Projeto</div>
+        <label class="field"><span class="field__label">Nome</span><input class="field__input" id="set-name" type="text"></label>
+        <label class="field"><span class="field__label">Sigla</span><input class="field__input" id="set-key" type="text" maxlength="4"></label>
+      </div>
+      <div class="settings-section">
+        <div class="settings-label">Semana</div>
+        <label class="field"><span class="field__label">Rótulo</span><input class="field__input" id="set-sprint" type="text"></label>
+        <label class="field"><span class="field__label">Período</span><input class="field__input" id="set-range" type="text"></label>
+        <label class="field"><span class="field__label">Dias restantes</span><input class="field__input field__input--num" id="set-days" type="number" min="0"></label>
+      </div>
+      <!--
+        A seção "Áreas" saiu daqui. ÁREA e SETOR eram o mesmo conceito (TI,
+        Financeiro, Operações...), e quem classifica o chamado é o SETOR: ele é
+        tabela no banco, tem FK nos chamados, filtro no quadro, seletor no
+        detalhe e corte próprio no Dashboard. As áreas eram rótulos livres que
+        não classificavam nada.
+
+        Quem cadastra setor é a aba "Setores", na barra lateral.
+      -->
+    </div>
+    <footer class="modal__foot">
+      <button class="link-btn settings-reset" id="settings-reset">Restaurar padrão</button>
+      <span class="toolbar__spacer"></span>
+      <button class="nav-btn nav-btn--primary" id="settings-done">Concluir</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= Modal de ajuda ================= -->
+<div class="modal-backdrop" id="help-backdrop"></div>
+<div class="modal" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title" aria-hidden="true">
+  <div class="modal__dialog">
+    <header class="modal__head">
+      <span class="modal__heading" id="help-title">Como usar o painel</span>
+      <span class="topnav__spacer"></span>
+      <button class="icon-btn" id="help-close" aria-label="Fechar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="modal__body help-body">
+      <p>
+        Este painel mostra os chamados do banco de dados do bot de suporte. <strong>Todo
+        mundo que entra vê os mesmos chamados</strong>: nada do que aparece aqui fica
+        guardado no seu navegador — o quadro lê e escreve no banco, e a tela se
+        atualiza sozinha a cada 30 segundos.
+      </p>
+      <ul>
+        <li><strong>Criar</strong> abre o formulário de um chamado novo. Escolha o
+          <em>tipo</em> primeiro: ele decide se o formulário pede os campos de chamado
+          interno (setor de origem, sistema afetado, impacto) ou de franquia (unidade,
+          franqueado, custo, urgência comercial).</li>
+        <li><strong>Arraste</strong> os cartões entre as colunas para mudar a situação.
+          Com “Avisar usuário ao mover” ligado, o solicitante recebe mensagem no
+          WhatsApp — tarefa criada aqui não tem telefone, então não recebe nada.</li>
+        <li><strong>Clique</strong> em um cartão para ver e editar a classificação
+          completa, comentar, anexar arquivo, marcar dependência e avaliar. Cada campo
+          é gravado no banco assim que você sai dele.</li>
+        <li><strong>Filtre</strong> por texto, assunto, setor, tipo, prioridade ou
+          responsável na barra de ferramentas.</li>
+        <li><strong>Assuntos</strong> é o menu que o cliente lê no WhatsApp;
+          <strong>Setores</strong> são as áreas internas que atendem;
+          <strong>Pessoas</strong> é quem pode ser responsável. As três listas são
+          compartilhadas.</li>
+        <li><strong>Resumo</strong> mostra os números do período por assunto, por setor
+          e por tipo.</li>
+      </ul>
+      <div class="settings-label">Atalhos</div>
+      <dl class="help-keys">
+        <dt>Enter / Espaço</dt><dd>abrir a atividade em foco</dd>
+        <dt>Esc</dt><dd>fechar o painel aberto</dd>
+        <dt>Clique + arrastar</dt><dd>mover a atividade entre colunas</dd>
+      </dl>
+    </div>
+    <footer class="modal__foot">
+      <span class="toolbar__spacer"></span>
+      <button class="nav-btn nav-btn--primary" id="help-done">Entendi</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= Modal de pessoas ================= -->
+<div class="modal-backdrop" id="people-backdrop"></div>
+<div class="modal" id="people-modal" role="dialog" aria-modal="true" aria-labelledby="people-title" aria-hidden="true">
+  <div class="modal__dialog">
+    <header class="modal__head">
+      <span class="modal__heading" id="people-title">Pessoas</span>
+      <span class="topnav__spacer"></span>
+      <button class="icon-btn" id="people-close" aria-label="Fechar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="modal__body" id="people-body"></div>
+    <footer class="modal__foot">
+      <button class="nav-btn" id="people-add">+ Adicionar pessoa</button>
+      <span class="toolbar__spacer"></span>
+      <button class="nav-btn nav-btn--primary" id="people-done">Concluir</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= Modal de detalhes ================= -->
+<div class="modal-backdrop" id="token-backdrop"></div>
+<div class="modal modal--estreito" id="token-modal" role="dialog" aria-modal="true" aria-labelledby="token-title" aria-hidden="true">
+  <form id="token-form">
+    <header class="modal__head">
+      <span class="modal__heading" id="token-title">Conectar ao banco de chamados</span>
+    </header>
+    <div class="modal__body">
+      <p class="modal__nota">
+        O quadro lê os chamados pela API do bot de suporte. Cole o token de
+        acesso (<code>PAINEL_TOKEN</code>, ou <code>INTERNAL_API_TOKEN</code> se
+        aquele não estiver configurado).
+      </p>
+      <label class="field">
+        <span class="field__label">Token</span>
+        <input class="field__input" id="token-input" type="password" autocomplete="off" spellcheck="false" required>
+      </label>
+      <label class="conn-toggle">
+        <input type="checkbox" id="token-lembrar">
+        <span>Lembrar neste navegador</span>
+      </label>
+      <p class="modal__nota modal__nota--aviso">
+        Sem marcar, o token some ao fechar a aba. Ele permite alterar chamados e
+        disparar mensagem de WhatsApp — não deixe gravado em máquina compartilhada.
+      </p>
+    </div>
+    <footer class="modal__foot">
+      <button class="link-btn" id="token-sair" type="button">Desconectar</button>
+      <span class="modal__foot-spacer"></span>
+      <button class="nav-btn nav-btn--primary" type="submit">Conectar</button>
+    </footer>
+  </form>
+</div>
+
+<div class="modal-backdrop" id="modal-backdrop"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-key" aria-hidden="true">
+  <div class="modal__dialog">
+    <header class="modal__head">
+      <span class="modal__key" id="modal-key"></span>
+      <span class="topnav__spacer"></span>
+      <button class="icon-btn" id="modal-flag" aria-label="Sinalizar atividade" aria-pressed="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 3v18h2v-7h11l-2.5-4L18 6H7V3z"/></svg>
+      </button>
+      <button class="icon-btn" id="modal-close" aria-label="Fechar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="modal__body" id="modal-body"></div>
+    <footer class="modal__foot">
+      <button class="link-btn modal__delete" id="modal-delete">Excluir atividade</button>
+      <span class="toolbar__spacer"></span>
+      <button class="nav-btn nav-btn--primary" id="modal-done">Concluir</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= Modal de novo chamado =================
+     Chamado que nasce AQUI, sem conversa de WhatsApp por trás (a rota fixa
+     `origem: 'painel'`).
+
+     O formulário é DOIS formulários com um tronco comum: o seletor de tipo
+     decide qual bloco fica visível. É a razão de `tipo` existir como campo — sem
+     ele, esta tela teria de pedir os 24 campos de uma vez, e quem abre um chamado
+     de franquia veria "sistema/processo afetado" sem ter o que responder.
+
+     Os `maxlength` repetem os limites do servidor (conversation/flows.ts e
+     LIMITES_CAMPOS em internal/camposDeChamado.ts): ele recusa de qualquer forma,
+     isto só evita a viagem. -->
+<div class="modal-backdrop" id="tarefa-backdrop"></div>
+<div class="modal" id="tarefa-modal" role="dialog" aria-modal="true" aria-labelledby="tarefa-title" aria-hidden="true">
+  <div class="modal__dialog modal__dialog--largo">
+    <header class="modal__head">
+      <span class="modal__heading" id="tarefa-title">Novo chamado</span>
+      <span class="topnav__spacer"></span>
+      <button class="icon-btn" id="tarefa-close" aria-label="Fechar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="modal__body">
+
+      <!-- Tronco comum -->
+      <div class="settings-section">
+        <div class="settings-label">O chamado</div>
+
+        <!-- Primeiro campo do formulário de propósito: é ele que define o resto
+             da tela, e pedi-lo no fim faria os campos aparecerem depois de a
+             pessoa já ter preenchido o que dava. -->
+        <label class="field">
+          <span class="field__label">Tipo</span>
+          <select class="select field__input" id="tarefa-tipo"></select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Título</span>
+          <input class="field__input" id="tarefa-resumo" type="text" maxlength="200" placeholder="Trocar cabo do PDV 3">
+        </label>
+        <label class="field">
+          <span class="field__label">Descrição</span>
+          <textarea class="field__input" id="tarefa-descricao" rows="4" maxlength="2000" placeholder="O que precisa ser feito"></textarea>
+        </label>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">Solicitante</div>
+        <label class="field">
+          <span class="field__label">Nome</span>
+          <input class="field__input" id="tarefa-nome" type="text" maxlength="120" placeholder="Quem pediu">
+        </label>
+        <label class="field">
+          <span class="field__label">Contato</span>
+          <input class="field__input" id="tarefa-contato" type="text" maxlength="200" placeholder="ramal, e-mail ou telefone de quem abriu">
+        </label>
+        <label class="field">
+          <span class="field__label">Canal</span>
+          <select class="select field__input" id="tarefa-canal"></select>
+        </label>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">Classificação</div>
+        <!-- Opcional: chamado interno nem sempre cai num dos assuntos de
+             atendimento, e obrigar a escolher faria quem cria marcar qualquer
+             coisa só para o formulário passar. -->
+        <label class="field">
+          <span class="field__label">Assunto</span>
+          <select class="select field__input" id="tarefa-categoria"></select>
+        </label>
+        <label class="field">
+          <span class="field__label">Setor responsável</span>
+          <select class="select field__input" id="tarefa-setor"></select>
+        </label>
+        <label class="field">
+          <span class="field__label">Prioridade</span>
+          <select class="select field__input" id="tarefa-prioridade"></select>
+        </label>
+        <label class="field">
+          <span class="field__label">Responsável</span>
+          <select class="select field__input" id="tarefa-responsavel"></select>
+        </label>
+        <!-- `datetime-local` grava no fuso de quem está olhando e o app.js
+             converte para ISO em UTC antes de mandar. -->
+        <label class="field">
+          <span class="field__label">Prazo (SLA)</span>
+          <input class="field__input" id="tarefa-prazo" type="datetime-local">
+        </label>
+        <label class="field">
+          <span class="field__label">Etiquetas</span>
+          <input class="field__input" id="tarefa-tags" type="text" maxlength="400" placeholder="separadas por vírgula: pdv, black friday">
+        </label>
+      </div>
+
+      <!-- Bloco INTERNO -->
+      <div class="settings-section" data-bloco="interno" hidden>
+        <div class="settings-label">Chamado interno</div>
+        <label class="field">
+          <span class="field__label">Setor de origem</span>
+          <select class="select field__input" id="tarefa-setor-origem"></select>
+        </label>
+        <label class="field">
+          <span class="field__label">Tipo de solicitação</span>
+          <select class="select field__input" id="tarefa-tipo-solicitacao"></select>
+        </label>
+        <label class="field">
+          <span class="field__label">Impacto no negócio</span>
+          <select class="select field__input" id="tarefa-impacto"></select>
+        </label>
+        <label class="field">
+          <span class="field__label">Sistema/processo afetado</span>
+          <input class="field__input" id="tarefa-sistema" type="text" maxlength="200" placeholder="Vetor, fechamento de caixa…">
+        </label>
+        <label class="field">
+          <span class="field__label">Tempo estimado (min)</span>
+          <input class="field__input field__input--num" id="tarefa-tempo-estimado" type="number" min="0" step="15">
+        </label>
+      </div>
+
+      <!-- Bloco FRANQUIA -->
+      <div class="settings-section" data-bloco="franquia" hidden>
+        <div class="settings-label">Chamado de franquia</div>
+        <label class="field">
+          <span class="field__label">Código da unidade</span>
+          <input class="field__input" id="tarefa-franquia-codigo" type="text" maxlength="60" placeholder="BM-042">
+        </label>
+        <label class="field">
+          <span class="field__label">Nome da unidade</span>
+          <input class="field__input" id="tarefa-franquia-nome" type="text" maxlength="200" placeholder="Loja Shopping Centro">
+        </label>
+        <label class="field">
+          <span class="field__label">Franqueado</span>
+          <input class="field__input" id="tarefa-franqueado-nome" type="text" maxlength="120" placeholder="Quem responde pela unidade">
+        </label>
+        <label class="field">
+          <span class="field__label">Contato do franqueado</span>
+          <input class="field__input" id="tarefa-franqueado-contato" type="text" maxlength="200" placeholder="telefone ou e-mail do franqueado">
+        </label>
+        <label class="field">
+          <span class="field__label">Localização/região</span>
+          <input class="field__input" id="tarefa-localizacao" type="text" maxlength="200" placeholder="Cidade / praça">
+        </label>
+        <label class="field">
+          <span class="field__label">Tipo de chamado</span>
+          <select class="select field__input" id="tarefa-tipo-franquia"></select>
+        </label>
+        <!-- Escala separada da prioridade técnica: loja parada é diferente de
+             dúvida sobre material. -->
+        <label class="field">
+          <span class="field__label">Urgência comercial</span>
+          <select class="select field__input" id="tarefa-urgencia"></select>
+        </label>
+        <label class="conn-toggle">
+          <input type="checkbox" id="tarefa-afeta-atendimento">
+          <span>Afeta o atendimento ao cliente final (loja parada, sistema fora do ar)</span>
+        </label>
+        <label class="conn-toggle">
+          <input type="checkbox" id="tarefa-envolve-custo">
+          <span>Envolve custo ou reembolso</span>
+        </label>
+        <!-- Só aparece com "envolve custo" marcado: valor sem a chave ligada
+             seria ambíguo entre "não envolve dinheiro" e "envolve e ninguém
+             estimou". -->
+        <div id="tarefa-custo-detalhe" hidden>
+          <label class="field">
+            <span class="field__label">Valor estimado (R$)</span>
+            <input class="field__input field__input--num" id="tarefa-valor" type="number" min="0" step="0.01">
+          </label>
+          <label class="conn-toggle">
+            <input type="checkbox" id="tarefa-precisa-aprovacao">
+            <span>Precisa de aprovação</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-label" id="tarefa-erro" hidden></div>
+    </div>
+    <footer class="modal__foot">
+      <span class="toolbar__spacer"></span>
+      <button class="nav-btn nav-btn--primary" id="tarefa-salvar">Criar chamado</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= Modal de setores =================
+     As ÁREAS DA EMPRESA que atendem chamado. É a lista do campo que o pedido
+     chamou de "categoria (TI, financeiro, operações, marketing, manutenção, RH)".
+
+     Não é a lista de assuntos do WhatsApp (modal seguinte): mexer aqui não muda
+     nada do que o cliente lê na conversa. O `código` só aparece na criação — ele
+     é a chave estável para relatório, e a API não deixa renomeá-lo depois. -->
+<div class="modal-backdrop" id="setores-backdrop"></div>
+<div class="modal" id="setores-modal" role="dialog" aria-modal="true" aria-labelledby="setores-title" aria-hidden="true">
+  <div class="modal__dialog">
+    <header class="modal__head">
+      <span class="modal__heading" id="setores-title">Setores da empresa</span>
+      <span class="topnav__spacer"></span>
+      <button class="icon-btn" id="setores-close" aria-label="Fechar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="modal__body">
+      <p class="modal__nota">
+        Estas são as áreas que aparecem em <strong>Setor responsável</strong> e
+        <strong>Setor de origem</strong> nos chamados. Desativar um setor tira-o dos
+        seletores sem mexer no histórico; excluir só é possível enquanto nenhum
+        chamado apontar para ele.
+      </p>
+
+      <div id="setores-body"></div>
+
+      <div class="settings-section">
+        <div class="settings-label">Novo setor</div>
+        <label class="field">
+          <span class="field__label">Código</span>
+          <input class="field__input" id="setor-novo-codigo" type="text" maxlength="60" placeholder="pos_venda" spellcheck="false">
+        </label>
+        <label class="field">
+          <span class="field__label">Nome</span>
+          <input class="field__input" id="setor-novo-nome" type="text" maxlength="120" placeholder="Pós-venda">
+        </label>
+        <div class="settings-label assuntos-erro" id="setores-erro" hidden></div>
+        <button class="nav-btn settings-add" id="setor-add">+ Adicionar setor</button>
+      </div>
+    </div>
+    <footer class="modal__foot">
+      <span class="toolbar__spacer"></span>
+      <button class="nav-btn nav-btn--primary" id="setores-done">Concluir</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= Modal de assuntos =================
+     A árvore de `Categoria`. É a MESMA lista que o bot oferece no WhatsApp logo
+     depois da saudação, então tudo que muda aqui muda o menu na conversa
+     seguinte — sem migração e sem deploy, que é a razão de ela ser tabela.
+
+     `codigo` só aparece na criação: ele é a chave estável para quem integra de
+     fora, e a API não deixa renomeá-lo depois. -->
+<div class="modal-backdrop" id="assuntos-backdrop"></div>
+<div class="modal" id="assuntos-modal" role="dialog" aria-modal="true" aria-labelledby="assuntos-title" aria-hidden="true">
+  <div class="modal__dialog">
+    <header class="modal__head">
+      <span class="modal__heading" id="assuntos-title">Assuntos do atendimento</span>
+      <span class="topnav__spacer"></span>
+      <button class="icon-btn" id="assuntos-close" aria-label="Fechar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="modal__body">
+      <p class="modal__nota">
+        Esta é a lista que o bot oferece no WhatsApp depois da saudação. O número
+        de cada opção é calculado na hora, entre os assuntos <strong>ativos</strong> —
+        desativar um não deixa buraco na numeração. <strong>Exibição</strong> é o que
+        o cliente lê; <strong>nome</strong> é o interno, para os relatórios.
+      </p>
+      <p class="modal__nota">
+        Os dois interruptores são diferentes. <strong>No WhatsApp</strong>
+        desmarcado é o <strong>assunto de uso interno</strong>: ele sai do menu da
+        conversa e continua aqui, no seletor de assunto do chamado — é assim que a
+        TI classifica o que o cliente não deve ver na lista. <strong>Ativo</strong>
+        desmarcado tira o assunto dos dois lugares, preservando os chamados que já
+        o usam. Marcar um assunto como interno leva junto os sub-assuntos dele: a
+        conversa desce um nível por vez, e ninguém chega ao que está embaixo de
+        uma opção que não é oferecida.
+      </p>
+
+      <div id="assuntos-body"></div>
+
+      <div class="settings-section">
+        <div class="settings-label">Novo assunto</div>
+        <label class="field">
+          <span class="field__label">Código</span>
+          <input class="field__input" id="assunto-novo-codigo" type="text" maxlength="60" placeholder="trocas_devolucoes" spellcheck="false">
+        </label>
+        <label class="field">
+          <span class="field__label">Nome interno</span>
+          <input class="field__input" id="assunto-novo-nome" type="text" maxlength="120" placeholder="TROCAS E DEVOLUÇÕES">
+        </label>
+        <label class="field">
+          <span class="field__label">Exibição</span>
+          <input class="field__input" id="assunto-novo-rotulo" type="text" maxlength="120" placeholder="o que o cliente lê no WhatsApp">
+        </label>
+        <label class="field">
+          <span class="field__label">Dentro de</span>
+          <select class="select field__input" id="assunto-novo-pai"></select>
+        </label>
+        <!-- Marcado por padrão: o assunto comum é o de atendimento, e o de uso
+             interno é a exceção que precisa ser dita. Mesmo `default` do POST. -->
+        <label class="conn-toggle" title="Desmarque para o assunto ficar só no painel, fora do menu do WhatsApp">
+          <input type="checkbox" id="assunto-novo-whats" checked>
+          <span>Oferecer no menu do WhatsApp</span>
+        </label>
+        <div class="settings-label assuntos-erro" id="assuntos-erro" hidden></div>
+        <button class="nav-btn settings-add" id="assunto-add">+ Adicionar assunto</button>
+      </div>
+    </div>
+    <footer class="modal__foot">
+      <span class="toolbar__spacer"></span>
+      <button class="nav-btn nav-btn--primary" id="assuntos-done">Concluir</button>
+    </footer>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<!-- Gerado pelo servidor-painel.mjs, nao existe em disco. Diz se o token de
+     acesso e injetado no servidor - e, entao, se ha token a pedir aqui. Vem
+     antes do api.js porque e ele quem consulta essa decisao. -->
+<script src="painel-servidor.js"></script>
+<script src="data.js"></script>
+<script src="/painel-token.js"></script>
+<script src="api.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

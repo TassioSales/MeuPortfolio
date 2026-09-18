@@ -1,0 +1,34 @@
+# O que NUNCA pode entrar na imagem
+.env
+.env.*
+!.env.example
+
+# O banco de desenvolvimento. Copiar o arquivo para a imagem levaria dado
+# pessoal da máquina de quem construiu - e em produção o banco vem do disco
+# montado (ver render.yaml), não da imagem.
+dados/
+*.db
+*.db-wal
+*.db-shm
+
+# Reinstalado dentro da imagem: copiar o node_modules do host traria binários
+# compilados para o SO errado.
+node_modules/
+
+# Gerado dentro da imagem
+dist/
+dist-test/
+src/generated/
+
+.git/
+.github/
+.claude/
+docs/
+*.md
+!README.md
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

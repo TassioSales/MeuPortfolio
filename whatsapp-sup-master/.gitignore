@@ -1,0 +1,38 @@
+# Segredos - NUNCA commitar
+.env
+.env.*
+!.env.example
+
+# Dependências e build
+node_modules/
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operacional / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+dist-test/
+
+# Cliente do Prisma - gerado por `npm run prisma:generate`, nunca versionado
+src/generated/
+
+# O banco. É um arquivo SQLite, e ele NÃO vai para o repositório: contém dado
+# pessoal de gente real (nome, telefone, descrição do problema). `-wal` e `-shm`
+# são os arquivos auxiliares do modo WAL (ver src/db/client.ts).
+dados/
+*.db
+*.db-wal
+*.db-shm
+env
+env.producao
+
+# Rascunhos de verificação: scripts de uma vez só, logs de uma execução, dumps
+# tirados para conferir uma coisa e jogar fora. Nada aqui é para durar, e sem a
+# regra eles vazam para o repositório num `git add .` distraído.
+_tmp*

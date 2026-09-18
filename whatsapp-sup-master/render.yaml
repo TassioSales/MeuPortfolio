@@ -1,0 +1,126 @@
+# Blueprint do Render (https://render.com/docs/blueprint-spec).
+#
+# Descreve o serviço e o disco onde o banco vive. Os segredos NÃO ficam aqui:
+# `sync: false` faz o Render pedir o valor no painel na primeira implantação, e
+# ele nunca passa pelo repositório.
+#
+# NÃO HÁ MAIS BLOCO `databases:`. O banco é um arquivo SQLite dentro do disco
+# declarado abaixo, e essa troca traz três consequências que valem ser lidas
+# antes de mexer neste arquivo:
+#
+#   1. UMA INSTÂNCIA, sempre. Não declare `numInstances` maior que 1 e não use
+#      autoscaling: duas instâncias montando o mesmo disco brigam pelo lock de
+#      escrita do arquivo, e SQLite aceita um escritor por banco. Antes isso era
+#      só uma questão de contadores em memória (ver src/estado/janelas.ts); agora
+#      é o banco.
+#
+#   2. O DEPLOY TEM JANELA DE INDISPONIBILIDADE. Serviço com disco no Render não
+#      faz deploy sem downtime - o contêiner antigo precisa liberar o disco antes
+#      de o novo montá-lo. São alguns segundos, e a Meta reentrega o webhook que
+#      cair nesse intervalo (é "pelo menos uma vez"), então nenhuma mensagem se
+#      perde; ela só chega com atraso.
+#
+#   3. BACKUP É SEU. O Postgres gerenciado fazia backup automático; disco não. O
+#      banco é um arquivo com dado pessoal de gente real, então trate cópia de
+#      segurança como parte do serviço, não como algo a resolver depois. O jeito
+#      certo é `VACUUM INTO` (cópia consistente com o servidor no ar) - ver
+#      docs/WA Banco de dados.md.
+
+services:
+  - type: web
+    name: whatsapp-suporte
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    region: oregon
+
+    # O banco. `mountPath` tem de casar com o DATABASE_URL abaixo.
+    #
+    # 1 GB é folgado para este volume de dados: uma mensagem são algumas centenas
+    # de bytes, e a retenção (LGPD) apaga as antigas. O tamanho pode crescer
+    # depois, mas não diminuir - então começar pequeno é o certo.
+    disk:
+      name: dados
+      mountPath: /app/dados
+      sizeGB: 1
+
+    # Migração antes de trocar a versão que atende. Se falhar, o Render aborta a
+    # implantação e a versão antiga continua no ar.
+    #
+    # `db:view` vem junto e não por acaso: `prisma migrate` não gerencia view, e
+    # migração que mexe em coluna usada por ela precisa da view recriada. Rodar
+    # os dois sempre, na mesma linha, é o que impede o painel ficar sem a view
+    # depois de uma migração. Os dois são idempotentes.
+    preDeployCommand: npm run prisma:deploy && npm run db:view
+
+    # /ready e não /health: aqui a pergunta certa é "esta instância consegue
+    # atender?", e sem banco ela não consegue. Com SQLite o modo de falha típico
+    # não é rede, é o disco: não montado, cheio, ou com permissão errada. O
+    # /health existe para o liveness do contêiner (ver HEALTHCHECK no Dockerfile).
+    healthCheckPath: /ready
+
+    envVars:
+      # Caminho do arquivo, DENTRO do disco montado acima.
+      #
+      # Absoluto de propósito: caminho relativo é resolvido contra a raiz do
+      # projeto (/app), o que daria /app/dados de qualquer forma - mas deixar
+      # explícito é o que garante que ninguém "arrume" o mountPath sem arrumar
+      # isto. Apontar para fora do disco faz o banco viver na camada de escrita
+      # do contêiner e ser APAGADO no próximo deploy, sem erro nenhum.
+      - key: DATABASE_URL
+        value: file:/app/dados/whatsapp-suporte.db
+
+      # O Render fica atrás do proxy dele. Sem isto, TODO request aparece com o
+      # IP do proxy e o rate limit por IP vira um contador global. Um hop.
+      - key: TRUST_PROXY
+        value: '1'
+
+      # Quanto esperar pelo lock de escrita do arquivo antes de desistir (ms).
+      # Vale para quando OUTRO processo está escrevendo - tipicamente o
+      # `preDeployCommand` ou um job de retenção. O padrão do código é 10s.
+      # - key: DB_BUSY_TIMEOUT_MS
+      #   value: '10000'
+
+      # Limites por telefone compartilhados entre instâncias.
+      #
+      # NÃO ligue isto esperando poder subir uma segunda instância: o limite hoje
+      # é o banco (item 1 do comentário no topo deste arquivo), não o contador.
+      # Enquanto o banco for um arquivo SQLite num disco, `REDIS_URL` resolve um
+      # problema que não chega a acontecer. Ver src/estado/janelas.ts.
+      # - key: REDIS_URL
+      #   fromService:
+      #     name: whatsapp-suporte-kv
+      #     type: keyvalue
+      #     property: connectionString
+
+      - key: NODE_ENV
+        value: production
+
+      # Canal avisado quando a outbox DESISTE de uma mensagem - o único evento
+      # em que um usuário ficou sem resposta. Vazio = só log.
+      # - key: ALERTA_WEBHOOK_URL
+      #   sync: false
+
+      # --- segredos: preenchidos no painel, nunca no repositório ---
+      - key: VERIFY_TOKEN
+        sync: false
+      - key: META_APP_SECRET
+        sync: false
+      - key: WHATSAPP_TOKEN
+        sync: false
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+      - key: INTERNAL_API_TOKEN
+        sync: false
+
+      # --- retenção (LGPD) ---
+      # Prazo é decisão do negócio; o código não inventa nenhum. Enquanto estas
+      # não forem definidas, `npm run retencao` não apaga mensagem nem chamado.
+      #
+      # Com SQLite há um detalhe operacional a mais: apagar linha não devolve
+      # espaço ao disco sozinho. Depois de uma limpeza grande, rode `VACUUM` -
+      # ver docs/WA Banco de dados.md.
+      # - key: RETENCAO_MENSAGENS_DIAS
+      #   value: "365"
+      # - key: RETENCAO_CHAMADOS_DIAS
+      #   value: "730"

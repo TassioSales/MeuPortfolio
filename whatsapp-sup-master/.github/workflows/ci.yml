@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+
+    steps:
+      # checkout e setup-node em major que roda no Node 24. As v4 declaram
+      # `using: node20`: desde 16/06/2026 o runner já as executa no 24, com aviso
+      # de depreciação, e em 16/09/2026 o Node 20 sai do runner e elas param de
+      # rodar. Isto é a versão do runtime DA ACTION, não a do projeto — essa vem
+      # do .nvmrc, abaixo.
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # O cliente do Prisma é gerado, não versionado: sem isso o build não acha
+      # os tipos de @prisma/client.
+      #
+      # Sem DATABASE_URL, de propósito: `prisma generate` só lê o schema e não
+      # abre banco, e o prisma.config.ts cai no caminho padrão quando a variável
+      # não existe (ver src/db/caminho.ts). Enquanto o banco era Postgres, este
+      # passo PRECISAVA de uma URL de fachada - o `env('DATABASE_URL')` do config
+      # estourava ao ser carregado, antes de o CLI saber qual comando foi pedido.
+      - run: npm run prisma:generate
+
+      # Formatação antes do typecheck: é a checagem mais barata e a que dá o
+      # retorno mais objetivo ("rode npm run format").
+      - run: npm run format:check
+
+      - run: npm run typecheck
+
+      - run: npm run build
+
+      # Os testes usam dublês em memória para Prisma e fetch, então não tocam em
+      # banco nem em rede.
+      - run: npm test
+
+  # As garantias que dublê em memória NÃO consegue provar: o formato em que a
+  # data é gravada e comparada em SQL crua, a serialização de transações
+  # concorrentes, o índice único do wamid, a SQL de reserva da outbox com espera
+  # crescente e o ON DELETE CASCADE. Antes isso dependia de alguém lembrar de
+  # rodar `npm run dev:verificar-banco` na máquina — ou seja, a classe de bug
+  # mais difícil do projeto só era pega por acaso.
+  #
+  # Este job não tem `services:` nenhum, e isso é o resumo da troca do Postgres
+  # pelo SQLite: não há servidor para subir, nem health check para esperar, nem
+  # corrida entre "o banco aceitou conexão" e "a migração rodou". O banco é um
+  # arquivo que o `prisma migrate deploy` cria.
+  banco:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: file:./dados/ci.db
+      PORT: '3000'
+      # Valores de fachada: nada aqui fala com a Evolution de verdade. O envio
+      # vai para a Evolution de mentira (`npm run dev:evolution`), abaixo.
+      WEBHOOK_SEGREDO: segredo_de_ci
+      EVOLUTION_URL: http://127.0.0.1:4000
+      EVOLUTION_API_KEY: apikey_de_ci
+      EVOLUTION_INSTANCIA: instancia_de_ci
+      INTERNAL_API_TOKEN: token_interno_de_ci
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run prisma:generate
+
+      # Aplica as migrações de verdade. Isto também é um teste: uma migração
+      # quebrada derruba o CI aqui, e não na implantação.
+      - run: npm run prisma:deploy
+
+      - run: npm run build
+
+      # A view de cards, exatamente como o deploy faz (ver preDeployCommand no
+      # render.yaml). Roda no CI porque `prisma migrate` NÃO gerencia view: sem
+      # este passo, um erro na SQL da view só apareceria em produção, depois da
+      # migração já ter passado.
+      - run: npm run db:view
+
+      - name: Sobe a Evolution de mentira
+        run: npm run dev:evolution &
+
+      - name: Sobe o servidor
+        run: npm start &
+
+      - name: Espera o servidor responder
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:3000/health > /dev/null; then
+              echo "servidor de pé"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "o servidor não respondeu em 30s"
+          exit 1
+
+      - name: Verifica as garantias do banco
+        run: npm run dev:verificar-banco

@@ -1,0 +1,2 @@
+{"level":30,"time":1787233164095,"pid":15584,"hostname":"TI-001-4LJCD33","reqId":"req-1g","chamadoId":18,"de":"aberto","para":"resolvido","autor":"Ana","msg":"Situação do chamado alterada"}
+{"level":40,"time":1787233213471,"pid":15584,"hostname":"TI-001-4LJCD33","mensagemId":240,"status":503,"permanente":false,"erro":"{\"error\":{\"message\":\"Falha simulada pela Graph de mentira\",\"code\":500}}","msg":"Envio pendente"}

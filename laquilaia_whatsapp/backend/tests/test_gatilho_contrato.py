@@ -228,6 +228,165 @@ class TestAbrirColeta:
         assert msgs == []
 
 
+class TestOSilencio:
+    """
+    Um recurso que não faz nada e não diz por quê é o pior tipo de defeito.
+
+    O dono ligou `CONTRATO_AUTOMATICO`, conduziu uma triagem inteira e nada
+    aconteceu — e a única explicação estava numa linha de `debug` que ninguém
+    tem ligada. Motivo corrigível agora sai em `warning`, com o comando do
+    diagnóstico junto.
+    """
+
+    @pytest.mark.asyncio
+    async def test_modelo_inativo_e_motivo_corrigivel(self):
+        """
+        O caso mais provável na prática: o dono liga a chave e esquece de
+        ativar um modelo. Sem aviso, ele conduz triagens inteiras achando que
+        o recurso está quebrado.
+        """
+        from app.services.gatilho_contrato import _CORRIGIVEIS, pode_abrir_coleta
+
+        lead_id, _ = await _cenario("s1", com_modelo=False)
+
+        async with AsyncSessionLocal() as db:
+            lead = (
+                await db.execute(select(Lead).where(Lead.id == lead_id))
+            ).scalars().first()
+            caso = (
+                await db.execute(select(Caso).where(Caso.lead_id == lead_id))
+            ).scalars().first()
+            with _ligado():
+                _, motivo = await pode_abrir_coleta(db, lead, caso)
+
+        assert motivo == "nenhum modelo de contrato ativo"
+        assert motivo in _CORRIGIVEIS
+
+    @pytest.mark.asyncio
+    async def test_funcionamento_normal_nao_polui_o_log(self):
+        """
+        "Já tem contrato" e "já em coleta" são o esperado. Avisar sobre eles
+        encheria o log até ninguém mais ler.
+        """
+        from app.services.gatilho_contrato import _CORRIGIVEIS, pode_abrir_coleta
+
+        lead_id, _ = await _cenario("s2", com_contrato=True)
+
+        async with AsyncSessionLocal() as db:
+            lead = (
+                await db.execute(select(Lead).where(Lead.id == lead_id))
+            ).scalars().first()
+            caso = (
+                await db.execute(select(Caso).where(Caso.lead_id == lead_id))
+            ).scalars().first()
+            with _ligado():
+                _, motivo = await pode_abrir_coleta(db, lead, caso)
+
+        assert motivo == "lead já tem contrato"
+        assert motivo not in _CORRIGIVEIS
+
+    @pytest.mark.asyncio
+    async def test_parecer_que_nao_saiu_e_motivo_corrigivel(self):
+        """
+        A dependência que não é óbvia: sem parecer não há caso, e sem caso o
+        gatilho nunca dispara. Se o analista estiver desligado ou falhar, o
+        contrato jamais sai — e ninguém liga uma coisa à outra.
+        """
+        from app.services.gatilho_contrato import _CORRIGIVEIS, pode_abrir_coleta
+
+        lead_id, _ = await _cenario("s3", com_caso=False)
+
+        async with AsyncSessionLocal() as db:
+            lead = (
+                await db.execute(select(Lead).where(Lead.id == lead_id))
+            ).scalars().first()
+            with _ligado():
+                _, motivo = await pode_abrir_coleta(db, lead, None)
+
+        assert motivo == "sem caso registrado"
+        assert motivo in _CORRIGIVEIS
+
+
+class TestABarreiraFicaVisivel:
+    """
+    Log não é tela.
+
+    Um caso barrado pelo piso não aparecia em lugar nenhum que gente olhasse:
+    o Histórico conta casos **arquivados**, e um caso barrado continua aberto
+    no funil. O painel mostrava um lead qualificado que misteriosamente não
+    virou contrato, e ninguém tinha como ligar uma coisa à outra sem abrir o
+    log do container. Foi a primeira pergunta do dono ao ver acontecer.
+    """
+
+    @pytest.mark.asyncio
+    async def test_barrado_pelo_piso_entra_na_trilha_do_lead(self):
+        from app.db.models import LeadTimeline
+
+        lead_id, _ = await _cenario("b1", viabilidade="abaixo_do_piso")
+
+        with _ligado(), _evolution_ok():
+            await _abrir(lead_id)
+
+        async with AsyncSessionLocal() as db:
+            trilha = (
+                await db.execute(
+                    select(LeadTimeline).where(LeadTimeline.lead_id == lead_id)
+                )
+            ).scalars().all()
+
+        assert len(trilha) == 1
+        assert "abaixo do piso" in trilha[0].motivo
+        # E diz o que fazer, não só o que aconteceu.
+        assert "humano decide" in trilha[0].motivo
+
+    @pytest.mark.asyncio
+    async def test_nao_repete_a_mesma_linha_a_cada_parecer(self):
+        """
+        O gatilho é avaliado depois de **cada** parecer, e uma requalificação
+        dispara outro. Sem guarda, a trilha encheria de linhas idênticas até
+        esconder tudo o mais que aconteceu com o lead.
+        """
+        from app.db.models import LeadTimeline
+
+        lead_id, _ = await _cenario("b2", viabilidade="abaixo_do_piso")
+
+        with _ligado(), _evolution_ok():
+            await _abrir(lead_id)
+            await _abrir(lead_id)
+            await _abrir(lead_id)
+
+        async with AsyncSessionLocal() as db:
+            trilha = (
+                await db.execute(
+                    select(LeadTimeline).where(LeadTimeline.lead_id == lead_id)
+                )
+            ).scalars().all()
+
+        assert len(trilha) == 1
+
+    @pytest.mark.asyncio
+    async def test_funcionamento_normal_nao_deixa_rastro(self):
+        """
+        "Já tem contrato" é o esperado, não uma barreira. Registrar isso
+        encheria a trilha de ruído.
+        """
+        from app.db.models import LeadTimeline
+
+        lead_id, _ = await _cenario("b3", com_contrato=True)
+
+        with _ligado(), _evolution_ok():
+            await _abrir(lead_id)
+
+        async with AsyncSessionLocal() as db:
+            trilha = (
+                await db.execute(
+                    select(LeadTimeline).where(LeadTimeline.lead_id == lead_id)
+                )
+            ).scalars().all()
+
+        assert trilha == []
+
+
 # --------------------------------------------------- emitir o contrato
 
 async def _emitir(lead_id: str):

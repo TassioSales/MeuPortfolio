@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **796 testes no backend, 314 no frontend.**
+Estado atual: **823 testes no backend, 329 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -665,15 +665,127 @@ configuração do escritório e modelos. Pede confirmação digitada e avisa em
 separado quando há contrato assinado — aquilo é documento, com PDF e trilha de
 prova, e não tem cópia.
 
-### O que não foi verificado
+### Rodou de verdade, com gente
 
-Nada disto rodou com o Claude de verdade. O bloco de coleta nunca foi lido por
-um modelo, e portanto **não se sabe se ele coleta bem**: se pergunta um dado
-por vez como manda o texto, se aceita "não sei o RG" sem travar, se recomeça a
-triagem por engano. O teste de ciclo completo prova a costura, não o
-comportamento do modelo — a resposta dele é simulada.
+**24/08/2026, primeira vez.** Triagem completa pelo WhatsApp (agressão no
+trabalho, cinco anos de casa, R$ 6.500), contrato emitido sozinho, assinado
+de um Android e absorvido — IP IPv6 real, hash, comprovante. O ciclo inteiro
+funcionou sem ninguém do escritório clicar.
 
-E nenhuma dessas mensagens chegou a um WhatsApp real.
+A triagem se comportou: conduziu com perguntas encadeadas, informou o que
+costuma entrar no caso **atribuindo ao advogado**, e recusou falar de
+honorários quando o cliente perguntou "não tem contrato?" — devolveu ao
+advogado, como o prompt manda.
+
+**O que a conversa real revelou, e foi corrigido no mesmo dia:**
+
+- O contrato saiu com o **CONTRATADO em branco** — ninguém tinha preenchido o
+  escritório. Não é defeito de código, mas é o primeiro contrato que sai e
+  ninguém confere isso antes.
+- O objeto trazia o **texto da triagem** (ver §6c).
+- **Não tinha assinatura nenhuma** na linha de assinar. Ver abaixo.
+
+### A assinatura desenhada
+
+Juridicamente o rabisco não acrescenta nada: o que prova a assinatura é a
+trilha — token individual, hora, IP, aparelho e hash. Mas o dono abriu o
+primeiro contrato assinado de verdade e disse *"não assinou nada ali"*. Um
+contrato sem nada escrito na linha **não parece assinado**, e quem recebe o
+PDF fica sem saber se valeu.
+
+Agora há um `<canvas>` na página pública. Três coisas que não são enfeite:
+`touch-none` (sem ele o dedo rola a página em vez de desenhar, e ninguém
+assina no celular), Pointer Events em vez de `touch` + `mouse` separados (um
+traço vira dois), e redimensionamento por `devicePixelRatio` (senão o traço
+sai borrado, e assinatura borrada parece defeito).
+
+**Duas formas: desenhar ou digitar.** É o que Autentique e DocuSign
+oferecem, e por um motivo prático: assinar com o dedo sai um garrancho, e
+muita gente desiste ou fica com vergonha do resultado. Digitando, a pessoa
+escolhe entre três letras cursivas — e o resultado é **o mesmo PNG**, pintado
+num canvas no navegador. O backend não sabe (nem precisa saber) se o traço
+veio de um dedo ou de uma fonte, e não há um segundo formato para validar,
+guardar e desenhar no PDF.
+
+As fontes vêm por `next/font/google`, que **baixa na build e serve do nosso
+domínio** — em tempo de execução não há requisição ao Google. E o canvas
+espera `document.fonts.load` antes de pintar: sem isso o primeiro desenho sai
+na fonte de reserva, e a pessoa assina com o próprio nome em Times.
+
+**Digitar não é o sistema assinando por ninguém.** A pessoa digita o próprio
+nome, escolhe como ele aparece e confirma. O que sustenta a assinatura
+continua sendo a trilha.
+
+**O desenho é opcional, de propósito.** Navegador sem canvas, mouse ruim, mão
+trêmula — a pessoa ainda assina. Travar o botão nele trocaria o essencial pelo
+enfeite.
+
+**E é entrada pública, então nada confia nele:** prefixo conferido, tamanho
+limitado antes de decodificar (o base64 cresce 4/3 — sem o teto, um POST de
+30 KB alocaria dezenas de MB), e os bytes têm de começar com a assinatura do
+PNG. Recusa é silenciosa: o contrato vale sem o desenho.
+
+### O que ainda não foi verificado
+
+**O bloco de coleta nunca chegou a rodar** — na conversa real o contrato saiu
+antes, porque os dados vieram da triagem. Não se sabe se a agente coleta bem:
+se pergunta um dado por vez, se aceita "não sei o RG" sem travar, se recomeça
+a triagem por engano.
+
+E a assinatura nunca foi feita com um dedo de verdade numa tela de verdade —
+só com Pointer Events sintéticos no jsdom, que não implementa canvas. O mesmo
+vale para a digitada: o jsdom não renderiza fonte nenhuma, então **ninguém
+viu** como as três letras ficam.
+
+---
+
+## 6f. O atendimento do Lázaro, e o que ele ensinou
+
+Segunda triagem real, 24/08. O cliente abriu com **dois áudios**, e daí saíram
+dois defeitos que nenhum teste tinha pego — os dois com a mesma raiz: **o
+sistema entregava ao modelo um vazio em vez de dizer que era um vazio.** Um
+modelo aceita não saber quando lhe dizem que não sabe; não aceita quando lhe
+entregam um buraco para preencher.
+
+**Chamou o cliente de "Rafael" onze vezes.** Ele se chama Lázaro. Sem nome à
+mão — os áudios não foram transcritos —, o modelo escolheu um e o manteve por
+meia hora, por coerência com o que ele mesmo tinha dito antes. Só corrigiu
+quando a pessoa digitou o próprio nome.
+
+A correção não é só no prompt. O prompt é do dono do agente e pode ser
+reescrito; o que fecha a porta é o sistema **afirmar a cada turno o que ele de
+fato sabe** — `AVISO_SEM_NOME` em `atendimento_context`. Antes, número
+desconhecido não gerava nota nenhuma, e era por essa lacuna que "Rafael"
+entrava. Havia um teste travando esse comportamento (`test_numero_desconhecido
+_nao_gera_nota`); ele mudou de lado.
+
+**Fingiu ter ouvido o áudio.** Respondeu *"Entendo, é uma situação bem chata
+mesmo, ficar recebendo menos do que o combinado"* a um áudio que nunca ouviu,
+e conduziu a triagem inteira a partir da invenção.
+
+A causa: o `PEDIDO_DE_TEXTO` dizia *"Não consigo ouvir áudios por aqui. Pode
+me escrever o que você falou?"* — primeira pessoa, do agente — mas era anexado
+ao turno do **cliente**. O modelo lia o próprio cliente dizendo que não
+conseguia ouvir áudios. Agora é nota do sistema, e ela **afirma a ignorância**:
+"o áudio NÃO foi transcrito e você não tem acesso ao que foi dito nele".
+
+**O contrato não saiu, e aí o sistema acertou.** O parecer estimou R$ 8.000 a
+18.000; o piso é R$ 15.000 e a regra compara pelo **piso da faixa**. Barrou
+corretamente.
+
+O que estava errado era a **invisibilidade**: o caso barrado não aparecia em
+tela nenhuma. O Histórico conta casos `arquivado`, e um caso barrado continua
+aberto no funil — o painel mostrava um lead qualificado que misteriosamente
+não virou contrato. Agora entra na linha do tempo do lead, uma vez por motivo
+(o gatilho roda depois de **cada** parecer; sem guarda a trilha encheria de
+linhas idênticas).
+
+**Ainda em aberto, e é decisão do dono:** R$ 15.000 é o piso certo? Um caso de
+R$ 8.000 é recusado automaticamente hoje.
+
+**E os áudios continuam sem transcrição.** `anexos_habilitados` está desligado
+no agente que atende, ou falta `GEMINI_API_KEY` — sem os dois, todo cliente que
+manda áudio (e no WhatsApp são muitos) é atendido pedindo que escreva.
 
 ---
 

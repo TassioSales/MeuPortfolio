@@ -33,11 +33,17 @@ export async function buscarParaAssinar(
 export async function assinar(
   token: string,
   nome: string,
+  /** O `data:image/png;base64,...` do canvas. Opcional — ver a página. */
+  assinaturaPng?: string | null,
 ): Promise<ContratoParaAssinar> {
   const r = await fetch(`${API_URL}${ROTA}/${encodeURIComponent(token)}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nome, aceite: true }),
+    body: JSON.stringify({
+      nome,
+      aceite: true,
+      assinatura_png: assinaturaPng ?? null,
+    }),
   });
   if (!r.ok) await ler(r);
   return (await r.json()) as ContratoParaAssinar;

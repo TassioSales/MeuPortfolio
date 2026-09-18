@@ -45,6 +45,16 @@ from app.utils.logger import logger
 # gatilho não disparar quase nunca.
 VETADOS = ("abaixo_do_piso",)
 
+# Motivos de não disparar que alguém consegue resolver — e que por isso
+# precisam ser vistos. "Já tem contrato" e "já em coleta" ficam de fora: são o
+# funcionamento normal, e avisar sobre eles encheria o log de ruído até
+# ninguém mais ler.
+_CORRIGIVEIS = {
+    "sem caso registrado",
+    "nenhum modelo de contrato ativo",
+    "lead não qualificado",
+}
+
 ABERTURA = (
     "{saudacao}Tenho uma boa notícia: seu caso foi analisado pelo escritório e "
     "**nós vamos aceitar**. 🎉\n\n"
@@ -111,6 +121,65 @@ async def pode_abrir_coleta(
     return True, "ok"
 
 
+async def _registrar_a_barreira(
+    db: AsyncSession, lead: Lead, caso: Optional[Caso], motivo: str
+) -> None:
+    """
+    Deixa na trilha do lead o motivo de o contrato não ter saído.
+
+    **Porque log não é tela.** Um caso barrado pelo piso não aparecia em lugar
+    nenhum que gente olhasse: o Histórico conta casos **arquivados**, e este
+    continua aberto no funil; o painel só mostrava um lead qualificado que
+    misteriosamente não virou contrato. Quem opera não tem como ligar uma
+    coisa à outra sem abrir o log do container.
+
+    Fica na linha do tempo, que é onde já moram as outras decisões
+    automáticas, e por isso aparece no dossiê do card e na tela de Histórico
+    de intervenções.
+    """
+    if lead is None:
+        return
+
+    if motivo.startswith("viabilidade "):
+        faixa = ""
+        if caso and caso.valor_estimado_min is not None:
+            faixa = f" (estimado a partir de R$ {caso.valor_estimado_min:,})".replace(
+                ",", "."
+            )
+        texto = (
+            f"Contrato automático barrado: caso abaixo do piso do escritório"
+            f"{faixa}. Um humano decide se aceita mesmo assim."
+        )
+    else:
+        texto = f"Contrato automático não saiu: {motivo}"
+
+    # Uma vez por motivo, não a cada mensagem.
+    #
+    # O gatilho é avaliado depois de **cada** parecer, e uma requalificação
+    # dispara outro. Sem esta guarda, a trilha de um lead barrado encheria de
+    # linhas idênticas até esconder tudo o mais que aconteceu com ele.
+    ja_tem = (
+        await db.execute(
+            select(func.count(LeadTimeline.id))
+            .where(LeadTimeline.lead_id == lead.id)
+            .where(LeadTimeline.motivo == texto)
+        )
+    ).scalar()
+    if ja_tem:
+        return
+
+    db.add(
+        LeadTimeline(
+            lead_id=lead.id,
+            status_anterior=lead.status_funil,
+            status_novo=lead.status_funil,
+            mudado_por=None,
+            motivo=texto,
+            timestamp=datetime.utcnow(),
+        )
+    )
+
+
 async def abrir_coleta(db: AsyncSession, lead: Lead, caso: Optional[Caso]) -> bool:
     """
     Vira a chave e anuncia ao cliente, se as condições permitirem.
@@ -126,7 +195,22 @@ async def abrir_coleta(db: AsyncSession, lead: Lead, caso: Optional[Caso]) -> bo
 
     pode, motivo = await pode_abrir_coleta(db, lead, caso)
     if not pode:
-        logger.debug(f"⏭️ Coleta não aberta para o lead {lead.id}: {motivo}")
+        # Motivo corrigível sai em `warning`, não em `debug`.
+        #
+        # Um recurso que não faz nada e não diz por quê é o pior tipo de
+        # defeito: o dono liga `CONTRATO_AUTOMATICO`, conduz uma triagem
+        # inteira, nada acontece, e a única explicação está numa linha de
+        # `debug` que ninguém tem ligada. Os motivos abaixo são todos
+        # resolvíveis por quem opera — merecem aparecer.
+        if motivo in _CORRIGIVEIS or motivo.startswith("viabilidade "):
+            logger.warning(
+                f"⚠️ Contrato automático não disparou para o lead {lead.id}: "
+                f"{motivo}. Rode `python -m scripts.diagnostico_contrato "
+                f"--telefone {lead.phone_number}` para o quadro completo."
+            )
+            await _registrar_a_barreira(db, lead, caso, motivo)
+        else:
+            logger.debug(f"⏭️ Coleta não aberta para o lead {lead.id}: {motivo}")
         return False
 
     conversa = (

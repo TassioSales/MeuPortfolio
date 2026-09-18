@@ -31,6 +31,27 @@ AREAS = {
 TITULAR_O_PROPRIO = {"o próprio contato", "o proprio contato", "próprio contato"}
 
 
+def _rotulo(nome: str) -> str:
+    """
+    O padrão de uma linha da Ficha, tolerante ao enfeite do modelo.
+
+    O prompt pede "Área: trabalhista" em linha limpa, e o padrão antigo exigia
+    isso. Mas pedir "exatamente neste formato" não impede um modelo de
+    escrever `- **Área:** trabalhista` — é o que ele faz com listas o tempo
+    todo, e foi o que eu mesmo escrevi ao montar um parecer de teste de
+    memória.
+
+    Quando acontece, `ler_ficha` devolve `(None, None)`, o caso não é
+    arquivado e **ninguém fica sabendo**: não há erro, só um lead sem caso. E
+    agora custa mais que antes — o gatilho do contrato lê a viabilidade do
+    caso, então uma ficha enfeitada virou contrato que nunca sai.
+
+    Aceitar marcador de lista, negrito e dois-pontos dentro do negrito é
+    barato; recusá-los é apostar que o modelo nunca vai variar.
+    """
+    return rf"^[\s\-\*•]*\**\s*{nome}\s*:?\**\s*:?\s*(.+)$"
+
+
 def ler_ficha(parecer: str) -> Tuple[Optional[str], Optional[str]]:
     """
     Extrai `Área` e `Titular` da seção Ficha do parecer.
@@ -45,7 +66,7 @@ def ler_ficha(parecer: str) -> Tuple[Optional[str], Optional[str]]:
     area = None
     titular = None
 
-    m = re.search(r"^\s*[Áa]rea:\s*(.+)$", parecer, re.MULTILINE)
+    m = re.search(_rotulo("[Áa]rea"), parecer, re.MULTILINE)
     if m:
         # O modelo às vezes devolve "Área: trabalhista (reversão de justa
         # causa)" — o que interessa é a primeira palavra da lista conhecida.
@@ -56,7 +77,7 @@ def ler_ficha(parecer: str) -> Tuple[Optional[str], Optional[str]]:
                 area = candidata
                 break
 
-    m = re.search(r"^\s*Titular:\s*(.+)$", parecer, re.MULTILINE)
+    m = re.search(_rotulo("Titular"), parecer, re.MULTILINE)
     if m:
         bruto = m.group(1).strip()
         if bruto.lower() not in TITULAR_O_PROPRIO:

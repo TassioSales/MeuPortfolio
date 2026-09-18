@@ -7,7 +7,7 @@ from typing import Dict, Any, Optional, Set, Tuple
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.db.models import Lead, LeadDetails, LeadTimeline, Conversation, KanbanCard, KanbanColumn, Agent
+from app.db.models import Caso, Lead, LeadDetails, LeadTimeline, Conversation, KanbanCard, KanbanColumn, Agent
 from app.utils.logger import logger
 from app.services.caso_service import registrar_caso
 from app.services.legal_analyst import legal_analyst
@@ -401,10 +401,40 @@ class LeadProcessor:
 
                 await self._gerar_analise(lead, conversation_id, agent_id, db)
                 await db.commit()
+
+                # Só agora a viabilidade existe, e é ela que decide se o caso
+                # comporta contrato. Disparar na qualificação — noventa
+                # segundos antes — mandaria contrato para casos que o próprio
+                # escritório recusaria.
+                await self._talvez_abrir_coleta(lead, db)
+                await db.commit()
         except Exception as e:
             logger.error(f"❌ Falha ao gerar o parecer do lead {lead_id}: {e}")
         finally:
             _EM_ANALISE.discard(lead_id)
+
+    async def _talvez_abrir_coleta(self, lead, db: AsyncSession) -> None:
+        """
+        Passa a decisão ao gatilho, que é quem conhece as regras.
+
+        Envolvido em `try` porque isto roda dentro da tarefa do parecer: uma
+        falha aqui não pode fazer o parecer — que já está gravado e custou uma
+        chamada ao modelo — parecer que falhou.
+        """
+        from app.services import gatilho_contrato
+
+        try:
+            caso = (
+                await db.execute(
+                    select(Caso)
+                    .where(Caso.lead_id == lead.id)
+                    .order_by(Caso.data_abertura.desc())
+                )
+            ).scalars().first()
+            await gatilho_contrato.abrir_coleta(db, lead, caso)
+        except Exception as e:
+            logger.error(f"❌ Gatilho do contrato falhou para o lead {lead.id}: {e}")
+            await db.rollback()
 
     async def _gerar_analise(
         self,

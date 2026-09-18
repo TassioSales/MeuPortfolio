@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
+import { AssinaturaDigitada } from "@/components/AssinaturaDigitada";
+import { CampoDeAssinatura } from "@/components/CampoDeAssinatura";
 import { messageFrom } from "@/hooks/useAgents";
 import { assinar, buscarParaAssinar } from "@/lib/assinatura";
 import type { ContratoParaAssinar } from "@/types";
@@ -95,6 +97,11 @@ export default function AssinarPage() {
 
   const [nome, setNome] = useState("");
   const [aceite, setAceite] = useState(false);
+  const [rabisco, setRabisco] = useState<string | null>(null);
+  // Desenhar é o padrão porque é o que se parece com assinar. Quem não gosta
+  // do próprio garrancho troca num toque — e é a maioria, pela experiência de
+  // quem já faz isso há anos.
+  const [modo, setModo] = useState<"desenhar" | "digitar">("desenhar");
   const [leuAteOFim, setLeuAteOFim] = useState(false);
 
   const carregar = useCallback(async () => {
@@ -123,7 +130,7 @@ export default function AssinarPage() {
     setEnviando(true);
     setErro(null);
     try {
-      setContrato(await assinar(token, nome.trim()));
+      setContrato(await assinar(token, nome.trim(), rabisco));
     } catch (e) {
       setErro(messageFrom(e, "Não foi possível registrar a assinatura."));
     } finally {
@@ -168,6 +175,10 @@ export default function AssinarPage() {
   }
 
   const assinado = contrato.ja_assinado;
+  // O desenho **não** entra na condição de propósito. Quem não conseguir
+  // desenhar — navegador sem canvas, mouse ruim, mão trêmula — ainda tem de
+  // conseguir assinar: o que prova a assinatura é a trilha, não o rabisco.
+  // Travar o botão nele trocaria o essencial pelo enfeite.
   const podeAssinar = leuAteOFim && aceite && nome.trim().length >= 3;
 
   return (
@@ -227,6 +238,44 @@ export default function AssinarPage() {
               className="mt-1.5 w-full rounded-lg border border-surface-border bg-surface px-3 py-3 text-base text-fg placeholder:text-fg-faint focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
               placeholder="Como está no seu documento"
             />
+
+            <div className="mt-5">
+              <div
+                role="tablist"
+                aria-label="Como assinar"
+                className="mb-3 flex gap-1 rounded-lg bg-surface-muted p-1"
+              >
+                {(["desenhar", "digitar"] as const).map((opcao) => (
+                  <button
+                    key={opcao}
+                    type="button"
+                    role="tab"
+                    aria-selected={modo === opcao}
+                    onClick={() => {
+                      // O traço anterior é descartado ao trocar de modo: manter
+                      // um desenho invisível enquanto a pessoa escolhe uma
+                      // letra faria ela assinar com o que não está vendo.
+                      setModo(opcao);
+                      setRabisco(null);
+                    }}
+                    className={[
+                      "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                      modo === opcao
+                        ? "bg-surface text-fg shadow-sm"
+                        : "text-fg-muted hover:text-fg",
+                    ].join(" ")}
+                  >
+                    {opcao === "desenhar" ? "Desenhar" : "Digitar"}
+                  </button>
+                ))}
+              </div>
+
+              {modo === "desenhar" ? (
+                <CampoDeAssinatura onChange={setRabisco} disabled={enviando} />
+              ) : (
+                <AssinaturaDigitada nome={nome} onChange={setRabisco} />
+              )}
+            </div>
 
             <label className="mt-4 flex items-start gap-3 text-sm text-fg-soft">
               <input

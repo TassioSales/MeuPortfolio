@@ -326,6 +326,76 @@ async def listar_do_lead(
     return [ContratoResponse.model_validate(c) for c in resultado.scalars().all()]
 
 
+async def _cabecalho_do_escritorio(db: AsyncSession) -> str:
+    """
+    O que vai no alto das páginas a partir da segunda.
+
+    Vazio quando o escritório não tem nome configurado — cabeçalho com um
+    traço e nada escrito é pior que folha sem cabeçalho.
+    """
+    config = await escritorio_service.obter(db)
+    nome = (getattr(config, "nome", None) or "").strip() if config else ""
+    return f"{nome} — Contrato de honorários" if nome else ""
+
+
+async def montar_contrato(
+    db: AsyncSession, lead: Lead, modelo: ModeloDeContrato, gerado_por: Optional[str]
+) -> Contrato:
+    """
+    Monta o contrato preenchido, sem gravar nem commitar.
+
+    Extraída do endpoint porque a emissão automática (`gatilho_contrato`)
+    precisa do mesmo resultado: duas maneiras de montar um contrato são duas
+    maneiras de ele sair diferente, e a que ninguém olha é a que vai para o
+    cliente.
+    """
+    # O caso mais recente do contato. Um contato pode ter vários; o contrato é
+    # sobre o que se acabou de fechar, que é o último aberto.
+    caso = (
+        await db.execute(
+            select(Caso)
+            .where(Caso.lead_id == lead.id)
+            .order_by(Caso.data_abertura.desc())
+        )
+    ).scalars().first()
+
+    dados = (
+        await db.execute(
+            select(DadosDoContrato).where(DadosDoContrato.lead_id == lead.id)
+        )
+    ).scalars().first()
+
+    detalhes = (
+        await db.execute(
+            select(LeadDetails).where(LeadDetails.lead_id == lead.id)
+        )
+    ).scalars().first()
+
+    detalhes_json = {}
+    if detalhes is not None and detalhes.dados_json:
+        try:
+            detalhes_json = json.loads(detalhes.dados_json) or {}
+        except (json.JSONDecodeError, TypeError):
+            # JSON quebrado tira empresa e cargo do contrato, não o contrato
+            # inteiro do ar.
+            detalhes_json = {}
+
+    escritorio = await escritorio_service.obter(db)
+
+    contexto = contrato_service.montar_contexto(
+        lead=lead, dados=dados, caso=caso, detalhes_json=detalhes_json,
+        escritorio=escritorio,
+    )
+
+    return Contrato(
+        lead_id=lead.id,
+        modelo_id=modelo.id,
+        corpo=contrato_service.preencher(modelo.corpo, contexto),
+        status="gerado",
+        gerado_por=gerado_por,
+    )
+
+
 @router.post("/leads/{lead_id}", response_model=ContratoResponse, status_code=201)
 async def gerar(
     lead_id: str,
@@ -351,48 +421,7 @@ async def gerar(
     if modelo is None:
         raise NotFoundException("Modelo")
 
-    # O caso mais recente do contato. Um contato pode ter vários; o contrato é
-    # sobre o que se acabou de fechar, que é o último aberto.
-    resultado = await db.execute(
-        select(Caso)
-        .where(Caso.lead_id == lead_id)
-        .order_by(Caso.data_abertura.desc())
-    )
-    caso = resultado.scalars().first()
-
-    resultado = await db.execute(
-        select(DadosDoContrato).where(DadosDoContrato.lead_id == lead_id)
-    )
-    dados = resultado.scalars().first()
-
-    resultado = await db.execute(
-        select(LeadDetails).where(LeadDetails.lead_id == lead_id)
-    )
-    detalhes = resultado.scalars().first()
-    detalhes_json = {}
-    if detalhes is not None and detalhes.dados_json:
-        try:
-            detalhes_json = json.loads(detalhes.dados_json) or {}
-        except (json.JSONDecodeError, TypeError):
-            # JSON quebrado tira empresa e cargo do contrato, não o contrato
-            # inteiro do ar.
-            detalhes_json = {}
-
-    escritorio = await escritorio_service.obter(db)
-
-    contexto = contrato_service.montar_contexto(
-        lead=lead, dados=dados, caso=caso, detalhes_json=detalhes_json,
-        escritorio=escritorio,
-    )
-    corpo = contrato_service.preencher(modelo.corpo, contexto)
-
-    contrato = Contrato(
-        lead_id=lead_id,
-        modelo_id=modelo.id,
-        corpo=corpo,
-        status="gerado",
-        gerado_por=user_id,
-    )
+    contrato = await montar_contrato(db, lead, modelo, gerado_por=user_id)
     db.add(contrato)
     await db.commit()
     await db.refresh(contrato)
@@ -425,7 +454,11 @@ async def baixar_pdf(
     if contrato.pdf_assinado:
         pdf = contrato.pdf_assinado
     else:
-        pdf = contrato_service.em_pdf(contrato.corpo, titulo="Contrato")
+        pdf = contrato_service.em_pdf(
+            contrato.corpo,
+            titulo="Contrato",
+            cabecalho=await _cabecalho_do_escritorio(db),
+        )
     return Response(
         content=pdf,
         media_type="application/pdf",

@@ -39,6 +39,59 @@ STATUS_ASSINADO = "assinado"
 STATUS_CANCELADO = "cancelado"
 
 
+# Teto do desenho. Um traço de dedo em PNG dá uns 10 KB; 300 é folga larga
+# para um tablet de tela grande e continua sendo um teto — sem ele, a rota
+# pública aceitaria qualquer coisa que caiba num POST e guardaria no banco.
+LIMITE_DA_ASSINATURA = 300 * 1024
+
+# Assinatura dos oito primeiros bytes de todo PNG.
+_ASSINATURA_PNG = b"\x89PNG\r\n\x1a\n"
+
+
+def png_da_assinatura(data_url: Optional[str]) -> Optional[bytes]:
+    """
+    Converte o `data:image/png;base64,...` do `<canvas>` em bytes.
+
+    Devolve `None` para qualquer coisa que não seja um PNG plausível. **Isto é
+    entrada pública**, então nada aqui confia no formato: o prefixo é
+    conferido, o tamanho é limitado e os bytes decodificados têm de começar
+    com a assinatura do PNG. Guardar no banco o que o cliente mandou dizendo
+    ser imagem é como se serve um upload malicioso.
+
+    Recusa é silenciosa de propósito — o contrato vale sem o desenho, e
+    derrubar uma assinatura legítima porque o `<canvas>` de um navegador
+    exótico produziu algo diferente seria trocar o essencial pelo enfeite.
+    """
+    if not data_url or not isinstance(data_url, str):
+        return None
+
+    prefixo = "data:image/png;base64,"
+    if not data_url.startswith(prefixo):
+        logger.warning("⚠️ Assinatura desenhada em formato inesperado, ignorada")
+        return None
+
+    corpo = data_url[len(prefixo):]
+    # O base64 cresce 4/3; o teto é aplicado antes de decodificar, para não
+    # alocar 40 MB por causa de um POST de 30.
+    if len(corpo) > LIMITE_DA_ASSINATURA * 4 // 3:
+        logger.warning("⚠️ Assinatura desenhada grande demais, ignorada")
+        return None
+
+    try:
+        import base64
+
+        bruto = base64.b64decode(corpo, validate=True)
+    except Exception:
+        logger.warning("⚠️ Assinatura desenhada não é base64 válido, ignorada")
+        return None
+
+    if not bruto.startswith(_ASSINATURA_PNG) or len(bruto) > LIMITE_DA_ASSINATURA:
+        logger.warning("⚠️ Assinatura desenhada não é um PNG, ignorada")
+        return None
+
+    return bruto
+
+
 def novo_token() -> str:
     return secrets.token_urlsafe(BYTES_DO_TOKEN)
 

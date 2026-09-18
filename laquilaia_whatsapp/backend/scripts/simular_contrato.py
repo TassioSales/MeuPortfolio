@@ -35,15 +35,20 @@ NOME_DO_EXEMPLO = "Honorários advocatícios (exemplo)"
 # atendimento dele; serve para o fluxo rodar, não como recomendação.
 PERCENTUAL = "30% (trinta por cento)"
 
+# Dados **fictícios**, e assumidamente. Servem para o contrato sair completo
+# num teste, não para ir a um cliente: o nome do escritório, o CNPJ e a OAB
+# saem impressos no documento, e um contrato com CNPJ inventado não é um
+# contrato. Antes de usar com gente, preencha os reais em Configurações →
+# Escritório — o script não sobrescreve o que já estiver lá.
 ESCRITORIO_DE_EXEMPLO = {
-    "nome": "Sales & Associados Advocacia",
-    "cnpj": "12.345.678/0001-90",
-    "oab_responsavel": "DF 54321",
-    "fundador": "Tássio Lucian Sales",
-    "endereco": "SCS Quadra 2, Bloco C, sala 405, Asa Sul",
+    "nome": "Escritório Modelo Advocacia (dados de teste)",
+    "cnpj": "00.000.000/0001-00",
+    "oab_responsavel": "DF 00.000",
+    "fundador": "Advogado Responsável (a preencher)",
+    "endereco": "Endereço do escritório, a preencher",
     "cidade": "Brasília",
-    "email": "contato@salesadvocacia.com.br",
-    "telefone": "(61) 3333-4444",
+    "email": "contato@exemplo.com.br",
+    "telefone": "(61) 0000-0000",
     "horario_atendimento": "Seg a sex, 9h às 18h",
 }
 
@@ -123,8 +128,9 @@ async def simular() -> int:
         print(f"  Desativado: {', '.join(desativados)}")
     print()
     print("  Agora: Kanban → abra um card → seção Contrato → Gerar contrato.")
-    print("  O percentual é exemplo. Edite em Contratos → Modelos antes de usar")
-    print("  com cliente de verdade.")
+    print("  ⚠️  O percentual e os dados do escritório são de TESTE.")
+    print("      Antes de usar com cliente: Configurações → Escritório (dados")
+    print("      reais) e Contratos → Modelos (percentual de honorários).")
     return 0
 
 

@@ -36,7 +36,7 @@ CI: `.github/workflows/laquilaia-ci.yml` **na raiz do repositório**. Workflow e
 subpasta não é executado pelo GitHub — outros projetos deste portfólio têm
 `ci.yml` dentro da própria pasta e por isso nunca rodaram.
 
-Estado atual: **741 testes no backend, 314 no frontend.**
+Estado atual: **823 testes no backend, 329 no frontend.**
 
 Os testes do limite de uso precisam do **Redis** (`redis-server` local ou
 `docker compose up -d redis`). Sem ele eles se pulam, e a CI trata pulo como
@@ -55,6 +55,7 @@ backend/app/
                com jurisprudência, provas e porte econômico),
                caso_service (um contato, vários casos),
                contrato (lacunas → texto → PDF), assinatura (token e prova),
+               cobranca (contrato enviado e não assinado),
                rate_limiter, memory, whatsapp, lead_processor,
                message_orchestrator, metrics, agent, auth
   models/      schemas.py, llm_models.py, caso_schemas.py (o caso nas telas)
@@ -65,7 +66,10 @@ backend/app/
                sondar_evolution.py (prova o QR contra a Evolution de verdade)
   db/          models.py (SQLAlchemy), database.py, redis_client.py
   ws/          manager.py — canal de tempo real por agente
-  jobs/        metrics_aggregator.py (APScheduler)
+  jobs/        metrics_aggregator.py (APScheduler). O follow-up (5 min) e a
+               cobrança de assinatura (15 min) são jobs separados no mesmo
+               scheduler — um erro numa rodada de cobrança não pode levar
+               junto a cutucada de conversa, que é a que traz cliente.
   utils/       auth_middleware, webhook_security, exceptions, logger, fuso
   alembic/     migrações — o schema é daqui, não da aplicação
 
@@ -430,12 +434,8 @@ alguém escreve um resumo curto próprio para isto.
 
 ### O que **não** existe
 
-- **A IA coletando CPF e endereço na conversa.** Foi decisão do dono que ela
-  colete, e vai em PR separado: mexer no prompt muda o que o agente diz a
-  **todo** cliente, e isso precisa ser testado isolado. Hoje quem preenche é
-  quem atende, no dossiê — e **isso é o que trava o disparo automático**.
-- **O disparo automático.** O dono foi explícito: *"a IA tem que gerar e
-  enviar, não o advogado"*. Falta a regra que dispara.
+Nada: a coleta pela IA e o disparo automático entraram — ver §6e. O que
+falta é **ligar** (`CONTRATO_AUTOMATICO=true`) e ver rodar com gente.
 
 ### O que foi verificado, e o que não foi
 
@@ -520,10 +520,29 @@ escritório. Nada do dossiê, nada do parecer, nada do telefone.
 4. Assinatura registrada, PDF absorvido, token morto.
 5. O agente confirma no WhatsApp e a confirmação entra na conversa.
 
-**Falta o passo 6:** cobrar quem não assinou. E falta o gatilho automático —
-o dono foi explícito que *"a IA tem que gerar e enviar, não o advogado"*, e
-hoje quem clica é gente. O que trava isso é a coleta de CPF/RG/endereço, que
-ainda é manual (ver §6c).
+6. Não assinou? O agente cobra — **`cobranca_service`**, três vezes, e a
+   segunda **pergunta o motivo**, que foi o pedido do dono: *"tem que
+   perguntar por que não assinou, se desistiu"*. Lembrar → perguntar →
+   oferecer a saída; três mensagens iguais são três mensagens ignoradas.
+
+**A cobrança e o follow-up de conversa não se atropelam, por construção.** O
+follow-up só pega conversas cuja última mensagem é do agente (`remetente ==
+"assistant"`), e tudo que a cobrança e o envio gravam entra como `sistema` —
+ninguém leva as duas cutucadas. Há teste travando isso.
+
+**A cobrança para quando o cliente escreve.** A pessoa está falando com a
+gente; cortar com "assina aí" é o movimento errado. O relógio passa a contar
+da fala dela, então a cobrança volta se a conversa esfriar — não some para
+sempre.
+
+**Intervalos muito mais largos que o follow-up** (2h, 1 dia, 3 dias, contra
+15 min, 2h, 1 dia). Lá se cobra uma resposta de uma linha; aqui a leitura de
+um contrato de honorários, que a pessoa vai querer conversar em casa. Quatro
+dias no total, dentro dos sete de validade do link — e se alguém alargar um
+intervalo no `.env`, a cobrança **renova o link vencido** antes de mandar, em
+vez de enviar endereço morto.
+
+**O gatilho automático existe — e nasce desligado.** Ver §6e.
 
 **Decisão sobre o gatilho, já tomada:** quando ele existir, quem dispara será
 **regra determinística** — caso qualificado, viabilidade não descartada, dados
@@ -547,6 +566,226 @@ saem para fora nunca saíram.
 **Atenção ao downgrade da migração `b7d4e91c25a8`:** ele derruba as colunas, e
 com elas os PDFs assinados e a trilha de prova — dado que não existe em nenhum
 outro lugar, justamente porque a ideia era não existir em nenhum outro lugar.
+
+---
+
+## 6e. O ciclo rodando sozinho
+
+O dono foi explícito: *"a IA tem que gerar e enviar, não o advogado"*. Está
+feito, e **nasce desligado** — `CONTRATO_AUTOMATICO=false`.
+
+**Por que desligado.** Ligado, o próximo lead real recebe um contrato de
+honorários sem o dono ter escolhido a hora. Ligar é uma linha no `.env`;
+desligar depois de um contrato ter saído para a pessoa errada não desfaz nada.
+Antes de ligar: confira que existe um modelo **ativo** com o percentual certo.
+
+**O modelo de linguagem não decide.** Quem dispara é regra checada em Python
+sobre dados que já existem: caso qualificado, viabilidade não `abaixo_do_piso`,
+conversa `ativa`, fase `triagem`, modelo ativo e nenhum contrato ainda. Um LLM
+com poder de emitir contrato com honorários é um LLM que um dia emite para a
+pessoa errada, e "o modelo achou que era hora" não é defesa que se dê a um
+cliente. Ele conversa e coleta; a decisão de emitir é aritmética.
+
+**O gatilho é depois do parecer, não da qualificação.** É o parecer que
+estabelece o porte econômico. Emitir antes significaria mandar contrato para
+casos que o próprio escritório recusaria — noventa segundos de diferença que
+decidem se o produto é útil ou constrangedor.
+
+**`indeterminado` não barra.** Mesma distinção que o funil já faz: parecer sem
+porte não é caso inviável, é caso que ninguém dimensionou. Barrar aqui faria o
+gatilho não disparar quase nunca.
+
+### A fase, e por que ela não é o `status`
+
+`Conversation.fase` — `triagem` → `coleta` → `contratado`. O `status` diz
+**quem responde** (ativa/pausada/encerrada); a fase diz **o que está sendo
+perguntado**, e as duas variam sem se implicar.
+
+É a fase que decide qual bloco de instrução vai anexado ao system prompt. Na
+triagem o bloco de coleta **nem chega ao modelo** — e isso é deliberado: pôr
+as instruções de coleta no prompt base, mesmo com um "faça isto só quando...",
+deixaria o modelo a um mal-entendido de distância de pedir CPF a quem acabou
+de dizer "oi", que é onde a conversa morre. Instrução que não deve valer agora
+é instrução que não deve estar lá.
+
+A fase atravessa os três caminhos do `generate_response` — Claude, reserva por
+queda e reserva por áudio. O cliente não pode ser perguntado sobre o CPF pelo
+Claude e receber uma triagem recomeçada do Gemini porque o principal caiu.
+
+### A coleta
+
+A abertura é **texto fixo**, não gerada pelo modelo: ela anuncia que o
+escritório aceitou o caso — um compromisso —, e não é hora de descobrir como o
+modelo resolveu formular isso hoje. Dali em diante ele assume.
+
+O bloco JSON `dados_contrato` traz **só o que a pessoa disse**. Campo ausente
+continua ausente; CPF com número de dígitos errado é descartado com aviso. Um
+CPF inventado num contrato é um contrato nulo, e o modelo que inventa não avisa
+que inventou.
+
+A gravação é **acumulativa, nunca destrutiva**: o agente manda o bloco a cada
+mensagem com dado novo, e um bloco posterior com menos campos não pode apagar
+o que um anterior trouxe.
+
+**Obrigatórios: CPF, endereço, cidade, UF.** O RG fica de fora de propósito —
+muita gente não sabe de cabeça, e travar o contrato por causa dele é perder o
+cliente por um campo que o advogado completa em trinta segundos. Ele sai como
+lacuna visível no PDF.
+
+### Duas armadilhas encontradas montando isto
+
+**O follow-up devolvia a própria despedida como pergunta.** Visto em produção
+pelo dono: o agente encerrou com *"Por nada, Diego. Fique tranquilo, o advogado
+vai te procurar ainda hoje"*, e o follow-up mandou *"Oi, Diego! Ficou faltando
+só isto aqui: Por nada, Diego..."*. Sem sentido, e errado no mérito — a bola
+estava com o escritório. O follow-up repete a última mensagem do agente, e isso
+só funciona quando ela **é** pergunta. Agora exige interrogação, e conversa
+fora da fase `triagem` não é dele.
+
+**A `## Ficha` só era lida sem markdown.** O parser exigia `Área: trabalhista`
+em linha limpa; um modelo escrevendo `- **Área:** trabalhista` fazia
+`ler_ficha` devolver `(None, None)`, o caso não era arquivado e **ninguém
+ficava sabendo** — sem erro, só um lead sem caso. Achei isso escrevendo um
+parecer de teste de memória, e enfeitei do jeito que o modelo enfeitaria.
+Depois que o gatilho passou a ler a viabilidade do caso, ficha enfeitada virou
+contrato que nunca sai. O parser agora tolera marcador de lista e negrito.
+
+### O teste que faltava
+
+`tests/test_ciclo_completo.py` percorre webhook → triagem → qualificação →
+parecer → coleta → contrato → assinatura numa transação só, com modelo e
+Evolution simulados e **todo o resto real**. Os testes de unidade cobriam cada
+peça; o que quebrava era a costura, e foi assim que três defeitos passaram.
+
+### Recomeçar do zero
+
+`python -m scripts.limpar_conversas` apaga conversas, mensagens, leads, casos,
+cards, contratos e dados civis, e **preserva** usuários, agentes, colunas,
+configuração do escritório e modelos. Pede confirmação digitada e avisa em
+separado quando há contrato assinado — aquilo é documento, com PDF e trilha de
+prova, e não tem cópia.
+
+### Rodou de verdade, com gente
+
+**24/08/2026, primeira vez.** Triagem completa pelo WhatsApp (agressão no
+trabalho, cinco anos de casa, R$ 6.500), contrato emitido sozinho, assinado
+de um Android e absorvido — IP IPv6 real, hash, comprovante. O ciclo inteiro
+funcionou sem ninguém do escritório clicar.
+
+A triagem se comportou: conduziu com perguntas encadeadas, informou o que
+costuma entrar no caso **atribuindo ao advogado**, e recusou falar de
+honorários quando o cliente perguntou "não tem contrato?" — devolveu ao
+advogado, como o prompt manda.
+
+**O que a conversa real revelou, e foi corrigido no mesmo dia:**
+
+- O contrato saiu com o **CONTRATADO em branco** — ninguém tinha preenchido o
+  escritório. Não é defeito de código, mas é o primeiro contrato que sai e
+  ninguém confere isso antes.
+- O objeto trazia o **texto da triagem** (ver §6c).
+- **Não tinha assinatura nenhuma** na linha de assinar. Ver abaixo.
+
+### A assinatura desenhada
+
+Juridicamente o rabisco não acrescenta nada: o que prova a assinatura é a
+trilha — token individual, hora, IP, aparelho e hash. Mas o dono abriu o
+primeiro contrato assinado de verdade e disse *"não assinou nada ali"*. Um
+contrato sem nada escrito na linha **não parece assinado**, e quem recebe o
+PDF fica sem saber se valeu.
+
+Agora há um `<canvas>` na página pública. Três coisas que não são enfeite:
+`touch-none` (sem ele o dedo rola a página em vez de desenhar, e ninguém
+assina no celular), Pointer Events em vez de `touch` + `mouse` separados (um
+traço vira dois), e redimensionamento por `devicePixelRatio` (senão o traço
+sai borrado, e assinatura borrada parece defeito).
+
+**Duas formas: desenhar ou digitar.** É o que Autentique e DocuSign
+oferecem, e por um motivo prático: assinar com o dedo sai um garrancho, e
+muita gente desiste ou fica com vergonha do resultado. Digitando, a pessoa
+escolhe entre três letras cursivas — e o resultado é **o mesmo PNG**, pintado
+num canvas no navegador. O backend não sabe (nem precisa saber) se o traço
+veio de um dedo ou de uma fonte, e não há um segundo formato para validar,
+guardar e desenhar no PDF.
+
+As fontes vêm por `next/font/google`, que **baixa na build e serve do nosso
+domínio** — em tempo de execução não há requisição ao Google. E o canvas
+espera `document.fonts.load` antes de pintar: sem isso o primeiro desenho sai
+na fonte de reserva, e a pessoa assina com o próprio nome em Times.
+
+**Digitar não é o sistema assinando por ninguém.** A pessoa digita o próprio
+nome, escolhe como ele aparece e confirma. O que sustenta a assinatura
+continua sendo a trilha.
+
+**O desenho é opcional, de propósito.** Navegador sem canvas, mouse ruim, mão
+trêmula — a pessoa ainda assina. Travar o botão nele trocaria o essencial pelo
+enfeite.
+
+**E é entrada pública, então nada confia nele:** prefixo conferido, tamanho
+limitado antes de decodificar (o base64 cresce 4/3 — sem o teto, um POST de
+30 KB alocaria dezenas de MB), e os bytes têm de começar com a assinatura do
+PNG. Recusa é silenciosa: o contrato vale sem o desenho.
+
+### O que ainda não foi verificado
+
+**O bloco de coleta nunca chegou a rodar** — na conversa real o contrato saiu
+antes, porque os dados vieram da triagem. Não se sabe se a agente coleta bem:
+se pergunta um dado por vez, se aceita "não sei o RG" sem travar, se recomeça
+a triagem por engano.
+
+E a assinatura nunca foi feita com um dedo de verdade numa tela de verdade —
+só com Pointer Events sintéticos no jsdom, que não implementa canvas. O mesmo
+vale para a digitada: o jsdom não renderiza fonte nenhuma, então **ninguém
+viu** como as três letras ficam.
+
+---
+
+## 6f. O atendimento do Lázaro, e o que ele ensinou
+
+Segunda triagem real, 24/08. O cliente abriu com **dois áudios**, e daí saíram
+dois defeitos que nenhum teste tinha pego — os dois com a mesma raiz: **o
+sistema entregava ao modelo um vazio em vez de dizer que era um vazio.** Um
+modelo aceita não saber quando lhe dizem que não sabe; não aceita quando lhe
+entregam um buraco para preencher.
+
+**Chamou o cliente de "Rafael" onze vezes.** Ele se chama Lázaro. Sem nome à
+mão — os áudios não foram transcritos —, o modelo escolheu um e o manteve por
+meia hora, por coerência com o que ele mesmo tinha dito antes. Só corrigiu
+quando a pessoa digitou o próprio nome.
+
+A correção não é só no prompt. O prompt é do dono do agente e pode ser
+reescrito; o que fecha a porta é o sistema **afirmar a cada turno o que ele de
+fato sabe** — `AVISO_SEM_NOME` em `atendimento_context`. Antes, número
+desconhecido não gerava nota nenhuma, e era por essa lacuna que "Rafael"
+entrava. Havia um teste travando esse comportamento (`test_numero_desconhecido
+_nao_gera_nota`); ele mudou de lado.
+
+**Fingiu ter ouvido o áudio.** Respondeu *"Entendo, é uma situação bem chata
+mesmo, ficar recebendo menos do que o combinado"* a um áudio que nunca ouviu,
+e conduziu a triagem inteira a partir da invenção.
+
+A causa: o `PEDIDO_DE_TEXTO` dizia *"Não consigo ouvir áudios por aqui. Pode
+me escrever o que você falou?"* — primeira pessoa, do agente — mas era anexado
+ao turno do **cliente**. O modelo lia o próprio cliente dizendo que não
+conseguia ouvir áudios. Agora é nota do sistema, e ela **afirma a ignorância**:
+"o áudio NÃO foi transcrito e você não tem acesso ao que foi dito nele".
+
+**O contrato não saiu, e aí o sistema acertou.** O parecer estimou R$ 8.000 a
+18.000; o piso é R$ 15.000 e a regra compara pelo **piso da faixa**. Barrou
+corretamente.
+
+O que estava errado era a **invisibilidade**: o caso barrado não aparecia em
+tela nenhuma. O Histórico conta casos `arquivado`, e um caso barrado continua
+aberto no funil — o painel mostrava um lead qualificado que misteriosamente
+não virou contrato. Agora entra na linha do tempo do lead, uma vez por motivo
+(o gatilho roda depois de **cada** parecer; sem guarda a trilha encheria de
+linhas idênticas).
+
+**Ainda em aberto, e é decisão do dono:** R$ 15.000 é o piso certo? Um caso de
+R$ 8.000 é recusado automaticamente hoje.
+
+**E os áudios continuam sem transcrição.** `anexos_habilitados` está desligado
+no agente que atende, ou falta `GEMINI_API_KEY` — sem os dois, todo cliente que
+manda áudio (e no WhatsApp são muitos) é atendido pedindo que escreva.
 
 ---
 

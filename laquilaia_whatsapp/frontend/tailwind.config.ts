@@ -75,6 +75,12 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+        // As três letras de assinatura. O `cursive` no fim não é enfeite: se
+        // a fonte não carregar, o nome ainda sai com cara de assinatura em
+        // vez de virar texto comum no meio de um contrato.
+        "assinatura-elegante": ["var(--fonte-assinatura-elegante)", "cursive"],
+        "assinatura-solta": ["var(--fonte-assinatura-solta)", "cursive"],
+        "assinatura-caneta": ["var(--fonte-assinatura-caneta)", "cursive"],
       },
     },
   },

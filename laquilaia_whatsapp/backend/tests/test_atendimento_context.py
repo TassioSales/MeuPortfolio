@@ -74,9 +74,27 @@ def _lead(**kwargs):
 
 
 class TestPrimeiroContato:
-    async def test_numero_desconhecido_nao_gera_nota(self):
-        """Sem nota, o agente abre a triagem normalmente."""
-        assert await nota_de_atendimento_anterior("5561999", "conv-1", _db()) is None
+    async def test_numero_desconhecido_avisa_que_nao_sabe_o_nome(self):
+        """
+        **Este teste mudou de lado.** Ele exigia `None` para número
+        desconhecido — "sem nota, o agente abre a triagem normalmente" —, e
+        era exatamente essa lacuna que deixava o modelo inventar um nome.
+
+        Num atendimento real o cliente abriu com dois áudios que o agente não
+        conseguiu ouvir; sem nome nenhum à mão, o modelo passou a chamá-lo de
+        "Rafael", onze vezes em meia hora. Ele se chama Lázaro.
+
+        Agora a nota existe desde o primeiro contato, e o que ela carrega é a
+        afirmação da ignorância: o sistema **não sabe** o nome desta pessoa.
+        """
+        from app.services.atendimento_context import AVISO_SEM_NOME
+
+        nota = await nota_de_atendimento_anterior("5561999", "conv-1", _db())
+
+        assert nota is not None
+        assert AVISO_SEM_NOME in nota
+        # E nada mais: não há atendimento anterior para contar.
+        assert "atendimento registrado" not in nota
 
 
 class TestRetorno:
@@ -138,7 +156,12 @@ class TestRetorno:
             "5561999", "conv-1", _db(lead=lead, total_mensagens=1)
         )
 
-        assert "sem nome registrado" in nota
+        # Antes dizia "sem nome registrado", que é uma constatação. Agora é
+        # uma instrução — a diferença entre o modelo saber que falta o dado e
+        # saber o que fazer com a falta.
+        from app.services.atendimento_context import AVISO_SEM_NOME
+
+        assert AVISO_SEM_NOME in nota
 
 
 class TestMontagemDoHistorico:

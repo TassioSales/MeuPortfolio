@@ -1,0 +1,47 @@
+<!--
+  O PAINEL-WEB do painel de chamados como serviço do Windows.
+  E o processo que o tunel enxerga: serve o quadro e repassa /internal/* e
+  /webhook para o bot.
+-->
+<service>
+  <id>painel-web</id>
+  <name>Painel de Chamados - web</name>
+  <description>Serve o quadro, e dono da sessao do Entra, repassa /webhook e /internal para o bot. Ver whatsapp-suporte/docs/WA Implantacao.md</description>
+
+  <executable>node</executable>
+  <arguments>servidor-painel.mjs</arguments>
+
+  <workingdirectory>%BASE%\..</workingdirectory>
+
+  <startmode>Automatic</startmode>
+
+  <!--
+    Depende do bot, e a dependencia e de ORDEM, nao de funcionamento: o painel
+    sobe e serve o quadro mesmo com o bot fora do ar (mostra "bot fora do ar" no
+    lugar dos cartoes, e volta sozinho quando ele subir - esta documentado em
+    sondarBot). Ordenar so evita alguns segundos de quadro vazio a cada reboot.
+  -->
+  <depend>painel-bot</depend>
+
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="30 sec"/>
+  <onfailure action="restart" delay="60 sec"/>
+  <resetfailure>1 hour</resetfailure>
+
+  <log mode="roll-by-size">
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>8</keepFiles>
+  </log>
+  <logpath>%BASE%\..\dados\logs</logpath>
+
+  <serviceaccount>
+    <username>NT SERVICE\painel-web</username>
+    <allowservicelogon>true</allowservicelogon>
+  </serviceaccount>
+
+  <!--
+    Este nao tem banco proprio: nao ha WAL para incorporar, so conexoes para
+    fechar. 10s basta.
+  -->
+  <stoptimeout>10 sec</stoptimeout>
+</service>

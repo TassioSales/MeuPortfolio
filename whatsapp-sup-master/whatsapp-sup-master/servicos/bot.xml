@@ -1,0 +1,42 @@
+<!--
+  O BOT do painel de chamados como serviço do Windows.
+  Ver o cabeçalho de editor-bio/servicos/estudio.xml para o porquê de serviço.
+
+  Este é um dos DOIS processos do projeto. O outro é painel.xml.
+-->
+<service>
+  <id>painel-bot</id>
+  <name>Painel de Chamados - bot</name>
+  <description>Fala com a Meta (webhook) e e dono do banco de chamados. Ver whatsapp-suporte/docs/WA Implantacao.md</description>
+
+  <executable>node</executable>
+  <arguments>dist/server.js</arguments>
+
+  <!-- dotenv e o DATABASE_URL relativo dependem disto. -->
+  <workingdirectory>%BASE%\..</workingdirectory>
+
+  <startmode>Automatic</startmode>
+
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="30 sec"/>
+  <onfailure action="restart" delay="60 sec"/>
+  <resetfailure>1 hour</resetfailure>
+
+  <log mode="roll-by-size">
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>8</keepFiles>
+  </log>
+  <logpath>%BASE%\..\dados\logs</logpath>
+
+  <serviceaccount>
+    <username>NT SERVICE\painel-bot</username>
+    <allowservicelogon>true</allowservicelogon>
+  </serviceaccount>
+
+  <!--
+    Mesmo raciocinio do Estudio: `src/server.ts` fecha o Prisma no SIGTERM, e e
+    ai que o WAL do SQLite e incorporado. 20s porque este banco tende a ser
+    maior (mensagens + chamados + historico).
+  -->
+  <stoptimeout>20 sec</stoptimeout>
+</service>

@@ -1,0 +1,1889 @@
+/* ==========================================================================
+   Painel de chamados — dois temas, na paleta do editor-bio
+
+   Claro e escuro, com o mesmo vocabulário de tokens. Quem escolhe é o
+   `tema.js`, que estampa `data-theme` no <html> ANTES do primeiro paint; sem
+   escolha salva, ele estampa o tema do sistema. Por isso aqui existe UM bloco
+   claro e UM bloco escuro, e nenhuma `@media (prefers-color-scheme)`: com a
+   preferência do sistema já resolvida em JS, a media query só duplicaria os
+   valores escuros num segundo lugar que teria de ser mantido em sincronia à
+   mão. Sem JS, vale o bloco claro.
+
+   ---------------------------------------------------------------------------
+   Como ler os nomes
+
+   Os nomes `--n0`..`--n50` e `--n200`..`--n800` vêm do tema escuro original e
+   NÃO significam mais "mais claro" ou "mais escuro" — significam DISTÂNCIA da
+   superfície base:
+
+     --n0 .. --n50    elevação, contada do topo. `--n0` é o degrau mais alto
+                      (cartão, modal, campo), `--n20` o intermediário (coluna
+                      do quadro, cartão de KPI) e `--bg` o chão. Para onde a
+                      elevação anda em COR depende do tema: no escuro ela
+                      clareia, no claro ela embranquece — mas a ORDEM
+                      `--bg` < `--n20` < `--n0` vale nos dois.
+                      `--n30`/`--n40`/`--n50` são chip, borda e divisor.
+     --n200 .. --n800 força do texto CONTRA a superfície. `--n800` é o texto
+                      principal e `--n200` o mais apagado, nos dois temas —
+                      no claro isso quer dizer mais escuro, no escuro mais
+                      claro.
+
+   Preferi manter os nomes a renomear 400 usos em três arquivos: a troca seria
+   puramente cosmética e cada ocorrência é uma chance de quebrar um painel que
+   está em produção. O que os nomes querem dizer está aqui.
+   ========================================================================== */
+
+/* ---------- Tema claro (padrão) --------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  /* Superfícies.
+     O editor-bio usa #7b7b7b como fundo — é a mesa de trabalho atrás da peça,
+     e faz sentido lá. Aqui `--bg` é o cromo inteiro da aplicação, e um cinza
+     médio por trás de cartões brancos deixaria o quadro pesado, então parto do
+     cinza-claro dele (`--surface-strong`).
+
+     ATENÇÃO à ordem: no tema escuro a elevação sobe ficando mais CLARA; no
+     claro ela sobe ficando mais BRANCA. Então a pilha aqui é
+     `--bg` < `--n20` < `--n0`, e não o contrário. Minha primeira versão deixou
+     `--n20` igual a `--bg`, e o efeito foi visível na tela: os cartões de KPI e
+     as colunas do quadro sumiram no fundo, sobrando só a borda deles. */
+  --bg:      #E9EDF3;  /* fundo da aplicação — o degrau mais baixo */
+  --surface: #FFFFFF;  /* topnav e barra lateral */
+
+  --n0:  #FFFFFF;  /* cartões, modal, inputs elevados */
+  --n10: #F4F6F9;  /* hover de cartão / superfície */
+  --n20: #F1F4F8;  /* colunas e cartões de KPI — um degrau acima do fundo */
+  --n30: #E3E8EE;  /* chips, contadores, preenchimento de hover */
+  /* A `--line` do editor-bio é #e8ebef. Escureci dois passos porque aqui a
+     borda precisa aparecer TAMBÉM contra `--n20`, e #e8ebef sobre #EEF1F5
+     desaparece — a coluna ficaria sem contorno. */
+  --n40: #DDE2E9;  /* bordas */
+  --n50: #CCD3DC;  /* bordas tracejadas / divisores fortes */
+
+  /* Texto. O `--n800` é a `--ink` do editor-bio: marrom, não preto. É dela que
+     vem o tom quente da tela inteira. */
+  /* A `--muted` do editor-bio (#7c8797) entra aqui como `--n200`, e eu a
+     escureci: no painel esse token pinta PLACEHOLDER, que é texto, e #7c8797
+     sobre cartão branco dá 3,64:1 — abaixo dos 4,5:1 que texto pede. Medido,
+     não estimado. A rampa fica monotônica em contraste sobre o cartão:
+     4,6 / 5,8 / 7,7 / 11,2. */
+  --n200: #6B7686;  /* ícones e placeholders */
+  --n300: #5B6675;  /* texto sutil */
+  --n500: #4A5461;  /* texto secundário e botões */
+  --n800: #593115;  /* texto principal (a --ink do editor-bio) */
+
+  /* Acento: o verde do editor-bio.
+     Dois tokens porque os dois papéis pedem valores diferentes no escuro (é o
+     par `--green`/`--green-text` de lá): `--acento` PREENCHE e leva texto
+     branco por cima; `--acento-texto` é o acento como TEXTO, borda e anel de
+     foco sobre uma superfície. No claro os dois coincidem. */
+  --acento:        #02542A;
+  --acento-hover:  #013D1F;
+  --acento-texto:  #02542A;
+  --acento-sutil:  rgba(2, 84, 42, .10);
+  --sobre-acento:  #FFFFFF;
+
+  /* Status. Três papéis por cor, porque o painel usa a mesma cor como texto,
+     como faixa e como fundo tingido — e no claro um âmbar legível como texto
+     é escuro demais para ser uma boa faixa. */
+  --aviso:        #6B4E00;
+  --aviso-linha:  #C99A00;
+  --aviso-sutil:  rgba(201, 154, 0, .14);
+  --erro:         #A3302A;
+  --erro-linha:   #D34545;  /* a --danger do editor-bio */
+  --erro-sutil:   rgba(211, 69, 69, .12);
+
+  /* Identidade de etiqueta. Violeta para o setor porque é o que se separa do
+     verde do assunto até para quem tem deuteranopia (ΔE 20,3 no claro); os
+     dois chips convivem no mesmo cartão. */
+  --violeta:        #4C3BA8;
+  --violeta-texto:  #4C3BA8;
+  --violeta-sutil:  rgba(76, 59, 168, .10);
+  --terracota-texto: #8F3D12;
+  --terracota-sutil: rgba(143, 61, 18, .10);
+
+  /* --- Gráficos do dashboard -----------------------------------------
+     `--serie-a` é sempre o que VEM DE FORA (chamado aberto, mensagem
+     recebida) e `--serie-b` o que NÓS fizemos (resolvido, enviado). O par é
+     violeta x verde e não verde x âmbar: âmbar contra o verde escuro do tema
+     claro dá ΔE 12 até para visão normal - medido, e reprovado. Violeta dá
+     20,3 no claro e 16,3 no escuro. */
+  --serie-a: #4C3BA8;
+  --serie-b: #02542A;
+
+  /* A fila empilhada por situação é UMA quantidade repartida em etapas, não
+     três categorias - então é rampa de uma hue só, do claro ao escuro, na
+     ordem do ciclo de vida (aberto -> em andamento -> aguardando). Rampa
+     separa por LUMINOSIDADE, o que a torna imune a daltonismo. */
+  --fila-1: #7FB79A;
+  --fila-2: #2F8558;
+  --fila-3: #02542A;
+
+  /* Placas dos indicadores, no espírito do painel de referência: bloco de cor
+     cheia com o número em branco. Todas conferidas com texto branco por cima
+     (7,2:1 a 9,1:1 aqui). */
+  --placa-ok:     #02542A;
+  --placa-neutro: #4C3BA8;
+  --placa-aviso:  #7A4E00;
+  --placa-erro:   #9E2F29;
+
+  /* Sombras em marrom, não em preto: preto puro sobre superfície quente
+     acinzenta a borda e denuncia que a paleta foi trocada só pela metade. */
+  --shadow-card:  0 1px 2px rgba(89, 49, 21, .10), 0 0 0 1px rgba(89, 49, 21, .06);
+  --shadow-pop:   0 8px 24px rgba(89, 49, 21, .18), 0 0 0 1px rgba(89, 49, 21, .08);
+  --shadow-hover: rgba(89, 49, 21, .12);
+  --veu:          rgba(35, 24, 13, .35);
+
+  /* A seta do `<select>` é um SVG embutido, e data URI não entende
+     `currentColor`: a cor vai cravada dentro da imagem, então a imagem inteira
+     é um token. */
+  --seta-select: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235B6675' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+
+  /* Geometria e movimento: iguais nos dois temas. */
+  --radius: 4px;
+  --nav-h: 56px;
+  --sidebar-w: 240px;
+  --ease: cubic-bezier(.2, 0, 0, 1);
+}
+
+/* ---------- Tema escuro ----------------------------------------------- */
+
+/* Os valores são os do editor-bio escuro: marrom quente do #17140f ao #2b251d,
+   texto #f1e9df, acento #1e7d49 preenchendo e #3ecf7e escrevendo. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg:      #17140F;
+  --surface: #1C1912;
+
+  --n0:  #211D17;
+  --n10: #2B251D;
+  --n20: #1A1712;
+  --n30: #322B22;
+  --n40: #2E2820;
+  --n50: #463D31;
+
+  /* Mesma correção do tema claro, pelo mesmo motivo: `--n200` pinta
+     placeholder, e placeholder é texto. Um passo mais claro leva de 4,49:1
+     para 4,79:1 sobre o cartão, cruzando os 4,5. */
+  --n200: #918879;
+  --n300: #A79F92;  /* a --muted do editor-bio */
+  --n500: #C8BFB2;
+  --n800: #F1E9DF;  /* a --ink do editor-bio */
+
+  --acento:        #1E7D49;
+  --acento-hover:  #24955A;
+  --acento-texto:  #3ECF7E;
+  --acento-sutil:  rgba(62, 207, 126, .14);
+  --sobre-acento:  #FFFFFF;
+
+  --aviso:        #F5CD47;
+  --aviso-linha:  #D9A92B;
+  --aviso-sutil:  rgba(245, 205, 71, .12);
+  --erro:         #EF6A6A;
+  --erro-linha:   #EF6A6A;
+  /* .10 e não .16: em .16 o vermelho sobre o chip dava 4,41:1, e chip de 11px
+     em negrito pede 4,5. Menos alfa deixa o fundo mais perto do cartão, que é
+     mais escuro, e portanto SOBE o contraste do texto — sem clarear o vermelho
+     e enfraquecer o sinal de erro. Fica em 4,82:1. */
+  --erro-sutil:   rgba(239, 106, 106, .10);
+
+  --violeta:        #6B5BC4;
+  --violeta-texto:  #B4A3F0;
+  --violeta-sutil:  rgba(180, 163, 240, .16);
+  --terracota-texto: #E6A072;
+  --terracota-sutil: rgba(230, 160, 114, .14);
+
+  /* Os mesmos papéis do tema claro, nos valores que funcionam sobre superfície
+     escura. A rampa da fila continua monotônica em luminosidade - conferida
+     com o validador nos dois temas. */
+  --serie-a: #B4A3F0;
+  --serie-b: #3ECF7E;
+
+  --fila-1: #8FE9BC;
+  --fila-2: #3ECF7E;
+  --fila-3: #1E7D49;
+
+  --placa-ok:     #1E7D49;
+  --placa-neutro: #5B4BB8;
+  --placa-aviso:  #8F5B00;
+  --placa-erro:   #A83A34;
+
+  --shadow-card:  0 1px 2px rgba(0, 0, 0, .4), 0 0 0 1px rgba(241, 233, 223, .05);
+  --shadow-pop:   0 8px 24px rgba(0, 0, 0, .55), 0 0 0 1px rgba(241, 233, 223, .07);
+  --shadow-hover: rgba(0, 0, 0, .35);
+  --veu:          rgba(0, 0, 0, .6);
+
+  --seta-select: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A79F92' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857;
+  color: var(--n800);
+  background: var(--bg);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font: inherit; cursor: pointer; }
+
+input::placeholder { color: var(--n200); }
+
+:focus-visible {
+  outline: 2px solid var(--acento-texto);
+  outline-offset: 2px;
+}
+
+/* Barras de rolagem ---------------------------------------------------- */
+
+* { scrollbar-width: thin; scrollbar-color: var(--n50) transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb {
+  background: var(--n50);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-radius: 10px;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--n200); background-clip: padding-box; }
+*::-webkit-scrollbar-corner { background: transparent; }
+
+/* ---------- Navegação superior --------------------------------------- */
+
+.topnav {
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--n40);
+  position: relative;
+  z-index: 20;
+}
+
+.topnav__logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--n800);
+  text-decoration: none;
+  border-radius: var(--radius);
+}
+.topnav__logo:hover { color: var(--acento-texto); }
+.topnav__logo svg { display: block; }
+
+/* A marca da Bio Mundo é um arquivo, não um ícone tingível: as folhas vêm no
+   verde exato da marca (#105427) e a nervura entre elas é branca. Cor de marca
+   não se repinta por tema.
+
+   O problema disso no tema escuro: #105427 sobre a barra #1C1912 dá 1,6:1 - a
+   marca praticamente desaparece. A solução é a que se usa para logotipo em
+   interface escura: a marca ganha uma PLACA clara atrás e mantém as cores
+   verdadeiras, em vez de ser clareada por filtro (o que falsearia o verde e
+   acinzentaria a nervura branca).
+
+   No tema claro não há placa: a barra já é branca. */
+.topnav__marca {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border-radius: 5px;
+}
+:root[data-theme='dark'] .topnav__marca {
+  background: #F1E9DF;
+  /* A placa é 24px e a folha tem margem própria pequena; o padding negativo
+     via box-sizing não existe, então a caixa cresce e o recuo entra como
+     `padding` com a largura mantida por `box-sizing: border-box` (herdado do
+     `*` no topo deste arquivo). */
+  padding: 2px;
+}
+
+.nav-btn {
+  height: 32px;
+  padding: 0 10px;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--n500);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background .12s var(--ease), color .12s var(--ease);
+}
+.nav-btn:hover { background: var(--n30); color: var(--n800); }
+.nav-btn:active { background: var(--n40); }
+
+.nav-btn--primary {
+  background: var(--acento);
+  color: var(--sobre-acento);
+  font-weight: 600;
+  padding: 0 12px;
+}
+.nav-btn--primary:hover { background: var(--acento-hover); color: var(--sobre-acento); }
+
+.topnav__search {
+  position: relative;
+  margin-left: 8px;
+  width: 240px;
+}
+.topnav__search svg {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--n200);
+}
+.topnav__search input {
+  width: 100%;
+  height: 32px;
+  padding: 0 8px 0 30px;
+  border: 2px solid var(--n40);
+  border-radius: var(--radius);
+  background: var(--n0);
+  font: inherit;
+  color: var(--n800);
+  outline: none;
+  transition: border-color .12s var(--ease), background .12s var(--ease);
+}
+.topnav__search input:hover { background: var(--n10); }
+.topnav__search input:focus {
+  background: var(--n0);
+  border-color: var(--acento-texto);
+}
+
+.topnav__spacer { flex: 1; }
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--n500);
+  display: inline-grid;
+  place-items: center;
+  transition: background .12s var(--ease), color .12s var(--ease);
+}
+.icon-btn:hover { background: var(--n30); color: var(--n800); }
+.icon-btn:active { background: var(--n40); }
+
+/* O botão de tema mostra o tema para onde a pessoa VAI, não o atual: lua
+   quando está claro, sol quando está escuro. É a convenção que todo mundo já
+   leu em outros lugares, e o contrário faz o botão parecer um indicador de
+   estado - que não é: ele é uma ação.
+
+   A escolha de qual ícone aparece é aqui, e não no JS, porque ela é função
+   direta do `data-theme` do <html>. Como o `tema.js` sempre estampa um dos dois
+   valores antes do paint, um dos ícones aparece sempre. */
+.tema-btn svg { display: none; }
+:root[data-theme='light'] .tema-btn__escuro,
+:root[data-theme='dark'] .tema-btn__claro { display: block; }
+
+/* ---------- Layout --------------------------------------------------- */
+
+.layout {
+  display: flex;
+  height: calc(100vh - var(--nav-h));
+}
+
+/* ---------- Barra lateral -------------------------------------------- */
+
+.sidebar {
+  width: var(--sidebar-w);
+  flex: 0 0 var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--n40);
+  padding: 16px 0 24px;
+  overflow-y: auto;
+  transition: margin-left .2s var(--ease);
+}
+.sidebar.is-collapsed {
+  margin-left: calc(-1 * var(--sidebar-w));
+}
+
+.sidebar__project {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 0 16px 16px;
+}
+.sidebar__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--acento), var(--violeta));
+  color: var(--sobre-acento);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex: 0 0 32px;
+}
+.sidebar__name { font-weight: 600; font-size: 14px; line-height: 1.2; }
+.sidebar__type { color: var(--n300); font-size: 12px; }
+
+.sidebar__label {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--n300);
+}
+
+.sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  color: var(--n500);
+  text-decoration: none;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: background .12s var(--ease), color .12s var(--ease);
+}
+.sidebar__item:hover { background: var(--n30); color: var(--n800); }
+.sidebar__item.is-active {
+  background: var(--acento-sutil);
+  color: var(--acento-texto);
+  border-left-color: var(--acento-texto);
+  font-weight: 600;
+}
+.sidebar__item svg { flex: 0 0 16px; }
+
+/* ---------- Conteúdo ------------------------------------------------- */
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px 0;
+  overflow: hidden;
+}
+
+/* ---------- Views (Chamados / Dashboard) ------------------------------ */
+
+/* Duas visões dentro do mesmo `.content`, alternadas por classe — mesmo
+   padrão de show/hide que os modais já usam com `.is-open`. A visão ativa
+   herda o layout que `.content` tinha sozinho antes de existir Dashboard:
+   coluna flexível, com o `.board`/`.dashboard-body` ocupando o espaço que
+   sobra e rolando por conta própria. */
+.view {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.view.is-active { display: flex; }
+
+.content__head-title { min-width: 0; }
+.content__head-sub {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--n300);
+}
+
+.dashboard-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 0 24px;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: var(--n300);
+  margin-bottom: 6px;
+}
+.breadcrumb a { color: var(--n300); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; color: var(--n500); }
+
+.content__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.content__head h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--n800);
+}
+.sprint-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 12px;
+  background: var(--n30);
+  color: var(--n500);
+  font-size: 12px;
+  font-weight: 600;
+}
+/* Mesmo caso do `.atencao[hidden]`: `display: inline-flex` acima é regra de
+   autor e vence o `[hidden] { display: none }` do navegador, então o chip
+   ficava na tela como uma pílula VAZIA de 16x24 do lado do título — visível em
+   qualquer instalação que não tenha preenchido o rótulo de período. Achei
+   conferindo a repintura no Chrome. */
+.sprint-chip[hidden] { display: none; }
+
+.content__head-spacer { flex: 1; }
+
+/* ---------- Barra de filtros ----------------------------------------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px 0 16px;
+}
+
+.filter-search {
+  position: relative;
+  width: 200px;
+}
+.filter-search svg {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--n200);
+  pointer-events: none;
+}
+.filter-search input {
+  width: 100%;
+  height: 32px;
+  padding: 0 8px 0 30px;
+  border: 2px solid var(--n40);
+  border-radius: var(--radius);
+  background: var(--n0);
+  color: var(--n800);
+  font: inherit;
+  outline: none;
+  transition: border-color .12s var(--ease), background .12s var(--ease);
+}
+.filter-search input:hover { background: var(--n10); }
+.filter-search input:focus { border-color: var(--acento-texto); }
+
+.avatar-group { display: flex; align-items: center; }
+.avatar-group .avatar {
+  margin-left: -6px;
+  border: 2px solid var(--surface);
+  cursor: pointer;
+  transition: transform .1s ease, box-shadow .1s ease;
+}
+.avatar-group .avatar:first-child { margin-left: 0; }
+.avatar-group .avatar:hover { transform: translateY(-2px); }
+.avatar-group .avatar.is-active {
+  border-color: var(--acento-texto);
+  box-shadow: 0 0 0 1px var(--acento-texto);
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border: none;
+  padding: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  flex: 0 0 auto;
+  user-select: none;
+}
+button.avatar { cursor: pointer; }
+.avatar--sm { width: 24px; height: 24px; font-size: 10px; }
+
+/* "Sem responsável". As outras bolhas levam a cor da PESSOA (identidade, vinda
+   do banco, branca por cima) — esta não representa ninguém, então sai do
+   neutro do tema em vez de uma cor cravada. Antes era um cinza frio fixo, que
+   sobre a paleta quente aparecia como o único elemento acinzentado da tela. */
+.avatar--vazio {
+  background: var(--n50);
+  color: var(--n800);
+}
+
+.select {
+  height: 32px;
+  padding: 0 28px 0 10px;
+  border: 1px solid var(--n40);
+  border-radius: var(--radius);
+  background: var(--n0) var(--seta-select) no-repeat right 8px center;
+  color: var(--n500);
+  font: inherit;
+  font-weight: 500;
+  appearance: none;
+  outline: none;
+  transition: border-color .12s var(--ease), background-color .12s var(--ease);
+}
+.select:hover { background-color: var(--n10); }
+.select:focus { border-color: var(--acento-texto); }
+.select option { background: var(--n0); color: var(--n800); }
+
+.toolbar__spacer { flex: 1; }
+
+.link-btn {
+  border: none;
+  background: none;
+  color: var(--n500);
+  font-weight: 500;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  transition: background .12s var(--ease), color .12s var(--ease);
+}
+.link-btn:hover { background: var(--n30); color: var(--n800); }
+
+/* ---------- Board ---------------------------------------------------- */
+
+.board {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  padding-bottom: 16px;
+}
+
+.column {
+  flex: 0 0 280px;
+  width: 280px;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--n20);
+  border: 1px solid var(--n40);
+  border-radius: var(--radius);
+  padding: 8px;
+  transition: background .12s var(--ease), border-color .12s var(--ease);
+}
+.column.is-over { background: var(--acento-sutil); border-color: var(--acento-texto); }
+.column.is-over-limit .column__count { background: var(--erro-sutil); color: var(--erro); }
+
+.column__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 4px 10px;
+}
+.column__title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--n300);
+  text-transform: uppercase;
+}
+.column__count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--n300);
+  background: var(--n30);
+  border-radius: 10px;
+  padding: 1px 8px;
+}
+.column__limit {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--n300);
+}
+
+.column__cards {
+  flex: 1;
+  min-height: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 2px;
+}
+
+.column__empty {
+  border: 1px dashed var(--n50);
+  border-radius: var(--radius);
+  color: var(--n300);
+  font-size: 12px;
+  text-align: center;
+  padding: 18px 8px;
+}
+
+/* ---------- Cartão --------------------------------------------------- */
+
+.card {
+  background: var(--n0);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 10px 10px 8px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background .12s var(--ease), box-shadow .12s var(--ease), transform .06s var(--ease);
+}
+.card:hover { background: var(--n10); box-shadow: var(--shadow-card), 0 2px 6px var(--shadow-hover); }
+.card:active { transform: scale(.995); }
+.card:focus-visible { outline: 2px solid var(--acento-texto); outline-offset: 1px; }
+.card.is-dragging { opacity: .4; }
+/* Espera pelo 1º atendimento. Só o FUNDO: a borda esquerda é da prioridade
+   (`.card--prio-*`) e o chip é do prazo, então os três sinais convivem no mesmo
+   cartão sem um apagar o outro. */
+.card.is-atencao { background: var(--aviso-sutil); }
+
+.card__title {
+  font-size: 14px;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  word-break: break-word;
+  color: var(--n800);
+}
+.card.is-done .card__title { color: var(--n300); }
+
+.card__labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  background: var(--n30);
+  color: var(--n500);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+/* `.tag--epic` saiu junto com o conceito de "área": ele era a etiqueta do épico
+   no quadro genérico, e nenhum código a aplicava desde que os cartões passaram
+   a mostrar assunto, setor e tipo. Quem classifica é o SETOR - ver
+   `.tag--setor`. */
+
+.card__foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card__key {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--n300);
+  letter-spacing: .01em;
+}
+.card.is-done .card__key { text-decoration: line-through; }
+.card__foot-spacer { flex: 1; }
+
+.card__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  color: var(--n300);
+}
+
+.points {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--n30);
+  color: var(--n500);
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- Modal de detalhes ---------------------------------------- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--veu);
+  display: none;
+  z-index: 40;
+}
+.modal-backdrop.is-open { display: block; }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 16px;
+  overflow-y: auto;
+  z-index: 50;
+}
+.modal.is-open { display: flex; }
+
+.modal__dialog {
+  width: 100%;
+  max-width: 560px;
+  background: var(--n0);
+  border: 1px solid var(--n40);
+  border-radius: 8px;
+  box-shadow: var(--shadow-pop);
+  display: flex;
+  flex-direction: column;
+  animation: modal-in .16s var(--ease);
+}
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(-8px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+.modal__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px 10px 16px;
+  border-bottom: 1px solid var(--n40);
+}
+.modal__key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--n300);
+}
+.modal__key svg { display: block; }
+
+.icon-btn.is-flagged { color: var(--aviso); background: var(--aviso-sutil); }
+
+.modal__body { padding: 16px; }
+
+.modal__title-input {
+  width: 100%;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--n800);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  margin-bottom: 16px;
+  font-family: inherit;
+  outline: none;
+  transition: background .12s var(--ease), border-color .12s var(--ease);
+}
+.modal__title-input:hover { background: var(--n10); }
+.modal__title-input:focus { background: var(--surface); border-color: var(--acento-texto); }
+
+.modal__foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--n40);
+}
+.modal__delete { color: var(--erro); }
+.modal__delete:hover { background: var(--erro-sutil); color: var(--erro); }
+
+.modal__num {
+  height: 32px;
+  width: 90px;
+  padding: 0 8px;
+  border: 1px solid var(--n40);
+  border-radius: var(--radius);
+  background: var(--n0);
+  color: var(--n800);
+  font: inherit;
+  outline: none;
+  transition: border-color .12s var(--ease);
+}
+.modal__num:focus { border-color: var(--acento-texto); }
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 10px 12px;
+  align-items: center;
+  border: 1px solid var(--n40);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.field-grid dt { color: var(--n300); font-size: 12px; font-weight: 600; }
+.field-grid dd { margin: 0; display: flex; align-items: center; gap: 6px; color: var(--n800); }
+.field-grid dd .select { flex: 1; width: 100%; }
+
+/* ---------- Pessoas -------------------------------------------------- */
+
+.modal__heading { font-size: 16px; font-weight: 700; color: var(--n800); }
+
+.person-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--n40);
+}
+.person-row:last-child { border-bottom: none; }
+
+.person-row__name {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--n40);
+  border-radius: var(--radius);
+  background: var(--n0);
+  color: var(--n800);
+  font: inherit;
+  outline: none;
+  transition: border-color .12s var(--ease);
+}
+.person-row__name:focus { border-color: var(--acento-texto); }
+
+.person-row__color {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid var(--n40);
+  border-radius: var(--radius);
+  background: var(--n0);
+  cursor: pointer;
+}
+.person-row__color::-webkit-color-swatch { border: none; border-radius: 2px; }
+.person-row__color::-webkit-color-swatch-wrapper { padding: 0; }
+.person-row__color::-moz-color-swatch { border: none; border-radius: 2px; }
+
+.person-row__remove { color: var(--n300); flex: 0 0 auto; }
+.person-row__remove:hover { color: var(--erro); background: var(--erro-sutil); }
+
+/* ---------- Configurações e ajuda ------------------------------------ */
+
+.settings-section { margin-bottom: 22px; }
+.settings-section:last-child { margin-bottom: 0; }
+.settings-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--n300);
+  margin-bottom: 10px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.field__label { flex: 0 0 110px; font-size: 12px; font-weight: 600; color: var(--n300); }
+.field__input {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--n40);
+  border-radius: var(--radius);
+  background: var(--n0);
+  color: var(--n800);
+  font: inherit;
+  outline: none;
+  transition: border-color .12s var(--ease);
+}
+.field__input:focus { border-color: var(--acento-texto); }
+.field__input--num { flex: 0 0 100px; }
+
+/* Textarea com a mesma pintura dos campos de uma linha, mas não com a mesma
+   ALTURA: os 34px acima engoliriam o `rows`, e o placeholder de duas linhas
+   ficava cortado. `width` explícito porque a caixa de comentário e a de
+   avaliação ficam soltas numa `.settings-section` — sem pai flex, o `flex: 1`
+   não lhes dá largura nenhuma e a textarea nasce no tamanho padrão do
+   navegador, colidindo com o botão ao lado. */
+textarea.field__input {
+  width: 100%;
+  height: auto;
+  min-height: 62px;
+  padding: 8px 10px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.settings-add { margin-top: 4px; }
+.settings-reset { color: var(--erro); }
+.settings-reset:hover { background: var(--erro-sutil); color: var(--erro); }
+
+.help-body p { margin: 0 0 12px; color: var(--n500); line-height: 1.55; }
+.help-body ul { margin: 0 0 18px; padding-left: 18px; color: var(--n500); line-height: 1.7; }
+.help-body strong { color: var(--n800); font-weight: 600; }
+.help-keys {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+.help-keys dt { color: var(--n800); font-weight: 600; font-size: 13px; }
+.help-keys dd { margin: 0; color: var(--n500); font-size: 13px; }
+
+/* ---------- Notificações (toasts) ------------------------------------ */
+
+.toasts {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+}
+.toast {
+  background: var(--n0);
+  color: var(--n800);
+  border: 1px solid var(--n40);
+  border-left: 3px solid var(--acento-texto);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  max-width: 320px;
+  box-shadow: var(--shadow-pop);
+  animation: toast-in .18s var(--ease);
+}
+.toast.is-leaving {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .18s var(--ease), transform .18s var(--ease);
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Utilitários ---------------------------------------------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .topnav__search { display: none; }
+  .content { padding: 12px 12px 0; }
+}
+
+/* ---------- Conexão com o banco de chamados -------------------------- */
+
+/* Chip de estado no cabeçalho. É botão porque clicar nele troca o token. */
+.conn-status {
+  border: 1px solid transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+/* Sem token para trocar, o chip é só informação: não deve parecer clicável. */
+.conn-status--inerte { cursor: default; }
+
+.conn-status.is-ok      { color: var(--acento-texto); background: var(--acento-sutil); border-color: var(--acento-texto); }
+.conn-status.is-loading { color: var(--aviso); background: var(--aviso-sutil); border-color: var(--aviso-linha); }
+.conn-status.is-error   { color: var(--erro); background: var(--erro-sutil); border-color: var(--erro-linha); }
+.conn-status.is-off     { color: var(--n300); background: var(--n30); border-color: var(--n40); }
+
+.conn-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--n500);
+  cursor: pointer;
+  user-select: none;
+}
+.conn-toggle input { cursor: pointer; }
+
+/* ---------- Detalhe do chamado --------------------------------------- */
+
+/* Título do chamado: texto, não campo. O painel não altera o resumo. */
+.modal__titulo-fixo {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--n800);
+  padding: 4px 0 12px;
+  line-height: 1.3;
+}
+
+.field-grid__pessoa { display: flex; align-items: center; gap: 8px; }
+.field-grid__fraco  { color: var(--n300); }
+
+/* A descrição vem de texto livre digitado no WhatsApp: pode ser longa e ter
+   quebras de linha, e não pode empurrar a largura do modal. */
+.field-grid__texto {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 320px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.modal__nota {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--n300);
+  line-height: 1.5;
+}
+.modal__nota--aviso { color: var(--erro); }
+.modal__nota code {
+  background: var(--n30);
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 11px;
+}
+
+.modal--estreito { max-width: 460px; }
+.modal__foot-spacer { flex: 1; }
+
+/* ---------- Assunto no cartão ----------------------------------------- */
+
+/* Reaproveita `.tag`, que já é o chip do quadro. Leva o VERDE do acento porque
+   é a classificação principal do chamado — a que veio do menu do WhatsApp —, e
+   isso a distingue de rótulo comum sem inventar outro componente. */
+.tag--assunto {
+  background: var(--acento-sutil);
+  color: var(--acento-texto);
+  text-transform: none;
+  letter-spacing: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card.is-done .tag--assunto { opacity: .6; }
+
+/* ---------- Modal de assuntos ----------------------------------------- */
+
+/* Este modal é mais largo que o padrão de 560px, e a razão é aritmética: a linha
+   tem seis colunas, e as cinco de largura fixa (pai, ordem, os dois
+   interruptores e o botão de excluir) somam ~450px com os espaçamentos. Em 560px
+   sobrariam ~70px para o `1fr` da identidade — um campo de nome de assunto com
+   70px de largura não é utilizável. Em 760px sobram ~280px, que mostram um
+   rótulo inteiro.
+
+   No dialog e não no `.modal`: aqui `max-width` é inequívoco. O wrapper `.modal`
+   é `position: fixed; inset: 0`, e limitar a largura DELE (como faz
+   `.modal--estreito`) deixa o navegador escolher qual lado honrar. */
+#assuntos-modal .modal__dialog { max-width: 760px; }
+
+/* Numa janela mais estreita que a linha, o corpo rola de lado em vez de as
+   colunas se espremerem. É a escolha menos ruim das três: espremer transforma os
+   campos de nome em tiras de 40px, e empilhar exigiria nomear área de grid para
+   cada célula — frágil, porque a linha é montada por concatenação de string em
+   `assuntoRowHtml`. `[data-assunto]` para não alcançar a linha de SETOR, que
+   reaproveita `.assunto-row` com quatro colunas e continua caber. */
+#assuntos-modal .modal__body { overflow-x: auto; }
+.assunto-row[data-assunto] { min-width: 620px; }
+
+/* Colunas: identidade, pai, ordem, "No WhatsApp", "Ativo", excluir. Os dois
+   interruptores são vizinhos de propósito — quem abre este modal está decidindo
+   as duas coisas sobre o mesmo assunto, e separá-los esconderia que são
+   perguntas diferentes. */
+.assunto-row {
+  display: grid;
+  grid-template-columns: 1fr 150px 64px auto auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--n40);
+}
+.assunto-row:last-child { border-bottom: none; }
+
+/* Filha recuada: a hierarquia precisa ser visível de relance, porque é ela que
+   decide se o assunto aparece no primeiro menu ou só depois de uma escolha. */
+.assunto-row--filha { padding-left: 20px; }
+
+.assunto-row__ident { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+
+.assunto-row__rotulo, .assunto-row__nome {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 4px 6px;
+  color: var(--n800);
+}
+.assunto-row__rotulo { font-size: 13px; font-weight: 600; }
+.assunto-row__nome { font-size: 11px; color: var(--n300); }
+.assunto-row__rotulo:hover, .assunto-row__nome:hover { background: var(--n10); }
+.assunto-row__rotulo:focus, .assunto-row__nome:focus {
+  background: var(--n0);
+  border-color: var(--acento-texto);
+  outline: none;
+}
+
+.assunto-row__codigo {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--n200);
+  padding: 0 6px;
+}
+
+.assunto-row__ordem { width: 100%; }
+
+/* Desativado continua na lista — é a única forma de reativá-lo —, mas precisa
+   parecer fora de circulação, porque some do menu do WhatsApp. */
+.assunto-row.is-inativa .assunto-row__rotulo { color: var(--n300); text-decoration: line-through; }
+.assunto-row.is-inativa .assunto-row__codigo { opacity: .6; }
+
+/* Assunto de uso interno: marcado, não apagado. Ele está VIVO — classifica
+   chamado e soma no relatório —, só não é oferecido na conversa. Por isso a
+   marca é uma faixa lateral e uma etiqueta, e não o esmaecimento do inativo: as
+   duas coisas aparecem na mesma lista e confundi-las levaria alguém a "reativar"
+   um assunto que nunca esteve desativado.
+
+   Violeta pelo mesmo motivo da etiqueta de setor: é a cor que se separa do verde
+   do assunto sem virar o vermelho de erro ou o âmbar de aviso — e isto não é nem
+   uma coisa nem outra. */
+.assunto-row.is-interna {
+  box-shadow: inset 2px 0 0 var(--violeta-texto);
+  padding-left: 8px;
+}
+.assunto-row--filha.is-interna { padding-left: 28px; }
+
+.assunto-row__interno {
+  font-family: inherit;
+  color: var(--violeta-texto);
+  background: var(--violeta-sutil);
+  border-radius: var(--radius);
+  padding: 0 4px;
+}
+
+/* Filha de um assunto interno: o interruptor vem travado, porque a marcação é
+   herdada do pai e clicar aqui não mudaria nada enquanto ele estiver fora do
+   menu. Travado sem parecer quebrado — o `title` da linha explica. */
+.assunto-row__whats:disabled { cursor: not-allowed; }
+.assunto-row__whats:disabled + span { color: var(--n200); }
+
+.assuntos-erro { color: var(--erro); text-transform: none; letter-spacing: 0; }
+
+/* ---------- Faixa de indicadores (view Chamados) ----------------------- */
+
+/* Usa o cartão `.kpi` (declarado abaixo), que desde a reforma do Dashboard só
+   aparece AQUI: lá os indicadores viraram as placas de cor cheia
+   (`.stat`). O `.kpi` continua sendo o certo nesta faixa - ela fica acima do
+   quadro, onde uma fileira de blocos saturados competiria com os cartões. */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+
+/* ---------- Atenção necessária (view Chamados) ------------------------- */
+
+/* Fala de TEMPO DE ESPERA (dado real), não de prioridade — por isso o tom é
+   âmbar de aviso, não vermelho de crítico. */
+.atencao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  border-radius: var(--radius);
+  background: var(--aviso-sutil);
+  border: 1px solid var(--aviso-linha);
+  font-size: 13px;
+  color: var(--n800);
+}
+/* Especificidade maior que `.atencao` (classe + atributo vs. só classe): sem
+   isto, `hidden` some do HTML mas o elemento continua com `display: flex`. */
+.atencao[hidden] { display: none; }
+.atencao__icone { flex: 0 0 auto; line-height: 1; color: var(--aviso); }
+
+/* ==================== Dashboard: placas e gráficos =====================
+   Desenhado a partir de um painel de Grafana que o pedido trouxe como
+   referência: fileira de placas de cor cheia no topo, seções recolhíveis
+   abaixo, e gráficos de área/linha em cada seção.
+
+   Zero dependência, como o resto do projeto: os gráficos são SVG montado à mão
+   no app.js. O que isso impõe ao CSS está anotado em cada bloco. */
+
+/* ---------- Placas de indicador ---------------------------------------- */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* A placa é um bloco de cor cheia com o número em branco, como na referência.
+   As quatro cores são as do tema (`--placa-*`), todas conferidas para carregar
+   texto branco. `color` fixo em branco e não `--sobre-acento`: aqui o branco
+   não é "a cor sobre o acento", é a cor sobre QUALQUER uma das quatro placas. */
+.stat {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  padding: 8px 12px 0;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  background: var(--placa-neutro);
+}
+.stat--ok    { background: var(--placa-ok); }
+.stat--aviso { background: var(--placa-aviso); }
+.stat--erro  { background: var(--placa-erro); }
+
+.stat__rotulo {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  /* Não é `opacity` no elemento todo: isso apagaria o texto junto com o fundo
+     e derrubaria o contraste que foi medido. */
+  color: rgba(255, 255, 255, .85);
+  line-height: 1.3;
+}
+
+.stat__valor {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+/* Valor que é texto (uma duração, "2h 14m") em vez de contagem: menor, para
+   caber sem quebrar a altura da placa. */
+.stat__valor--texto { font-size: 20px; }
+
+.stat__nota {
+  font-size: 11px;
+  color: rgba(255, 255, 255, .8);
+  margin-top: 1px;
+}
+
+/* A faísca gruda no rodapé da placa e sangra nas laterais, como na
+   referência. `display: block` mata o espaço de linha-base que um SVG inline
+   deixaria embaixo. */
+.stat__spark {
+  display: block;
+  width: 100%;
+  height: 26px;
+  margin: auto -12px 0;
+  width: calc(100% + 24px);
+}
+
+/* ---------- Seções recolhíveis ----------------------------------------- */
+
+/* `<details>`/`<summary>` e não um botão com JS: recolher é comportamento
+   nativo do elemento, vem com o estado certo para leitor de tela e sobrevive a
+   qualquer erro de script. */
+.painel-secao {
+  border-top: 1px solid var(--n40);
+  padding-top: 4px;
+  margin-bottom: 18px;
+}
+.painel-secao > summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 2px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--n300);
+  list-style: none;
+}
+.painel-secao > summary::-webkit-details-marker { display: none; }
+.painel-secao > summary:hover { color: var(--n800); }
+.painel-secao > summary::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transition: transform .12s var(--ease);
+}
+.painel-secao[open] > summary::before { transform: rotate(90deg) translateX(1px); }
+
+/* Duas colunas quando cabe, uma quando não. A referência usa uma grade larga
+   com um painel estreito à direita; aqui os gráficos têm todos a mesma
+   importância, então a grade é regular. */
+.painel-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 10px;
+  padding: 4px 0 8px;
+}
+.painel-grade--cheia { grid-template-columns: 1fr; }
+
+/* ---------- Gráfico ---------------------------------------------------- */
+
+.grafico {
+  border: 1px solid var(--n40);
+  border-radius: var(--radius);
+  background: var(--n20);
+  padding: 10px 12px 8px;
+  min-width: 0;
+}
+
+.grafico__titulo {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--n500);
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+/* Legenda sempre presente com duas séries ou mais - identidade nunca fica só
+   na cor. Com uma série só o título já a nomeia, e a legenda seria ruído. */
+.grafico__legenda {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--n300);
+  margin-bottom: 6px;
+}
+.grafico__chave { display: inline-flex; align-items: center; gap: 5px; }
+.grafico__amostra {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: 0 0 10px;
+}
+/* Tracejada: é o p90, a MESMA medida do p50 num posto diferente. A cor sozinha
+   diria "outra coisa"; o traço diz "a mesma coisa, outro corte". */
+.grafico__amostra--tracejada {
+  height: 0;
+  border-top: 2px dashed currentColor;
+  border-radius: 0;
+}
+
+/* Duas colunas (rótulos do eixo Y | desenho) e duas linhas (desenho | rótulos
+   do eixo X). O eixo X mora DENTRO desta grade, na segunda coluna: assim ele
+   alinha com o desenho sem depender de adivinhar a largura dos números do eixo
+   Y, que muda com o valor. */
+.grafico__area {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0 6px;
+}
+
+/* Os rótulos do eixo ficam FORA do SVG de propósito: o SVG é esticado na
+   largura com `preserveAspectRatio="none"` para preencher o cartão, e texto
+   dentro dele sairia deformado na horizontal. */
+.grafico__eixo-y {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 10px;
+  color: var(--n200);
+  font-variant-numeric: tabular-nums;
+  padding: 0 1px 0 0;
+}
+
+.grafico__plot {
+  position: relative;
+  min-width: 0;
+  border-left: 1px solid var(--n40);
+  border-bottom: 1px solid var(--n40);
+}
+.grafico__svg {
+  display: block;
+  width: 100%;
+  height: 132px;
+}
+.grafico--alto .grafico__svg { height: 172px; }
+
+/* Segunda linha da grade, segunda coluna: exatamente sob o desenho. */
+.grafico__eixo-x {
+  grid-column: 2;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--n200);
+  padding-top: 4px;
+}
+
+/* --- as partes do SVG ---
+   Ficam no CSS e não em atributo de apresentação porque assim herdam a cor do
+   tema; só a cor da SÉRIE vai inline, porque ela é decidida no JS a partir dos
+   tokens. */
+.grafico__grade {
+  stroke: var(--n40);
+  stroke-width: 1;
+}
+.grafico__linha {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+/* Área de UMA série, ou de séries que se sobrepõem: translúcida, senão a de
+   cima esconde a de baixo. */
+.grafico__preenchimento {
+  stroke: none;
+  opacity: .18;
+}
+/* Área EMPILHADA: opaca. As faixas não se sobrepõem - cada uma vai da sua
+   linha até o chão, e a de baixo é desenhada por último -, então
+   transparência aqui só embaçaria a leitura. A separação entre faixas é a
+   linha de 2px no topo de cada uma. */
+.grafico__preenchimento--solido { opacity: 1; }
+
+/* Camada de leitura: a linha vertical que segue o cursor e a caixa com os
+   valores do balde sob ele. Um gráfico em HTML É interativo - entregar sem
+   isso obrigaria a contar pixel para saber de que dia é o pico. */
+.grafico__cursor {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--n50);
+  pointer-events: none;
+}
+.grafico__cursor[hidden] { display: none; }
+
+.grafico__dica {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  background: var(--n0);
+  border: 1px solid var(--n40);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pop);
+  padding: 6px 8px;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: nowrap;
+  color: var(--n800);
+}
+.grafico__dica[hidden] { display: none; }
+.grafico__dica dl {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 1px 10px;
+  margin: 4px 0 0;
+}
+.grafico__dica dt { color: var(--n300); display: flex; align-items: center; gap: 5px; }
+.grafico__dica dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.grafico__dica strong { font-size: 11px; }
+
+.grafico__vazio {
+  color: var(--n300);
+  font-size: 12px;
+  text-align: center;
+  padding: 44px 8px;
+}
+
+/* ---------- Dashboard (métricas) ---------------------------------------
+   A grade `.metricas-kpis` saiu daqui: era a fileira de indicadores do
+   Dashboard, e ela virou `.stat-grid` com as placas de cor cheia. O cartão
+   `.kpi` abaixo continua, servindo a faixa da aba Chamados. */
+
+.kpi {
+  border: 1px solid var(--n40);
+  border-radius: var(--radius);
+  background: var(--n20);
+  padding: 10px 12px;
+}
+.kpi__valor { font-size: 20px; font-weight: 700; color: var(--n800); line-height: 1.2; }
+.kpi__rotulo {
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--n300);
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+/* Leitura rápida de "onde está o atendimento" antes da tabela detalhada.
+   Uma hue só (o verde do acento, o mesmo de `.tag--assunto` e dos botões
+   primários) porque é UMA medida (total) por assunto — não é comparação de
+   identidade entre categorias, que pediria paleta categórica. */
+.metrica-barras {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.metrica-barra-linha {
+  display: grid;
+  grid-template-columns: 140px 1fr 34px;
+  align-items: center;
+  gap: 10px;
+}
+.metrica-barra-rotulo {
+  font-size: 12px;
+  color: var(--n500);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.metrica-barra-trilha {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--n30);
+  overflow: hidden;
+}
+.metrica-barra-fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--acento-texto);
+}
+.metrica-barra-valor {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--n300);
+  text-align: right;
+}
+
+/* A tabela é larga e o modal tem largura fixa: a rolagem fica no contêiner dela,
+   não no corpo da página. */
+.metricas-rolagem { overflow-x: auto; }
+
+.metricas-tabela { width: 100%; border-collapse: collapse; font-size: 13px; }
+.metricas-tabela th {
+  text-align: right;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: var(--n300);
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--n50);
+  white-space: nowrap;
+}
+.metricas-tabela td {
+  text-align: right;
+  padding: 8px;
+  border-bottom: 1px solid var(--n40);
+  color: var(--n500);
+  white-space: nowrap;
+}
+.metricas-tabela th:first-child,
+.metricas-tabela td:first-child { text-align: left; white-space: normal; }
+.metricas-tabela td:first-child { color: var(--n800); font-weight: 600; }
+.metricas-tabela tr:last-child td { border-bottom: none; }
+
+/* Amostra pequena não é erro, mas uma média sobre um ou dois chamados não
+   sustenta decisão nenhuma - e sem marcar isso ela é lida como se sustentasse. */
+.metricas-amostra { color: var(--n200); font-size: 11px; }
+
+.metricas-vazio { color: var(--n300); font-size: 13px; }
+
+/* ==================== Classificação de chamados =======================
+   Entrou com os campos de separação: prioridade, prazo, setor, tipo,
+   etiquetas livres, comentários, anexos e dependências. */
+
+/* ---------- Prioridade: a faixa da borda esquerda ---------------------
+   O `.card` já nascia com `border-left: 3px solid transparent` (era o encaixe do
+   `is-flagged`), então a prioridade só precisa pintar a cor. É faixa e não texto
+   porque prioridade é lida de relance, varrendo a coluna - quatro cores se
+   distinguem em um olhar, quatro palavras não.
+
+   `media` fica transparente de propósito: é o default de todo chamado, e pintar
+   a maioria dos cartões faria a cor deixar de significar algo. */
+.card--prio-baixa   { border-left-color: var(--n50); }
+.card--prio-media   { border-left-color: transparent; }
+.card--prio-alta    { border-left-color: var(--aviso-linha); }
+.card--prio-urgente { border-left-color: var(--erro-linha); }
+
+/* ---------- Prazo (SLA) -----------------------------------------------
+   O único elemento do cartão que muda de cor sozinho, com o relógio. A
+   diferença entre "vence em 2 h" e "atrasado 2 h" é a decisão do dia, e ela
+   precisa aparecer sem ninguém abrir o chamado. */
+.card__prazo {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  background: var(--n30);
+  color: var(--n300);
+}
+.card__prazo.is-perto     { background: var(--aviso-sutil); color: var(--aviso); }
+.card__prazo.is-atrasado  { background: var(--erro-sutil);    color: var(--erro); }
+/* Chamado JÁ concluído: o prazo virou um fato, não um alerta. Verde para quem
+   entregou a tempo, vermelho apagado para quem não - e nenhum dos dois pisca,
+   porque não há mais nada a fazer a respeito. */
+.card__prazo.is-no-prazo  { background: var(--acento-sutil);  color: var(--acento-texto); }
+.card__prazo.is-estourado { background: var(--n30);          color: var(--erro); }
+
+/* ---------- Etiquetas do cartão --------------------------------------- */
+
+/* Setor: quem atende. Violeta, e não outra cor qualquer: as duas etiquetas
+   convivem no mesmo cartão, e violeta é o que se separa do verde do assunto
+   TAMBÉM para quem tem deuteranopia ou protanopia - ΔE 20,3 no tema claro e
+   16,3 no escuro, medidos, não estimados. Terracota ficaria bonito aqui e foi
+   descartado por isso: ΔE 2,8 contra o verde, ou seja, a mesma cor para quem
+   não distingue vermelho de verde. */
+.tag--setor {
+  background: var(--violeta-sutil);
+  color: var(--violeta-texto);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Tipo: interno x franquia. Cores diferentes porque a pergunta que ele responde
+   ("isso é da rede?") é binária, e binário se lê melhor por cor que por texto.
+
+   A terracota do "franquia" colide com o verde do assunto sob daltonismo, e
+   aqui isso é aceitável: o outro estado do binário é um chip NEUTRO, então a
+   cor separa "franquia" de "interno" - que é a única leitura que ela precisa
+   sustentar - e as duas palavras estão escritas no chip. */
+.tag--tipo { text-transform: none; letter-spacing: 0; }
+.tag--tipo-interno  { background: var(--n30);            color: var(--n500); }
+.tag--tipo-franquia { background: var(--terracota-sutil); color: var(--terracota-texto); }
+
+/* Etiqueta livre: propositalmente a mais discreta das quatro. Ela é a única sem
+   lista fixa atrás, então é a que pode aparecer em qualquer quantidade - e não
+   deve dominar o cartão quando aparecerem cinco. */
+.tag--livre {
+  background: transparent;
+  border: 1px dashed var(--n50);
+  color: var(--n300);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ---------- Comentários da equipe -------------------------------------
+   Nota INTERNA: nunca vira mensagem de WhatsApp. Desenhado como conversa (e não
+   como tabela) porque é o que ele é - e a ordem é do mais antigo para o mais
+   novo, ao contrário do histórico de situação. */
+.thread { list-style: none; margin: 0; padding: 0; }
+
+.thread__item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--n40);
+}
+.thread__item:last-child { border-bottom: none; }
+
+.thread__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--n300);
+  margin-bottom: 4px;
+}
+.thread__head strong { color: var(--n800); }
+
+/* `pre-wrap`: comentário é texto livre, com parágrafos, e não pode empurrar a
+   largura do modal. Mesma razão do `.field-grid__texto`. */
+.thread__texto {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  color: var(--n800);
+}
+
+/* ---------- Anexos e dependências -------------------------------------
+   As duas listas têm a mesma forma - uma linha por item, com ações à direita -
+   então dividem o estilo. */
+.anexos { list-style: none; margin: 0; padding: 0; }
+
+.anexos__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--n40);
+  font-size: 13px;
+  min-width: 0;
+}
+.anexos__item:last-child { border-bottom: none; }
+.anexos__item > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.dep .settings-label { margin-top: 10px; }
+
+/* ---------- Linha de setor -------------------------------------------
+   Reaproveita `.assunto-row` (mesma altura, mesma borda, mesmo comportamento de
+   inativo), mas com uma coluna menos: setor não tem pai, então não há seletor de
+   hierarquia. Sem este override, a grade de 5 colunas deixaria um vão no meio. */
+.assunto-row[data-setor] { grid-template-columns: 1fr 64px auto auto; }
+
+.assunto-row.is-inativa .setor-row__nome { color: var(--n300); text-decoration: line-through; }
+
+/* ---------- Formulário de novo chamado -------------------------------
+   O modal ficou longo: são dois formulários (interno e franquia) com um tronco
+   comum, e mesmo mostrando um bloco por vez passa da altura da tela. */
+#tarefa-modal .modal__body,
+#modal .modal__body {
+  max-height: min(76vh, 900px);
+  overflow-y: auto;
+}
+
+/* Caixa de seleção dentro do `field-grid`: sem isto o `<label>` esticaria a
+   coluna de valor e desalinharia as linhas vizinhas. */
+.field-grid dd .conn-toggle { flex: 1; min-width: 0; }
+
+/* O `<input type=file>` nativo não aceita a mesma pintura dos outros campos;
+   alinhar o tamanho já é o suficiente para ele não parecer solto. */
+#f-anexo { font-size: 13px; color: var(--n500); max-width: 100%; }
+
+/* ---------- Conversa do WhatsApp -------------------------------------
+   A mesma `.thread` dos comentários, com os dois lados distinguíveis. Reaproveita
+   em vez de duplicar porque a estrutura é idêntica — o que muda é de que lado a
+   mensagem está.
+
+   A distinção é por BORDA e recuo, não por alinhamento à direita como num app de
+   chat. Duas razões: o modal é estreito e alinhar à direita cortaria texto longo
+   ao meio; e isto é um registro para quem atende ler, não uma janela de conversa
+   em que se responde. O painel não envia mensagem escrita à mão — desenhar como
+   chat prometeria um campo de resposta que não existe. */
+.thread--conversa .thread__item {
+  border-bottom: none;
+  padding: 6px 0 6px 10px;
+  border-left: 2px solid var(--n40);
+  margin-bottom: 6px;
+}
+
+/* Entrada: o que a PESSOA escreveu. Ganha a cor de destaque porque é o conteúdo
+   que quem atende precisa ler — o resto da conversa é o formulário do bot. */
+.thread--conversa .thread__item--entrada {
+  border-left-color: var(--acento-texto);
+  background: var(--acento-sutil);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+/* Saída: a pergunta do bot ou o aviso automático. Fica deliberadamente apagada:
+   é texto que o próprio sistema escreveu, e reler não informa nada. */
+.thread--conversa .thread__item--saida .thread__texto { color: var(--n300); }
+
+.avatar--bot {
+  background: var(--n30);
+  color: var(--n500);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

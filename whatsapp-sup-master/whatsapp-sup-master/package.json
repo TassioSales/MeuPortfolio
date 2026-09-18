@@ -1,0 +1,45 @@
+{
+  "name": "whatsapp-suporte",
+  "version": "1.0.0",
+  "description": "Bot de suporte via WhatsApp que cria chamados estruturados, sem uso de IA",
+  "main": "dist/server.js",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "dev:simular": "tsx src/dev/simular.ts",
+    "dev:verificar-banco": "tsx src/dev/verificar-banco.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "tsc -p tsconfig.test.json && node --test \"dist-test/test/*.test.js\" \"test/*.test.mjs\"",
+    "typecheck": "tsc -p tsconfig.test.json --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "retencao": "node dist/scripts/retencao.js",
+    "db:view": "node dist/scripts/aplicar-view.js",
+    "dev:view": "tsx src/scripts/aplicar-view.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "dev:evolution": "tsx src/dev/evolution-fake.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "11.3.0",
+    "@fastify/helmet": "13.1.0",
+    "@fastify/rate-limit": "11.2.0",
+    "@prisma/adapter-better-sqlite3": "7.9.1",
+    "@prisma/client": "7.9.1",
+    "@prometheus-io/client": "^0.16.1",
+    "dotenv": "17.4.2",
+    "fastify": "5.12.0",
+    "ioredis": "5.11.1",
+    "prisma": "7.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "prettier": "3.9.6",
+    "tsx": "4.23.12",
+    "typescript": "7.0.2"
+  }
+}

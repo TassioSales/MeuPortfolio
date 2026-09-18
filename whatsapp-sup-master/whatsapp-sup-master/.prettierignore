@@ -1,0 +1,22 @@
+# Gerado pelo `prisma generate`, nunca editado à mão (ver .gitignore).
+src/generated/
+
+dist/
+dist-test/
+node_modules/
+package-lock.json
+
+# A documentação é escrita à mão, com quebra de linha e tabelas alinhadas de
+# propósito (é Markdown de Obsidian, lido no editor tanto quanto renderizado).
+# Deixar o Prettier reflowar isso troca churn em toda revisão por nada.
+*.md
+docs/
+
+# Configuração local de ferramenta, não é código do projeto.
+.claude/
+
+# O painel de chamados é um subprojeto à parte (sem build, sem dependências,
+# quatro arquivos estáticos) e foi escrito com as convenções dele. Reformatá-lo
+# com o Prettier daqui não corrige nada e faz um diff de 36 KB em app.js.
+# O `servidor-painel.mjs`, na raiz, NÃO entra aqui: aquele é código do projeto.
+activity-dashboard/

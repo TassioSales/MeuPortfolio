@@ -58,4 +58,5 @@ from .views_transactions import (
     TransactionListView,
     TransactionUpdateView,
     import_transactions,
+    transaction_bulk_delete,
 )

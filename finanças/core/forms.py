@@ -1,6 +1,8 @@
 from django import forms
 from .models import Category, Transaction, Budget, Investment, RecurringTransaction, Goal, BankAccount, Transfer, Loan, LoanPayment, LoanDisbursement
 from decimal import Decimal
+import yfinance as yf
+from loguru import logger as log
 
 def clean_currency_value(value):
     if isinstance(value, str):
@@ -47,13 +49,21 @@ class TransactionForm(forms.ModelForm):
             'payment_method': forms.Select(attrs={'onchange': 'toggleCreditCardFields(this)'}),
         }
 
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['category'].queryset = Category.objects.filter(user=user)
+
     def clean_amount(self):
         amount = self.cleaned_data.get('amount')
         # If the field is already a Decimal (Django might have tried its own cleaning), handle it
         if isinstance(amount, Decimal):
-            return amount
-        # Otherwise clean the string
-        return clean_currency_value(self.data.get('amount'))
+            value = amount
+        else:
+            value = clean_currency_value(self.data.get('amount'))
+        if value is not None and value <= 0:
+            raise forms.ValidationError("O valor deve ser maior que zero.")
+        return value
 
     def clean(self):
         cleaned_data = super().clean()
@@ -89,8 +99,16 @@ class BudgetForm(forms.ModelForm):
             'start_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['category'].queryset = Category.objects.filter(user=user)
+
     def clean_limit(self):
-        return clean_currency_value(self.data.get('limit'))
+        value = clean_currency_value(self.data.get('limit'))
+        if value is not None and value <= 0:
+            raise forms.ValidationError("O limite deve ser maior que zero.")
+        return value
 
 class InvestmentForm(forms.ModelForm):
     purchase_price = forms.CharField(
@@ -151,12 +169,11 @@ class InvestmentForm(forms.ModelForm):
             # Name fetch logic (simplified here, but can be triggered by JS too)
             if not cleaned_data.get('name'):
                 try:
-                    import yfinance as yf
                     ticker = yf.Ticker(symbol)
                     info = ticker.info
                     cleaned_data['name'] = info.get('shortName') or info.get('longName') or symbol
-                except:
-                    pass
+                except Exception as e:
+                    log.warning(f"yfinance name lookup failed for {symbol}: {e}")
         
         elif category_type == 'CURRENCY':
             # Normalize common currency names to pairs if needed, 
@@ -178,10 +195,22 @@ class InvestmentForm(forms.ModelForm):
         return clean_currency_value(self.data.get('purchase_price'))
 
 class ImportFileForm(forms.Form):
+    MAX_UPLOAD_SIZE = 5 * 1024 * 1024  # 5 MB
+    ALLOWED_EXTENSIONS = ('.csv', '.xlsx')
+
     file = forms.FileField(
         label="Arquivo de Extrato",
-        help_text="Formatos aceitos: CSV ou XLSX",
+        help_text="Formatos aceitos: CSV ou XLSX (máx. 5 MB)",
     )
+
+    def clean_file(self):
+        uploaded = self.cleaned_data['file']
+        name = uploaded.name.lower()
+        if not name.endswith(self.ALLOWED_EXTENSIONS):
+            raise forms.ValidationError("Envie um arquivo .csv ou .xlsx.")
+        if uploaded.size > self.MAX_UPLOAD_SIZE:
+            raise forms.ValidationError("Arquivo muito grande (máximo 5 MB).")
+        return uploaded
 
 class GoalForm(forms.ModelForm):
     target_amount = forms.CharField(label="Valor Alvo", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}))
@@ -202,16 +231,25 @@ class GoalForm(forms.ModelForm):
         }
 
     def clean_target_amount(self):
-        return clean_currency_value(self.data.get('target_amount'))
+        value = clean_currency_value(self.data.get('target_amount'))
+        if value is not None and value <= 0:
+            raise forms.ValidationError("O valor alvo deve ser maior que zero.")
+        return value
 
     def clean_current_amount(self):
-        return clean_currency_value(self.data.get('current_amount'))
+        value = clean_currency_value(self.data.get('current_amount'))
+        if value is not None and value < 0:
+            raise forms.ValidationError("O valor guardado não pode ser negativo.")
+        return value
 
     def clean_monthly_target(self):
         val = self.data.get('monthly_target', '').strip()
         if not val:
             return None
-        return clean_currency_value(val)
+        value = clean_currency_value(val)
+        if value is not None and value <= 0:
+            raise forms.ValidationError("O aporte mensal deve ser maior que zero.")
+        return value
 
 
 class GoalDepositForm(forms.Form):
@@ -222,7 +260,10 @@ class GoalDepositForm(forms.Form):
     note = forms.CharField(label="Observação", max_length=255, required=False)
 
     def clean_amount(self):
-        return clean_currency_value(self.data.get('amount'))
+        value = clean_currency_value(self.data.get('amount'))
+        if value is not None and value <= 0:
+            raise forms.ValidationError("O valor do aporte deve ser maior que zero.")
+        return value
 
 
 class BankAccountForm(forms.ModelForm):

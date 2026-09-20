@@ -78,7 +78,7 @@
                             {% endif %}
                         </td>
                         <td class="fw-bold {% if r.amount >= 0 %}text-success{% else %}text-danger{% endif %}">
-                            {% if r.amount >= 0 %}+{% endif %}R$ {{ r.amount|floatformat:2 }}
+                            {% if r.amount >= 0 %}+{% endif %}{{ r.amount|brl }}
                         </td>
                         <td class="pe-4 text-muted small">{{ r.category|default:"—" }}</td>
                     </tr>

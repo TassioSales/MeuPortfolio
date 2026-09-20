@@ -9,10 +9,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import ImportFileForm, TransactionForm
 from .models import Category, RecurringTransaction, Transaction
+from loguru import logger as log
 
 _DATE_FORMATS = [
     "%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y",
@@ -87,9 +89,42 @@ class TransactionListView(LoginRequiredMixin, ListView):
     model = Transaction
     template_name = "core/transaction_list.html"
     context_object_name = "transactions"
+    paginate_by = 25
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user).order_by("-date")
+        qs = Transaction.objects.filter(user=self.request.user).select_related("category", "account")
+
+        search = self.request.GET.get("search", "").strip()
+        if search:
+            qs = qs.filter(description__icontains=search)
+
+        type_ = self.request.GET.get("type", "")
+        if type_ in ("RECEITA", "DESPESA"):
+            qs = qs.filter(type=type_)
+
+        category_id = self.request.GET.get("category", "")
+        if category_id:
+            qs = qs.filter(category_id=category_id)
+
+        start_date = self.request.GET.get("start_date", "")
+        if start_date:
+            qs = qs.filter(date__gte=start_date)
+
+        end_date = self.request.GET.get("end_date", "")
+        if end_date:
+            qs = qs.filter(date__lte=end_date)
+
+        return qs.order_by("-date")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.filter(user=self.request.user).order_by("name")
+        context["filter_search"] = self.request.GET.get("search", "")
+        context["filter_type"] = self.request.GET.get("type", "")
+        context["filter_category"] = self.request.GET.get("category", "")
+        context["filter_start_date"] = self.request.GET.get("start_date", "")
+        context["filter_end_date"] = self.request.GET.get("end_date", "")
+        return context
 
 
 class TransactionCreateView(LoginRequiredMixin, CreateView):
@@ -97,6 +132,11 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
     form_class = TransactionForm
     template_name = "core/form.html"
     success_url = reverse_lazy("transaction_list")
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -131,6 +171,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
         recurring = form.cleaned_data.get("recurring")
         if recurring:
             frequency = form.cleaned_data.get("frequency")
+            recurrence_end_date = form.cleaned_data.get("recurrence_end_date")
             response = super().form_valid(form)
 
             next_date = form.instance.date
@@ -158,6 +199,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
                 frequency=frequency,
                 description=form.instance.description,
                 next_run_date=next_date,
+                end_date=recurrence_end_date,
                 active=True,
             )
             messages.success(self.request, "Transação recorrente criada com sucesso!")
@@ -172,6 +214,11 @@ class TransactionUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "core/form.html"
     success_url = reverse_lazy("transaction_list")
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user)
 
@@ -183,6 +230,22 @@ class TransactionDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user)
+
+
+@login_required
+@require_POST
+def transaction_bulk_delete(request):
+    ids = request.POST.getlist("ids")
+    qs = Transaction.objects.filter(user=request.user, pk__in=ids)
+    # Count before deleting: qs.delete()'s own count includes any cascaded
+    # related rows (e.g. a linked Investment), not just these transactions.
+    count = qs.count()
+    qs.delete()
+    if count:
+        messages.success(request, f"{count} transação(ões) excluída(s) com sucesso!")
+    else:
+        messages.info(request, "Nenhuma transação selecionada.")
+    return redirect("transaction_list")
 
 
 @login_required
@@ -216,7 +279,8 @@ def import_transactions(request):
                     category=category,
                 )
                 count += 1
-            except Exception:
+            except Exception as e:
+                log.warning(f"Skipped import row {r.get('row', '?')} for user {request.user.username}: {e}")
                 continue
         messages.success(request, f"{count} transações importadas com sucesso!")
         return redirect("transaction_list")

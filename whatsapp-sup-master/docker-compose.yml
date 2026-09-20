@@ -1,0 +1,194 @@
+# Sistema completo em contêineres: a Evolution sobe JUNTO com o bot.
+#
+# A diferença para o arranjo do GOLIVE.md é só de quem hospeda a Evolution. Lá
+# ela é um serviço externo, que você aponta pelo `EVOLUTION_URL`; aqui ela é um
+# serviço deste compose, e o endereço passa a ser `http://evolution:8080` — o
+# nome do serviço na rede interna.
+#
+# NAO SERVE PARA WINDOWS SERVER 2016. Ele so executa conteiner Windows, e esta
+# imagem da Evolution e Linux (o LCOW que cobriria o caso foi descontinuado e o
+# WSL2 so existe do Server 2019 em diante). Para aquele servidor o caminho e
+# nativo, sem Docker: docs/WA Evolution no Windows.md.
+#
+#   docker compose up -d --build     sobe tudo
+#   docker compose logs -f bot       acompanha o bot
+#   docker compose down              derruba (os volumes ficam)
+#
+# Depois de subir, a instância do WhatsApp ainda precisa ser criada e pareada
+# uma vez. Ver "Primeira subida" em docs/WA Docker e Evolution.md.
+
+name: whatsapp-suporte
+
+services:
+  # --------------------------------------------------------------------------
+  # Banco DA EVOLUTION. Não é o banco da aplicação.
+  #
+  # O bot usa SQLite num arquivo (ver docs/WA Banco de dados.md) e não fala com
+  # este Postgres em momento nenhum. Ele existe porque a Evolution v2 exige um
+  # servidor de banco para guardar instâncias, contatos e mensagens — sem ele a
+  # instância não sobrevive a um restart e o pareamento teria de ser refeito.
+  # --------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: wa_sup_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-evolution}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: ${POSTGRES_DB:-evolution}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Sem `ports`: nada fora da rede do compose precisa alcançar este banco.
+    # Publicar a 5432 no host só abriria superfície de ataque à toa.
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-evolution} -d ${POSTGRES_DB:-evolution}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [wa_sup]
+
+  # --------------------------------------------------------------------------
+  # Redis: cache da Evolution e estado compartilhado do bot.
+  #
+  # Para o bot ele é OPCIONAL (`REDIS_URL` vazio o desliga, e o limite de taxa
+  # volta a valer por instância — ver src/config.ts). Como já sobe para a
+  # Evolution, o bot aproveita: bancos lógicos diferentes, sem disputa de chaves.
+  # --------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: wa_sup_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [wa_sup]
+
+  # --------------------------------------------------------------------------
+  # Evolution API: a ponte com o WhatsApp.
+  #
+  # É ela que mantém a sessão do Baileys, recebe as mensagens e chama o nosso
+  # webhook. O bot nunca fala com o WhatsApp diretamente — só com ela.
+  # --------------------------------------------------------------------------
+  evolution:
+    image: evoapicloud/evolution-api:latest
+    container_name: wa_sup_evolution
+    restart: unless-stopped
+    environment:
+      SERVER_URL: ${EVOLUTION_SERVER_URL:-http://localhost:8080}
+      AUTHENTICATION_API_KEY: ${EVOLUTION_API_KEY:?defina EVOLUTION_API_KEY no .env}
+
+      DATABASE_ENABLED: 'true'
+      DATABASE_PROVIDER: postgresql
+      DATABASE_CONNECTION_URI: postgresql://${POSTGRES_USER:-evolution}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-evolution}?schema=public
+      DATABASE_CONNECTION_CLIENT_NAME: evolution_exchange
+      DATABASE_SAVE_DATA_INSTANCE: 'true'
+      DATABASE_SAVE_DATA_NEW_MESSAGE: 'true'
+      DATABASE_SAVE_MESSAGE_UPDATE: 'true'
+      DATABASE_SAVE_DATA_CONTACTS: 'true'
+      DATABASE_SAVE_DATA_CHATS: 'true'
+
+      CACHE_REDIS_ENABLED: 'true'
+      CACHE_REDIS_URI: redis://redis:6379/6
+      CACHE_REDIS_PREFIX_KEY: evolution
+      CACHE_LOCAL_ENABLED: 'false'
+
+      # Webhook global: vale para QUALQUER instância criada, o que evita ter de
+      # configurar a URL toda vez que a instância for recriada.
+      #
+      # Aponta direto para o bot, e não para o painel. O desvio pelo painel
+      # descrito no GOLIVE.md existe porque lá fora UMA porta pública atende os
+      # dois; aqui dentro da rede do compose a Evolution alcança o bot pelo nome
+      # do serviço, e um salto a menos é um ponto de falha a menos.
+      #
+      # O segredo vai no CAMINHO porque a Evolution não assina o corpo — é a
+      # autenticação possível. Ver o comentário em src/config.ts.
+      WEBHOOK_GLOBAL_ENABLED: 'true'
+      WEBHOOK_GLOBAL_URL: http://bot:${PORT:-9511}/webhook/${WEBHOOK_SEGREDO:?defina WEBHOOK_SEGREDO no .env}
+      WEBHOOK_GLOBAL_WEBHOOK_BY_EVENTS: 'false'
+    ports:
+      # Publicada porque é por aqui que você cria a instância e lê o QR Code.
+      # Depois do pareamento dá para fechar, se preferir.
+      - '${EVOLUTION_PORT:-8080}:8080'
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    volumes:
+      - evolution_instances:/evolution/instances
+    networks: [wa_sup]
+
+  # --------------------------------------------------------------------------
+  # O bot: processa os webhooks, conduz a conversa e abre os chamados.
+  # --------------------------------------------------------------------------
+  bot:
+    build:
+      context: .
+      target: runtime
+    container_name: wa_sup_bot
+    restart: unless-stopped
+    environment:
+      PORT: ${PORT:-9511}
+      DATABASE_URL: ${DATABASE_URL:-file:./dados/whatsapp-suporte.db}
+      WEBHOOK_SEGREDO: ${WEBHOOK_SEGREDO}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?defina INTERNAL_API_TOKEN no .env}
+
+      # Dentro da rede do compose a Evolution é `evolution:8080`, sempre — a
+      # EVOLUTION_PORT acima só muda a porta publicada no HOST.
+      EVOLUTION_URL: http://evolution:8080
+      EVOLUTION_API_KEY: ${EVOLUTION_API_KEY}
+      EVOLUTION_INSTANCIA: ${EVOLUTION_INSTANCIA:-suporte}
+
+      # Banco 0 do Redis; a Evolution usa o 6. Prefixo separado por garantia.
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      REDIS_PREFIXO: ${REDIS_PREFIXO:-wa}
+
+      # O painel está na frente, então o IP do cliente chega em X-Forwarded-For.
+      TRUST_PROXY: ${TRUST_PROXY:-1}
+    volumes:
+      # O SQLite é um ARQUIVO: sem este volume o banco vive na camada de escrita
+      # do contêiner e some no próximo `up --build`, sem aviso nenhum.
+      - bot_dados:/app/dados
+    depends_on:
+      evolution: { condition: service_started }
+      redis: { condition: service_healthy }
+    # Sem `ports`: quem entra de fora é o painel, que repassa o que o bot precisa
+    # receber. Mantém o mesmo desenho do GOLIVE.md — o bot não tem porta pública.
+    networks: [wa_sup]
+
+  # --------------------------------------------------------------------------
+  # O painel de chamados. É a única porta que você abre para fora.
+  # --------------------------------------------------------------------------
+  painel:
+    build:
+      context: .
+      target: painel
+    container_name: wa_sup_painel
+    restart: unless-stopped
+    environment:
+      PAINEL_PORT: ${PAINEL_PORT:-8511}
+      # É isto que substitui o 127.0.0.1 de quando os dois rodavam no mesmo
+      # processo. Ver o comentário em servidor-painel.mjs.
+      BOT_HOST: bot
+      BOT_PORT: ${PORT:-9511}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+      PAINEL_TOKEN: ${PAINEL_TOKEN:-}
+      METRICS_TOKEN: ${METRICS_TOKEN:-}
+    ports:
+      - '${PAINEL_PORT:-8511}:8511'
+    depends_on:
+      bot: { condition: service_started }
+    networks: [wa_sup]
+
+volumes:
+  postgres_data:
+  redis_data:
+  evolution_instances:
+  bot_dados:
+
+networks:
+  wa_sup:
+    driver: bridge

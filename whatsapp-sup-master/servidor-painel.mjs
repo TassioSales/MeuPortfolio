@@ -7,7 +7,8 @@
  *    não funciona: em `file://` a origem vira "null" e nenhum CORS sensato a
  *    libera.
  *
- * 2. Repassa `/internal/*` para o bot em 127.0.0.1:PORTA_BOT. É isto que tira o
+ * 2. Repassa `/internal/*` para o bot em BOT_HOST:PORTA_BOT (127.0.0.1 fora de
+ *    contêiner, o nome do serviço no compose). É isto que tira o
  *    CORS do caminho: para o navegador, painel e API estão na MESMA origem.
  *    Sem o proxy, `PAINEL_ORIGENS` no .env do bot precisaria listar
  *    antecipadamente todo endereço pelo qual alguém fosse abrir o painel
@@ -65,6 +66,16 @@ const PORTA = Number(process.env.PAINEL_PORT || 8511);
 // os DOIS serviços no ar e nenhum erro em lugar nenhum: o painel batia em 8511
 // enquanto o bot, sem PORT definido, subia no padrão dele - 3000.
 const PORTA_BOT = Number(process.env.BOT_PORT || process.env.PORT || 9511);
+
+// Onde o bot atende. O padrao e a maquina local porque e assim que o projeto
+// roda fora de contêiner: `iniciar.mjs` sobe os dois processos lado a lado e
+// 127.0.0.1 e o endereco certo.
+//
+// Em docker-compose cada serviço tem o SEU proprio 127.0.0.1, e o do painel nao
+// tem bot nenhum escutando - dai a variavel. Ela recebe o nome do serviço do
+// bot na rede do compose (`BOT_HOST=bot`), e o resto do arquivo passa a falar
+// com ele por esse nome. Sem definir nada, o comportamento e o de antes.
+const HOST_BOT = (process.env.BOT_HOST || '127.0.0.1').trim();
 const HOST = process.env.PAINEL_HOST || '0.0.0.0';
 
 // Token que o Prometheus manda para raspar GET /metrics. Sem ele a rota nao
@@ -179,7 +190,7 @@ async function registrarPerfil(sessao) {
   if (TOKEN_DO_PAINEL === '' || !sessao?.oid) return;
 
   try {
-    const r = await fetch(`http://127.0.0.1:${PORTA_BOT}/internal/pessoas/identidade`, {
+    const r = await fetch(`http://${HOST_BOT}:${PORTA_BOT}/internal/pessoas/identidade`, {
       method: 'PUT',
       headers: {
         'content-type': 'application/json',
@@ -311,7 +322,7 @@ function repassar(req, res, injetarToken = true) {
   }
 
   const upstream = pedirHttp(
-    { host: '127.0.0.1', port: PORTA_BOT, path: req.url, method: req.method, headers: cabecalhos },
+    { host: HOST_BOT, port: PORTA_BOT, path: req.url, method: req.method, headers: cabecalhos },
     (resposta) => {
       res.writeHead(resposta.statusCode || 502, resposta.headers);
       resposta.pipe(res);
@@ -321,10 +332,12 @@ function repassar(req, res, injetarToken = true) {
   upstream.on('error', (err) => {
     // Erro aqui é quase sempre "o bot ainda não subiu" ou "o bot caiu". Dizer
     // isso em texto evita mandar alguém procurar bug no navegador.
-    console.error(`[painel] bot inacessivel em 127.0.0.1:${PORTA_BOT}: ${err.code || err.message}`);
+    console.error(
+      `[painel] bot inacessivel em ${HOST_BOT}:${PORTA_BOT}: ${err.code || err.message}`
+    );
     if (res.headersSent) return res.destroy();
     res.writeHead(502, { 'content-type': 'application/json; charset=utf-8' });
-    res.end(JSON.stringify({ erro: `bot fora do ar em 127.0.0.1:${PORTA_BOT}` }));
+    res.end(JSON.stringify({ erro: `bot fora do ar em ${HOST_BOT}:${PORTA_BOT}` }));
   });
 
   req.pipe(upstream);
@@ -439,11 +452,11 @@ function servirConfigDoPainel(req, res, sessao) {
  */
 function sondarBot() {
   const req = pedirHttp(
-    { host: '127.0.0.1', port: PORTA_BOT, path: '/health', method: 'GET', timeout: 2000 },
+    { host: HOST_BOT, port: PORTA_BOT, path: '/health', method: 'GET', timeout: 2000 },
     (resposta) => {
       resposta.resume();
       if (resposta.statusCode === 200) {
-        console.log(`[painel] bot respondendo em 127.0.0.1:${PORTA_BOT}`);
+        console.log(`[painel] bot respondendo em ${HOST_BOT}:${PORTA_BOT}`);
       } else {
         console.warn(`[painel] AVISO: bot respondeu ${resposta.statusCode} em /health`);
       }
@@ -454,7 +467,7 @@ function sondarBot() {
 
   req.on('error', (err) => {
     console.warn(
-      `[painel] AVISO: bot fora do ar em 127.0.0.1:${PORTA_BOT} (${err.code || err.message})`
+      `[painel] AVISO: bot fora do ar em ${HOST_BOT}:${PORTA_BOT} (${err.code || err.message})`
     );
     console.warn('[painel] O painel esta no ar assim mesmo: a pagina abre e o quadro mostra');
     console.warn('[painel] "bot fora do ar" no lugar dos cartoes. Ele volta sozinho quando o');
@@ -689,7 +702,7 @@ servidor.listen(PORTA, HOST, () => {
 
   console.log(`[painel] servindo ${RAIZ}`);
   console.log(`[painel] ${esquema}://localhost:${PORTA}  (escutando em ${HOST}:${PORTA})`);
-  console.log(`[painel] /internal/* -> 127.0.0.1:${PORTA_BOT}`);
+  console.log(`[painel] /internal/* -> ${HOST_BOT}:${PORTA_BOT}`);
 
   if (ENTRA.ligado) {
     console.log(`[painel] login pelo Entra ID, tenant ${ENTRA.tenant}`);

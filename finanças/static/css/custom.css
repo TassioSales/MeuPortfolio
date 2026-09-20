@@ -99,6 +99,15 @@ h6 {
     border-color: rgba(99, 102, 241, 0.3);
 }
 
+/* Shared soft background used across list/table rows and search widgets */
+.bg-light-soft {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] .bg-light-soft {
+    background: rgba(255, 255, 255, 0.03);
+}
+
 /* ==========================================================================
    Layout Components
    ========================================================================== */

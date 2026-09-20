@@ -1,11 +1,9 @@
-import logging
 import os
 import requests
 import yfinance as yf
 from datetime import datetime, timedelta
-from functools import lru_cache
-
-logger = logging.getLogger('core')
+from django.core.cache import cache
+from loguru import logger
 
 _BRAPI_TOKEN = os.environ.get("BRAPI_TOKEN", "")
 
@@ -16,9 +14,15 @@ SERIES_IGPM_MENSAL = 189  # % a.m.
 SERIES_SELIC_META = 432   # % a.a.
 
 
-@lru_cache(maxsize=32)
+_BCB_CACHE_TTL_SECONDS = 6 * 60 * 60  # 6 hours — BCB series update at most daily
+
+
 def get_bcb_series(code, start_date_str=None):
-    """Fetch series from BCB SGSA API. start_date_str: DD/MM/YYYY."""
+    """Fetch series from BCB SGSA API. start_date_str: DD/MM/YYYY. Cached for 6h."""
+    cache_key = f"bcb_series_{code}_{start_date_str or 'all'}"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
     try:
         url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{code}/dados?formato=json"
         if start_date_str:
@@ -27,7 +31,9 @@ def get_bcb_series(code, start_date_str=None):
         if response.status_code != 200:
             logger.warning(f"BCB API returned status {response.status_code} for code {code}")
             return []
-        return response.json()
+        data = response.json()
+        cache.set(cache_key, data, timeout=_BCB_CACHE_TTL_SECONDS)
+        return data
     except Exception as e:
         logger.error(f"Error fetching BCB series {code}: {e}")
         return []
@@ -39,6 +45,7 @@ def get_latest_indicator(code):
     series = get_bcb_series(code, start_date)
     if series:
         return float(series[-1]['valor'])
+    logger.warning(f"No data returned for BCB series {code}; falling back to 0.0")
     return 0.0
 
 

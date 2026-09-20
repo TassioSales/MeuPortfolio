@@ -1,43 +1,38 @@
 """Dashboard, registration, and calendar views."""
 import calendar
-import json
 from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django.db.models.functions import TruncMonth
 from django.shortcuts import redirect, render
 from django.utils import timezone
 
 from .models import Budget, Goal, Loan, Transaction
-from .services import process_recurring_transactions
+from .services import budget_spent_map, process_recurring_transactions
 import datetime
 
 
+def _income_expense_totals(queryset):
+    """Sum RECEITA/DESPESA amounts for a Transaction queryset in a single query."""
+    totals = queryset.aggregate(
+        income=Sum("amount", filter=Q(type="RECEITA")),
+        expense=Sum("amount", filter=Q(type="DESPESA")),
+    )
+    return totals["income"] or 0, totals["expense"] or 0
+
+
 def register(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get("username")
-            messages.success(request, f"Conta criada para {username}!")
-            return redirect("login")
-    else:
-        form = UserCreationForm()
-    return render(request, "registration/register.html", {"form": form})
+    # Public self-registration is disabled — this app may be exposed on the
+    # public internet (e.g. via a Cloudflare tunnel); new accounts must be
+    # created by a staff user via /admin/ instead.
+    messages.info(request, "O cadastro público está desabilitado. Peça a um administrador para criar sua conta.")
+    return redirect("login")
 
 
 @login_required
 def dashboard(request):
-    processed_count = process_recurring_transactions(request.user)
-    if processed_count > 0:
-        messages.info(
-            request,
-            f"{processed_count} transações recorrentes foram geradas automaticamente.",
-        )
-
     today = timezone.now().date()
     try:
         month = int(request.GET.get("month", today.month))
@@ -50,41 +45,30 @@ def dashboard(request):
     start_date = today.replace(year=year, month=month, day=1)
     end_date = today.replace(year=year, month=month, day=last_day)
 
+    # Materialize recurring transactions up through whichever is later: real
+    # "today" (normal catch-up) or the end of the month being browsed to
+    # (so navigating ahead projects recurring debts forward immediately,
+    # the same way credit-card installments are already pre-created).
+    processed_count = process_recurring_transactions(request.user, up_to_date=max(end_date, today))
+    if processed_count > 0:
+        messages.info(
+            request,
+            f"{processed_count} transações recorrentes foram geradas automaticamente.",
+        )
+
     recent_transactions = Transaction.objects.filter(
         user=request.user, date__range=[start_date, end_date]
     ).order_by("-date")[:5]
 
-    monthly_income = (
-        Transaction.objects.filter(
-            user=request.user, type="RECEITA", date__range=[start_date, end_date]
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
-    )
-    monthly_expense = (
-        Transaction.objects.filter(
-            user=request.user, type="DESPESA", date__range=[start_date, end_date]
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
+    monthly_income, monthly_expense = _income_expense_totals(
+        Transaction.objects.filter(user=request.user, date__range=[start_date, end_date])
     )
 
     prev_month_end = start_date - timedelta(days=1)
     prev_month_start = prev_month_end.replace(day=1)
 
-    previous_income_for_change = (
-        Transaction.objects.filter(
-            user=request.user,
-            type="RECEITA",
-            date__range=[prev_month_start, prev_month_end],
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
-    )
-    previous_expense_for_change = (
-        Transaction.objects.filter(
-            user=request.user,
-            type="DESPESA",
-            date__range=[prev_month_start, prev_month_end],
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
+    previous_income_for_change, previous_expense_for_change = _income_expense_totals(
+        Transaction.objects.filter(user=request.user, date__range=[prev_month_start, prev_month_end])
     )
 
     monthly_income_change = (
@@ -103,17 +87,8 @@ def dashboard(request):
         else 0
     )
 
-    previous_income = (
-        Transaction.objects.filter(
-            user=request.user, type="RECEITA", date__lt=start_date
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
-    )
-    previous_expense = (
-        Transaction.objects.filter(
-            user=request.user, type="DESPESA", date__lt=start_date
-        ).aggregate(Sum("amount"))["amount__sum"]
-        or 0
+    previous_income, previous_expense = _income_expense_totals(
+        Transaction.objects.filter(user=request.user, date__lt=start_date)
     )
 
     accumulated_balance = previous_income - previous_expense
@@ -158,17 +133,10 @@ def dashboard(request):
     current_month_name = f"{month_names[month]} {year}"
 
     alerts = []
-    budgets = Budget.objects.filter(user=request.user, period="MENSAL")
+    budgets = Budget.objects.filter(user=request.user, period="MENSAL").select_related("category")
+    spent_map = budget_spent_map(request.user, budgets)
     for budget in budgets:
-        expense_sum = (
-            Transaction.objects.filter(
-                user=request.user,
-                category=budget.category,
-                type="DESPESA",
-                date__range=[start_date, end_date],
-            ).aggregate(Sum("amount"))["amount__sum"]
-            or 0
-        )
+        expense_sum = spent_map.get(budget.id) or 0
         if budget.limit > 0:
             percent_used = (expense_sum / budget.limit) * 100
             if percent_used >= 90:
@@ -198,9 +166,9 @@ def dashboard(request):
         "net_balance": net_balance,
         "accumulated_balance": accumulated_balance,
         "total_balance": total_balance,
-        "chart_labels": json.dumps(labels),
-        "chart_income": json.dumps(data_income),
-        "chart_expense": json.dumps(data_expense),
+        "chart_labels": labels,
+        "chart_income": data_income,
+        "chart_expense": data_expense,
         "current_month_name": current_month_name,
         "previous_month": previous_month,
         "next_month": next_month,
@@ -233,6 +201,11 @@ def calendar_view(request):
     _, last_day = calendar.monthrange(year, month)
     start_date = datetime.date(year, month, 1)
     end_date = datetime.date(year, month, last_day)
+
+    # Same forward-projection as the dashboard: browsing the calendar ahead
+    # must also materialize recurring transactions up through the viewed
+    # month, not just up to today.
+    process_recurring_transactions(request.user, up_to_date=max(end_date, today))
 
     transactions = Transaction.objects.filter(
         user=request.user, date__range=[start_date, end_date]

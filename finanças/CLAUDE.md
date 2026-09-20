@@ -145,6 +145,5 @@ Run all: `python manage.py test core`
 ## Common Pitfalls
 
 - `views_shared.fix_ssl()` is called at module import — importing `views_shared` twice is safe (idempotent env vars).
-- The `.bak` template file (`investment_dashboard.html.bak`) is leftover and should not be used.
 - `market_data.py` makes HTTP requests to the BCB API — mock these in tests to avoid network dependency.
 - PyInstaller builds (`dist/`) are excluded from git via `.gitignore`.

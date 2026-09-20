@@ -165,7 +165,7 @@
     <div class="col-md-8 col-lg-9">
         <div class="glass-card p-3 h-100">
             <h6 class="fw-bold mb-3 text-uppercase small text-muted">Histórico de Preços — 6 Meses</h6>
-            {% if chart_labels != "[]" %}
+            {% if chart_labels %}
             <div style="position: relative; height: 320px;">
                 <canvas id="historyChart"></canvas>
             </div>
@@ -179,13 +179,14 @@
     </div>
 </div>
 
-{% if chart_labels != "[]" %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% if chart_labels %}
+{{ chart_labels|json_script:"history-chart-labels" }}
+{{ chart_data|json_script:"history-chart-data" }}
 <script>
 (function () {
     const ctx = document.getElementById('historyChart').getContext('2d');
-    const labels = JSON.parse('{{ chart_labels|safe }}');
-    const data   = JSON.parse('{{ chart_data|safe }}');
+    const labels = parseChartJson('history-chart-labels');
+    const data   = parseChartJson('history-chart-data');
     const grad = ctx.createLinearGradient(0, 0, 0, 320);
     grad.addColorStop(0, 'rgba(99,102,241,0.35)');
     grad.addColorStop(1, 'rgba(99,102,241,0.0)');
@@ -214,7 +215,7 @@
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: ctx => 'R$ ' + ctx.parsed.y.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})
+                        label: ctx => brlTick(ctx.parsed.y, 2)
                     }
                 }
             },
@@ -224,7 +225,7 @@
                     grid: { color: 'rgba(0,0,0,.05)' },
                     ticks: {
                         font: { size: 11 },
-                        callback: v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})
+                        callback: v => brlTick(v, 2)
                     }
                 }
             }

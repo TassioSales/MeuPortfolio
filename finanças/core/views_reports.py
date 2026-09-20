@@ -2,7 +2,6 @@
 import csv
 import io
 import json
-import logging
 from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
@@ -19,12 +18,11 @@ from django.utils import timezone
 from xhtml2pdf import pisa
 
 from .models import Budget, Category, Transaction
-
-logger = logging.getLogger("core")
+from loguru import logger
 
 
 def _filter_transactions(request, start_date, end_date, category_id):
-    qs = Transaction.objects.filter(user=request.user).order_by("-date")
+    qs = Transaction.objects.filter(user=request.user).select_related("category").order_by("-date")
     if start_date:
         qs = qs.filter(date__gte=start_date)
     if end_date:
@@ -106,17 +104,20 @@ def reports(request):
             daily_labels.append(entry["day"].strftime("%d/%m"))
             daily_expenses.append(float(entry["total"] or 0))
 
-    budgets = Budget.objects.filter(user=request.user)
+    budgets = Budget.objects.filter(user=request.user).select_related("category")
+    budget_category_ids = [b.category_id for b in budgets]
+    actual_totals = (
+        transactions.filter(type="DESPESA", category_id__in=budget_category_ids)
+        .values("category_id")
+        .annotate(total=Sum("amount"))
+    )
+    actual_by_category = {t["category_id"]: (t["total"] or 0) for t in actual_totals}
+
     budget_labels = []
     budget_limits = []
     budget_actuals = []
     for budget in budgets:
-        actual = (
-            transactions.filter(
-                category=budget.category, type="DESPESA"
-            ).aggregate(Sum("amount"))["amount__sum"]
-            or 0
-        )
+        actual = actual_by_category.get(budget.category_id) or 0
         budget_labels.append(budget.category.name)
         budget_limits.append(float(budget.limit))
         budget_actuals.append(float(actual))
@@ -129,14 +130,14 @@ def reports(request):
         "savings_rate": savings_rate,
         "expense_by_category": expense_by_category,
         "top_expenses": transactions.filter(type="DESPESA").order_by("-amount")[:5],
-        "evolution_labels": json.dumps(evolution_labels),
-        "evolution_income": json.dumps(evolution_income),
-        "evolution_expense": json.dumps(evolution_expense),
-        "daily_labels": json.dumps(daily_labels),
-        "daily_expenses": json.dumps(daily_expenses),
-        "budget_labels": json.dumps(budget_labels),
-        "budget_limits": json.dumps(budget_limits),
-        "budget_actuals": json.dumps(budget_actuals),
+        "evolution_labels": evolution_labels,
+        "evolution_income": evolution_income,
+        "evolution_expense": evolution_expense,
+        "daily_labels": daily_labels,
+        "daily_expenses": daily_expenses,
+        "budget_labels": budget_labels,
+        "budget_limits": budget_limits,
+        "budget_actuals": budget_actuals,
         "recent_transactions": transactions.order_by("-date", "-id")[:20],
     }
     return render(request, "core/reports.html", context)

@@ -136,14 +136,19 @@ caminhos diferentes, e a diferença tem consequência:
 
 | arquivo | o que é |
 | --- | --- |
-| [Dockerfile](../Dockerfile) | imagem em duas etapas; a final não leva compilador nem código-fonte. **Não inclui o painel nem os `.bat`** |
+| [Dockerfile](../Dockerfile) | três etapas: build, `runtime` (o bot) e `painel`. Nenhuma das duas finais leva compilador nem código-fonte. **Não inclui os `.bat`** |
 | [.dockerignore](../.dockerignore) | o que **não** entra na imagem (a começar pelo `.env`) |
 | [.nvmrc](../.nvmrc) | versão do Node; o CI lê deste arquivo |
 | [render.yaml](../render.yaml) | serviço + banco no Render, migração no `preDeploy` |
 | [cloudflared.exemplo.yml](../cloudflared.exemplo.yml) | exemplo de config do Cloudflare Tunnel — a URL pública HTTPS que o webhook exige; avisa que túnel **local × remoto** muda tudo |
+| [docker-compose.yml](../docker-compose.yml) | tudo em contêiner **com a Evolution junto**: Postgres e Redis para ela, o bot e o painel. Só onde há Docker — **não serve no Server 2016** |
+| [servicos/instalar.ps1](../servicos/instalar.ps1) | registra bot e painel como serviços do Windows (WinSW) |
+| [servicos/instalar-evolution.ps1](../servicos/instalar-evolution.ps1) | instala a Evolution **nativa, sem Docker**, e a registra como terceiro serviço |
+| [servicos/evolution.xml](../servicos/evolution.xml) | modelo do serviço da Evolution; o instalador troca os marcadores pelos caminhos reais |
 | [GOLIVE.md](../GOLIVE.md) | o outro caminho: dois processos numa máquina Windows |
 
-Detalhe em [[WA Implantação]].
+Detalhe em [[WA Implantação]]. A Evolution na mesma máquina do bot, sem Docker,
+está em [[WA Evolution no Windows]].
 
 ## Diretórios gerados (não versionar, não editar)
 

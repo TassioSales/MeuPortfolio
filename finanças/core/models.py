@@ -10,10 +10,24 @@ class Category(models.Model):
         ('DESPESA', 'Despesa'),
     ]
 
+    # Natureza separa gasto/receita "de verdade" de dinheiro que só mudou de
+    # lugar (aporte em investimento, parcela/recebimento de empréstimo), para
+    # os KPIs não misturarem as duas coisas.
+    NATURE_OPERACIONAL = 'OPERACIONAL'
+    NATURE_INVESTIMENTO = 'INVESTIMENTO'
+    NATURE_DIVIDA = 'DIVIDA'
+    NATURE_CHOICES = [
+        (NATURE_OPERACIONAL, 'Operacional'),
+        (NATURE_INVESTIMENTO, 'Investimento'),
+        (NATURE_DIVIDA, 'Dívida / Empréstimo'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='categories', verbose_name='Usuário')
     name = models.CharField(max_length=100, verbose_name='Nome da Categoria')
     type = models.CharField(max_length=10, choices=CATEGORY_TYPES, default='DESPESA', verbose_name='Tipo')
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subcategories', verbose_name='Categoria Pai')
+    nature = models.CharField(max_length=15, choices=NATURE_CHOICES, default=NATURE_OPERACIONAL, verbose_name='Natureza')
+    color = models.CharField(max_length=7, blank=True, verbose_name='Cor', help_text='Cor nos gráficos, ex: #6366f1. Deixe vazio para automática.')
 
     class Meta:
         verbose_name = 'Categoria'
@@ -38,6 +52,21 @@ class Transaction(models.Model):
         ('CREDITO', 'Crédito'),
     ]
 
+    ORIGIN_MANUAL = 'MANUAL'
+    ORIGIN_PARCELA = 'PARCELA'
+    ORIGIN_RECORRENTE = 'RECORRENTE'
+    ORIGIN_EMPRESTIMO = 'EMPRESTIMO'
+    ORIGIN_INVESTIMENTO = 'INVESTIMENTO'
+    ORIGIN_IMPORTACAO = 'IMPORTACAO'
+    ORIGIN_CHOICES = [
+        (ORIGIN_MANUAL, 'Manual'),
+        (ORIGIN_PARCELA, 'Parcela (cartão)'),
+        (ORIGIN_RECORRENTE, 'Recorrente'),
+        (ORIGIN_EMPRESTIMO, 'Empréstimo'),
+        (ORIGIN_INVESTIMENTO, 'Investimento'),
+        (ORIGIN_IMPORTACAO, 'Importação'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions', verbose_name='Usuário')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions', verbose_name='Categoria')
     type = models.CharField(max_length=15, choices=TRANSACTION_TYPES, verbose_name='Tipo')
@@ -47,12 +76,40 @@ class Transaction(models.Model):
     description = models.CharField(max_length=255, blank=True, verbose_name='Descrição')
     account = models.ForeignKey('BankAccount', on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions', verbose_name='Conta')
 
+    created_at = models.DateTimeField(auto_now_add=True, null=True, verbose_name='Lançado em')
+    updated_at = models.DateTimeField(auto_now=True, null=True, verbose_name='Atualizado em')
+    origin = models.CharField(max_length=15, choices=ORIGIN_CHOICES, default=ORIGIN_MANUAL, db_index=True, verbose_name='Origem')
+    installment_group = models.UUIDField(null=True, blank=True, db_index=True, verbose_name='Grupo de parcelas')
+    installment_number = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name='Parcela nº')
+    installment_total = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name='Total de parcelas')
+    recurring_source = models.ForeignKey('RecurringTransaction', on_delete=models.SET_NULL, null=True, blank=True, related_name='generated_transactions', verbose_name='Recorrência de origem')
+    loan = models.ForeignKey('Loan', on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions', verbose_name='Empréstimo')
+
     class Meta:
         verbose_name = 'Transação'
         verbose_name_plural = 'Transações'
+        indexes = [
+            models.Index(fields=['user', 'date'], name='tx_user_date_idx'),
+            models.Index(fields=['user', '-created_at'], name='tx_user_created_idx'),
+        ]
 
     def __str__(self):
         return f"{self.get_type_display()} - {self.amount} - {self.date}"
+
+    @property
+    def display_description(self):
+        """Descrição para exibição — cai no nome da categoria quando vazia."""
+        desc = (self.description or '').strip()
+        if desc and not desc.startswith('('):
+            return desc
+        base = self.category.name if self.category_id else 'Sem descrição'
+        return f"{base} {desc}".strip()
+
+    @property
+    def is_forecast(self):
+        """Previsto = data futura (convenção única do sistema)."""
+        from .dates import today
+        return self.date > today()
 
 class RecurringTransaction(models.Model):
     FREQUENCY_CHOICES = [
@@ -153,7 +210,7 @@ class Investment(models.Model):
             category, _ = Category.objects.get_or_create(
                 user=self.user,
                 name='Investimentos',
-                defaults={'type': 'DESPESA'}
+                defaults={'type': 'DESPESA', 'nature': Category.NATURE_INVESTIMENTO}
             )
             self.transaction = Transaction.objects.create(
                 user=self.user,
@@ -161,7 +218,8 @@ class Investment(models.Model):
                 type='DESPESA',
                 amount=self.total_cost,
                 date=self.date,
-                description=f"Compra de {self.symbol} ({self.quantity} un.)"
+                description=f"Compra de {self.symbol} ({self.quantity} un.)",
+                origin=Transaction.ORIGIN_INVESTIMENTO,
             )
             super().save(*args, **kwargs)
             return
@@ -323,7 +381,7 @@ class Loan(models.Model):
     interest_period = models.CharField(max_length=10, choices=INTEREST_PERIOD, default='MENSAL', verbose_name='Período da Taxa')
     start_date = models.DateField(verbose_name='Data do Empréstimo')
     due_day = models.IntegerField(default=10, verbose_name='Dia de Vencimento')
-    num_installments = models.IntegerField(null=True, blank=True, verbose_name='Número de Parcelas', help_text='Obrigatório para Price e SAC. Deixe vazio para Saldo Devedor/Simples.')
+    num_installments = models.IntegerField(null=True, blank=True, verbose_name='Número de Parcelas', help_text='Obrigatório para Price e SAC. Use 0 (ou vazio) para empréstimos informais, sem prazo fixo.')
     current_balance = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Saldo Devedor Atual')
     iof_rate = models.DecimalField(
         max_digits=7, decimal_places=4, default=0, blank=True,
@@ -335,8 +393,19 @@ class Loan(models.Model):
         verbose_name='Seguro Mensal (R$)',
         help_text='Seguro prestamista mensal fixo. Deixe 0 se não houver.'
     )
+    planned_payment = models.DecimalField(
+        max_digits=15, decimal_places=2, null=True, blank=True,
+        verbose_name='Parcela combinada (R$)',
+        help_text='Valor que você pretende pagar por mês. Tem prioridade sobre o cálculo automático; '
+                  'use em empréstimos informais (0 parcelas) ou para ajustar o valor manualmente.'
+    )
     notes = models.TextField(blank=True, verbose_name='Observações')
     is_active = models.BooleanField(default=True, verbose_name='Ativo')
+    register_income = models.BooleanField(
+        default=True, verbose_name='Registrar o valor recebido como receita?',
+        help_text='Lança o valor líquido recebido (principal − IOF) como entrada na data do empréstimo.'
+    )
+    synced_at = models.DateField(null=True, blank=True, editable=False, verbose_name='Parcelas sincronizadas em')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -376,6 +445,7 @@ class LoanDisbursement(models.Model):
     amount = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Valor Adicional (R$)')
     date = models.DateField(default=timezone.now, verbose_name='Data')
     note = models.CharField(max_length=255, blank=True, verbose_name='Observação')
+    transaction = models.OneToOneField(Transaction, on_delete=models.SET_NULL, null=True, blank=True, related_name='loan_disbursement', verbose_name='Transação')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -393,6 +463,8 @@ class LoanPayment(models.Model):
     interest_paid = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Juros')
     principal_paid = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Amortização')
     balance_after = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Saldo Após')
+    balance_before = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True, verbose_name='Saldo Antes')
+    transaction = models.OneToOneField(Transaction, on_delete=models.SET_NULL, null=True, blank=True, related_name='loan_payment', verbose_name='Transação')
     notes = models.CharField(max_length=255, blank=True, verbose_name='Observações')
     created_at = models.DateTimeField(auto_now_add=True)
 

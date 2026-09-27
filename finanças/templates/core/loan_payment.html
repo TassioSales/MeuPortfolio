@@ -22,7 +22,7 @@
                 <div class="fw-bold text-warning fs-5 currency-value">{{ loan.next_interest|brl }}</div>
             </div>
             <div class="col-4">
-                <div class="small text-muted">Mínimo Sugerido</div>
+                <div class="small text-muted">{% if next_installment %}Parcela prevista{% else %}Mínimo Sugerido{% endif %}</div>
                 <div class="fw-bold text-primary fs-5 currency-value">{{ suggested_min|brl }}</div>
             </div>
         </div>
@@ -48,6 +48,12 @@
 
             <!-- Quick amount buttons -->
             <div class="d-flex gap-2 flex-wrap mb-4">
+                {% if suggested_min %}
+                <button type="button" class="btn btn-outline-success btn-sm"
+                    onclick="document.querySelector('[name=amount_paid]').value='{{ suggested_min|floatformat:2 }}'.replace('.',',')">
+                    Parcela prevista ({{ suggested_min|brl }})
+                </button>
+                {% endif %}
                 <button type="button" class="btn btn-outline-secondary btn-sm"
                     onclick="document.querySelector('[name=amount_paid]').value='{{ loan.next_interest|floatformat:2 }}'.replace('.',',')">
                     Só juros ({{ loan.next_interest|brl }})

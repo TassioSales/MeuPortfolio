@@ -93,6 +93,7 @@ def import_ofx(request):
                 type=t["type"],
                 description=t["description"],
                 category=default_cat if t["type"] == "DESPESA" else None,
+                origin=Transaction.ORIGIN_IMPORTACAO,
             )
             count += 1
 

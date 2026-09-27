@@ -34,6 +34,10 @@ class CategoryForm(forms.ModelForm):
         fields = ['name', 'type', 'parent']
 
 class TransactionForm(forms.ModelForm):
+    SCOPE_ONLY = 'only'
+    SCOPE_NEXT = 'next'
+    SCOPE_ALL = 'all'
+
     installments = forms.IntegerField(required=False, min_value=1, max_value=48, label="Parcelas", initial=1)
     first_due_date = forms.DateField(required=False, label="Data do 1º Vencimento", widget=forms.DateInput(attrs={'type': 'date'}))
     recurring = forms.BooleanField(required=False, label="Repetir?", widget=forms.CheckboxInput(attrs={'onclick': 'toggleRecurringFields(this)'}))
@@ -43,7 +47,7 @@ class TransactionForm(forms.ModelForm):
 
     class Meta:
         model = Transaction
-        fields = ['category', 'type', 'amount', 'date', 'payment_method', 'description']
+        fields = ['category', 'type', 'amount', 'date', 'payment_method', 'account', 'description']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'payment_method': forms.Select(attrs={'onchange': 'toggleCreditCardFields(this)'}),
@@ -51,8 +55,33 @@ class TransactionForm(forms.ModelForm):
 
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['account'].required = False
         if user is not None:
-            self.fields['category'].queryset = Category.objects.filter(user=user)
+            cats = Category.objects.filter(user=user)
+            self.fields['category'].queryset = cats
+            self.fields['category'].widget.choices = _grouped_category_choices(cats)
+            self.fields['account'].queryset = BankAccount.objects.filter(user=user, is_active=True)
+            if not self.fields['account'].queryset.exists():
+                del self.fields['account']
+
+        instance = self.instance
+        if instance and instance.pk:
+            # Parcelamento/recorrência só fazem sentido ao criar.
+            for name in ('installments', 'first_due_date', 'recurring', 'frequency', 'recurrence_end_date'):
+                self.fields.pop(name, None)
+            if instance.installment_group or instance.recurring_source_id:
+                what = 'parcelas desta compra' if instance.installment_group else 'ocorrências desta recorrência'
+                choices = [
+                    (self.SCOPE_ONLY, 'Só este lançamento'),
+                    (self.SCOPE_NEXT, f'Este e as próximas {what}'),
+                ]
+                if instance.installment_group:
+                    choices.append((self.SCOPE_ALL, 'Todas as parcelas'))
+                self.fields['apply_scope'] = forms.ChoiceField(
+                    choices=choices, initial=self.SCOPE_ONLY, widget=forms.RadioSelect,
+                    label='Aplicar alterações a',
+                    help_text='A data de cada parcela é mantida; valor, categoria, descrição e forma de pagamento são copiados.',
+                )
 
     def clean_amount(self):
         amount = self.cleaned_data.get('amount')
@@ -61,7 +90,7 @@ class TransactionForm(forms.ModelForm):
             value = amount
         else:
             value = clean_currency_value(self.data.get('amount'))
-        if value is not None and value <= 0:
+        if value is None or value <= 0:
             raise forms.ValidationError("O valor deve ser maior que zero.")
         return value
 
@@ -72,22 +101,63 @@ class TransactionForm(forms.ModelForm):
         payment_method = cleaned_data.get('payment_method')
         installments = cleaned_data.get('installments')
         first_due_date = cleaned_data.get('first_due_date')
+        is_new = not (self.instance and self.instance.pk)
 
         if type_ in ['RECEITA', 'DESPESA'] and not category:
-            self.add_error('category', 'Category is required for income/expense.')
-        
-        if payment_method == 'CREDITO':
+            self.add_error('category', 'Informe a categoria.')
+
+        if is_new and payment_method == 'CREDITO':
             if not installments:
                 self.add_error('installments', 'Informe o número de parcelas.')
             if not first_due_date:
-                self.add_error('first_due_date', 'Informe a data do primeiro vencimento.')
-        
+                cleaned_data['first_due_date'] = cleaned_data.get('date')
+                if not cleaned_data['first_due_date']:
+                    self.add_error('first_due_date', 'Informe a data do primeiro vencimento.')
+
         recurring = cleaned_data.get('recurring')
         frequency = cleaned_data.get('frequency')
         if recurring and not frequency:
             self.add_error('frequency', 'Informe a frequência da repetição.')
 
+        if not (cleaned_data.get('description') or '').strip() and category:
+            cleaned_data['description'] = category.name
+
         return cleaned_data
+
+
+def _grouped_category_choices(categories):
+    """Choices com <optgroup> por categoria pai (pai aparece como '(geral)')."""
+    cats = list(categories.order_by('name'))
+    ids = {c.id for c in cats}
+    children = {}
+    for c in cats:
+        if c.parent_id in ids:
+            children.setdefault(c.parent_id, []).append(c)
+    choices = [('', '---------')]
+    for c in cats:
+        if c.parent_id in ids:
+            continue
+        label = f"{c.name} ({c.get_type_display().lower()})"
+        kids = children.get(c.id)
+        if kids:
+            choices.append((label, [(c.id, f"{c.name} (geral)")] + [(k.id, k.name) for k in kids]))
+        else:
+            choices.append((c.id, label))
+    return choices
+
+
+class TransactionBulkUpdateForm(forms.Form):
+    """Alteração em massa: só os campos preenchidos são aplicados."""
+    category = forms.ModelChoiceField(queryset=Category.objects.none(), required=False, label="Categoria")
+    payment_method = forms.ChoiceField(choices=[('', '— manter —')] + Transaction.PAYMENT_METHODS,
+                                       required=False, label="Forma de pagamento")
+    account = forms.ModelChoiceField(queryset=BankAccount.objects.none(), required=False, label="Conta")
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.filter(user=user)
+        self.fields['account'].queryset = BankAccount.objects.filter(user=user)
+
 
 class BudgetForm(forms.ModelForm):
     limit = forms.CharField(label="Limite", widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}))
@@ -317,13 +387,24 @@ class LoanForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00'}),
         help_text='Seguro prestamista fixo por mês. Deixe vazio se não houver.'
     )
+    num_installments = forms.IntegerField(
+        label='Nº de Parcelas', required=False, min_value=0, max_value=600,
+        help_text='Use 0 para empréstimos informais, sem prazo fixo.'
+    )
+    planned_payment = forms.CharField(
+        label='Parcela combinada (R$)', required=False,
+        widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'R$ 0,00 (opcional)'}),
+        help_text='Quanto você vai pagar por mês. Substitui o cálculo automático — '
+                  'use em empréstimos informais ou para ajustar o valor à mão.'
+    )
 
     class Meta:
         model = Loan
         fields = [
             'name', 'lender', 'loan_type', 'principal', 'current_balance',
             'interest_rate', 'interest_period', 'iof_rate', 'insurance_monthly',
-            'start_date', 'due_day', 'num_installments', 'notes', 'is_active',
+            'start_date', 'due_day', 'num_installments', 'planned_payment',
+            'register_income', 'notes', 'is_active',
         ]
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
@@ -362,12 +443,36 @@ class LoanForm(forms.ModelForm):
             return Decimal('0')
         return clean_currency_value(val)
 
+    def clean_num_installments(self):
+        value = self.cleaned_data.get('num_installments')
+        # 0 = informal (sem prazo fixo) — guardado como vazio.
+        return value or None
+
+    def clean_planned_payment(self):
+        val = (self.data.get('planned_payment') or '').strip()
+        if not val:
+            return None
+        value = clean_currency_value(val)
+        if value is not None and value < 0:
+            raise forms.ValidationError("A parcela não pode ser negativa.")
+        return value or None
+
+    def clean_due_day(self):
+        value = self.cleaned_data.get('due_day') or 10
+        if not 1 <= value <= 31:
+            raise forms.ValidationError("Informe um dia entre 1 e 31.")
+        return value
+
     def clean(self):
         cleaned = super().clean()
         loan_type = cleaned.get('loan_type')
         num_installments = cleaned.get('num_installments')
-        if loan_type in ('PRICE', 'SAC') and not num_installments:
-            self.add_error('num_installments', 'Número de parcelas obrigatório para esta modalidade.')
+        if loan_type in ('PRICE', 'SAC') and not num_installments and not cleaned.get('planned_payment'):
+            self.add_error(
+                'num_installments',
+                'Price e SAC precisam do nº de parcelas. Para empréstimo informal, use a modalidade '
+                '"Juros sobre Saldo Devedor" com 0 parcelas, ou informe a parcela combinada.'
+            )
         current_balance = cleaned.get('current_balance')
         principal = cleaned.get('principal')
         if not current_balance and principal:
@@ -386,7 +491,10 @@ class LoanPaymentForm(forms.ModelForm):
         }
 
     def clean_amount_paid(self):
-        return clean_currency_value(self.data.get('amount_paid'))
+        value = clean_currency_value(self.data.get('amount_paid'))
+        if value is None or value <= 0:
+            raise forms.ValidationError("Informe um valor maior que zero.")
+        return value
 
 
 class LoanAddFundsForm(forms.Form):
@@ -405,4 +513,7 @@ class LoanAddFundsForm(forms.Form):
     )
 
     def clean_amount(self):
-        return clean_currency_value(self.data.get('amount'))
+        value = clean_currency_value(self.data.get('amount'))
+        if value is None or value <= 0:
+            raise forms.ValidationError("Informe um valor maior que zero.")
+        return value

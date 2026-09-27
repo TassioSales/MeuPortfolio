@@ -1,0 +1,81 @@
+{% load core_extras %}
+{# Painel da categoria selecionada. Contexto: ci (category_insight) #}
+<div class="glass-card p-4 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+        <div class="d-flex align-items-center gap-2">
+            <span class="cat-dot" style="background: {% if ci.category.color %}{{ ci.category.color }}{% else %}var(--brand-primary){% endif %}"></span>
+            <h5 class="fw-bold mb-0">{{ ci.category.name }}</h5>
+            <span class="badge-soft">{{ ci.category.get_type_display }}</span>
+            {% if ci.subcategories %}<span class="badge-soft">inclui subcategorias</span>{% endif %}
+        </div>
+        <small class="text-muted">{{ filter.period_label }}</small>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="kpi-label text-muted small fw-bold text-uppercase">Total no período</div>
+            <div class="kpi-value {% if ci.type == 'DESPESA' %}text-danger{% else %}text-success{% endif %} currency-value mb-1">{{ ci.total|brl }}</div>
+            <div class="small text-muted mb-3">
+                {{ ci.count }} lançamento(s)
+                {% if ci.share is not None %}· <strong>{{ ci.share|pct:1 }}</strong> de todas as {% if ci.type == 'DESPESA' %}despesas{% else %}receitas{% endif %} ({{ ci.all_total|brl }}){% endif %}
+            </div>
+            {% if ci.share is not None %}
+            <div class="progress mb-3" style="height: 8px" role="progressbar" aria-label="Participação" aria-valuenow="{{ ci.share|floatformat:0 }}" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: {{ ci.share|floatformat:0 }}%; background: var(--brand-primary)"></div>
+            </div>
+            {% endif %}
+
+            {% if ci.budget %}
+            {% with b=ci.budget %}
+            <div class="p-3 rounded-3" style="background: rgba(99,102,241,.05)">
+                <div class="d-flex justify-content-between small fw-bold mb-1">
+                    <span>Orçamento {{ b.period_label }}</span>
+                    <span class="{% if b.pct >= 100 %}text-danger{% elif b.pct >= 80 %}text-warning{% else %}text-success{% endif %}">{{ b.pct|floatformat:0 }}%</span>
+                </div>
+                <div class="progress mb-2" style="height: 8px">
+                    <div class="progress-bar {% if b.pct >= 100 %}bg-danger{% elif b.pct >= 80 %}bg-warning{% else %}bg-success{% endif %}" style="width: {% if b.pct > 100 %}100{% else %}{{ b.pct|floatformat:0 }}{% endif %}%"></div>
+                </div>
+                <div class="small text-muted">
+                    <span class="currency-value">{{ b.spent|brl }}</span> de <span class="currency-value">{{ b.budget.limit|brl }}</span>
+                    · {% if b.remaining >= 0 %}resta <span class="currency-value">{{ b.remaining|brl }}</span>{% else %}<span class="text-danger">estourou <span class="currency-value">{{ b.remaining|absval|brl }}</span></span>{% endif %}
+                </div>
+                {% if b.projected %}
+                <div class="small mt-1 {% if b.projected > b.budget.limit %}text-danger{% else %}text-muted{% endif %}">
+                    <i class="bi bi-graph-up-arrow me-1"></i>No ritmo atual fecha em <span class="currency-value">{{ b.projected|brl }}</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endwith %}
+            {% endif %}
+        </div>
+
+        <div class="col-lg-5">
+            <div class="small fw-bold text-muted text-uppercase mb-2">Últimos 12 meses <span class="fw-normal">(linha = média {{ ci.series_avg|brl }})</span></div>
+            <div class="chart-box sm"><canvas id="ciChart"></canvas></div>
+        </div>
+
+        <div class="col-lg-3">
+            {% if ci.subcategories %}
+            <div class="small fw-bold text-muted text-uppercase mb-2">Por subcategoria</div>
+            <ul class="list-unstyled small mb-3">
+                {% for sc in ci.subcategories %}
+                <li class="d-flex justify-content-between gap-2 py-1 border-bottom">
+                    <span class="text-truncate">{{ sc.name }}</span>
+                    <span class="text-nowrap"><span class="currency-value">{{ sc.total|brl }}</span> <span class="text-muted">{{ sc.pct|pct }}</span></span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="small fw-bold text-muted text-uppercase mb-2">Por forma de pagamento</div>
+            <ul class="list-unstyled small mb-0">
+                {% for pm in ci.payment_methods %}
+                <li class="d-flex justify-content-between gap-2 py-1 border-bottom">
+                    <span>{{ pm.name }}</span><span class="currency-value">{{ pm.total|brl }}</span>
+                </li>
+                {% empty %}
+                <li class="text-muted">—</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

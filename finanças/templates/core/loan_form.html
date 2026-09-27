@@ -63,9 +63,25 @@
                     </select>
                 </div>
                 <div class="col-md-4" id="field-installments">
-                    <label class="form-label fw-semibold">Nº de Parcelas</label>
-                    <input type="number" name="num_installments" value="{{ form.num_installments.value|default:'' }}" class="form-control" placeholder="Ex: 48" min="1">
+                    <label for="id_num_installments" class="form-label fw-semibold">Nº de Parcelas</label>
+                    <input type="number" id="id_num_installments" name="num_installments" value="{{ form.num_installments.value|default:'' }}" class="form-control" placeholder="0 = informal" min="0" max="600">
+                    <div class="form-text">0 ou vazio = informal, sem prazo fixo.</div>
                     {% if form.num_installments.errors %}<div class="text-danger small">{{ form.num_installments.errors.0 }}</div>{% endif %}
+                </div>
+
+                <!-- Parcela combinada (ajuste manual) -->
+                <div class="col-md-6">
+                    <label for="id_planned_payment" class="form-label fw-semibold">Parcela combinada (R$)</label>
+                    <input type="text" id="id_planned_payment" name="planned_payment" value="{{ form.planned_payment.value|default:'' }}" class="form-control money-mask" placeholder="Opcional">
+                    <div class="form-text">{{ form.planned_payment.help_text }}</div>
+                    {% if form.planned_payment.errors %}<div class="text-danger small">{{ form.planned_payment.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="form-check mt-md-3">
+                        <input type="checkbox" name="register_income" id="register_income" class="form-check-input" {% if form.register_income.value %}checked{% endif %} value="True">
+                        <label class="form-check-label" for="register_income">Registrar o valor recebido como receita</label>
+                        <div class="form-text">Lança principal − IOF como entrada na data do empréstimo.</div>
+                    </div>
                 </div>
 
                 <!-- Separador visual: taxas bancárias -->
@@ -103,8 +119,8 @@
                     <input type="date" name="start_date" value="{{ form.start_date.value|default:'' }}" class="form-control" required>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Dia de Vencimento</label>
-                    <input type="number" name="due_day" value="{{ form.due_day.value|default:'10' }}" class="form-control" min="1" max="31">
+                    <label for="id_due_day" class="form-label fw-semibold">Dia de Vencimento</label>
+                    <input type="number" id="id_due_day" name="due_day" value="{{ form.due_day.value|default:'10' }}" class="form-control" min="1" max="31">
                 </div>
 
                 <!-- Observações -->
@@ -138,21 +154,22 @@
 {% block scripts %}
 <script>
 const hints = {
-  'REDUCAO_SALDO': '<strong>Juros sobre Saldo Devedor:</strong> Juros só sobre o que ainda deve. Qualquer valor acima dos juros reduz a dívida. Ideal para empréstimos informais — sem nº fixo de parcelas.',
+  'REDUCAO_SALDO': '<strong>Juros sobre Saldo Devedor:</strong> Juros só sobre o que ainda deve. Qualquer valor acima dos juros reduz a dívida. Ideal para empréstimos informais — deixe 0 parcelas e, se quiser, informe a parcela combinada. Com juros 0 e sem parcela combinada, nada é previsto: você lança cada pagamento no valor que quiser.',
   'PRICE': '<strong>Tabela Price (Parcela Fixa):</strong> Parcela idêntica todo mês. No início vai mais para juros; com o tempo, mais para amortização. Exige nº de parcelas.',
   'SAC': '<strong>SAC (Amortização Constante):</strong> Amortização fixa todo mês, juros decrescentes → parcela começa maior e vai diminuindo. Paga menos juros no total vs Price. Exige nº de parcelas.',
-  'SIMPLES': '<strong>Juros Simples:</strong> Paga só os juros mensalmente e quita o principal todo no final. Para acordos com prazo definido.',
+  'SIMPLES': '<strong>Juros Simples:</strong> Paga só os juros mensalmente e quita o principal todo no final. Com 0 parcelas, paga só os juros por tempo indeterminado.',
 };
 function toggleLoanFields(sel) {
   const val = sel.value;
   document.getElementById('loan-type-hint').innerHTML = hints[val] || '';
-  const needInstallments = ['PRICE','SAC','SIMPLES'].includes(val);
+  const needInstallments = ['PRICE','SAC'].includes(val) && !document.querySelector('[name=planned_payment]').value;
   const fi = document.getElementById('field-installments');
   const inp = fi.querySelector('input');
   inp.required = needInstallments;
   fi.querySelector('label').textContent = needInstallments ? 'Nº de Parcelas *' : 'Nº de Parcelas';
 }
 toggleLoanFields(document.querySelector('[name=loan_type]'));
+document.querySelector('[name=planned_payment]').addEventListener('input', () => toggleLoanFields(document.querySelector('[name=loan_type]')));
 </script>
 {% endblock %}
 {% endblock %}

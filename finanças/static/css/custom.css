@@ -542,6 +542,11 @@ h6 {
 
 /* KPI number size */
 .kpi-value { font-size: 1.75rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; }
+/* O backdrop-filter do .glass-card cria um stacking context por card; sem
+   isto os cards seguintes cobrem o dropdown de categorias aberto no filtro. */
+.filter-card { position: relative; z-index: 30; }
+.filter-card .dropdown-menu { z-index: 1060; }
+
 /* ── Filtros, chips e KPIs (dashboard / transações / fluxo de caixa) ───── */
 .filter-bar { display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-end; }
 .filter-bar .form-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin-bottom: .35rem; }

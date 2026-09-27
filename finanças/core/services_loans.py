@@ -384,9 +384,12 @@ def register_payment(loan: Loan, amount: Decimal, payment_date: datetime.date, n
 def revert_payment(payment: LoanPayment) -> None:
     """Desfaz o pagamento mais recente: restaura o saldo e a parcela prevista."""
     loan = payment.loan
-    latest = loan.payments.order_by("-payment_date", "-id").first()
-    if latest is None or latest.pk != payment.pk:
-        raise ValueError("Só é possível desfazer o pagamento mais recente.")
+    if not is_latest_payment(payment):
+        raise ValueError(
+            "Só é possível alterar ou excluir o pagamento mais recente deste empréstimo — "
+            "cada pagamento é calculado sobre o saldo deixado pelo anterior. "
+            "Exclua os mais recentes primeiro."
+        )
     with db_transaction.atomic():
         restored = payment.balance_before
         if restored is None:
@@ -399,6 +402,22 @@ def revert_payment(payment: LoanPayment) -> None:
         if tx:
             tx.delete()
         sync_loan_installments(loan)
+
+
+def is_latest_payment(payment: LoanPayment) -> bool:
+    latest = payment.loan.payments.order_by("-payment_date", "-id").first()
+    return latest is not None and latest.pk == payment.pk
+
+
+def edit_payment(payment: LoanPayment, amount: Decimal, payment_date: datetime.date, notes: str = "") -> LoanPayment:
+    """Corrige o pagamento mais recente: desfaz e registra de novo com os
+    valores novos (juros/amortização/saldo recalculados a partir do saldo
+    que havia antes dele)."""
+    loan = payment.loan
+    with db_transaction.atomic():
+        revert_payment(payment)
+        loan.refresh_from_db()
+        return register_payment(loan, amount, payment_date, notes)
 
 
 def add_funds(loan: Loan, amount: Decimal, date: datetime.date, note: str = "") -> LoanDisbursement:

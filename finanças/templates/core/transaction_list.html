@@ -191,11 +191,11 @@
                                     <i class="bi bi-three-dots-vertical"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end glass-card border shadow-lg">
-                                    <li><a class="dropdown-item" href="{% url 'transaction_edit' transaction.pk %}"><i class="bi bi-pencil me-2"></i>Editar</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'transaction_edit' transaction.pk %}"><i class="bi bi-pencil me-2"></i>{% if transaction.loan_payment %}Editar pagamento{% else %}Editar{% endif %}</a></li>
                                     <li><a class="dropdown-item" href="{% url 'transaction_duplicate' transaction.pk %}"><i class="bi bi-copy me-2"></i>Duplicar</a></li>
                                     {% if transaction.loan_id %}<li><a class="dropdown-item" href="{% url 'loan_detail' transaction.loan_id %}"><i class="bi bi-bank me-2"></i>Ver empréstimo</a></li>{% endif %}
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item text-danger" href="{% url 'transaction_delete' transaction.pk %}"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                                    <li><a class="dropdown-item text-danger" href="{% url 'transaction_delete' transaction.pk %}"><i class="bi bi-trash me-2"></i>{% if transaction.loan_payment %}Excluir pagamento{% else %}Excluir{% endif %}</a></li>
                                 </ul>
                             </div>
                         </td>

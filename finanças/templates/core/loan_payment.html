@@ -5,10 +5,19 @@
     <div class="d-flex align-items-center mb-4 gap-3">
         <a href="{% url 'loan_detail' loan.pk %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i></a>
         <div>
-            <h2 class="mb-0 fw-bold">Registrar Pagamento</h2>
+            <h2 class="mb-0 fw-bold">{% if editing %}Editar Pagamento{% else %}Registrar Pagamento{% endif %}</h2>
             <small class="text-muted">{{ loan.name }}</small>
         </div>
     </div>
+
+    {% if editing %}
+    <div class="alert alert-info small d-flex gap-2 align-items-start">
+        <i class="bi bi-info-circle-fill mt-1"></i>
+        <div>Corrigindo o pagamento de <strong>{{ editing.amount_paid|brl }}</strong> de {{ editing.payment_date|date:"d/m/Y" }}.
+            Os valores abaixo mostram o empréstimo como estava <strong>antes</strong> dele; juros, amortização e saldo são recalculados ao salvar.
+            <a href="{% url 'loan_payment_delete' loan.pk editing.pk %}" class="text-danger ms-1">Excluir este pagamento</a></div>
+    </div>
+    {% endif %}
 
     <!-- Summary -->
     <div class="glass-card p-4 mb-4">
@@ -74,7 +83,7 @@
             </div>
 
             <button type="submit" class="btn btn-success w-100 btn-lg">
-                <i class="bi bi-check-circle me-2"></i>Confirmar Pagamento
+                <i class="bi bi-check-circle me-2"></i>{% if editing %}Salvar correção{% else %}Confirmar Pagamento{% endif %}
             </button>
         </form>
     </div>

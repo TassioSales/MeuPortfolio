@@ -47,6 +47,8 @@ from .views_loans import (
     loan_add_funds,
     loan_detail,
     loan_make_payment,
+    loan_payment_delete,
+    loan_payment_edit,
     loan_payment_revert,
 )
 from .views_ofx import import_ofx

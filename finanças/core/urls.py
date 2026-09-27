@@ -87,4 +87,6 @@ urlpatterns = [
     path('loans/<int:pk>/pay/', views.loan_make_payment, name='loan_pay'),
     path('loans/<int:pk>/add-funds/', views.loan_add_funds, name='loan_add_funds'),
     path('loans/<int:pk>/payments/<int:payment_pk>/revert/', views.loan_payment_revert, name='loan_payment_revert'),
+    path('loans/<int:pk>/payments/<int:payment_pk>/edit/', views.loan_payment_edit, name='loan_payment_edit'),
+    path('loans/<int:pk>/payments/<int:payment_pk>/delete/', views.loan_payment_delete, name='loan_payment_delete'),
 ]

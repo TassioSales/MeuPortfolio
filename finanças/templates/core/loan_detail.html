@@ -215,11 +215,12 @@
                         <small class="text-muted d-block mt-1">Saldo após: <span class="currency-value">{{ p.balance_after|brl }}</span></small>
                         {% if p.notes %}<small class="text-muted fst-italic">{{ p.notes }}</small>{% endif %}
                         {% if p.pk == latest_payment_id %}
-                        <form method="post" action="{% url 'loan_payment_revert' loan.pk p.pk %}" class="mt-2"
-                              onsubmit="return confirm('Desfazer este pagamento? O saldo devedor volta ao valor anterior.');">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-link btn-sm text-danger p-0"><i class="bi bi-arrow-counterclockwise me-1"></i>Desfazer</button>
-                        </form>
+                        <div class="d-flex gap-2 mt-2">
+                            <a href="{% url 'loan_payment_edit' loan.pk p.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil me-1"></i>Editar</a>
+                            <a href="{% url 'loan_payment_delete' loan.pk p.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Excluir</a>
+                        </div>
+                        {% else %}
+                        <small class="text-muted d-block mt-1" title="Cada pagamento é calculado sobre o saldo deixado pelo anterior"><i class="bi bi-lock me-1"></i>Para alterar, exclua antes os pagamentos mais recentes</small>
                         {% endif %}
                     </div>
                     {% endfor %}

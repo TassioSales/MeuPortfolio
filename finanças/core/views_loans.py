@@ -19,8 +19,9 @@ from .dates import today
 from .forms import LoanAddFundsForm, LoanForm, LoanPaymentForm
 from .models import AuditLog, Loan, LoanPayment
 from .services_loans import (
-    add_funds, build_schedule, calc_cet, delete_loan, monthly_rate, next_payment_amount,
-    on_loan_saved, payoff_months, pending_installments, register_payment, revert_payment,
+    add_funds, build_schedule, calc_cet, delete_loan, edit_payment, is_latest_payment, monthly_rate,
+    next_payment_amount, on_loan_saved, payoff_months, pending_installments, register_payment,
+    revert_payment,
 )
 
 # Nomes antigos mantidos para quem importava daqui.
@@ -251,6 +252,73 @@ def loan_make_payment(request, pk):
     return render(request, "core/loan_payment.html", context)
 
 
+def _balance_before(payment):
+    if payment.balance_before is not None:
+        return payment.balance_before
+    return payment.balance_after + payment.principal_paid
+
+
+@login_required
+def loan_payment_edit(request, pk, payment_pk):
+    """Corrige valor/data/observação do pagamento mais recente."""
+    loan = get_object_or_404(Loan, pk=pk, user=request.user)
+    payment = get_object_or_404(LoanPayment, pk=payment_pk, loan=loan)
+    if not is_latest_payment(payment):
+        messages.error(request, "Só é possível editar o pagamento mais recente deste empréstimo. "
+                                "Exclua os mais recentes primeiro.")
+        return redirect("loan_detail", pk=loan.pk)
+
+    if request.method == "POST":
+        form = LoanPaymentForm(request.POST)
+        if form.is_valid():
+            old_amount = payment.amount_paid
+            with transaction.atomic():
+                new = edit_payment(payment, form.cleaned_data["amount_paid"],
+                                   form.cleaned_data["payment_date"], form.cleaned_data.get("notes", ""))
+                AuditLog.objects.create(
+                    user=request.user, action="UPDATE", model_name="Loan", object_id=loan.pk,
+                    description=f"Pagamento corrigido em {loan.name}: R$ {old_amount:.2f} -> "
+                                f"R$ {new.amount_paid:.2f}. Saldo: R$ {new.balance_after:.2f}",
+                )
+            messages.success(
+                request,
+                f"Pagamento corrigido para R$ {new.amount_paid:.2f}. Juros: R$ {new.interest_paid:.2f} | "
+                f"Amortização: R$ {new.principal_paid:.2f} | Saldo devedor: R$ {new.balance_after:.2f}",
+            )
+            return redirect("loan_detail", pk=loan.pk)
+    else:
+        form = LoanPaymentForm(initial={
+            "payment_date": payment.payment_date,
+            "amount_paid": f"{payment.amount_paid:.2f}".replace(".", ","),
+            "notes": payment.notes,
+        })
+
+    # Mostra o empréstimo como estava antes deste pagamento (só em memória).
+    loan.current_balance = _balance_before(payment)
+    return render(request, "core/loan_payment.html", {
+        "loan": loan, "form": form, "editing": payment,
+        "suggested_min": payment.amount_paid, "next_installment": None,
+    })
+
+
+@login_required
+def loan_payment_delete(request, pk, payment_pk):
+    """Confirmação + exclusão (desfaz) do pagamento mais recente."""
+    loan = get_object_or_404(Loan, pk=pk, user=request.user)
+    payment = get_object_or_404(LoanPayment, pk=payment_pk, loan=loan)
+    if request.method == "POST":
+        return loan_payment_revert(request, pk, payment_pk)
+    if not is_latest_payment(payment):
+        messages.error(request, "Só é possível excluir o pagamento mais recente deste empréstimo. "
+                                "Exclua os mais recentes primeiro.")
+        return redirect("loan_detail", pk=loan.pk)
+    return render(request, "core/confirm_delete.html", {
+        "object": f"o pagamento de R$ {payment.amount_paid:.2f} de {payment.payment_date:%d/%m/%Y} ({loan.name})",
+        "delete_warning": f"O saldo devedor volta para R$ {_balance_before(payment):.2f} e a despesa "
+                          f"correspondente sai das transações.",
+    })
+
+
 @login_required
 @require_POST
 def loan_payment_revert(request, pk, payment_pk):
@@ -263,7 +331,7 @@ def loan_payment_revert(request, pk, payment_pk):
                 user=request.user, action="UPDATE", model_name="Loan", object_id=loan.pk,
                 description=f"Pagamento de R$ {payment.amount_paid:.2f} desfeito em {loan.name}",
             )
-        messages.success(request, "Pagamento desfeito. Saldo devedor e parcela prevista restaurados.")
+        messages.success(request, "Pagamento excluído. Saldo devedor e parcela prevista restaurados.")
     except ValueError as e:
         messages.error(request, str(e))
     return redirect("loan_detail", pk=loan.pk)

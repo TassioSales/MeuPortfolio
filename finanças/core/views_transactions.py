@@ -25,7 +25,7 @@ from .analytics import (
 )
 from .dates import add_months, month_bounds, month_label, today
 from .forms import ImportFileForm, TransactionBulkUpdateForm, TransactionForm
-from .models import Budget, Category, RecurringTransaction, Transaction
+from .models import Budget, Category, LoanPayment, RecurringTransaction, Transaction
 from .money import split_installments
 from .services import next_occurrence
 from loguru import logger as log
@@ -117,7 +117,7 @@ class TransactionListView(LoginRequiredMixin, ListView):
         return TxFilter.from_request(self.request, default_preset="all")
 
     def get_queryset(self):
-        qs = self.filter.apply().select_related("category", "category__parent", "account", "loan")
+        qs = self.filter.apply().select_related("category", "category__parent", "account", "loan", "loan_payment")
         return self.filter.ordered(qs)
 
     def get_context_data(self, **kwargs):
@@ -312,6 +312,14 @@ class TransactionUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user)
 
+    def dispatch(self, request, *args, **kwargs):
+        # Pagamento de empréstimo é editado pela tela do empréstimo, que
+        # recalcula juros/amortização e o saldo devedor.
+        payment = _loan_payment_of(request.user, kwargs.get("pk"))
+        if payment:
+            return redirect("loan_payment_edit", pk=payment.loan_id, payment_pk=payment.pk)
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         scope = form.cleaned_data.get("apply_scope") or TransactionForm.SCOPE_ONLY
         with db_transaction.atomic():
@@ -339,6 +347,12 @@ class TransactionUpdateView(LoginRequiredMixin, UpdateView):
         return response
 
 
+def _loan_payment_of(user, pk):
+    if not user.is_authenticated or pk is None:
+        return None
+    return LoanPayment.objects.filter(transaction_id=pk, loan__user=user).first()
+
+
 def _siblings(tx, scope):
     """Lançamentos ligados a `tx` (mesma compra parcelada ou mesma recorrência)."""
     if tx.installment_group:
@@ -359,6 +373,12 @@ class TransactionDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user)
+
+    def dispatch(self, request, *args, **kwargs):
+        payment = _loan_payment_of(request.user, kwargs.get("pk"))
+        if payment:
+            return redirect("loan_payment_delete", pk=payment.loan_id, payment_pk=payment.pk)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -405,6 +425,12 @@ class TransactionDeleteView(LoginRequiredMixin, DeleteView):
 def transaction_bulk_delete(request):
     ids = request.POST.getlist("ids")
     qs = Transaction.objects.filter(user=request.user, pk__in=ids)
+    # Pagamentos de empréstimo só saem pela tela do empréstimo (restaura o saldo).
+    protected = qs.filter(loan_payment__isnull=False).count()
+    if protected:
+        qs = qs.filter(loan_payment__isnull=True)
+        messages.warning(request, f"{protected} pagamento(s) de empréstimo não foram excluídos — "
+                                  "exclua pela tela do empréstimo para o saldo devedor voltar ao valor certo.")
     # Count before deleting: qs.delete()'s own count includes any cascaded
     # related rows (e.g. a linked Investment), not just these transactions.
     count = qs.count()

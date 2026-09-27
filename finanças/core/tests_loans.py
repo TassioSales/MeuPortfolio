@@ -241,3 +241,66 @@ class LoanFormViewTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "10/10/2026")
         self.assertEqual(list_resp.status_code, 200)
+
+
+class PaymentEditDeleteTests(TestCase):
+    """Pagamento de empréstimo: editar/excluir mantém o saldo devedor correto,
+    inclusive quando a ação parte da tela de Transações."""
+
+    def setUp(self):
+        self.user = User.objects.create_user("elis", password="x")
+        self.client.login(username="elis", password="x")
+        with frozen_today(TODAY):
+            self.loan = make_loan(self.user, loan_type="SIMPLES", num_installments=60,
+                                  principal=Decimal("52000"), current_balance=Decimal("52000"))
+            sync_loan_installments(self.loan)
+            self.payment = register_payment(self.loan, Decimal("1000"), TODAY)
+
+    def test_edit_recalculates_interest_and_balance(self):
+        with frozen_today(TODAY):
+            resp = self.client.post(reverse("loan_payment_edit", args=[self.loan.pk, self.payment.pk]), {
+                "payment_date": "2026-09-27", "amount_paid": "600,00", "notes": "corrigido",
+            })
+        self.assertEqual(resp.status_code, 302)
+        self.loan.refresh_from_db()
+        p = self.loan.payments.get()
+        self.assertEqual(p.amount_paid, Decimal("600.00"))
+        self.assertEqual(p.interest_paid, Decimal("520.00"))
+        self.assertEqual(self.loan.current_balance, Decimal("51920.00"))
+        self.assertEqual(p.transaction.amount, Decimal("600.00"))
+
+    def test_edit_form_prefilled(self):
+        with frozen_today(TODAY):
+            resp = self.client.get(reverse("loan_payment_edit", args=[self.loan.pk, self.payment.pk]))
+        self.assertContains(resp, "Editar Pagamento")
+        self.assertContains(resp, 'value="1000,00"')
+
+    def test_delete_restores_balance(self):
+        with frozen_today(TODAY):
+            self.client.post(reverse("loan_payment_delete", args=[self.loan.pk, self.payment.pk]))
+        self.loan.refresh_from_db()
+        self.assertEqual(self.loan.current_balance, Decimal("52000.00"))
+        self.assertFalse(Transaction.objects.filter(pk=self.payment.transaction_id).exists())
+
+    def test_transaction_edit_redirects_to_payment_edit(self):
+        resp = self.client.get(reverse("transaction_edit", args=[self.payment.transaction_id]))
+        self.assertRedirects(resp, reverse("loan_payment_edit", args=[self.loan.pk, self.payment.pk]),
+                             fetch_redirect_response=False)
+
+    def test_transaction_delete_goes_through_loan(self):
+        with frozen_today(TODAY):
+            resp = self.client.post(reverse("transaction_delete", args=[self.payment.transaction_id]))
+        self.assertEqual(resp.status_code, 302)
+        with frozen_today(TODAY):
+            self.client.post(resp.url)
+        self.loan.refresh_from_db()
+        self.assertEqual(self.loan.current_balance, Decimal("52000.00"))
+
+    def test_bulk_delete_skips_loan_payments(self):
+        self.client.post(reverse("transaction_bulk_delete"), {"ids": [self.payment.transaction_id]})
+        self.assertTrue(Transaction.objects.filter(pk=self.payment.transaction_id).exists())
+
+    def test_list_labels_payment_actions(self):
+        with frozen_today(TODAY):
+            resp = self.client.get(reverse("transaction_list"))
+        self.assertContains(resp, "Editar pagamento")

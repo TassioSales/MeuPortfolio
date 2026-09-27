@@ -189,15 +189,22 @@ def due_date_in(month_first: datetime.date, due_day: int) -> datetime.date:
     return add_months(month_first, 0, day=max(1, min(due_day or 10, 31)))
 
 
+def default_first_due_date(loan: Loan) -> datetime.date:
+    if loan.first_due_date:
+        return loan.first_due_date
+    return due_date_in(add_months(loan.start_date.replace(day=1), 1, day=1), loan.due_day)
+
+
 def first_pending_due_date(loan: Loan) -> datetime.date:
     """Vencimento da próxima parcela em aberto.
 
-    Começa no mês seguinte ao empréstimo; nunca antes do mês atual (parcelas
-    antigas não pagas não são recriadas no passado). Se já houver pagamento
-    registrado no mês atual, a próxima vai para o mês seguinte.
+    Começa em `first_due_date` (ou, se vazio, no mês seguinte ao empréstimo);
+    nunca antes do mês atual (parcelas antigas não pagas não são recriadas no
+    passado). Se já houver pagamento registrado no mês, a próxima vai para o
+    mês seguinte.
     """
     t = today()
-    first = due_date_in(add_months(loan.start_date.replace(day=1), 1, day=1), loan.due_day)
+    first = default_first_due_date(loan)
     current = due_date_in(t.replace(day=1), loan.due_day)
     candidate = max(first, current)
     last_payment = loan.payments.order_by("-payment_date", "-id").first() if loan.pk else None

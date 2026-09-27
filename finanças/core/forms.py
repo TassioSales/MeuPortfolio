@@ -403,11 +403,12 @@ class LoanForm(forms.ModelForm):
         fields = [
             'name', 'lender', 'loan_type', 'principal', 'current_balance',
             'interest_rate', 'interest_period', 'iof_rate', 'insurance_monthly',
-            'start_date', 'due_day', 'num_installments', 'planned_payment',
+            'start_date', 'due_day', 'first_due_date', 'num_installments', 'planned_payment',
             'register_income', 'notes', 'is_active',
         ]
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'first_due_date': forms.DateInput(attrs={'type': 'date'}),
             'loan_type': forms.Select(attrs={'onchange': 'toggleLoanFields(this)'}),
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
@@ -477,6 +478,13 @@ class LoanForm(forms.ModelForm):
         principal = cleaned.get('principal')
         if not current_balance and principal:
             cleaned['current_balance'] = principal
+        first_due = cleaned.get('first_due_date')
+        if first_due:
+            # As próximas parcelas vencem no mesmo dia da primeira.
+            cleaned['due_day'] = first_due.day
+            start = cleaned.get('start_date')
+            if start and first_due < start:
+                self.add_error('first_due_date', 'A 1ª parcela não pode ser antes da data do empréstimo.')
         return cleaned
 
 

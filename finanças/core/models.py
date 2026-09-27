@@ -381,6 +381,10 @@ class Loan(models.Model):
     interest_period = models.CharField(max_length=10, choices=INTEREST_PERIOD, default='MENSAL', verbose_name='Período da Taxa')
     start_date = models.DateField(verbose_name='Data do Empréstimo')
     due_day = models.IntegerField(default=10, verbose_name='Dia de Vencimento')
+    first_due_date = models.DateField(
+        null=True, blank=True, verbose_name='1ª parcela em',
+        help_text='Vencimento da primeira parcela. Vazio = no dia de vencimento do mês seguinte à data do empréstimo.'
+    )
     num_installments = models.IntegerField(null=True, blank=True, verbose_name='Número de Parcelas', help_text='Obrigatório para Price e SAC. Use 0 (ou vazio) para empréstimos informais, sem prazo fixo.')
     current_balance = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Saldo Devedor Atual')
     iof_rate = models.DecimalField(

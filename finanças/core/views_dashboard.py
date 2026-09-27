@@ -55,12 +55,20 @@ def dashboard(request):
         messages.info(request, f"{processed_count} transações recorrentes foram geradas automaticamente.")
     refresh_user_loans(user)
 
-    k = an.kpis_with_comparison(flt)
-    inc, exp = _income_expense_totals(Transaction.objects.filter(user=user, date__lte=period_end))
-    k["end_balance"] = inc - exp
-    position = an.position(user)
-    loans = loans_summary(user)
     anchor = flt.anchor or t.replace(day=1)
+    k = an.kpis_with_comparison(flt)
+    position = an.position(user)
+    # Saldo projetado no fim do período = saldo hoje + a receber − a pagar até lá.
+    ahead = _toggled(user, flt).filter(date__gt=t, date__lte=period_end)         if period_end > t else Transaction.objects.none()
+    ahead_in, ahead_out = _income_expense_totals(ahead)
+    if period_end > t:
+        k["end_balance"] = position["cash"] + ahead_in - ahead_out
+    else:
+        inc, exp = _income_expense_totals(Transaction.objects.filter(user=user, date__lte=period_end))
+        k["end_balance"] = inc - exp
+    k["ahead_in"], k["ahead_out"] = ahead_in, ahead_out
+    this_month = _month_outlook(user, flt, anchor if flt.preset == "month" else t.replace(day=1))
+    loans = loans_summary(user)
     ref_month = (flt.end or t).replace(day=1)
 
     # ── Gráficos ──────────────────────────────────────────────────────────
@@ -151,6 +159,7 @@ def dashboard(request):
         **an.filter_ui_context(flt),
         "kpis": k,
         "position": position,
+        "month_outlook": this_month,
         "loans": loans,
         "quick": quick,
         "alerts": alerts,
@@ -188,6 +197,44 @@ def dashboard(request):
         active_loans=loans["count"], total_loan_debt=loans["debt"],
     )
     return render(request, "core/dashboard.html", context)
+
+
+def _toggled(user, flt):
+    """Todas as transações do usuário respeitando só as chaves de
+    empréstimos/aportes (não o tipo, categoria ou forma de pagamento)."""
+    from dataclasses import replace
+    return replace(an.TxFilter(user=user), include_loans=flt.include_loans,
+                   include_investments=flt.include_investments).apply(period=False)
+
+
+def _month_outlook(user, flt, month_first):
+    """O que ainda falta pagar/receber no mês e a(s) parcela(s) de empréstimo."""
+    t = today()
+    start, end = month_bounds(month_first.year, month_first.month)
+    base = _toggled(user, flt).filter(date__gte=start, date__lte=end)
+    pending = base.filter(date__gt=t)
+    to_pay_in, to_pay_out = _income_expense_totals(pending)
+    next_bill = pending.filter(type="DESPESA").select_related("category").order_by("date", "id").first()
+    loan_txs = list(
+        Transaction.objects.filter(user=user, origin=Transaction.ORIGIN_EMPRESTIMO, type="DESPESA",
+                                   date__gte=start, date__lte=end, loan__isnull=False)
+        .select_related("loan", "loan_payment").order_by("date")
+    )
+    loan_open = [x for x in loan_txs if not hasattr(x, "loan_payment")]
+    return {
+        "label": month_label(start, short=False),
+        "is_current": start <= t <= end,
+        "is_past": end < t,
+        "to_pay": to_pay_out,
+        "to_pay_count": pending.filter(type="DESPESA").count(),
+        "to_receive": to_pay_in,
+        "next_bill": next_bill,
+        "loan_total": sum((x.amount for x in loan_txs), ZERO),
+        "loan_open_total": sum((x.amount for x in loan_open), ZERO),
+        "loan_txs": loan_txs,
+        "loan_next": loan_open[0] if loan_open else None,
+        "loan_paid": bool(loan_txs) and not loan_open,
+    }
 
 
 def _balance_and_debt_series(user, months=12):

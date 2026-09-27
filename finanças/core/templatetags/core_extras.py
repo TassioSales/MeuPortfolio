@@ -59,7 +59,8 @@ def delta_badge(change, higher_is_good=True, suffix='vs. período anterior'):
         good = (value > 0) == bool(higher_is_good)
         css = 'delta-good' if good else 'delta-bad'
     arrow = '▲' if value > 0 else ('▼' if value < 0 else '•')
-    text = f"{abs(value):.0f}%"
+    # Base muito pequena gera percentuais sem sentido (ex.: +1110%).
+    text = "+300%" if abs(value) > 300 else f"{abs(value):.0f}%"
     return format_html('<span class="delta {}" title="{}">{} {}</span>', css, suffix, arrow, text)
 
 

@@ -124,24 +124,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // G5 — caixa, dívida e patrimônio
+    // G5 — evolução do saldo (realizado)
     const ev = data.evolution;
-    if (ev && !chartEmptyState('chartEvolution', [ev.balance, ev.debt])) {
-        const hasDebt = ev.debt.some(v => v > 0);
-        const datasets = [
-            { label: 'Caixa', data: ev.balance, borderColor: CHART_COLORS.recurring, backgroundColor: alpha(CHART_COLORS.recurring, 0.08), fill: true, tension: 0.3, pointRadius: 2 },
-        ];
-        if (hasDebt) {
-            datasets.push({ label: 'Dívida', data: ev.debt, borderColor: CHART_COLORS.expense, tension: 0.3, pointRadius: 2 });
-            datasets.push({ label: 'Caixa − dívida', data: ev.net, borderColor: CHART_COLORS.net, borderDash: [5, 4], tension: 0.3, pointRadius: 0 });
-        }
+    if (ev && !chartEmptyState('chartEvolution', [ev.balance])) {
         new Chart(document.getElementById('chartEvolution'), {
             type: 'line',
-            data: { labels: ev.labels, datasets },
+            data: {
+                labels: ev.labels,
+                datasets: [{ label: 'Saldo', data: ev.balance, borderColor: CHART_COLORS.recurring,
+                             backgroundColor: alpha(CHART_COLORS.recurring, 0.08), fill: true, tension: 0.3, pointRadius: 3 }],
+            },
             options: {
                 responsive: true, maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
-                plugins: { legend: { position: 'top', align: 'end' } },
+                plugins: { legend: { display: false } },
                 scales: { y: { ...moneyAxis, beginAtZero: false }, x: noGrid },
             },
         });

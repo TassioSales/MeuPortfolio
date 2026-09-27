@@ -60,10 +60,8 @@
                 <div class="kpi-label">Despesas {% delta_badge kpis.expense_change False %}</div>
                 <div class="kpi-value text-danger currency-value">{{ kpis.expense|brl }}</div>
                 <div class="kpi-sub">
-                    {% if kpis.expense_loans %}<span class="text-danger fw-semibold">{{ kpis.expense_loans|brl }}</span> em empréstimos · {% endif %}
-                    {% if kpis.expense_card %}{{ kpis.expense_card|brl }} no cartão · {% endif %}
-                    {% if kpis.expense_forecast %}{{ kpis.expense_forecast|brl }} a vencer{% else %}{{ kpis.count_expense }} lançamento(s){% endif %}
-                    {% if not filter.include_loans %}<br><em>parcelas de empréstimo fora</em>{% endif %}
+                    {% if kpis.expense_loans %}Inclui <strong class="text-danger">{{ kpis.expense_loans|brl }}</strong> de parcela de empréstimo<br>{% elif not filter.include_loans %}<em>Sem parcelas de empréstimo (desligado nos filtros)</em><br>{% endif %}
+                    {% if kpis.expense_forecast %}{{ kpis.expense_realized|brl }} já pagos · {{ kpis.expense_forecast|brl }} a vencer{% else %}{{ kpis.count_expense }} lançamento(s){% endif %}
                 </div>
             </div>
         </div>
@@ -79,7 +77,10 @@
             <div class="glass-card kpi-card">
                 <div class="kpi-label">Saldo projetado em {{ period_end|date:"d/m/Y" }}</div>
                 <div class="kpi-value {% if kpis.end_balance < 0 %}money-neg{% endif %} currency-value">{{ kpis.end_balance|brl }}</div>
-                <div class="kpi-sub">Saldo em caixa hoje: {{ position.cash|brl }}</div>
+                <div class="kpi-sub">
+                    {% if period_end > today %}Saldo hoje {{ position.cash|brl }}{% if kpis.ahead_in %} + {{ kpis.ahead_in|brl }} a receber{% endif %} − {{ kpis.ahead_out|brl }} a pagar até {{ period_end|date:"d/m" }}
+                    {% else %}Saldo no fim do período (já realizado){% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -88,40 +89,54 @@
     {% include "core/_category_insight.html" with ci=category_insight %}
     {% endif %}
 
-    <!-- Linha 2: posição patrimonial (global) -->
+    <!-- Linha 2: o mês — quanto falta pagar/receber -->
+    {% with mo=month_outlook %}
+    <h6 class="text-muted small fw-bold text-uppercase mb-2 mt-1">
+        <i class="bi bi-calendar-check me-1"></i>{{ mo.label }}{% if mo.is_current %} · de hoje até o fim do mês{% endif %}
+    </h6>
     <div class="row g-3 mb-3">
         <div class="col-6 col-xl-3">
             <div class="glass-card kpi-card">
-                <div class="kpi-label">Caixa hoje <i class="bi bi-info-circle" title="Receitas − despesas lançadas até hoje (não inclui previstos)"></i></div>
+                <div class="kpi-label">Saldo hoje <i class="bi bi-info-circle" title="Tudo que entrou menos tudo que saiu até hoje. Não inclui lançamentos futuros."></i></div>
                 <div class="kpi-value {% if position.cash < 0 %}money-neg{% endif %} currency-value">{{ position.cash|brl }}</div>
-                <div class="kpi-sub">Somente lançamentos até hoje</div>
+                <div class="kpi-sub">Lançamentos até {{ today|date:"d/m" }}</div>
             </div>
         </div>
         <div class="col-6 col-xl-3">
             <div class="glass-card kpi-card">
-                <div class="kpi-label">Investido</div>
-                <div class="kpi-value text-main currency-value">{{ position.invested|brl }}</div>
-                <div class="kpi-sub"><a href="{% url 'investment_dashboard' %}" class="text-decoration-none">Custo de aquisição →</a></div>
-            </div>
-        </div>
-        <div class="col-6 col-xl-3">
-            <div class="glass-card kpi-card">
-                <div class="kpi-label">Dívida de empréstimos</div>
-                <div class="kpi-value text-danger currency-value">{{ position.debt|brl }}</div>
+                <div class="kpi-label">{% if mo.is_past %}A pagar no mês{% else %}Ainda a pagar{% endif %}</div>
+                <div class="kpi-value text-danger currency-value">{{ mo.to_pay|brl }}</div>
                 <div class="kpi-sub">
-                    {% if loans.count %}{{ loans.count }} ativo(s){% if loans.month_total %} · {{ loans.month_total|brl }} neste mês{% endif %}
-                    · <a href="{% url 'loan_list' %}" class="text-decoration-none">ver →</a>{% else %}Nenhum empréstimo ativo{% endif %}
+                    {% if mo.next_bill %}{{ mo.to_pay_count }} conta(s) · próxima {{ mo.next_bill.date|date:"d/m" }}: {{ mo.next_bill.display_description|truncatechars:22 }}
+                    {% elif mo.is_past %}Mês encerrado{% else %}Nada mais a pagar neste mês{% endif %}
                 </div>
             </div>
         </div>
         <div class="col-6 col-xl-3">
-            <div class="glass-card kpi-card kpi-hero">
-                <div class="kpi-label">Patrimônio líquido</div>
-                <div class="kpi-value currency-value">{{ position.net_worth|brl }}</div>
-                <div class="kpi-sub">Caixa + investido − dívida · não afetado por filtros</div>
+            <div class="glass-card kpi-card" style="border-left: 4px solid var(--warning)">
+                <div class="kpi-label">Parcela de empréstimo</div>
+                {% if mo.loan_txs %}
+                <div class="kpi-value currency-value" style="color: var(--warning)">{{ mo.loan_total|brl }}</div>
+                <div class="kpi-sub">
+                    {% if mo.loan_paid %}<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Paga</span>
+                    {% elif mo.loan_next %}Vence {{ mo.loan_next.date|date:"d/m" }} · <a href="{% url 'loan_pay' mo.loan_next.loan_id %}" class="text-decoration-none">pagar →</a>{% endif %}
+                    {% if mo.loan_txs|length > 1 %}<br>{{ mo.loan_txs|length }} parcelas no mês{% endif %}
+                </div>
+                {% else %}
+                <div class="kpi-value text-muted">—</div>
+                <div class="kpi-sub">{% if loans.count %}Nenhuma parcela neste mês · <a href="{% url 'loan_list' %}" class="text-decoration-none">ver empréstimos</a>{% else %}Nenhum empréstimo ativo{% endif %}</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="glass-card kpi-card">
+                <div class="kpi-label">{% if mo.is_past %}A receber no mês{% else %}Ainda a receber{% endif %}</div>
+                <div class="kpi-value text-success currency-value">{{ mo.to_receive|brl }}</div>
+                <div class="kpi-sub">{% if mo.to_receive %}Receitas lançadas com data futura{% else %}Nenhuma receita lançada para o resto do mês{% endif %}</div>
             </div>
         </div>
     </div>
+    {% endwith %}
 
     <!-- Linha 3: indicadores rápidos -->
     <div class="d-flex flex-wrap gap-2 mb-4">
@@ -245,9 +260,9 @@
 
         <div class="col-lg-8">
             <div class="glass-card p-4 h-100">
-                <h5 class="fw-bold mb-1">Evolução do caixa e da dívida</h5>
-                <p class="small text-muted mb-3">Últimos 12 meses (realizado). Patrimônio aqui = caixa − dívida.</p>
-                <div class="chart-box"><canvas id="chartEvolution" aria-label="Evolução do saldo e da dívida" role="img"></canvas></div>
+                <h5 class="fw-bold mb-1">Evolução do saldo</h5>
+                <p class="small text-muted mb-3">Saldo acumulado no fim de cada mês (últimos 12 meses, realizado).</p>
+                <div class="chart-box"><canvas id="chartEvolution" aria-label="Evolução do saldo" role="img"></canvas></div>
             </div>
         </div>
         <div class="col-lg-4">
@@ -297,5 +312,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/dashboard.js' %}?v=1"></script>
+<script src="{% static 'js/dashboard.js' %}?v=2"></script>
 {% endblock %}

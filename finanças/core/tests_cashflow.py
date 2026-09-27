@@ -198,3 +198,59 @@ class DashboardTests(TestCase):
         resp = self.get()
         self.assertEqual(resp.context["position"]["cash"], Decimal("1000"))
         self.assertEqual(resp.context["kpis"]["end_balance"], Decimal("600"))
+
+
+class DashboardMonthOutlookTests(TestCase):
+    """Linha 'o mês': quanto falta pagar/receber e a parcela do empréstimo —
+    sem a dívida total."""
+
+    def setUp(self):
+        self.user = User.objects.create_user("duda", password="x")
+        self.client.login(username="duda", password="x")
+        with frozen_today(TODAY):
+            from .services_loans import on_loan_saved
+            self.loan = Loan.objects.create(
+                user=self.user, name="Apto", lender="Banco", loan_type="PRICE",
+                principal=Decimal("1200"), current_balance=Decimal("1200"), interest_rate=Decimal("1"),
+                start_date=datetime.date(2026, 9, 1), first_due_date=datetime.date(2026, 9, 20), due_day=20,
+                num_installments=12, register_income=False,
+            )
+            on_loan_saved(self.loan)
+        tx(self.user, 300, datetime.date(2026, 9, 25))
+        tx(self.user, 1000, datetime.date(2026, 9, 28), "RECEITA")
+
+    def test_first_due_date_puts_installment_in_current_month(self):
+        first = self.loan.transactions.filter(type="DESPESA").order_by("date").first()
+        self.assertEqual(first.date, datetime.date(2026, 9, 20))
+
+    def test_outlook_shows_remaining_and_loan_installment(self):
+        with frozen_today(TODAY):
+            resp = self.client.get(reverse("dashboard"))
+        mo = resp.context["month_outlook"]
+        self.assertEqual(mo["loan_total"], Decimal("106.62"))
+        self.assertEqual(mo["loan_next"].date, datetime.date(2026, 9, 20))
+        self.assertEqual(mo["to_pay"], Decimal("406.62"))    # parcela + conta do dia 25
+        self.assertEqual(mo["to_receive"], Decimal("1000"))
+        self.assertNotContains(resp, "Patrimônio líquido")
+        self.assertNotContains(resp, "Dívida de empréstimos")
+
+    def test_projected_balance_includes_next_installment(self):
+        with frozen_today(TODAY):
+            resp = self.client.get(reverse("dashboard"))
+        k = resp.context["kpis"]
+        # saldo hoje 0 + 1000 a receber − (106,62 + 300) a pagar
+        self.assertEqual(k["end_balance"], Decimal("593.38"))
+        self.assertContains(resp, "a pagar até")
+
+    def test_form_first_due_date_sets_due_day(self):
+        with frozen_today(TODAY):
+            self.client.post(reverse("loan_edit", args=[self.loan.pk]), {
+                "name": "Apto", "lender": "Banco", "loan_type": "PRICE", "principal": "1.200,00",
+                "current_balance": "1.200,00", "interest_rate": "1", "interest_period": "MENSAL",
+                "start_date": "2026-09-01", "first_due_date": "2026-10-05", "due_day": "20",
+                "num_installments": "12", "is_active": "True",
+            })
+        self.loan.refresh_from_db()
+        self.assertEqual(self.loan.due_day, 5)
+        dates = list(self.loan.transactions.filter(type="DESPESA").order_by("date").values_list("date", flat=True)[:2])
+        self.assertEqual(dates, [datetime.date(2026, 10, 5), datetime.date(2026, 11, 5)])

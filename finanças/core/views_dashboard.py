@@ -1,17 +1,22 @@
 """Dashboard, registration, and calendar views."""
 import calendar
-from datetime import timedelta
+import datetime
+from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
-from django.db.models.functions import TruncMonth
 from django.shortcuts import redirect, render
-from django.utils import timezone
+from django.urls import reverse
 
-from .models import Budget, Goal, Loan, Transaction
+from . import analytics as an
+from .dates import add_months, month_bounds, month_label, today
+from .money import fmt_brl
+from .models import Budget, Goal, Loan, LoanDisbursement, LoanPayment, RecurringTransaction, Transaction
 from .services import budget_spent_map, process_recurring_transactions
-import datetime
+from .services_loans import loans_summary, refresh_user_loans
+
+ZERO = Decimal("0")
 
 
 def _income_expense_totals(queryset):
@@ -33,165 +38,237 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    today = timezone.now().date()
-    try:
-        month = int(request.GET.get("month", today.month))
-        year = int(request.GET.get("year", today.year))
-    except ValueError:
-        month = today.month
-        year = today.year
+    user = request.user
+    t = today()
+    if request.GET.get("clear"):
+        request.session.pop("dashboard_filter", None)
+        return redirect("dashboard")
+    flt = an.TxFilter.from_request(
+        request, default_preset="month", include_investments=False, session_key="dashboard_filter",
+    )
+    period_end = flt.end or t
 
-    _, last_day = calendar.monthrange(year, month)
-    start_date = today.replace(year=year, month=month, day=1)
-    end_date = today.replace(year=year, month=month, day=last_day)
-
-    # Materialize recurring transactions up through whichever is later: real
-    # "today" (normal catch-up) or the end of the month being browsed to
-    # (so navigating ahead projects recurring debts forward immediately,
-    # the same way credit-card installments are already pre-created).
-    processed_count = process_recurring_transactions(request.user, up_to_date=max(end_date, today))
+    # Materializa recorrências (e parcelas de empréstimo) até o fim do período
+    # navegado, para que meses futuros já mostrem o que está comprometido.
+    processed_count = process_recurring_transactions(user, up_to_date=max(period_end, t))
     if processed_count > 0:
-        messages.info(
-            request,
-            f"{processed_count} transações recorrentes foram geradas automaticamente.",
-        )
+        messages.info(request, f"{processed_count} transações recorrentes foram geradas automaticamente.")
+    refresh_user_loans(user)
 
-    recent_transactions = Transaction.objects.filter(
-        user=request.user, date__range=[start_date, end_date]
-    ).order_by("-date")[:5]
+    k = an.kpis_with_comparison(flt)
+    inc, exp = _income_expense_totals(Transaction.objects.filter(user=user, date__lte=period_end))
+    k["end_balance"] = inc - exp
+    position = an.position(user)
+    loans = loans_summary(user)
+    anchor = flt.anchor or t.replace(day=1)
+    ref_month = (flt.end or t).replace(day=1)
 
-    monthly_income, monthly_expense = _income_expense_totals(
-        Transaction.objects.filter(user=request.user, date__range=[start_date, end_date])
-    )
+    # ── Gráficos ──────────────────────────────────────────────────────────
+    # Meses anteriores ao período + 3 à frente (previstos, barras claras).
+    span = 12 if flt.preset in ("12m", "year", "all", "custom") else 6
+    first_month = add_months(ref_month, -(span - 1), day=1)
+    last_month = add_months(ref_month, 3, day=1)
+    if flt.preset == "year":
+        first_month, last_month = datetime.date(anchor.year, 1, 1), datetime.date(anchor.year, 12, 1)
+    series = an.monthly_series(flt.apply(period=False), first_month, last_month)
 
-    prev_month_end = start_date - timedelta(days=1)
-    prev_month_start = prev_month_end.replace(day=1)
+    categories = an.by_category(flt.apply(), top=8)
 
-    previous_income_for_change, previous_expense_for_change = _income_expense_totals(
-        Transaction.objects.filter(user=request.user, date__range=[prev_month_start, prev_month_end])
-    )
+    cumulative = None
+    if flt.start and flt.end and flt.days <= 93:
+        prev = flt.previous_period()
+        cur_vals = an.daily_cumulative(flt.apply(), flt.start, flt.end)
+        prev_vals = an.daily_cumulative(prev.apply(), prev.start, prev.end) if prev else []
+        labels = [(flt.start + datetime.timedelta(days=i)).strftime("%d/%m") for i in range(len(cur_vals))]
+        # Hoje em diante é previsto: a linha "atual" para em hoje se o período o contém.
+        cutoff = (t - flt.start).days + 1 if flt.start <= t <= flt.end else None
+        cumulative = {
+            "labels": labels,
+            "current": cur_vals if cutoff is None else cur_vals[:cutoff] + [None] * (len(cur_vals) - cutoff),
+            "forecast": None if cutoff is None else [None] * (cutoff - 1) + cur_vals[cutoff - 1:],
+            "previous": prev_vals[: len(cur_vals)],
+            "previous_label": prev.period_label if prev else "",
+        }
 
-    monthly_income_change = (
-        ((monthly_income - previous_income_for_change) / previous_income_for_change)
-        * 100
-        if previous_income_for_change
-        else 0
-    )
-    monthly_expense_change = (
-        (
-            (monthly_expense - previous_expense_for_change)
-            / previous_expense_for_change
-        )
-        * 100
-        if previous_expense_for_change
-        else 0
-    )
+    budgets = list(Budget.objects.filter(user=user).select_related("category"))
+    spent_map = budget_spent_map(user, budgets, year=anchor.year, month=anchor.month)
+    budget_rows = sorted(
+        ({"name": b.category.name, "limit": float(b.limit), "spent": float(spent_map.get(b.id) or 0),
+          "period": b.get_period_display()} for b in budgets),
+        key=lambda r: -(r["spent"] / r["limit"] if r["limit"] else 0),
+    )[:8]
 
-    previous_income, previous_expense = _income_expense_totals(
-        Transaction.objects.filter(user=request.user, date__lt=start_date)
-    )
+    evolution = _balance_and_debt_series(user, months=12)
+    payment_split = an.by_payment_method(flt.apply())
+    committed = an.committed_by_origin(user, months=12, include_loans=flt.include_loans)
 
-    accumulated_balance = previous_income - previous_expense
-    net_balance = monthly_income - monthly_expense
-    total_balance = accumulated_balance + net_balance
-
-    six_months_ago = start_date - timedelta(days=180)
-    chart_qs = (
-        Transaction.objects.filter(
-            user=request.user, date__gte=six_months_ago, date__lte=end_date
-        )
-        .annotate(month=TruncMonth("date"))
-        .values("month", "type")
-        .annotate(total=Sum("amount"))
-        .order_by("month")
-    )
-
-    chart_data = {}
-    for entry in chart_qs:
-        month_str = entry["month"].strftime("%Y-%m")
-        if month_str not in chart_data:
-            chart_data[month_str] = {"RECEITA": 0, "DESPESA": 0}
-        chart_data[month_str][entry["type"]] = float(entry["total"])
-
-    labels = sorted(chart_data.keys())
-    data_income = [chart_data[m].get("RECEITA", 0) for m in labels]
-    data_expense = [chart_data[m].get("DESPESA", 0) for m in labels]
-
-    previous_month_date = start_date - timedelta(days=1)
-    next_month_date = end_date + timedelta(days=1)
-    previous_month = {
-        "month": previous_month_date.month,
-        "year": previous_month_date.year,
-    }
-    next_month = {"month": next_month_date.month, "year": next_month_date.year}
-
-    month_names = {
-        1: "Janeiro", 2: "Fevereiro", 3: "Março", 4: "Abril",
-        5: "Maio", 6: "Junho", 7: "Julho", 8: "Agosto",
-        9: "Setembro", 10: "Outubro", 11: "Novembro", 12: "Dezembro",
-    }
-    current_month_name = f"{month_names[month]} {year}"
-
+    # ── Alertas ───────────────────────────────────────────────────────────
     alerts = []
-    budgets = Budget.objects.filter(user=request.user, period="MENSAL").select_related("category")
-    spent_map = budget_spent_map(request.user, budgets)
-    for budget in budgets:
-        expense_sum = spent_map.get(budget.id) or 0
-        if budget.limit > 0:
-            percent_used = (expense_sum / budget.limit) * 100
-            if percent_used >= 90:
-                alerts.append({
-                    "category": budget.category.name,
-                    "percent": int(percent_used),
-                    "limit": budget.limit,
-                    "used": expense_sum,
-                    "level": "danger" if percent_used >= 100 else "warning",
-                })
+    for b in budgets:
+        spent = spent_map.get(b.id) or ZERO
+        if b.limit and spent / b.limit >= Decimal("0.9"):
+            pct = int(spent / b.limit * 100)
+            alerts.append({
+                "level": "danger" if pct >= 100 else "warning",
+                "icon": "bi-exclamation-triangle-fill",
+                "text": f"Atenção: você já consumiu {pct}% do orçamento de {b.category.name} "
+                        f"({fmt_brl(spent)} de {fmt_brl(b.limit)}).",
+            })
+    low = _lowest_balance_this_month(user, position["cash"])
+    if low and low["balance"] < 0:
+        alerts.append({
+            "level": "danger", "icon": "bi-graph-down-arrow",
+            "text": f"Seu saldo previsto fica negativo em {low['date']:%d/%m} ({fmt_brl(low['balance'])}).",
+            "link_url": reverse("cash_flow_forecast"), "link_label": "Ver fluxo de caixa",
+        })
+    for tx in loans["next"]:
+        if t <= tx.date <= t + datetime.timedelta(days=5):
+            alerts.append({
+                "level": "info", "icon": "bi-bank",
+                "text": f"Parcela de {tx.loan.name} vence em {tx.date:%d/%m}: {fmt_brl(tx.amount)}.",
+                "link_url": reverse("loan_pay", args=[tx.loan_id]), "link_label": "Pagar",
+            })
+    month_start, month_end = month_bounds(t.year, t.month)
+    for rt in RecurringTransaction.objects.filter(user=user, active=True, end_date__range=[month_start, month_end]):
+        alerts.append({
+            "level": "light", "icon": "bi-arrow-repeat",
+            "text": f"A recorrência “{rt.description or (rt.category.name if rt.category else '')}” termina em {rt.end_date:%d/%m}.",
+        })
 
-    # Loans summary
-    active_loan_qs = Loan.objects.filter(user=request.user, is_active=True, current_balance__gt=0)
-    active_loans_count = active_loan_qs.count()
-    loan_min_total = round(sum(l.min_next_payment for l in active_loan_qs), 2)
-    total_loan_debt = round(sum(float(l.current_balance) for l in active_loan_qs), 2)
-
-    # Goals summary
-    goals = Goal.objects.filter(user=request.user).order_by('deadline')[:6]
+    # ── Indicadores rápidos ───────────────────────────────────────────────
+    quick = {}
+    if flt.preset == "month" and anchor == t.replace(day=1):
+        days_left = (month_end - t).days + 1
+        left = k["income"] - k["expense"]
+        quick["per_day"] = (left / days_left) if days_left else None
+        quick["days_left"] = days_left
+    if k["income_operational"]:
+        quick["debt_ratio"] = k["expense_loans"] / k["income_operational"] * 100
+    elif k["expense_loans"]:
+        quick["debt_ratio"] = None
 
     context = {
-        "recent_transactions": recent_transactions,
-        "monthly_income": monthly_income,
-        "monthly_expense": monthly_expense,
-        "monthly_income_change": monthly_income_change,
-        "monthly_expense_change": monthly_expense_change,
-        "net_balance": net_balance,
-        "accumulated_balance": accumulated_balance,
-        "total_balance": total_balance,
-        "chart_labels": labels,
-        "chart_income": data_income,
-        "chart_expense": data_expense,
-        "current_month_name": current_month_name,
-        "previous_month": previous_month,
-        "next_month": next_month,
-        "selected_month": month,
-        "selected_year": year,
+        **an.filter_ui_context(flt),
+        "kpis": k,
+        "position": position,
+        "loans": loans,
+        "quick": quick,
         "alerts": alerts,
-        "active_loans": active_loans_count,
-        "loan_min_total": loan_min_total,
-        "total_loan_debt": total_loan_debt,
-        "goals": goals,
+        "recent_items": an.recent(user, limit=8),
+        "upcoming": an.upcoming(flt, days=15),
+        "top_expenses": an.top_expenses(flt, limit=6),
+        "goals": Goal.objects.filter(user=user).order_by("deadline")[:6],
+        "today": t,
+        "period_end": period_end,
+        "chart": {
+            "monthly": series,
+            "categories": {
+                "labels": [c["name"] for c in categories],
+                "values": [float(c["total"]) for c in categories],
+                "colors": [c["color"] for c in categories],
+                "ids": [c["id"] for c in categories],
+            },
+            "cumulative": cumulative,
+            "budgets": budget_rows,
+            "evolution": evolution,
+            "payments": {"labels": [p["name"] for p in payment_split],
+                         "values": [float(p["total"]) for p in payment_split]},
+            "committed": committed,
+        },
+        "category_filter_base": flt.querystring(category=None),
     }
+    cat = flt.single_category
+    if cat:
+        from .views_transactions import category_insight
+        context["category_insight"] = category_insight(flt, cat)
+    # Compatibilidade com o template antigo / testes
+    context.update(
+        monthly_income=k["income"], monthly_expense=k["expense"], net_balance=k["net"],
+        total_balance=position["cash"], current_month_name=flt.period_label,
+        active_loans=loans["count"], total_loan_debt=loans["debt"],
+    )
     return render(request, "core/dashboard.html", context)
+
+
+def _balance_and_debt_series(user, months=12):
+    """Saldo acumulado (realizado) e dívida de empréstimos no fim de cada mês."""
+    t = today()
+    last = t.replace(day=1)
+    first = add_months(last, -(months - 1), day=1)
+    month_ends = [min(month_bounds(m.year, m.month)[1], t) for m in
+                  (add_months(first, i, day=1) for i in range(months))]
+
+    before = Transaction.objects.filter(user=user, date__lt=first).aggregate(
+        inc=Sum("amount", filter=Q(type="RECEITA")), exp=Sum("amount", filter=Q(type="DESPESA")))
+    running = (before["inc"] or ZERO) - (before["exp"] or ZERO)
+    rows = (
+        Transaction.objects.filter(user=user, date__gte=first, date__lte=t)
+        .values("date", "type").annotate(total=Sum("amount"))
+    )
+    by_month = {}
+    for r in rows:
+        key = r["date"].replace(day=1)
+        sign = 1 if r["type"] == "RECEITA" else -1
+        by_month[key] = by_month.get(key, ZERO) + sign * r["total"]
+
+    loans = list(Loan.objects.filter(user=user))
+    payments = list(LoanPayment.objects.filter(loan__user=user).values("loan_id", "payment_date", "principal_paid",
+                                                                       "balance_after", "balance_before"))
+    disb = list(LoanDisbursement.objects.filter(loan__user=user).values("loan_id", "date", "amount"))
+
+    labels, balance, debt, net = [], [], [], []
+    for i, end in enumerate(month_ends):
+        m = add_months(first, i, day=1)
+        running += by_month.get(m, ZERO)
+        d = ZERO
+        for loan in loans:
+            if loan.start_date > end:
+                continue
+            # Saldo na data = saldo atual desfeito dos movimentos posteriores a `end`.
+            bal = loan.current_balance
+            for p in payments:
+                if p["loan_id"] == loan.pk and p["payment_date"] > end:
+                    before_bal = p["balance_before"] if p["balance_before"] is not None else p["balance_after"] + p["principal_paid"]
+                    bal += before_bal - p["balance_after"]
+            for x in disb:
+                if x["loan_id"] == loan.pk and x["date"] > end:
+                    bal -= x["amount"]
+            d += max(bal, ZERO)
+        labels.append(month_label(m))
+        balance.append(float(running))
+        debt.append(float(d))
+        net.append(float(running - d))
+    return {"labels": labels, "balance": balance, "debt": debt, "net": net}
+
+
+def _lowest_balance_this_month(user, cash_today):
+    """Menor saldo previsto do dia seguinte até o fim do mês corrente."""
+    t = today()
+    _, month_end = month_bounds(t.year, t.month)
+    rows = (
+        Transaction.objects.filter(user=user, date__gt=t, date__lte=month_end)
+        .values("date", "type").annotate(total=Sum("amount")).order_by("date")
+    )
+    running = cash_today
+    lowest = None
+    for r in rows:
+        running += r["total"] if r["type"] == "RECEITA" else -r["total"]
+        if lowest is None or running < lowest["balance"]:
+            lowest = {"date": r["date"], "balance": running}
+    return lowest
 
 
 @login_required
 def calendar_view(request):
-    today = timezone.now().date()
+    t = today()
     try:
-        month = int(request.GET.get("month", today.month))
-        year = int(request.GET.get("year", today.year))
+        month = int(request.GET.get("month", t.month))
+        year = int(request.GET.get("year", t.year))
+        if not 1 <= month <= 12:
+            raise ValueError
     except ValueError:
-        month = today.month
-        year = today.year
+        month = t.month
+        year = t.year
 
     prev_month = month - 1 if month > 1 else 12
     prev_year = year if month > 1 else year - 1
@@ -205,18 +282,15 @@ def calendar_view(request):
     # Same forward-projection as the dashboard: browsing the calendar ahead
     # must also materialize recurring transactions up through the viewed
     # month, not just up to today.
-    process_recurring_transactions(request.user, up_to_date=max(end_date, today))
+    process_recurring_transactions(request.user, up_to_date=max(end_date, t))
 
     transactions = Transaction.objects.filter(
         user=request.user, date__range=[start_date, end_date]
-    )
+    ).select_related("category")
 
     transactions_by_day = {}
     for tx in transactions:
-        day = tx.date.day
-        if day not in transactions_by_day:
-            transactions_by_day[day] = []
-        transactions_by_day[day].append(tx)
+        transactions_by_day.setdefault(tx.date.day, []).append(tx)
 
     cal = calendar.Calendar(firstweekday=6)
     month_days = cal.monthdayscalendar(year, month)
@@ -230,6 +304,6 @@ def calendar_view(request):
         "prev_year": prev_year,
         "next_month": next_month,
         "next_year": next_year,
-        "month_name": calendar.month_name[month],
+        "month_name": month_label(start_date, short=False).split("/")[0],
     }
     return render(request, "core/calendar.html", context)

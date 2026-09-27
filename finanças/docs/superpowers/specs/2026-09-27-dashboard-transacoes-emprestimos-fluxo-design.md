@@ -514,3 +514,18 @@ Registradas para decisão futura; nenhuma é necessária para P1–P7.
 **Novos:** `core/analytics.py`, `core/dates.py`, `core/money.py`, `core/services_loans.py`, `core/services_cashflow.py`, `core/migrations/00xx_*` (3–4), `templates/core/dashboard/_*.html` (6), `templates/core/_category_insight.html`, `templates/core/_tx_filters.html`, `static/js/dashboard.js`, `static/js/cashflow.js`, `static/js/transactions.js`, testes (§6).
 
 **Alterados:** `core/models.py`, `core/forms.py`, `core/services.py`, `core/views_dashboard.py`, `core/views_transactions.py`, `core/views_loans.py`, `core/views_cashflow.py`, `core/views_reports.py` (exportações aceitam `TxFilter`), `core/urls.py`, `templates/core/dashboard.html`, `transaction_list.html`, `cash_flow.html`, `loan_list.html`, `loan_detail.html`, `form.html` (parcelas/optgroup), `static/css/custom.css`, `static/js/charts.js` (paleta de categorias, helper de linha tracejada/banda), `finanças/CLAUDE.md`, `MANUAL.md`.
+
+---
+
+## 11. Status da implementação (2026-09-27)
+
+Fases F1–F6 implementadas na branch `feat/financas-dashboard-fluxo`. Q1–Q5 seguiram os defaults da §9.
+
+Diferenças em relação ao texto acima:
+
+- **Empréstimo informal (pedido durante a implementação):** `num_installments` aceita 0 (salvo como vazio), e o campo novo `Loan.planned_payment` ("Parcela combinada") substitui o cálculo automático em qualquer modalidade. Com juros 0 e sem parcela combinada, nenhuma parcela é prevista. O bloqueio vinha do `min="1"` no HTML do formulário.
+- **Sincronização de parcelas:** recria as previstas só do mês atual em diante; as previstas não pagas de meses passados ficam como estão, para não reescrever o histórico. O dashboard e o fluxo de caixa re-sincronizam empréstimos com `synced_at` nulo ou com mais de 28 dias.
+- **Feed "Recentes":** exclui as ocorrências geradas automaticamente pelas recorrências e as parcelas previstas de empréstimo, porque o sistema as cria ao abrir a página e elas empurrariam para fora o que o usuário realmente lançou.
+- **Filtro lembrado na sessão:** guarda tudo menos o mês navegado. O dashboard sempre abre no mês corrente.
+- **Queries do dashboard:** ~36 por request (sem N+1: são agregações distintas), acima da meta de ≤12 da §2.6. Em SQLite local, ~50 ms.
+- **Bugs extras corrigidos:** `{% block scripts %}` aninhado em 4 templates de empréstimo (script rodava duas vezes); `<input type="date">` vazio ao editar empréstimo, meta, pagamento e desembolso; editar uma parcela de cartão exigia "nº de parcelas".

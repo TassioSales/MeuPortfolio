@@ -258,6 +258,8 @@
     </div>
 </div>
 
+{% endblock %}
+
 {% block scripts %}
 {{ chart_labels|json_script:"loan-chart-labels" }}
 {{ chart_balance|json_script:"loan-chart-balance" }}
@@ -306,5 +308,4 @@ new Chart(document.getElementById('loanChart'), {
     },
 });
 </script>
-{% endblock %}
 {% endblock %}

@@ -20,3 +20,10 @@ def split_installments(total, n: int) -> list[Decimal]:
     parts = [base] * (n - 1)
     parts.append(total - base * (n - 1))
     return parts
+
+
+def fmt_brl(value) -> str:
+    """Decimal/float → 'R$ 1.234,56' (negativo: '- R$ 1.234,56')."""
+    v = float(value or 0)
+    body = f"{abs(v):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    return f"- R$ {body}" if v < 0 else f"R$ {body}"

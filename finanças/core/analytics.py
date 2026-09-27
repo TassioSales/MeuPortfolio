@@ -137,12 +137,21 @@ class TxFilter:
                      include_loans=True, session_key=None):
         params = request.GET
         if session_key:
-            meaningful = [k for k in params.keys() if k not in ("page", "tab")]
-            if meaningful:
-                request.session[session_key] = params.urlencode()
+            # Lembra os filtros entre visitas — mas não o mês navegado: voltar
+            # ao dashboard outro dia deve abrir o mês corrente.
+            transient = ("page", "tab", "month", "year")
+            if any(k not in transient for k in params.keys()):
+                keep = params.copy()
+                for k in transient:
+                    keep.pop(k, None)
+                request.session[session_key] = keep.urlencode()
             elif request.session.get(session_key):
                 from django.http import QueryDict
-                params = QueryDict(request.session[session_key])
+                saved = QueryDict(request.session[session_key], mutable=True)
+                for k in ("month", "year"):
+                    if k in params:
+                        saved[k] = params[k]
+                params = saved
         return cls.from_params(
             request.user, params, default_preset=default_preset,
             include_investments=include_investments, include_loans=include_loans,
@@ -647,6 +656,11 @@ def recent(user, limit=8) -> list[dict]:
     compra (e linhas de uma mesma importação) agrupadas num item só."""
     qs = (
         Transaction.objects.filter(user=user)
+        # Só o que o usuário lançou: fora as ocorrências geradas automaticamente
+        # pelas recorrências e as parcelas previstas de empréstimo.
+        .exclude(origin=Transaction.ORIGIN_RECORRENTE, description__endswith="(Recorrente)")
+        .exclude(origin=Transaction.ORIGIN_EMPRESTIMO, type="DESPESA", loan_payment__isnull=True,
+                 loan__isnull=False)
         .select_related("category", "loan")
         .order_by(F("created_at").desc(nulls_last=True), "-id")
     )

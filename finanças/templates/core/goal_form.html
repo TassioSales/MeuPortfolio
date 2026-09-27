@@ -55,7 +55,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Data Limite</label>
-                            <input type="date" name="deadline" class="form-control" value="{{ form.deadline.value|default:'' }}" required>
+                            <input type="date" name="deadline" class="form-control" value="{% firstof form.deadline.value|date:'Y-m-d' form.deadline.value '' %}" required>
                         </div>
                     </div>
 

@@ -35,7 +35,7 @@
 
                 <div class="col-12">
                     <label class="form-label fw-semibold">Data do Novo Desembolso *</label>
-                    <input type="date" name="date" value="{{ form.date.value|default:'' }}" class="form-control" required>
+                    <input type="date" name="date" value="{% firstof form.date.value|date:'Y-m-d' form.date.value '' %}" class="form-control" required>
                 </div>
 
                 <div class="col-12">
@@ -78,6 +78,8 @@
     </div>
 </div>
 
+{% endblock %}
+
 {% block scripts %}
 <script>
 const currentBalance = {{ loan.current_balance }};
@@ -100,5 +102,4 @@ document.querySelector('[name=amount]').addEventListener('input', function() {
     document.getElementById('preview-interest').textContent = fmt(nextInterest) + '/mês';
 });
 </script>
-{% endblock %}
 {% endblock %}

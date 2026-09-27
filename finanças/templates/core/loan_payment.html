@@ -65,7 +65,7 @@
 
             <div class="mb-3">
                 <label class="form-label fw-semibold">Data do Pagamento</label>
-                <input type="date" name="payment_date" value="{{ form.payment_date.value|default:'' }}" class="form-control">
+                <input type="date" name="payment_date" value="{% firstof form.payment_date.value|date:'Y-m-d' form.payment_date.value '' %}" class="form-control">
             </div>
             <div class="mb-4">
                 <label class="form-label fw-semibold">Observações</label>
@@ -80,6 +80,8 @@
     </div>
 </div>
 
+{% endblock %}
+
 {% block scripts %}
 <script>
 const interest = {{ loan.next_interest|floatformat:4 }};
@@ -89,5 +91,4 @@ document.getElementById('btn-double').addEventListener('click', function() {
     document.getElementById('btn-double').textContent = '2× juros (R$ ' + val + ')';
 });
 </script>
-{% endblock %}
 {% endblock %}

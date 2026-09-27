@@ -56,6 +56,9 @@ function applyChartDefaults() {
     Chart.defaults.color = textColor;
     Chart.defaults.borderColor = gridColor;
     Chart.defaults.font.family = getComputedStyle(document.body).fontFamily || 'Inter, sans-serif';
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        Chart.defaults.animation = false;
+    }
     Chart.defaults.plugins.legend.labels.usePointStyle = true;
     Chart.defaults.plugins.legend.labels.boxWidth = 8;
     Chart.defaults.plugins.tooltip.callbacks.label = function (ctx) {

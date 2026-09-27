@@ -10,7 +10,7 @@ from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum
+from django.db.models import Max, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.functional import cached_property
@@ -177,7 +177,10 @@ def category_insight(flt, cat):
     all_total = flt.apply(category=False).filter(type=type_).aggregate(t=Sum("amount"))["t"] or Decimal("0")
     share = (total / all_total * 100) if all_total else None
 
-    anchor = (flt.end or today()).replace(day=1)
+    # Sem fim de período ("Tudo"), a janela de 12 meses termina no último mês
+    # com lançamento da categoria (que pode estar no futuro, ex.: parcelas).
+    last_date = cat_qs.aggregate(m=Max("date"))["m"]
+    anchor = (flt.end or last_date or today()).replace(day=1)
     first = add_months(anchor, -11, day=1)
     series = monthly_series(flt.apply(period=False).filter(type=type_), first, anchor)
     values = series["expense"] if type_ == "DESPESA" else series["income"]

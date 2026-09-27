@@ -115,8 +115,8 @@
 
                 <!-- Datas -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Data do Empréstimo *</label>
-                    <input type="date" name="start_date" value="{{ form.start_date.value|default:'' }}" class="form-control" required>
+                    <label for="id_start_date" class="form-label fw-semibold">Data do Empréstimo *</label>
+                    <input type="date" id="id_start_date" name="start_date" value="{% firstof form.start_date.value|date:'Y-m-d' form.start_date.value '' %}" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                     <label for="id_due_day" class="form-label fw-semibold">Dia de Vencimento</label>
@@ -151,6 +151,8 @@
     </div>
 </div>
 
+{% endblock %}
+
 {% block scripts %}
 <script>
 const hints = {
@@ -171,5 +173,4 @@ function toggleLoanFields(sel) {
 toggleLoanFields(document.querySelector('[name=loan_type]'));
 document.querySelector('[name=planned_payment]').addEventListener('input', () => toggleLoanFields(document.querySelector('[name=loan_type]')));
 </script>
-{% endblock %}
 {% endblock %}

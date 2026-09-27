@@ -558,7 +558,7 @@ h6 {
 
 .kpi-card { padding: 1.1rem 1.25rem; height: 100%; }
 .kpi-card .kpi-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); margin-bottom: .35rem; display: flex; justify-content: space-between; gap: .5rem; align-items: center; }
-.kpi-card .kpi-value { font-size: 1.45rem; }
+.kpi-card .kpi-value { font-size: clamp(1.1rem, 1.6vw, 1.45rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .kpi-card .kpi-sub { font-size: .78rem; color: var(--text-muted); margin-top: .35rem; line-height: 1.35; }
 .kpi-card.kpi-hero { background: var(--brand-gradient); color: #fff; border: 0; }
 .kpi-card.kpi-hero .kpi-label, .kpi-card.kpi-hero .kpi-sub { color: rgba(255,255,255,.8); }
@@ -585,6 +585,8 @@ h6 {
 .badge-recurring { background: rgba(59,130,246,.12); color: var(--info); }
 
 .feed-item { display: flex; align-items: center; gap: .75rem; padding: .6rem; border-radius: 14px; text-decoration: none; color: inherit; }
+.feed-item .text-end, .feed-item .currency-value { white-space: nowrap; }
+.feed-item .text-end .currency-value { font-size: .88rem; }
 .feed-item:hover { background: rgba(99,102,241,.05); color: inherit; }
 .feed-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .feed-icon.in { background: rgba(16,185,129,.1); color: var(--success); }

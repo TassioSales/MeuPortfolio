@@ -170,6 +170,18 @@ Plataforma de análise de patrimônio em tempo real com dashboard interativo, We
 
 ---
 
+### 🔧 Contribuições em Open Source (cal.com)
+
+**Tecnologias:** TypeScript, Vitest, Biome, monorepo Yarn/Turbo
+
+16 Pull Requests no [cal.com](https://github.com/calcom/cal.diy) (48.7k estrelas): correção de
+comparação de HMAC sujeita a ataque de tempo, bugs de identidade de participante, serialização
+de log, formatação de moeda e duas buscas quadráticas. 153 casos de teste.
+
+[Ver Detalhes](/contribuicoes_open_source)
+
+---
+
 ### 📚 ENEM Insights
 
 **Tecnologias:** Python, Streamlit, Pandas, Scikit-learn, Plotly

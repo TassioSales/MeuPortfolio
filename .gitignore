@@ -1,5 +1,14 @@
 .claude/
+
+# Segredos. `.env` sozinho casa apenas com o arquivo chamado exatamente assim:
+# .env.backup, .env.local e .env.producao passavam direto e chegaram a ser commitados.
 .env
+.env.*
+*.env.backup
+!.env.example
+!.env.*.example
+!.env.example.*
+
 *.db
 *.sqlite3
 __pycache__/
@@ -9,4 +18,3 @@ __pycache__/
 *.egg-info/
 nexus/**/__pycache__/
 .playwright-mcp/email/04_novo_pedido.png
-crm_conversacional/.env.backup

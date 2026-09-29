@@ -25,6 +25,8 @@ urlpatterns = [
     path('transactions/<int:pk>/edit/', views.TransactionUpdateView.as_view(), name='transaction_edit'),
     path('transactions/<int:pk>/delete/', views.TransactionDeleteView.as_view(), name='transaction_delete'),
     path('transactions/bulk-delete/', views.transaction_bulk_delete, name='transaction_bulk_delete'),
+    path('transactions/bulk-update/', views.transaction_bulk_update, name='transaction_bulk_update'),
+    path('transactions/<int:pk>/duplicate/', views.transaction_duplicate, name='transaction_duplicate'),
 
     # Budgets
     path('budgets/', views.BudgetListView.as_view(), name='budget_list'),
@@ -84,5 +86,7 @@ urlpatterns = [
     path('loans/<int:pk>/delete/', views.LoanDeleteView.as_view(), name='loan_delete'),
     path('loans/<int:pk>/pay/', views.loan_make_payment, name='loan_pay'),
     path('loans/<int:pk>/add-funds/', views.loan_add_funds, name='loan_add_funds'),
+    path('loans/<int:pk>/payments/<int:payment_pk>/revert/', views.loan_payment_revert, name='loan_payment_revert'),
+    path('loans/<int:pk>/payments/<int:payment_pk>/edit/', views.loan_payment_edit, name='loan_payment_edit'),
+    path('loans/<int:pk>/payments/<int:payment_pk>/delete/', views.loan_payment_delete, name='loan_payment_delete'),
 ]
-# Force reload

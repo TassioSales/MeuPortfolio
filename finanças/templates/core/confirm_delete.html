@@ -11,13 +11,29 @@
       Tem certeza que deseja excluir <strong>{{ object }}</strong>?<br>
       <small class="text-danger">Esta ação não pode ser desfeita.</small>
     </p>
+    {% if delete_warning %}
+    <div class="alert alert-warning small text-start">{{ delete_warning }}</div>
+    {% endif %}
+    <form method="post" id="delete-form">
+      {% csrf_token %}
+      {% if scope_choices %}
+      <fieldset class="text-start mb-4">
+        <legend class="small fw-bold text-muted text-uppercase mb-2">Excluir</legend>
+        {% for value, label in scope_choices %}
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="scope" id="scope-{{ value }}" value="{{ value }}" {% if forloop.first %}checked{% endif %}>
+          <label class="form-check-label" for="scope-{{ value }}">{{ label }}</label>
+        </div>
+        {% endfor %}
+      </fieldset>
+      {% endif %}
+    </form>
     <div class="d-flex gap-3 justify-content-center">
-      <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger px-5 fw-bold">
+      <div>
+        <button form="delete-form" type="submit" class="btn btn-danger px-5 fw-bold">
           <i class="bi bi-trash3 me-2"></i>Excluir
         </button>
-      </form>
+      </div>
       <a href="javascript:history.back()" class="btn btn-outline-secondary px-5 fw-bold">Cancelar</a>
     </div>
   </div>

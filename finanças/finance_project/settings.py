@@ -240,3 +240,7 @@ class InterceptHandler(logging.Handler):
 
 import logging
 logging.basicConfig(handlers=[InterceptHandler()], level=0)
+
+# Testes: hash de senha rápido (PBKDF2 deixa a suíte ~10x mais lenta).
+if len(sys.argv) > 1 and sys.argv[1] == "test":
+    PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]

@@ -5,10 +5,19 @@
     <div class="d-flex align-items-center mb-4 gap-3">
         <a href="{% url 'loan_detail' loan.pk %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i></a>
         <div>
-            <h2 class="mb-0 fw-bold">Registrar Pagamento</h2>
+            <h2 class="mb-0 fw-bold">{% if editing %}Editar Pagamento{% else %}Registrar Pagamento{% endif %}</h2>
             <small class="text-muted">{{ loan.name }}</small>
         </div>
     </div>
+
+    {% if editing %}
+    <div class="alert alert-info small d-flex gap-2 align-items-start">
+        <i class="bi bi-info-circle-fill mt-1"></i>
+        <div>Corrigindo o pagamento de <strong>{{ editing.amount_paid|brl }}</strong> de {{ editing.payment_date|date:"d/m/Y" }}.
+            Os valores abaixo mostram o empréstimo como estava <strong>antes</strong> dele; juros, amortização e saldo são recalculados ao salvar.
+            <a href="{% url 'loan_payment_delete' loan.pk editing.pk %}" class="text-danger ms-1">Excluir este pagamento</a></div>
+    </div>
+    {% endif %}
 
     <!-- Summary -->
     <div class="glass-card p-4 mb-4">
@@ -22,7 +31,7 @@
                 <div class="fw-bold text-warning fs-5 currency-value">{{ loan.next_interest|brl }}</div>
             </div>
             <div class="col-4">
-                <div class="small text-muted">Mínimo Sugerido</div>
+                <div class="small text-muted">{% if next_installment %}Parcela prevista{% else %}Mínimo Sugerido{% endif %}</div>
                 <div class="fw-bold text-primary fs-5 currency-value">{{ suggested_min|brl }}</div>
             </div>
         </div>
@@ -48,6 +57,12 @@
 
             <!-- Quick amount buttons -->
             <div class="d-flex gap-2 flex-wrap mb-4">
+                {% if suggested_min %}
+                <button type="button" class="btn btn-outline-success btn-sm"
+                    onclick="document.querySelector('[name=amount_paid]').value='{{ suggested_min|floatformat:2 }}'.replace('.',',')">
+                    Parcela prevista ({{ suggested_min|brl }})
+                </button>
+                {% endif %}
                 <button type="button" class="btn btn-outline-secondary btn-sm"
                     onclick="document.querySelector('[name=amount_paid]').value='{{ loan.next_interest|floatformat:2 }}'.replace('.',',')">
                     Só juros ({{ loan.next_interest|brl }})
@@ -59,7 +74,7 @@
 
             <div class="mb-3">
                 <label class="form-label fw-semibold">Data do Pagamento</label>
-                <input type="date" name="payment_date" value="{{ form.payment_date.value|default:'' }}" class="form-control">
+                <input type="date" name="payment_date" value="{% firstof form.payment_date.value|date:'Y-m-d' form.payment_date.value '' %}" class="form-control">
             </div>
             <div class="mb-4">
                 <label class="form-label fw-semibold">Observações</label>
@@ -68,11 +83,13 @@
             </div>
 
             <button type="submit" class="btn btn-success w-100 btn-lg">
-                <i class="bi bi-check-circle me-2"></i>Confirmar Pagamento
+                <i class="bi bi-check-circle me-2"></i>{% if editing %}Salvar correção{% else %}Confirmar Pagamento{% endif %}
             </button>
         </form>
     </div>
 </div>
+
+{% endblock %}
 
 {% block scripts %}
 <script>
@@ -83,5 +100,4 @@ document.getElementById('btn-double').addEventListener('click', function() {
     document.getElementById('btn-double').textContent = '2× juros (R$ ' + val + ')';
 });
 </script>
-{% endblock %}
 {% endblock %}

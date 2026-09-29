@@ -17,30 +17,27 @@ from django.template.loader import get_template
 from django.utils import timezone
 from xhtml2pdf import pisa
 
+from .analytics import TxFilter
+from .dates import parse_date
 from .models import Budget, Category, Transaction
 from loguru import logger
 
 
-def _filter_transactions(request, start_date, end_date, category_id):
-    qs = Transaction.objects.filter(user=request.user).select_related("category").order_by("-date")
-    if start_date:
-        qs = qs.filter(date__gte=start_date)
-    if end_date:
-        qs = qs.filter(date__lte=end_date)
-    if category_id:
-        qs = qs.filter(category_id=category_id)
-    return qs
+def _filter_transactions(request, *_legacy_args):
+    """Mesmo recorte da lista de transações (TxFilter): valida datas/ids,
+    inclui subcategorias e aceita todos os filtros da tela de transações."""
+    flt = TxFilter.from_params(request.user, request.GET)
+    return flt.ordered(flt.apply().select_related("category"))
 
 
 @login_required
 def reports(request):
     logger.info(f"Generating reports for user {request.user.username}")
 
-    start_date = request.GET.get("start_date")
-    end_date = request.GET.get("end_date")
-    category_id = request.GET.get("category")
+    start_date = parse_date(request.GET.get("start_date"))
+    end_date = parse_date(request.GET.get("end_date"))
 
-    transactions = _filter_transactions(request, start_date, end_date, category_id)
+    transactions = _filter_transactions(request)
 
     total_income = (
         transactions.filter(type="RECEITA").aggregate(Sum("amount"))["amount__sum"] or 0
@@ -147,15 +144,13 @@ def reports(request):
 def export_csv(request):
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
-    category_id = request.GET.get("category")
-
-    transactions = _filter_transactions(request, start_date, end_date, category_id)
+    transactions = _filter_transactions(request)
 
     response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = 'attachment; filename="transactions.csv"'
+    response["Content-Disposition"] = 'attachment; filename="transacoes.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(["Date", "Type", "Category", "Amount", "Description"])
+    writer.writerow(["Data", "Tipo", "Categoria", "Valor", "Descrição", "Forma de pagamento", "Origem"])
     for t in transactions:
         writer.writerow([
             t.date,
@@ -163,6 +158,8 @@ def export_csv(request):
             t.category.name if t.category else "-",
             t.amount,
             t.description,
+            t.get_payment_method_display(),
+            t.get_origin_display(),
         ])
     return response
 
@@ -171,9 +168,7 @@ def export_csv(request):
 def export_pdf(request):
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
-    category_id = request.GET.get("category")
-
-    transactions = _filter_transactions(request, start_date, end_date, category_id)
+    transactions = _filter_transactions(request)
 
     total_income = (
         transactions.filter(type="RECEITA").aggregate(Sum("amount"))["amount__sum"] or 0
@@ -207,9 +202,7 @@ def export_pdf(request):
 def export_xlsx(request):
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
-    category_id = request.GET.get("category")
-
-    transactions = _filter_transactions(request, start_date, end_date, category_id)
+    transactions = _filter_transactions(request)
 
     wb = openpyxl.Workbook()
 

@@ -77,18 +77,28 @@ seria peso morto. Apelido gravado errado se remove pela interface.
 
 ## Como rodar
 
+No Windows, clique duas vezes em `run.bat`. Ele cria o ambiente virtual, instala as dependências e
+abre a interface na porta 8504.
+
+| Comando | O que faz |
+|---|---|
+| `run.bat` | abre a interface |
+| `run.bat testes` | roda os 80 testes |
+| `run.bat avaliar` | mede precisão e cobertura contra o gabarito |
+
+No Linux e no macOS é o mesmo, com `./run.sh`.
+
+À mão:
+
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
+python -m pytest tests -q
+python avaliar.py
 ```
 
 Não tem os seus arquivos? A aba **Dados de exemplo** gera um extrato OFX e um contas a receber CSV
 com os casos difíceis nas proporções em que eles aparecem num mês real.
-
-```bash
-python -m pytest tests -q   # 80 testes
-python avaliar.py           # mede contra o gabarito
-```
 
 ## Formatos aceitos
 

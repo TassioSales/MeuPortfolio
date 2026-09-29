@@ -1,284 +1,121 @@
-<div align="center">
+# Tássio Sales
 
-# 🚀 Portfólio de Projetos
+Desenvolvedor focado em dados e automação. Construo pipelines, APIs e interfaces que resolvem um
+problema específico de ponta a ponta — da coleta do dado à tela que alguém usa.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Rocket/3D/rocket_3d.png" width="120" alt="Foguete">
-</p>
-
-<h3 align="center">✨ <em>Desenvolvimento de soluções inovadoras com foco em dados e automação</em> ✨</h3>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.12+-3776ab?style=flat-square&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/Streamlit-1.37%2B-ff4b4b?style=flat-square&logo=streamlit&logoColor=white" alt="Streamlit">
-  <img src="https://img.shields.io/badge/SQL-DB-003b57?style=flat-square&logo=sqlite&logoColor=white" alt="SQL">
-  <img src="https://img.shields.io/badge/Docker-Ready-2496ed?style=flat-square&logo=docker&logoColor=white" alt="Docker">
-  <img src="https://img.shields.io/badge/License-MIT-00d4aa?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
-</p>
-
-<p align="center">
-  <a href="#-projetos">
-    <img src="https://img.shields.io/badge/🚀-Projetos-00d4aa?style=for-the-badge" alt="Projetos">
-  </a>
-  <a href="#-habilidades">
-    <img src="https://img.shields.io/badge/🛠️-Habilidades-ff7000?style=for-the-badge" alt="Habilidades">
-  </a>
-  <a href="#-contato">
-    <img src="https://img.shields.io/badge/📫-Contato-2496ed?style=for-the-badge" alt="Contato">
-  </a>
-</p>
+Python · Go · TypeScript · SQL
 
 ---
 
-## 🚀 Projetos
+## Comece por aqui
 
-<div align="center">
+Quatro trabalhos que carregam evidência verificável, não só descrição.
 
-### 💬 CRM Conversacional
+### Contribuições no cal.com
 
-**Tecnologias:** FastAPI, Next.js 14, TypeScript, PostgreSQL 16, Redis 7, Claude, Docker Compose
+16 Pull Requests no [cal.com](https://github.com/calcom/cal.diy), monorepo TypeScript com 48,7 mil
+estrelas: comparação de HMAC sujeita a ataque de tempo, bugs de identidade de participante em
+reservas, serialização de log que quebrava em referência circular, formatação de moeda sem
+subunidade e duas buscas quadráticas em código de round-robin. 2.030 linhas, 153 casos de teste.
 
-Plataforma de atendimento no WhatsApp com agentes de IA, qualificação automática de leads,
-CRM em Kanban e dashboards de desempenho. Integração via Evolution API, autenticação JWT e
-CI com pytest, jest, type-check e build.
+Cada correção está documentada com o comportamento errado, o chamador afetado e a contagem de
+arquivos que importam o módulo — incluindo os três PRs que mexem em código sem chamador, e o que
+ainda não foi revisado.
 
-[Ver Projeto](./crm_conversacional)
+**[Ler o detalhamento](./contribuicoes_open_source)**
 
----
+### edge-audit
 
-### 📊 DataNarrator
+Ferramenta CLI que audita funções utilitárias TypeScript em casos-limite sem você escrever teste
+nenhum: lê a assinatura com ts-morph, gera as entradas hostis que o tipo admite, chama a função e
+reporta quatro tipos de falha.
 
-**Tecnologias:** Python, Streamlit, Mistral AI, Plotly, fpdf2
+Rodando contra o `packages/lib` do cal.com: **18 falhas em 63 funções, 906 chamadas**. Entre elas,
+reencontrou sozinha um defeito que eu havia achado antes lendo o código à mão.
 
-Análise exploratória automatizada de datasets CSV/Excel com narrativa gerada por IA, visualizações interativas e exportação de relatório em PDF.
+`TypeScript · ts-morph · Vitest` — 49 testes, tsc estrito, sem `any`
 
-[Ver Projeto](./data_narrator)
+**[Ver projeto](./edge_audit)**
 
----
+### CRM Conversacional
 
-### ⛽ Fuel Analytics Platform
+Atendimento no WhatsApp com agentes de IA, qualificação automática de leads, CRM em Kanban e
+dashboards de desempenho. Integração via Evolution API, autenticação JWT, WebSocket para o painel.
 
-**Tecnologias:** Python, DuckDB, Go, Next.js, Mistral AI
+`FastAPI · Next.js 14 · PostgreSQL 16 · Redis 7 · Claude · Docker Compose`
+— 79 arquivos de teste, único projeto do repositório com CI rodando contra banco real
 
-Plataforma completa para coleta, processamento, forecast e visualização de preços de combustíveis no Brasil.
+**[Ver projeto](./crm_conversacional)**
 
-[Ver Projeto](./analise_de_combustiveis)
+### ERP Pessoal
 
----
+Controle financeiro, investimentos, PDV, estoque e emissão de nota fiscal. Distribuído também como
+executável Windows via PyInstaller.
 
-### 💰 Sistema de Gestão Financeira & ERP Pessoal
+`Django · SQLite · Bootstrap 5` — 21 arquivos de teste
 
-**Tecnologias:** Python, Django, SQLite, Bootstrap
-
-Controle financeiro, investimentos, PDV, estoque e emissão de notas com versão compilada executável.
-
-[Ver Projeto](./finanças)
-
----
-
-### 🧠 DocuMind Local
-
-**Tecnologias:** Go, Python, Mistral AI, Vanilla JS
-
-Gerenciador local de documentos com upload, extração de texto, busca e análise por IA.
-
-[Ver Projeto](./documind_local)
+**[Ver projeto](./finanças)**
 
 ---
 
-### 🗺️ Gerador de Roteiros de Viagem com IA
+## Dados e análise
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://jiqucdwsimgpjhzzhmn3f2.streamlit.app/)
+| Projeto | O que faz | Stack |
+|---|---|---|
+| [Análise de Combustíveis](./analise_de_combustiveis) | Baixa os dados da ANP, processa com Polars, grava em Parquet/DuckDB e serve um dashboard com previsão de preço | Python · DuckDB · Go · Next.js |
+| [Panorama BR](./panorama_br) | Indicadores econômicos brasileiros com coleta automática do Banco Central e yfinance | Python · Go · Next.js 14 |
+| [ENEM Insights](./enem_insights) | Impacto de renda, escola, região e raça nas notas do ENEM, com modelo preditivo | Python · Streamlit · scikit-learn |
+| [DataNarrator](./data_narrator) | Recebe um CSV ou Excel e devolve a análise exploratória com narrativa gerada por IA e relatório em PDF | Python · Streamlit · Mistral AI |
+| [DevMetrics](./devmetrics) | Métricas de perfil e repositórios do GitHub com leitura automatizada | Go · Next.js · Mistral AI |
+| [WealthMap Analytics](./wealthmap_analytics) | Gestão de carteira com previsão de 30 dias, Sharpe, volatilidade e matriz de correlação | Python · FastAPI · Next.js · scikit-learn |
 
-**Tecnologias:** Python, Streamlit, Mistral AI, Google Gemini
+## IA aplicada
 
-Gere roteiros de viagem personalizados com IA avançada, integração com APIs e interface responsiva.
+| Projeto | O que faz | Stack |
+|---|---|---|
+| [Nexus](./nexus) | Terminal de IA com interface TUI que executa ferramentas de verdade em loop ReAct, com sessões persistentes | Python · TUI |
+| [MemMap](./memmap) | Editor de notas que extrai entidades com spaCy e monta um grafo de conhecimento interativo em tempo real | Go · spaCy · D3.js · WebSocket |
+| [DocuMind Local](./documind_local) | Assistente de documentos que roda na própria máquina: upload, extração de texto, busca e análise | Go · Python · Mistral AI |
+| [Transcritor WhatsApp](./transcritor_whatsapp) | Transcreve áudios do WhatsApp offline e cruza com o texto exportado para identificar autor e trechos de interesse | Python · faster-whisper · Streamlit |
+| [VoxBR](./voxbr) | Transcrição de áudio com Whisper e geração de resumo | Python · Whisper · Mistral AI · Next.js |
+| [Gerador de Roteiros](https://jiqucdwsimgpjhzzhmn3f2.streamlit.app/) | Roteiros de viagem personalizados, com fallback entre dois provedores de IA — **no ar** | Python · Streamlit · Mistral · Gemini |
+| [PriceTrack AI](https://pricetrack-ai.streamlit.app) | Monitor de preço em e-commerce com alerta proativo — **no ar** | Python · Streamlit · Gemini · SQLAlchemy |
+| [Bot Telegram](./bot_telegram) | Bot de produtividade com tarefas, lembretes e respostas por IA | Python · Telegram API · Mistral AI |
 
-[Ver Código](./gerador_roteiros) | [Demo Online](https://jiqucdwsimgpjhzzhmn3f2.streamlit.app/)
+## Sistemas de negócio
 
----
+| Projeto | O que faz | Stack |
+|---|---|---|
+| [CompraBio](./aprovacao_compras) | Solicitação e aprovação de pedidos de compra com histórico auditável, notificação por e-mail e exportação | Python · web |
+| [Plataforma de Rifas](https://plataforma-rifas-pro.streamlit.app) | Gestão de rifas com analytics e geração de PDF — **no ar** | Python · Streamlit · SQLite · Docker |
+| [WhatsApp Suporte](./whatsapp-sup-master) | Bot que coleta um chamado por fluxo guiado e grava em SQLite, deliberadamente sem IA no caminho | TypeScript · SQLite |
+| [Encurtador de URL](./encurtador_url) | Encurtador com analytics de clique e painel de estatísticas | Go · Next.js · SQLite |
 
-### 🤖 PriceTrack AI
+## Jogos
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pricetrack-ai.streamlit.app)
-
-**Tecnologias:** Python, Streamlit, Google Gemini
-
-Consultora de e-commerce inteligente com alertas proativos e análises de preço com IA.
-
-[Ver Projeto](./pricetrack-ai) | [Demo Online](https://pricetrack-ai.streamlit.app)
-
----
-
-### 🎟️ Plataforma de Rifas PRO
-
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://plataforma-rifas-pro.streamlit.app)
-
-**Tecnologias:** Python, Streamlit, SQLite
-
-Sistema completo para gerenciamento de rifas online com analytics avançado e geração de PDF.
-
-[Ver Código](./plataforma_rifas) | [Demo Online](https://plataforma-rifas-pro.streamlit.app)
-
----
-
-### 📈 WealthMap Analytics PRO
-
-**Tecnologias:** Python, FastAPI, Next.js, SQLite, Mistral AI, scikit-learn
-
-Sistema de gestão de ativos financeiros com previsão ML para os próximos 30 dias, análise de risco (Sharpe & Volatilidade), matriz de correlação em tempo real e assistente de IA para rebalanceamento de carteira.
-
-[Ver Projeto](./wealthmap_analytics)
+| Projeto | O que faz | Stack |
+|---|---|---|
+| [Neon Drift](./neon_drift) | Jogo arcade com backend de configuração e placar global | Go · HTML5 Canvas |
+| [Neon Snake](./neon_snake) | Arcade single-player com placar persistido | Go · HTML5 Canvas |
 
 ---
 
-### 🕹️ Arcade Neon (Drift & Snake)
+## Como este repositório é organizado
 
-**Tecnologias:** HTML5 Canvas, JS, Go
+Cada pasta é um projeto independente, com as próprias dependências, o próprio README e as próprias
+instruções de execução. Não há build compartilhado na raiz: todo comando roda de dentro da pasta do
+projeto.
 
-Jogos arcade single-player com backend Go para configuração e placar de líderes global.
+Três stacks se repetem:
 
-[Neon Drift](./neon_drift) | [Neon Snake](./neon_snake)
+- **Python + Streamlit** para aplicações de dados e IA que precisam de interface rápida
+- **Go no backend + Next.js no frontend** quando a carga justifica separar a API
+- **Django** no ERP, onde o admin e o ORM economizam meses
 
----
+Dados sempre com Polars e Parquet, nunca pandas. Consulta analítica em DuckDB.
 
-### 📊 DevMetrics
+## Contato
 
-**Tecnologias:** Go, Next.js, TypeScript, Mistral AI
-
-Dashboard de métricas de perfil GitHub com IA, análise de repositórios e insights automatizados.
-
-[Ver Projeto](./devmetrics)
-
----
-
-### 🔗 Encurtador URL
-
-**Tecnologias:** Go, Next.js, SQLite, TypeScript
-
-Encurtador de URLs com analytics de cliques, rastreamento de acessos e painel de estatísticas.
-
-[Ver Projeto](./encurtador_url)
-
----
-
-### 🤖 Bot Telegram
-
-**Tecnologias:** Python, Mistral AI, Telegram API, SQLite
-
-Bot de produtividade pessoal com IA, gerenciamento de tarefas, lembretes e respostas inteligentes.
-
-[Ver Projeto](./bot_telegram)
-
----
-
-### 💎 WealthMap Analytics
-
-**Tecnologias:** Python, FastAPI, Next.js, WebSocket, Mistral AI
-
-Plataforma de análise de patrimônio em tempo real com dashboard interativo, WebSocket e IA.
-
-[Ver Projeto](./wealthmap_analytics)
-
----
-
-### 🔍 edge-audit
-
-**Tecnologias:** TypeScript, ts-morph, Vitest, Node
-
-Ferramenta CLI que audita funções utilitárias procurando falhas em casos-limite, sem você escrever
-teste nenhum: lê a assinatura, gera as entradas hostis que o tipo admite e chama a função. Rodando
-contra o `packages/lib` do cal.com achou 18 falhas em 63 funções, incluindo um bug que eu havia
-encontrado antes lendo o código à mão.
-
-[Ver Projeto](./edge_audit)
-
----
-
-### 🔧 Contribuições em Open Source (cal.com)
-
-**Tecnologias:** TypeScript, Vitest, Biome, monorepo Yarn/Turbo
-
-16 Pull Requests no [cal.com](https://github.com/calcom/cal.diy) (48.7k estrelas): correção de
-comparação de HMAC sujeita a ataque de tempo, bugs de identidade de participante, serialização
-de log, formatação de moeda e duas buscas quadráticas. 153 casos de teste.
-
-[Ver Detalhes](./contribuicoes_open_source)
-
----
-
-### 📚 ENEM Insights
-
-**Tecnologias:** Python, Streamlit, Pandas, Scikit-learn, Plotly
-
-Dashboard interativo de análise do ENEM com ML preditivo: impacto de renda, escola, região e raça nas notas.
-
-[Ver Projeto](./enem_insights)
-
-</div>
-
-## 🛠️ Habilidades Técnicas
-
-<table>
-<tr>
-<td width="33%" align="center">
-
-#### 🐍 Backend & Dados
-![Python](https://img.shields.io/badge/Python-3.12+-3776ab?style=flat-square&logo=python)
-![Go](https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go)
-![Django](https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django)
-![SQL](https://img.shields.io/badge/SQL-003b57?style=flat-square&logo=sqlite)
-
-</td>
-<td width="33%" align="center">
-
-#### 🌐 Frontend
-![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js)
-![Streamlit](https://img.shields.io/badge/Streamlit-ff4b4b?style=flat-square&logo=streamlit)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3)
-
-</td>
-<td width="33%" align="center">
-
-#### 🛠️ Ferramentas & Infra
-![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git)
-![Docker](https://img.shields.io/badge/Docker-2496ed?style=flat-square&logo=docker)
-![VSCode](https://img.shields.io/badge/VSCode-007ACC?style=flat-square&logo=visual-studio-code)
-
-</td>
-</tr>
-</table>
-
-## 📊 Estatísticas do GitHub
-
-<div align="center">
-
-[![Estatísticas do GitHub](https://github-readme-stats.vercel.app/api?username=TassioSales&show_icons=true&theme=radical&hide_border=true&include_all_commits=true&count_private=true&line_height=24.5)](https://github.com/TassioSales)
-[![Linguagens Mais Usadas](https://github-readme-stats.vercel.app/api/top-langs/?username=TassioSales&layout=compact&theme=radical&hide_border=true&hide=html,css)](https://github.com/TassioSales)
-
-</div>
-
-## 📫 Contato
-
-<div align="center">
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Tássio_Sales-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/tassio-sales/)
-[![GitHub](https://img.shields.io/badge/GitHub-TassioSales-181717?style=for-the-badge&logo=github)](https://github.com/TassioSales)
-[![Gmail](https://img.shields.io/badge/Email-tassio.sales%40gmail.com-D14836?style=for-the-badge&logo=gmail)](mailto:tassio.sales@gmail.com)
-
-</div>
-
----
-
-<div align="center">
-
-## ⭐ Se Gostou do Meu Trabalho...
-
-Deixe uma ⭐ no repositório e compartilhe com quem possa se interessar!
-
-**© 2025 - Tássio Sales - Todos os direitos reservados**
-
-[![Visitas](https://komarev.com/ghpvc/?username=TassioSales&label=Profile%20views&color=0e75b6&style=flat)](https://github.com/TassioSales)
-
-</div>
+- GitHub: [@TassioSales](https://github.com/TassioSales)
+- LinkedIn: _adicione seu perfil aqui_
+- E-mail: _adicione seu e-mail aqui_

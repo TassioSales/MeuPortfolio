@@ -9,6 +9,12 @@
 !.env.*.example
 !.env.example.*
 
+# Logs, binarios e arquivos gerados
+*.log
+logs/
+*.exe
+next-env.d.ts
+
 *.db
 *.sqlite3
 __pycache__/
@@ -17,4 +23,4 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 nexus/**/__pycache__/
-.playwright-mcp/email/04_novo_pedido.png
+.playwright-mcp/

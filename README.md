@@ -34,6 +34,18 @@
 
 <div align="center">
 
+### 💬 CRM Conversacional
+
+**Tecnologias:** FastAPI, Next.js 14, TypeScript, PostgreSQL 16, Redis 7, Claude, Docker Compose
+
+Plataforma de atendimento no WhatsApp com agentes de IA, qualificação automática de leads,
+CRM em Kanban e dashboards de desempenho. Integração via Evolution API, autenticação JWT e
+CI com pytest, jest, type-check e build.
+
+[Ver Projeto](./crm_conversacional)
+
+---
+
 ### 📊 DataNarrator
 
 **Tecnologias:** Python, Streamlit, Mistral AI, Plotly, fpdf2

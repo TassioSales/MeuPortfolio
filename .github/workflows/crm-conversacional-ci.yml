@@ -1,0 +1,124 @@
+name: CI - CRM Conversacional
+
+# Só roda quando este projeto muda: o repositório é um portfólio com vários
+# projetos independentes, e cada um tem o seu próprio pipeline.
+on:
+  push:
+    branches: [main]
+    paths: ["crm_conversacional/**"]
+  pull_request:
+    paths: ["crm_conversacional/**"]
+
+defaults:
+  run:
+    working-directory: crm_conversacional
+
+jobs:
+  backend:
+    name: Backend (pytest)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: crm_conv
+          POSTGRES_PASSWORD: crm_conv_dev_pwd
+          POSTGRES_DB: crm_conv_test_db
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      # Sem Redis, os testes do limite de uso se pulam sozinhos e a garantia
+      # de balde compartilhado entre réplicas ficaria sem cobertura nenhuma.
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: crm_conversacional/backend/requirements.txt
+
+      - name: Instalar dependências
+        working-directory: crm_conversacional/backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # O conftest recria o schema por sessão, mas rodar a migração aqui
+      # garante que ela continua aplicável — um autogenerate quebrado passaria
+      # despercebido se só os models fossem usados.
+      - name: Conferir migrações
+        working-directory: crm_conversacional/backend
+        env:
+          DATABASE_URL: postgresql://crm_conv:crm_conv_dev_pwd@localhost:5432/crm_conv_test_db
+        run: alembic upgrade head
+
+      - name: Rodar testes
+        working-directory: crm_conversacional/backend
+        env:
+          DATABASE_URL: postgresql://crm_conv:crm_conv_dev_pwd@localhost:5432/crm_conv_test_db
+          REDIS_URL: redis://localhost:6379
+          SECRET_KEY: ci-secret-key
+          ANTHROPIC_API_KEY: sk-ant-ci-placeholder
+        run: pytest tests/ -v
+
+      # Os testes do Redis se pulam quando ele não responde. Como aqui o
+      # serviço existe, um pulo significa que a conexão quebrou — e passaria
+      # por suíte verde sem ter exercitado o balde compartilhado.
+      - name: Conferir que nada foi pulado
+        working-directory: crm_conversacional/backend
+        env:
+          DATABASE_URL: postgresql://crm_conv:crm_conv_dev_pwd@localhost:5432/crm_conv_test_db
+          REDIS_URL: redis://localhost:6379
+          SECRET_KEY: ci-secret-key
+          ANTHROPIC_API_KEY: sk-ant-ci-placeholder
+        run: |
+          saida=$(pytest tests/test_rate_limit_por_conta.py -q -rs --no-header)
+          echo "$saida"
+          if echo "$saida" | grep -q "skipped"; then
+            echo "::error::Testes de Redis pulados, mas o serviço está no ar na CI"
+            exit 1
+          fi
+
+  frontend:
+    name: Frontend (jest + build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: crm_conversacional/frontend/package-lock.json
+
+      - name: Instalar dependências
+        working-directory: crm_conversacional/frontend
+        run: npm ci
+
+      - name: Checar tipos
+        working-directory: crm_conversacional/frontend
+        run: npm run typecheck
+
+      - name: Rodar testes
+        working-directory: crm_conversacional/frontend
+        run: npm test
+
+      - name: Build de produção
+        working-directory: crm_conversacional/frontend
+        run: npm run build

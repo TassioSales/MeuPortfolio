@@ -117,5 +117,5 @@ Dados sempre com Polars e Parquet, nunca pandas. Consulta analítica em DuckDB.
 ## Contato
 
 - GitHub: [@TassioSales](https://github.com/TassioSales)
-- LinkedIn: _adicione seu perfil aqui_
-- E-mail: _adicione seu e-mail aqui_
+- LinkedIn: [Tássio Sales](https://www.linkedin.com/in/t%C3%A1ssio-sales-141826386/)
+- E-mail: tassiolucian.ljs@gmail.com

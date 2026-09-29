@@ -182,6 +182,19 @@ Plataforma de análise de patrimônio em tempo real com dashboard interativo, We
 
 ---
 
+### 🔍 edge-audit
+
+**Tecnologias:** TypeScript, ts-morph, Vitest, Node
+
+Ferramenta CLI que audita funções utilitárias procurando falhas em casos-limite, sem você escrever
+teste nenhum: lê a assinatura, gera as entradas hostis que o tipo admite e chama a função. Rodando
+contra o `packages/lib` do cal.com achou 18 falhas em 63 funções, incluindo um bug que eu havia
+encontrado antes lendo o código à mão.
+
+[Ver Projeto](./edge_audit)
+
+---
+
 ### 🔧 Contribuições em Open Source (cal.com)
 
 **Tecnologias:** TypeScript, Vitest, Biome, monorepo Yarn/Turbo

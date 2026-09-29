@@ -1,0 +1,171 @@
+{% load core_extras %}
+{# Filtros compartilhados (Transações / Dashboard).                                  #}
+{# Contexto: filter, presets, category_groups, payment_methods, origins, accounts,    #}
+{#           advanced_open; opcionais: show_search, show_status, show_toggles,        #}
+{#           show_origin, keep_per_page, keep_sort, form_id                          #}
+<form method="get" class="glass-card filter-card p-3 p-md-4 mb-4" id="{{ form_id|default:'tx-filter-form' }}" data-filter-form>
+    <input type="hidden" name="period" value="{{ filter.preset }}">
+    {% if filter.months_span %}
+    <input type="hidden" name="month" value="{{ filter.anchor.month }}">
+    <input type="hidden" name="year" value="{{ filter.anchor.year }}">
+    {% endif %}
+    {% if keep_per_page and per_page != 25 %}<input type="hidden" name="per_page" value="{{ per_page }}">{% endif %}
+    {% if keep_sort and filter.sort != '-date' %}<input type="hidden" name="sort" value="{{ filter.sort }}">{% endif %}
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            {% if filter.months_span %}
+            <a class="btn btn-light btn-sm border" href="?{{ nav_prev_qs }}" aria-label="Período anterior"><i class="bi bi-chevron-left"></i></a>
+            {% endif %}
+            <span class="fw-bold text-main text-capitalize"><i class="bi bi-calendar3 text-primary me-1"></i>{{ filter.period_label }}</span>
+            {% if filter.months_span %}
+            <a class="btn btn-light btn-sm border" href="?{{ nav_next_qs }}" aria-label="Próximo período"><i class="bi bi-chevron-right"></i></a>
+            {% endif %}
+        </div>
+        <div class="preset-group" role="group" aria-label="Período">
+            {% for key, label in presets.items %}
+            <button type="submit" name="period" value="{{ key }}" class="{% if filter.preset == key %}active{% endif %}" data-preset="{{ key }}">{{ label }}</button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        {% if show_search %}
+        <div style="flex: 2 1 200px">
+            <label for="f-search" class="form-label">Busca</label>
+            <input type="search" id="f-search" name="search" value="{{ filter.search }}" class="form-control" placeholder="Descrição ou categoria…">
+        </div>
+        {% endif %}
+
+        <div class="custom-dates {% if filter.preset != 'custom' %}d-none{% endif %}" style="flex: 2 1 260px">
+            <label for="f-start" class="form-label">De / até</label>
+            <div class="d-flex gap-2">
+                <input type="date" id="f-start" name="start_date" value="{% if filter.preset == 'custom' and filter.start %}{{ filter.start|date:'Y-m-d' }}{% endif %}" class="form-control">
+                <input type="date" name="end_date" value="{% if filter.preset == 'custom' and filter.end %}{{ filter.end|date:'Y-m-d' }}{% endif %}" class="form-control" aria-label="Data final">
+            </div>
+        </div>
+
+        <div style="flex: 1 1 140px">
+            <label for="f-type" class="form-label">Tipo</label>
+            <select id="f-type" name="type" class="form-select">
+                <option value="">Todos</option>
+                <option value="RECEITA" {% if filter.type == 'RECEITA' %}selected{% endif %}>Receitas</option>
+                <option value="DESPESA" {% if filter.type == 'DESPESA' %}selected{% endif %}>Despesas</option>
+            </select>
+        </div>
+
+        <div style="flex: 2 1 220px">
+            <span class="form-label d-block" id="f-cat-label">Categoria</span>
+            <div class="dropdown w-100">
+                <button class="form-select text-start text-truncate" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-labelledby="f-cat-label" aria-expanded="false">
+                    {% if filter.selected_categories %}{{ filter.selected_categories|length }} selecionada(s){% else %}Todas{% endif %}
+                </button>
+                <div class="dropdown-menu p-2 shadow-lg" style="max-height: 340px; overflow-y: auto; min-width: 260px;">
+                    {% for parent, children in category_groups %}
+                    <label class="dropdown-item d-flex align-items-center gap-2 fw-semibold rounded-2 py-1">
+                        <input type="checkbox" class="form-check-input m-0" name="category" value="{{ parent.id }}" {% if parent.id|in_list:filter.selected_categories %}checked{% endif %}>
+                        {{ parent.name }} <span class="badge-soft ms-auto">{{ parent.get_type_display }}</span>
+                    </label>
+                    {% for child in children %}
+                    <label class="dropdown-item d-flex align-items-center gap-2 ps-4 rounded-2 py-1 small">
+                        <input type="checkbox" class="form-check-input m-0" name="category" value="{{ child.id }}" {% if child.id|in_list:filter.selected_categories %}checked{% endif %}>
+                        {{ child.name }}
+                    </label>
+                    {% endfor %}
+                    {% empty %}
+                    <span class="dropdown-item-text text-muted small">Nenhuma categoria cadastrada.</span>
+                    {% endfor %}
+                    <div class="border-top mt-2 pt-2 d-flex justify-content-between">
+                        <button type="button" class="btn btn-link btn-sm p-0" data-clear-categories>Limpar</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Aplicar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 align-items-end">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+            <button type="button" class="btn btn-light border" data-bs-toggle="collapse" data-bs-target="#{{ form_id|default:'tx-filter-form' }}-adv" aria-expanded="{{ advanced_open|yesno:'true,false' }}">
+                <i class="bi bi-sliders"></i><span class="d-none d-sm-inline ms-1">Mais filtros</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="collapse {% if advanced_open %}show{% endif %}" id="{{ form_id|default:'tx-filter-form' }}-adv">
+        <div class="filter-bar mt-3 pt-3 border-top">
+            <div>
+                <span class="form-label d-block">Forma de pagamento</span>
+                <div class="d-flex flex-wrap gap-1">
+                    {% for key, label in payment_methods %}
+                    <label class="chip-check"><input type="checkbox" name="payment" value="{{ key }}" {% if key|in_list:filter.payment_methods %}checked{% endif %}><span>{{ label }}</span></label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% if show_origin %}
+            <div>
+                <span class="form-label d-block">Origem</span>
+                <div class="d-flex flex-wrap gap-1">
+                    {% for key, label in origins %}
+                    <label class="chip-check"><input type="checkbox" name="origin" value="{{ key }}" {% if key|in_list:filter.origins %}checked{% endif %}><span>{{ label }}</span></label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% if accounts %}
+            <div style="flex: 1 1 160px">
+                <label for="f-account" class="form-label">Conta</label>
+                <select id="f-account" name="account" class="form-select">
+                    <option value="">Todas</option>
+                    {% for acc in accounts %}
+                    <option value="{{ acc.id }}" {% if filter.account_id == acc.id %}selected{% endif %}>{{ acc.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            <div style="flex: 1 1 220px">
+                <label for="f-min" class="form-label">Valor (mín / máx)</label>
+                <div class="d-flex gap-2">
+                    <input type="text" inputmode="decimal" id="f-min" name="min_amount" value="{{ filter.min_amount|default_if_none:'' }}" class="form-control" placeholder="0,00">
+                    <input type="text" inputmode="decimal" name="max_amount" value="{{ filter.max_amount|default_if_none:'' }}" class="form-control" placeholder="∞" aria-label="Valor máximo">
+                </div>
+            </div>
+            {% if show_status %}
+            <div style="flex: 1 1 160px">
+                <label for="f-status" class="form-label">Situação</label>
+                <select id="f-status" name="status" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="realized" {% if filter.status == 'realized' %}selected{% endif %}>Realizados (até hoje)</option>
+                    <option value="forecast" {% if filter.status == 'forecast' %}selected{% endif %}>Previstos (futuros)</option>
+                </select>
+            </div>
+            {% endif %}
+            {% if show_toggles %}
+            <div class="d-flex flex-column gap-1">
+                <span class="form-label d-block">Incluir</span>
+                <input type="hidden" name="loans" value="0">
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" role="switch" id="f-loans" name="loans" value="1" {% if filter.include_loans %}checked{% endif %}>
+                    <label class="form-check-label small" for="f-loans">Parcelas de empréstimo</label>
+                </div>
+                <input type="hidden" name="investments" value="0">
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" role="switch" id="f-inv" name="investments" value="1" {% if filter.include_investments %}checked{% endif %}>
+                    <label class="form-check-label small" for="f-inv">Aportes em investimento como despesa</label>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% with chips=filter.active_chips %}
+    {% if chips %}
+    <div class="d-flex flex-wrap gap-2 mt-3 pt-3 border-top align-items-center">
+        <span class="small text-muted fw-semibold">Filtros ativos:</span>
+        {% for chip in chips %}
+        <a class="chip" href="?{{ chip.qs }}" title="Remover filtro">{{ chip.label }} <i class="bi bi-x"></i></a>
+        {% endfor %}
+        <a class="small text-danger fw-bold ms-1 text-decoration-none" href="?period={{ filter.preset }}&clear=1"><i class="bi bi-x-circle me-1"></i>Limpar tudo</a>
+    </div>
+    {% endif %}
+    {% endwith %}
+</form>

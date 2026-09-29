@@ -3,208 +3,332 @@
 
 {% block content %}
 <div class="animate-entrance">
-    <!-- Header Section -->
-    <div class="row mb-5 align-items-end">
-        <div class="col-md-7">
-            <h1 class="display-5 fw-bold mb-2">Histórico Financeiro</h1>
-            <p class="text-muted mb-0">Gerencie suas transações e fluxos de caixa com precisão.</p>
+    <!-- Header -->
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="display-6 fw-bold mb-1">Transações</h1>
+            <p class="text-muted mb-0">{{ kpis.count }} lançamento(s) · {{ filter.period_label }}</p>
         </div>
-        <div class="col-md-5 text-end">
-            <div class="d-flex justify-content-end gap-2">
-                <a href="{% url 'transaction_import' %}" class="btn btn-light glass-card border px-4">
-                    <i class="bi bi-upload me-2 text-primary"></i> Importar
-                </a>
-                <a href="{% url 'transaction_add' %}" class="btn-premium px-4">
-                    <i class="bi bi-plus-lg me-2"></i> Adicionar
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filters Section -->
-    <div class="glass-card mb-5 p-4">
-        <form method="get" class="row g-4 align-items-end">
-            <div class="col-md-3">
-                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Busca inteligente</label>
-                <div class="input-group">
-                    <span class="input-group-text border-0 bg-transparent text-muted"><i
-                            class="bi bi-search"></i></span>
-                    <input type="text" class="form-control border-0 bg-light-soft rounded-3" name="search"
-                        value="{{ filter_search }}" placeholder="Pagar aluguel...">
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Período</label>
-                <div class="d-flex gap-2">
-                    <input type="date" class="form-control border-0 bg-light-soft rounded-3" name="start_date"
-                        value="{{ filter_start_date }}">
-                    <input type="date" class="form-control border-0 bg-light-soft rounded-3" name="end_date"
-                        value="{{ filter_end_date }}">
-                </div>
-            </div>
-
-            <div class="col-md-2">
-                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Tipo</label>
-                <select class="form-select border-0 bg-light-soft rounded-3" name="type">
-                    <option value="">Todos</option>
-                    <option value="RECEITA" {% if filter_type == 'RECEITA' %}selected{% endif %}>Receitas</option>
-                    <option value="DESPESA" {% if filter_type == 'DESPESA' %}selected{% endif %}>Despesas</option>
-                </select>
-            </div>
-
-            <div class="col-md-2">
-                <label class="form-label small fw-bold text-muted text-uppercase mb-2">Categoria</label>
-                <select class="form-select border-0 bg-light-soft rounded-3" name="category">
-                    <option value="">Todas</option>
-                    {% for cat in categories %}
-                    <option value="{{ cat.id }}" {% if filter_category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="col-md-1">
-                <button type="submit" class="btn btn-primary w-100 rounded-3 shadow-none">
-                    <i class="bi bi-funnel"></i>
+        <div class="d-flex gap-2 flex-wrap">
+            <div class="dropdown">
+                <button class="btn btn-light border" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-download me-1"></i>Exportar
                 </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li><a class="dropdown-item" href="{% url 'export_csv' %}?{{ filter.querystring }}"><i class="bi bi-filetype-csv me-2"></i>CSV (filtro atual)</a></li>
+                    <li><a class="dropdown-item" href="{% url 'export_xlsx' %}?{{ filter.querystring }}"><i class="bi bi-file-earmark-excel me-2"></i>Excel (filtro atual)</a></li>
+                </ul>
             </div>
-
-            {% if filter_search or filter_start_date or filter_end_date or filter_type or filter_category %}
-            <div class="col-12 mt-3 pt-3 border-top">
-                <a href="{% url 'transaction_list' %}" class="text-decoration-none small text-danger fw-bold">
-                    <i class="bi bi-x-circle me-1"></i> Limpar filtros ativos
-                </a>
-            </div>
-            {% endif %}
-        </form>
+            <a href="{% url 'transaction_import' %}" class="btn btn-light border"><i class="bi bi-upload me-1 text-primary"></i>Importar</a>
+            <a href="{% url 'transaction_add' %}" class="btn-premium px-4"><i class="bi bi-plus-lg me-1"></i>Adicionar</a>
+        </div>
     </div>
 
-    <!-- Table Section -->
-    <div class="table-responsive">
-        <table class="premium-table">
-            <thead>
-                <tr class="text-muted small text-uppercase fw-bold">
-                    <th class="ps-4">Data</th>
-                    <th>Descrição / Categoria</th>
-                    <th>Tipo</th>
-                    <th>Valor</th>
-                    <th class="text-end pe-4">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for transaction in transactions %}
-                <tr class="animate-entrance" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
-                    <td class="ps-4 fw-medium text-muted" data-label="Data">
-                        {{ transaction.date|date:"d M, Y" }}
-                    </td>
-                    <td data-label="Descrição / Categoria">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="brand-icon"
-                                style="width: 40px; height: 40px; font-size: 1rem; flex-shrink: 0; background: rgba(99, 102, 241, 0.05); color: var(--brand-primary); box-shadow: none;">
-                                <i class="bi bi-tag-fill"></i>
-                            </div>
-                            <div>
-                                <div class="fw-bold text-main">{{ transaction.description }}</div>
-                                <small class="text-muted">{{ transaction.category.name|default:"Sem Categoria" }}</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        {% if transaction.type == 'RECEITA' %}
-                        <span class="indicator-pill indicator-up">Receita</span>
-                        {% else %}
-                        <span class="indicator-pill indicator-down">Despesa</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <div
-                            class="fw-bold fs-5 currency-value {% if transaction.type == 'RECEITA' %}text-success{% else %}text-danger{% endif %}">
-                            {% if transaction.type == 'DESPESA' %}-{% endif %}{{ transaction.amount|brl }}
-                        </div>
-                    </td>
-                    <td class="pe-4 text-end" data-label="Ações">
-                        <div class="dropdown">
-                            <button class="btn btn-light btn-sm glass-card border rounded-circle"
-                                style="width: 32px; height: 32px; padding: 0;" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end glass-card border shadow-lg">
-                                <li><a class="dropdown-item" href="{% url 'transaction_edit' transaction.pk %}"><i
-                                            class="bi bi-pencil me-2"></i>Editar</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item text-danger"
-                                        href="{% url 'transaction_delete' transaction.pk %}"><i
-                                            class="bi bi-trash me-2"></i>Excluir</a></li>
-                            </ul>
-                        </div>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center py-5 glass-card">
-                        <div class="opacity-50">
-                            <i class="bi bi-receipt-cutoff fs-1 d-block mb-3"></i>
-                            <p class="fw-bold mb-0">Nenhuma transação encontrada</p>
-                            <small>Tente ajustar seus filtros ou registre uma nova transação.</small>
-                        </div>
-                    </td>
-                </tr>
+    {% include "core/_tx_filters.html" with show_search=True show_status=True show_origin=True keep_per_page=True keep_sort=True %}
+
+    <!-- KPIs do filtro (todas as páginas) -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="glass-card kpi-card">
+                <div class="kpi-label">Receitas {% delta_badge kpis.income_change True %}</div>
+                <div class="kpi-value text-success currency-value">{{ kpis.income|brl }}</div>
+                <div class="kpi-sub">{{ kpis.count_income }} lançamento(s){% if kpis.income_forecast %} · {{ kpis.income_forecast|brl }} previstas{% endif %}</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card kpi-card">
+                <div class="kpi-label">Despesas {% delta_badge kpis.expense_change False %}</div>
+                <div class="kpi-value text-danger currency-value">{{ kpis.expense|brl }}</div>
+                <div class="kpi-sub">{{ kpis.count_expense }} lançamento(s){% if kpis.expense_forecast %} · {{ kpis.expense_forecast|brl }} previstas{% endif %}</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card kpi-card">
+                <div class="kpi-label">Saldo do filtro</div>
+                <div class="kpi-value {% if kpis.net < 0 %}money-neg{% else %}money-pos{% endif %} currency-value">{{ kpis.net|brl }}</div>
+                <div class="kpi-sub">{% if kpis.savings_rate is not None %}Taxa de poupança {{ kpis.savings_rate|pct }}{% else %}Receitas − despesas{% endif %}</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card kpi-card">
+                <div class="kpi-label">Lançamentos</div>
+                <div class="kpi-value text-main">{{ kpis.count }}</div>
+                <div class="kpi-sub">{{ kpis.count_income }} receita(s) · {{ kpis.count_expense }} despesa(s)</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="mini-stat h-100"><span class="label">Ticket médio (despesa)</span><span class="value currency-value">{{ kpis.avg_expense|brl }}</span></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="mini-stat h-100"><span class="label">Média diária de gasto</span><span class="value currency-value">{{ kpis.daily_avg|brl }}</span>
+                {% if kpis.days %}<small class="text-muted">em {{ kpis.days }} dia(s)</small>{% endif %}</div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="mini-stat h-100"><span class="label">Maior despesa</span>
+                {% if kpis.biggest %}
+                <a class="value currency-value text-danger text-decoration-none" href="{% url 'transaction_edit' kpis.biggest.pk %}" title="{{ kpis.biggest.display_description }}">{{ kpis.biggest.amount|brl }}</a>
+                <small class="text-muted text-truncate">{{ kpis.biggest.display_description }}</small>
+                {% else %}<span class="value">—</span>{% endif %}
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="mini-stat h-100"><span class="label">Despesas vs. período anterior</span>
+                {% if kpis.prev %}
+                <span class="value">{% delta_badge kpis.expense_change False %} <span class="currency-value small text-muted">{{ kpis.prev.expense|brl }}</span></span>
+                {% else %}<span class="value text-muted small">Escolha um período para comparar</span>{% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if category_insight %}
+    {% include "core/_category_insight.html" with ci=category_insight %}
+    {% endif %}
+
+    <!-- Barra de ações em massa -->
+    <div id="bulk-actions-bar" class="glass-card p-3 mb-3 d-none align-items-center justify-content-between flex-wrap gap-2">
+        <span class="fw-bold small"><span id="bulk-selected-count">0</span> selecionada(s)</span>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <select name="category" form="bulk-update-form" class="form-select form-select-sm" style="width:auto" aria-label="Nova categoria">
+                <option value="">Categoria…</option>
+                {% for parent, children in category_groups %}
+                <option value="{{ parent.id }}">{{ parent.name }}</option>
+                {% for child in children %}<option value="{{ child.id }}">&nbsp;&nbsp;↳ {{ child.name }}</option>{% endfor %}
                 {% endfor %}
-            </tbody>
-        </table>
+            </select>
+            <select name="payment_method" form="bulk-update-form" class="form-select form-select-sm" style="width:auto" aria-label="Nova forma de pagamento">
+                <option value="">Pagamento…</option>
+                {% for key, label in payment_methods %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
+            </select>
+            {% if accounts %}
+            <select name="account" form="bulk-update-form" class="form-select form-select-sm" style="width:auto" aria-label="Nova conta">
+                <option value="">Conta…</option>
+                {% for acc in accounts %}<option value="{{ acc.id }}">{{ acc.name }}</option>{% endfor %}
+            </select>
+            {% endif %}
+            <button type="submit" form="bulk-update-form" class="btn btn-primary btn-sm"><i class="bi bi-check2 me-1"></i>Aplicar</button>
+            <button type="submit" form="bulk-delete-form" class="btn btn-danger btn-sm"
+                onclick="return confirm('Excluir as transações selecionadas? Esta ação não pode ser desfeita.');">
+                <i class="bi bi-trash me-1"></i>Excluir
+            </button>
+        </div>
     </div>
+
+    <form id="bulk-update-form" method="post" action="{% url 'transaction_bulk_update' %}">
+        {% csrf_token %}<input type="hidden" name="return_qs" value="{{ current_qs }}">
+    </form>
+
+    <form id="bulk-delete-form" method="post" action="{% url 'transaction_bulk_delete' %}">
+        {% csrf_token %}
+        <input type="hidden" name="return_qs" value="{{ current_qs }}">
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+            <small class="text-muted">
+                {% if page_obj %}Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ page_obj.paginator.count }}{% endif %}
+            </small>
+            <div class="d-flex align-items-center gap-2">
+                <label for="per-page" class="small text-muted mb-0">Por página</label>
+                <select id="per-page" class="form-select form-select-sm" style="width:auto"
+                        onchange="const u=new URL(location.href);u.searchParams.set('per_page',this.value);u.searchParams.delete('page');location.href=u;">
+                    {% for n in per_page_choices %}<option value="{{ n }}" {% if n == per_page %}selected{% endif %}>{{ n }}</option>{% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="premium-table">
+                <thead>
+                    <tr class="text-muted small text-uppercase fw-bold">
+                        <th class="ps-4" style="width: 40px;">
+                            <input type="checkbox" class="form-check-input" id="select-all-transactions"
+                                aria-label="Selecionar todas as transações desta página">
+                        </th>
+                        <th class="sortable-th"><a href="?{{ sort_links.date.qs }}">Data <i class="bi {{ sort_links.date.icon }}"></i></a></th>
+                        <th class="sortable-th"><a href="?{{ sort_links.description.qs }}">Descrição / Categoria <i class="bi {{ sort_links.description.icon }}"></i></a></th>
+                        <th>Pagamento</th>
+                        <th class="sortable-th"><a href="?{{ sort_links.amount.qs }}">Valor <i class="bi {{ sort_links.amount.icon }}"></i></a></th>
+                        <th class="sortable-th d-none d-lg-table-cell"><a href="?{{ sort_links.created.qs }}">Lançado <i class="bi {{ sort_links.created.icon }}"></i></a></th>
+                        <th class="text-end pe-4">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td class="ps-4">
+                            <input type="checkbox" class="form-check-input transaction-checkbox" name="ids"
+                                value="{{ transaction.pk }}" aria-label="Selecionar transação {{ transaction.display_description }}">
+                        </td>
+                        <td class="fw-medium text-muted" data-label="Data">
+                            {{ transaction.date|date:"d/m/Y" }}
+                            {% if transaction.date > today %}<div><span class="badge-soft badge-forecast">Previsto</span></div>{% endif %}
+                        </td>
+                        <td data-label="Descrição / Categoria">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="feed-icon {% if transaction.type == 'RECEITA' %}in{% else %}out{% endif %}">
+                                    <i class="bi {% if transaction.origin == 'EMPRESTIMO' %}bi-bank{% elif transaction.origin == 'PARCELA' %}bi-credit-card{% elif transaction.origin == 'RECORRENTE' %}bi-arrow-repeat{% elif transaction.type == 'RECEITA' %}bi-arrow-down-left{% else %}bi-arrow-up-right{% endif %}"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="fw-bold text-main">{{ transaction.display_description }}</div>
+                                    <div class="d-flex flex-wrap gap-1 align-items-center">
+                                        <small class="text-muted">{% if transaction.category.parent %}{{ transaction.category.parent.name }} › {% endif %}{{ transaction.category.name|default:"Sem categoria" }}</small>
+                                        {% if transaction.origin == 'PARCELA' and transaction.installment_total %}<span class="badge-soft badge-installment">{{ transaction.installment_number }}/{{ transaction.installment_total }}</span>{% endif %}
+                                        {% if transaction.origin == 'RECORRENTE' %}<span class="badge-soft badge-recurring">Recorrente</span>{% endif %}
+                                        {% if transaction.origin == 'EMPRESTIMO' %}<span class="badge-soft badge-loan">Empréstimo</span>{% endif %}
+                                        {% if transaction.origin == 'IMPORTACAO' %}<span class="badge-soft">Importado</span>{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="Pagamento"><small class="text-muted">{{ transaction.get_payment_method_display }}{% if transaction.account %}<br>{{ transaction.account.name }}{% endif %}</small></td>
+                        <td data-label="Valor">
+                            <div class="fw-bold currency-value {% if transaction.type == 'RECEITA' %}text-success{% else %}text-danger{% endif %}">
+                                {% if transaction.type == 'DESPESA' %}-{% endif %}{{ transaction.amount|brl }}
+                            </div>
+                        </td>
+                        <td class="d-none d-lg-table-cell"><small class="text-muted">{{ transaction.created_at|date:"d/m/Y H:i"|default:"—" }}</small></td>
+                        <td class="pe-4 text-end" data-label="Ações">
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-light btn-sm glass-card border rounded-circle"
+                                    style="width: 32px; height: 32px; padding: 0;" data-bs-toggle="dropdown"
+                                    data-bs-boundary="viewport" aria-label="Ações">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end glass-card border shadow-lg">
+                                    <li><a class="dropdown-item" href="{% url 'transaction_edit' transaction.pk %}"><i class="bi bi-pencil me-2"></i>{% if transaction.loan_payment %}Editar pagamento{% else %}Editar{% endif %}</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'transaction_duplicate' transaction.pk %}"><i class="bi bi-copy me-2"></i>Duplicar</a></li>
+                                    {% if transaction.loan_id %}<li><a class="dropdown-item" href="{% url 'loan_detail' transaction.loan_id %}"><i class="bi bi-bank me-2"></i>Ver empréstimo</a></li>{% endif %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="{% url 'transaction_delete' transaction.pk %}"><i class="bi bi-trash me-2"></i>{% if transaction.loan_payment %}Excluir pagamento{% else %}Excluir{% endif %}</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="opacity-50">
+                                <i class="bi bi-receipt-cutoff fs-1 d-block mb-3"></i>
+                                <p class="fw-bold mb-0">Nenhuma transação encontrada</p>
+                                <small>Tente ajustar seus filtros ou registre uma nova transação.</small>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {% if transactions %}
+                <tfoot>
+                    <tr class="table-subtotal">
+                        <td></td>
+                        <td colspan="3" class="small">Subtotal desta página</td>
+                        <td colspan="3" class="small">
+                            <span class="text-success currency-value">+{{ page_total.income|brl }}</span>
+                            <span class="text-danger currency-value ms-2">-{{ page_total.expense|brl }}</span>
+                        </td>
+                    </tr>
+                    <tr class="table-subtotal">
+                        <td></td>
+                        <td colspan="3" class="small">Total do filtro ({{ kpis.count }})</td>
+                        <td colspan="3" class="small">
+                            <span class="text-success currency-value">+{{ kpis.income|brl }}</span>
+                            <span class="text-danger currency-value ms-2">-{{ kpis.expense|brl }}</span>
+                            <span class="ms-2 fw-bold currency-value">= {{ kpis.net|brl }}</span>
+                        </td>
+                    </tr>
+                </tfoot>
+                {% endif %}
+            </table>
+        </div>
+    </form>
 
     {% if is_paginated %}
-    <nav class="mt-4 d-flex justify-content-center">
-        <ul class="pagination">
+    <nav class="mt-4 d-flex justify-content-center" aria-label="Paginação">
+        <ul class="pagination flex-wrap">
             {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if filter_search %}&search={{ filter_search }}{% endif %}{% if filter_type %}&type={{ filter_type }}{% endif %}{% if filter_category %}&category={{ filter_category }}{% endif %}{% if filter_start_date %}&start_date={{ filter_start_date }}{% endif %}{% if filter_end_date %}&end_date={{ filter_end_date }}{% endif %}">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
-            </li>
+            <li class="page-item"><a class="page-link" href="?page=1&{{ page_qs }}" aria-label="Primeira"><i class="bi bi-chevron-double-left"></i></a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ page_qs }}" aria-label="Anterior"><i class="bi bi-chevron-left"></i></a></li>
             {% endif %}
             {% for num in page_obj.paginator.page_range %}
             {% if page_obj.number == num %}
             <li class="page-item active"><span class="page-link">{{ num }}</span></li>
             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ num }}{% if filter_search %}&search={{ filter_search }}{% endif %}{% if filter_type %}&type={{ filter_type }}{% endif %}{% if filter_category %}&category={{ filter_category }}{% endif %}{% if filter_start_date %}&start_date={{ filter_start_date }}{% endif %}{% if filter_end_date %}&end_date={{ filter_end_date }}{% endif %}">{{ num }}</a>
-            </li>
+            <li class="page-item"><a class="page-link" href="?page={{ num }}&{{ page_qs }}">{{ num }}</a></li>
             {% endif %}
             {% endfor %}
             {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if filter_search %}&search={{ filter_search }}{% endif %}{% if filter_type %}&type={{ filter_type }}{% endif %}{% if filter_category %}&category={{ filter_category }}{% endif %}{% if filter_start_date %}&start_date={{ filter_start_date }}{% endif %}{% if filter_end_date %}&end_date={{ filter_end_date }}{% endif %}">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-            </li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ page_qs }}" aria-label="Próxima"><i class="bi bi-chevron-right"></i></a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&{{ page_qs }}" aria-label="Última"><i class="bi bi-chevron-double-right"></i></a></li>
             {% endif %}
         </ul>
     </nav>
     {% endif %}
 </div>
 
-<style>
-    .bg-light-soft {
-        background: rgba(0, 0, 0, 0.02);
-    }
+{% if category_insight %}
+{{ category_insight.series_labels|json_script:"ci-labels" }}
+{{ category_insight.series_values|json_script:"ci-values" }}
+{% endif %}
+<script>
+    (function () {
+        const selectAll = document.getElementById('select-all-transactions');
+        const checkboxes = () => Array.from(document.querySelectorAll('.transaction-checkbox'));
+        const bar = document.getElementById('bulk-actions-bar');
+        const countLabel = document.getElementById('bulk-selected-count');
+        const updateForm = document.getElementById('bulk-update-form');
 
-    [data-theme="dark"] .bg-light-soft {
-        background: rgba(255, 255, 255, 0.03);
-    }
+        function updateBar() {
+            const checked = checkboxes().filter(cb => cb.checked);
+            countLabel.textContent = checked.length;
+            bar.classList.toggle('d-none', checked.length === 0);
+            bar.classList.toggle('d-flex', checked.length > 0);
+            if (selectAll) {
+                selectAll.checked = checked.length > 0 && checked.length === checkboxes().length;
+            }
+        }
 
-    .dropdown-item {
-        font-size: 0.9rem;
-        font-weight: 500;
-        transition: all 0.2s;
-    }
+        // O form de alteração em massa leva os mesmos ids selecionados.
+        updateForm.addEventListener('submit', function () {
+            updateForm.querySelectorAll('input[name=ids]').forEach(el => el.remove());
+            checkboxes().filter(cb => cb.checked).forEach(cb => {
+                const h = document.createElement('input');
+                h.type = 'hidden'; h.name = 'ids'; h.value = cb.value;
+                updateForm.appendChild(h);
+            });
+        });
 
-    .dropdown-item:hover {
-        background: rgba(99, 102, 241, 0.1);
-        color: var(--brand-primary);
-    }
-</style>
+        if (selectAll) {
+            selectAll.addEventListener('change', function () {
+                checkboxes().forEach(cb => { cb.checked = selectAll.checked; });
+                updateBar();
+            });
+        }
+        checkboxes().forEach(cb => cb.addEventListener('change', updateBar));
+        updateBar();
+    })();
+</script>
+{% endblock %}
+
+{% block scripts %}
+{% if category_insight %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const labels = parseChartJson('ci-labels');
+    const values = parseChartJson('ci-values');
+    if (chartEmptyState('ciChart', values)) return;
+    const avg = {{ category_insight.series_avg|stringformat:"s" }};
+    new Chart(document.getElementById('ciChart'), {
+        data: {
+            labels,
+            datasets: [
+                { type: 'bar', label: '{{ category_insight.category.name|escapejs }}', data: values,
+                  backgroundColor: '{% if category_insight.type == "DESPESA" %}rgba(239,68,68,.75){% else %}rgba(16,185,129,.75){% endif %}', borderRadius: 6, maxBarThickness: 28 },
+                { type: 'line', label: 'Média', data: labels.map(() => avg), borderColor: '#6366f1',
+                  borderDash: [5, 4], pointRadius: 0, borderWidth: 2 },
+            ],
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, ticks: { callback: v => brlTick(v) } }, x: { grid: { display: false } } },
+        },
+    });
+});
+</script>
+{% endif %}
 {% endblock %}

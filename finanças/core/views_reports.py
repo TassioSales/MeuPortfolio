@@ -2,7 +2,6 @@
 import csv
 import io
 import json
-import logging
 from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
@@ -18,31 +17,27 @@ from django.template.loader import get_template
 from django.utils import timezone
 from xhtml2pdf import pisa
 
+from .analytics import TxFilter
+from .dates import parse_date
 from .models import Budget, Category, Transaction
+from loguru import logger
 
-logger = logging.getLogger("core")
 
-
-def _filter_transactions(request, start_date, end_date, category_id):
-    qs = Transaction.objects.filter(user=request.user).order_by("-date")
-    if start_date:
-        qs = qs.filter(date__gte=start_date)
-    if end_date:
-        qs = qs.filter(date__lte=end_date)
-    if category_id:
-        qs = qs.filter(category_id=category_id)
-    return qs
+def _filter_transactions(request, *_legacy_args):
+    """Mesmo recorte da lista de transações (TxFilter): valida datas/ids,
+    inclui subcategorias e aceita todos os filtros da tela de transações."""
+    flt = TxFilter.from_params(request.user, request.GET)
+    return flt.ordered(flt.apply().select_related("category"))
 
 
 @login_required
 def reports(request):
     logger.info(f"Generating reports for user {request.user.username}")
 
-    start_date = request.GET.get("start_date")
-    end_date = request.GET.get("end_date")
-    category_id = request.GET.get("category")
+    start_date = parse_date(request.GET.get("start_date"))
+    end_date = parse_date(request.GET.get("end_date"))
 
-    transactions = _filter_transactions(request, start_date, end_date, category_id)
+    transactions = _filter_transactions(request)
 
     total_income = (
         transactions.filter(type="RECEITA").aggregate(Sum("amount"))["amount__sum"] or 0
@@ -106,17 +101,20 @@ def reports(request):
             daily_labels.append(entry["day"].strftime("%d/%m"))
             daily_expenses.append(float(entry["total"] or 0))
 
-    budgets = Budget.objects.filter(user=request.user)
+    budgets = Budget.objects.filter(user=request.user).select_related("category")
+    budget_category_ids = [b.category_id for b in budgets]
+    actual_totals = (
+        transactions.filter(type="DESPESA", category_id__in=budget_category_ids)
+        .values("category_id")
+        .annotate(total=Sum("amount"))
+    )
+    actual_by_category = {t["category_id"]: (t["total"] or 0) for t in actual_totals}
+
     budget_labels = []
     budget_limits = []
     budget_actuals = []
     for budget in budgets:
-        actual = (
-            transactions.filter(
-                category=budget.category, type="DESPESA"
-            ).aggregate(Sum("amount"))["amount__sum"]
-            or 0
-        )
+        actual = actual_by_category.get(budget.category_id) or 0
         budget_labels.append(budget.category.name)
         budget_limits.append(float(budget.limit))
         budget_actuals.append(float(actual))
@@ -129,14 +127,14 @@ def reports(request):
         "savings_rate": savings_rate,
         "expense_by_category": expense_by_category,
         "top_expenses": transactions.filter(type="DESPESA").order_by("-amount")[:5],
-        "evolution_labels": json.dumps(evolution_labels),
-        "evolution_income": json.dumps(evolution_income),
-        "evolution_expense": json.dumps(evolution_expense),
-        "daily_labels": json.dumps(daily_labels),
-        "daily_expenses": json.dumps(daily_expenses),
-        "budget_labels": json.dumps(budget_labels),
-        "budget_limits": json.dumps(budget_limits),
-        "budget_actuals": json.dumps(budget_actuals),
+        "evolution_labels": evolution_labels,
+        "evolution_income": evolution_income,
+        "evolution_expense": evolution_expense,
+        "daily_labels": daily_labels,
+        "daily_expenses": daily_expenses,
+        "budget_labels": budget_labels,
+        "budget_limits": budget_limits,
+        "budget_actuals": budget_actuals,
         "recent_transactions": transactions.order_by("-date", "-id")[:20],
     }
     return render(request, "core/reports.html", context)
@@ -146,15 +144,13 @@ def reports(request):
 def export_csv(request):
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
-    category_id = request.GET.get("category")
-
-    transactions = _filter_transactions(request, start_date, end_date, category_id)
+    transactions = _filter_transactions(request)
 
     response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = 'attachment; filename="transactions.csv"'
+    response["Content-Disposition"] = 'attachment; filename="transacoes.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(["Date", "Type", "Category", "Amount", "Description"])
+    writer.writerow(["Data", "Tipo", "Categoria", "Valor", "Descrição", "Forma de pagamento", "Origem"])
     for t in transactions:
         writer.writerow([
             t.date,
@@ -162,6 +158,8 @@ def export_csv(request):
             t.category.name if t.category else "-",
             t.amount,
             t.description,
+            t.get_payment_method_display(),
+            t.get_origin_display(),
         ])
     return response
 
@@ -170,9 +168,7 @@ def export_csv(request):
 def export_pdf(request):
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
-    category_id = request.GET.get("category")
-
-    transactions = _filter_transactions(request, start_date, end_date, category_id)
+    transactions = _filter_transactions(request)
 
     total_income = (
         transactions.filter(type="RECEITA").aggregate(Sum("amount"))["amount__sum"] or 0
@@ -206,9 +202,7 @@ def export_pdf(request):
 def export_xlsx(request):
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
-    category_id = request.GET.get("category")
-
-    transactions = _filter_transactions(request, start_date, end_date, category_id)
+    transactions = _filter_transactions(request)
 
     wb = openpyxl.Workbook()
 

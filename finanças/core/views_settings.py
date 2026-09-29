@@ -30,13 +30,21 @@ def _read_env() -> dict:
 
 
 def _write_env(env: dict) -> None:
+    """Write .env atomically: write to a temp file, then rename over the target."""
     env_path = _find_env_path()
     lines = [f"{k}={v}" for k, v in env.items()]
-    env_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    content = "\n".join(lines) + "\n"
+    tmp_path = env_path.with_suffix(env_path.suffix + ".tmp")
+    tmp_path.write_text(content, encoding="utf-8")
+    tmp_path.replace(env_path)
 
 
 @login_required
 def settings_view(request):
+    if not request.user.is_staff:
+        messages.error(request, "Você não tem permissão para acessar as configurações do sistema.")
+        return redirect("dashboard")
+
     env = _read_env()
     current_token = env.get("BRAPI_TOKEN", "") or os.environ.get("BRAPI_TOKEN", "")
     token_active = bool(current_token)

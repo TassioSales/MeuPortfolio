@@ -47,6 +47,9 @@ from .views_loans import (
     loan_add_funds,
     loan_detail,
     loan_make_payment,
+    loan_payment_delete,
+    loan_payment_edit,
+    loan_payment_revert,
 )
 from .views_ofx import import_ofx
 from .views_reports import export_csv, export_json, export_pdf, export_xlsx, reports
@@ -58,4 +61,7 @@ from .views_transactions import (
     TransactionListView,
     TransactionUpdateView,
     import_transactions,
+    transaction_bulk_delete,
+    transaction_bulk_update,
+    transaction_duplicate,
 )

@@ -1,3 +1,4 @@
+{% load core_extras %}
 <!DOCTYPE html>
 <html>
 
@@ -62,9 +63,9 @@
 
     <div class="summary">
         <h3>Resumo do Período</h3>
-        <p><strong>Total Receitas:</strong> <span class="text-success">R$ {{ total_income|floatformat:2 }}</span></p>
-        <p><strong>Total Despesas:</strong> <span class="text-danger">R$ {{ total_expense|floatformat:2 }}</span></p>
-        <p><strong>Saldo Líquido:</strong> R$ {{ net_balance|floatformat:2 }}</p>
+        <p><strong>Total Receitas:</strong> <span class="text-success">{{ total_income|brl }}</span></p>
+        <p><strong>Total Despesas:</strong> <span class="text-danger">{{ total_expense|brl }}</span></p>
+        <p><strong>Saldo Líquido:</strong> {{ net_balance|brl }}</p>
     </div>
 
     <h3>Detalhamento das Transações</h3>
@@ -84,7 +85,7 @@
                 <td>{{ t.date|date:"d/m/Y" }}</td>
                 <td>{{ t.get_type_display }}</td>
                 <td>{{ t.category.name|default:"-" }}</td>
-                <td>R$ {{ t.amount|floatformat:2 }}</td>
+                <td>{{ t.amount|brl }}</td>
                 <td>{{ t.description }}</td>
             </tr>
             {% empty %}

@@ -25,9 +25,9 @@
         </div>
         <div class="col-sm-6 col-lg-3">
             <div class="glass-card stat-card stat-warning p-4 h-100">
-                <h6 class="text-muted small text-uppercase mb-2">Mínimo Próx. Mês</h6>
-                <div class="fs-3 fw-bold text-warning currency-value">{{ total_min_next|brl }}</div>
-                <small class="text-muted">Apenas para não crescer a dívida</small>
+                <h6 class="text-muted small text-uppercase mb-2">Parcelas deste mês</h6>
+                <div class="fs-3 fw-bold text-warning currency-value">{{ month_installments|brl }}</div>
+                <small class="text-muted">Já somadas às despesas do mês</small>
             </div>
         </div>
         <div class="col-sm-6 col-lg-3">
@@ -90,14 +90,14 @@
                     </div>
                     <div class="col-6">
                         <div class="p-2 rounded-3 bg-light-soft">
-                            <div class="small text-muted">Juros Próx. Mês</div>
-                            <div class="fw-bold text-warning currency-value">{{ loan.next_interest_display|brl }}</div>
+                            <div class="small text-muted">Próxima parcela{% if loan.next_installment %} · {{ loan.next_installment.date|date:"d/m" }}{% endif %}</div>
+                            <div class="fw-bold text-warning currency-value">{% if loan.min_payment_display %}{{ loan.min_payment_display|brl }}{% else %}—{% endif %}</div>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="p-2 rounded-3 bg-light-soft">
-                            <div class="small text-muted">Taxa · Venc. dia {{ loan.due_day }}</div>
-                            <div class="fw-semibold">{{ loan.interest_rate }}% {{ loan.get_interest_period_display }}</div>
+                            <div class="small text-muted">Taxa · Venc. dia {{ loan.due_day }} · {% if loan.num_installments %}{{ loan.num_installments }}x{% else %}informal{% endif %}</div>
+                            <div class="fw-semibold">{{ loan.interest_rate }}% {{ loan.get_interest_period_display }}{% if loan.planned_payment %} · combinada {{ loan.planned_payment|brl }}{% endif %}</div>
                         </div>
                     </div>
                 </div>
@@ -127,8 +127,6 @@
 </div>
 
 <style>
-.bg-light-soft { background: rgba(0,0,0,0.03); }
-[data-theme="dark"] .bg-light-soft { background: rgba(255,255,255,0.04); }
 .opacity-60 { opacity: 0.6; }
 </style>
 {% endblock %}

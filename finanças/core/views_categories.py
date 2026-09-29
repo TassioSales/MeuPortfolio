@@ -1,5 +1,6 @@
 """Category CRUD views."""
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
@@ -13,7 +14,40 @@ class CategoryListView(LoginRequiredMixin, ListView):
     context_object_name = "categories"
 
     def get_queryset(self):
-        return Category.objects.filter(user=self.request.user)
+        qs = Category.objects.filter(user=self.request.user).select_related("parent")
+
+        search = self.request.GET.get("search", "").strip()
+        if search:
+            qs = qs.filter(name__icontains=search)
+
+        type_ = self.request.GET.get("type", "")
+        if type_ in ("RECEITA", "DESPESA"):
+            qs = qs.filter(type=type_)
+
+        parent = self.request.GET.get("parent", "")
+        if parent == "none":
+            qs = qs.filter(parent__isnull=True)
+        elif parent:
+            # Show the selected parent category together with its subcategories.
+            qs = qs.filter(Q(pk=parent) | Q(parent_id=parent))
+
+        return qs.order_by("parent__name", "name")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        parent_categories = Category.objects.filter(user=self.request.user, parent__isnull=True)
+        type_ = self.request.GET.get("type", "")
+        if type_ in ("RECEITA", "DESPESA"):
+            # Only offer parent categories matching the selected Fluxo filter,
+            # so picking "Receita" doesn't still list Despesa parents.
+            parent_categories = parent_categories.filter(type=type_)
+
+        context["parent_categories"] = parent_categories.order_by("name")
+        context["filter_search"] = self.request.GET.get("search", "")
+        context["filter_type"] = type_
+        context["filter_parent"] = self.request.GET.get("parent", "")
+        return context
 
 
 class CategoryCreateView(LoginRequiredMixin, CreateView):

@@ -66,6 +66,12 @@ finanças/
 │   │                          # search_ticker, Investment CRUD
 │   ├── views_goals.py         # Goal CRUD
 │   ├── views_shared.py        # fix_ssl(), get_price_manual() — shared helpers
+│   ├── views_loans.py         # Loan CRUD, pagamento, desfazer pagamento, desembolso
+│   ├── views_cashflow.py      # Fluxo de caixa (renderiza services_cashflow)
+│   ├── analytics.py           # TxFilter (filtro único) + KPIs, séries e feeds
+│   ├── services_loans.py      # Amortização (Decimal) + parcelas previstas como Transaction
+│   ├── services_cashflow.py   # Previsão: certo × estimado, cenários, menor saldo
+│   ├── dates.py / money.py    # today() local, add_months; q2, split_installments, fmt_brl
 │   ├── forms.py               # 6 forms with Brazilian currency cleaning
 │   ├── services.py            # process_recurring_transactions()
 │   ├── market_data.py         # BCB API wrappers (SELIC, CDI, FX rates)
@@ -86,11 +92,24 @@ finanças/
 
 ### Views
 - Views are split into focused modules (`views_*.py`) — never add to `views.py` itself.
+- Filtering/aggregating transactions goes through `analytics.TxFilter` (validates GET
+  params, expands subcategories, builds querystrings). Don't hand-roll filters.
+- Use `core.dates.today()` (local date), never `timezone.now().date()` (UTC).
 - Always use `LoginRequiredMixin` for class-based views and `@login_required` for FBVs.
 - All querysets must filter by `user=request.user` to prevent cross-user data leakage.
 
 ### Models
 - Monetary fields use `DecimalField` with `max_digits=15, decimal_places=2`.
+- `Transaction.origin` (MANUAL/PARCELA/RECORRENTE/EMPRESTIMO/INVESTIMENTO/IMPORTACAO)
+  must be set by every code path that creates transactions. Parcelas share an
+  `installment_group`; recurring ones point to `recurring_source`; loan ones to `loan`.
+- "Previsto" = `date > today()`; "realizado" = `date <= today()`. No status field.
+- `Category.nature` (OPERACIONAL/INVESTIMENTO/DIVIDA) separates real spending from
+  money moving around; the dashboard excludes INVESTIMENTO by default.
+- Loan installments: `services_loans.sync_loan_installments()` recreates pending ones
+  (no LoanPayment) from the current month on; paid ones are never touched. Call
+  `on_loan_saved()` after creating/editing a loan and use `register_payment()` /
+  `revert_payment()` / `add_funds()` — never create loan Transactions by hand.
 - `Investment.total_cost` is a property (`quantity × purchase_price`), not a stored field.
 - `RecurringTransaction.next_run_date` is updated by `services.process_recurring_transactions()`.
 
@@ -140,11 +159,14 @@ Test files are split by feature:
 | `core/tests_import.py` | CSV import |
 | `core/tests_recurrence.py` | Recurring transaction generation |
 
+Also: `tests_analytics.py` (TxFilter, KPIs, transaction list), `tests_loans.py`,
+`tests_cashflow.py` (forecast + dashboard). Freeze "today" with `core.testing.frozen_today`.
+Tests use the MD5 hasher (settings) — the whole suite runs in a few seconds.
+
 Run all: `python manage.py test core`
 
 ## Common Pitfalls
 
 - `views_shared.fix_ssl()` is called at module import — importing `views_shared` twice is safe (idempotent env vars).
-- The `.bak` template file (`investment_dashboard.html.bak`) is leftover and should not be used.
 - `market_data.py` makes HTTP requests to the BCB API — mock these in tests to avoid network dependency.
 - PyInstaller builds (`dist/`) are excluded from git via `.gitignore`.

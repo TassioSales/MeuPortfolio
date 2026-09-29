@@ -63,9 +63,33 @@
                     </select>
                 </div>
                 <div class="col-md-4" id="field-installments">
-                    <label class="form-label fw-semibold">Nº de Parcelas</label>
-                    <input type="number" name="num_installments" value="{{ form.num_installments.value|default:'' }}" class="form-control" placeholder="Ex: 48" min="1">
+                    <label for="id_num_installments" class="form-label fw-semibold">Nº de Parcelas</label>
+                    <input type="number" id="id_num_installments" name="num_installments" value="{{ form.num_installments.value|default:'' }}" class="form-control" placeholder="0 = informal" min="0" max="600">
+                    <div class="form-text">0 ou vazio = informal, sem prazo fixo.</div>
                     {% if form.num_installments.errors %}<div class="text-danger small">{{ form.num_installments.errors.0 }}</div>{% endif %}
+                </div>
+
+                <!-- Parcela combinada (ajuste manual) -->
+                <div class="col-md-6">
+                    <label for="id_planned_payment" class="form-label fw-semibold">Parcela combinada (R$)</label>
+                    <input type="text" id="id_planned_payment" name="planned_payment" value="{{ form.planned_payment.value|default:'' }}" class="form-control money-mask" placeholder="Opcional">
+                    <div class="form-text">{{ form.planned_payment.help_text }}</div>
+                    {% if form.planned_payment.errors %}<div class="text-danger small">{{ form.planned_payment.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="form-check mt-md-3">
+                        <input type="checkbox" name="register_income" id="register_income" class="form-check-input" {% if form.register_income.value %}checked{% endif %} value="True">
+                        <label class="form-check-label" for="register_income">Registrar o valor recebido como receita</label>
+                        <div class="form-text">Lança principal − IOF como entrada na data do empréstimo.</div>
+                    </div>
+                </div>
+
+                <!-- Prévia da parcela -->
+                <div class="col-12">
+                    <div class="p-3 rounded-3 border" id="loan-preview" aria-live="polite">
+                        <div class="small fw-bold text-uppercase text-muted mb-1"><i class="bi bi-calculator me-1"></i>Prévia da parcela</div>
+                        <div id="loan-preview-body" class="small">Preencha valor, taxa e parcelas para ver quanto entra nas despesas de cada mês.</div>
+                    </div>
                 </div>
 
                 <!-- Separador visual: taxas bancárias -->
@@ -99,12 +123,18 @@
 
                 <!-- Datas -->
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Data do Empréstimo *</label>
-                    <input type="date" name="start_date" value="{{ form.start_date.value|default:'' }}" class="form-control" required>
+                    <label for="id_start_date" class="form-label fw-semibold">Data do Empréstimo *</label>
+                    <input type="date" id="id_start_date" name="start_date" value="{% firstof form.start_date.value|date:'Y-m-d' form.start_date.value '' %}" class="form-control" required>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">Dia de Vencimento</label>
-                    <input type="number" name="due_day" value="{{ form.due_day.value|default:'10' }}" class="form-control" min="1" max="31">
+                <div class="col-md-3">
+                    <label for="id_first_due_date" class="form-label fw-semibold">1ª parcela em</label>
+                    <input type="date" id="id_first_due_date" name="first_due_date" value="{% firstof form.first_due_date.value|date:'Y-m-d' form.first_due_date.value '' %}" class="form-control">
+                    <div class="form-text">Vazio = mês seguinte ao empréstimo.</div>
+                    {% if form.first_due_date.errors %}<div class="text-danger small">{{ form.first_due_date.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-3">
+                    <label for="id_due_day" class="form-label fw-semibold">Dia de Vencimento</label>
+                    <input type="number" id="id_due_day" name="due_day" value="{{ form.due_day.value|default:'10' }}" class="form-control" min="1" max="31">
                 </div>
 
                 <!-- Observações -->
@@ -135,29 +165,90 @@
     </div>
 </div>
 
-<style>
-.bg-light-soft { background: rgba(0,0,0,0.03); }
-[data-theme="dark"] .bg-light-soft { background: rgba(255,255,255,0.04); }
-</style>
+{% endblock %}
 
 {% block scripts %}
 <script>
 const hints = {
-  'REDUCAO_SALDO': '<strong>Juros sobre Saldo Devedor:</strong> Juros só sobre o que ainda deve. Qualquer valor acima dos juros reduz a dívida. Ideal para empréstimos informais — sem nº fixo de parcelas.',
+  'REDUCAO_SALDO': '<strong>Juros sobre Saldo Devedor:</strong> Juros só sobre o que ainda deve. Qualquer valor acima dos juros reduz a dívida. Ideal para empréstimos informais — deixe 0 parcelas e, se quiser, informe a parcela combinada. Com juros 0 e sem parcela combinada, nada é previsto: você lança cada pagamento no valor que quiser.',
   'PRICE': '<strong>Tabela Price (Parcela Fixa):</strong> Parcela idêntica todo mês. No início vai mais para juros; com o tempo, mais para amortização. Exige nº de parcelas.',
   'SAC': '<strong>SAC (Amortização Constante):</strong> Amortização fixa todo mês, juros decrescentes → parcela começa maior e vai diminuindo. Paga menos juros no total vs Price. Exige nº de parcelas.',
-  'SIMPLES': '<strong>Juros Simples:</strong> Paga só os juros mensalmente e quita o principal todo no final. Para acordos com prazo definido.',
+  'SIMPLES': '<strong>Juros Simples:</strong> Paga só os juros mensalmente e quita o principal todo no final. Com 0 parcelas, paga só os juros por tempo indeterminado.',
 };
 function toggleLoanFields(sel) {
   const val = sel.value;
   document.getElementById('loan-type-hint').innerHTML = hints[val] || '';
-  const needInstallments = ['PRICE','SAC','SIMPLES'].includes(val);
+  const needInstallments = ['PRICE','SAC'].includes(val) && !document.querySelector('[name=planned_payment]').value;
   const fi = document.getElementById('field-installments');
   const inp = fi.querySelector('input');
   inp.required = needInstallments;
   fi.querySelector('label').textContent = needInstallments ? 'Nº de Parcelas *' : 'Nº de Parcelas';
 }
 toggleLoanFields(document.querySelector('[name=loan_type]'));
+
+// ── Prévia da parcela (mesma matemática de core/services_loans.py) ──────────
+function parseMoney(v) {
+  v = String(v || '').replace('R$', '').replace(/\s/g, '');
+  if (v.includes(',')) v = v.replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : n;
+}
+function fmt(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+function fmtDate(d) { return d.toLocaleDateString('pt-BR'); }
+function firstDue() {
+  const fd = document.querySelector('[name=first_due_date]').value;
+  if (fd) return new Date(fd + 'T12:00:00');
+  const sd = document.querySelector('[name=start_date]').value;
+  if (!sd) return null;
+  const s = new Date(sd + 'T12:00:00');
+  const day = parseInt(document.querySelector('[name=due_day]').value || '10', 10);
+  const d = new Date(s.getFullYear(), s.getMonth() + 1, 1, 12);
+  const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  d.setDate(Math.min(day, last));
+  return d;
+}
+function updatePreview() {
+  const q = n => document.querySelector(`[name=${n}]`);
+  const type = q('loan_type').value;
+  const pv = parseMoney(q('current_balance').value) || parseMoney(q('principal').value);
+  let r = parseMoney(q('interest_rate').value) / 100;
+  if (q('interest_period').value === 'ANUAL' && r) r = Math.pow(1 + r, 1 / 12) - 1;
+  const n = parseInt(q('num_installments').value || '0', 10);
+  const planned = parseMoney(q('planned_payment').value);
+  const ins = parseMoney(q('insurance_monthly').value);
+  const body = document.getElementById('loan-preview-body');
+  const box = document.getElementById('loan-preview');
+  const due = firstDue();
+  const when = due ? ` · 1ª em <strong>${fmtDate(due)}</strong>` : '';
+  box.classList.remove('border-warning');
+  if (!pv) { body.innerHTML = 'Preencha o valor para ver a prévia.'; return; }
+  let html;
+  if (planned) {
+    const months = r ? (planned > pv * r ? Math.ceil(-Math.log(1 - pv * r / planned) / Math.log(1 + r)) : null) : Math.ceil(pv / planned);
+    html = `Parcela combinada: <strong>${fmt(planned + ins)}</strong>/mês${when}` +
+           (months ? ` · quita em ~${months} meses` : ' · <span class="text-danger">menor que os juros: a dívida cresce</span>');
+  } else if (type === 'PRICE' && n) {
+    const pmt = r ? pv * r / (1 - Math.pow(1 + r, -n)) : pv / n;
+    html = `${n} parcelas iguais de <strong>${fmt(pmt + ins)}</strong>${when} · total ${fmt((pmt + ins) * n)}`;
+  } else if (type === 'SAC' && n) {
+    const a = pv / n;
+    html = `${n} parcelas decrescentes: 1ª <strong>${fmt(a + pv * r + ins)}</strong> → última <strong>${fmt(a * (1 + r) + ins)}</strong>${when}`;
+  } else if (type === 'SIMPLES' && n) {
+    html = `<strong>${n - 1}x de ${fmt(pv * r + ins)}</strong> (só juros) e a <strong>última de ${fmt(pv + pv * r + ins)}</strong>${when}` +
+           `<div class="text-warning-emphasis mt-1"><i class="bi bi-exclamation-triangle-fill me-1"></i>Juros Simples não divide a dívida: você paga só os juros todo mês e o valor inteiro no fim. ` +
+           `Se o seu empréstimo é em parcelas iguais, escolha <strong>Tabela Price</strong> ou informe a <strong>Parcela combinada</strong>.</div>`;
+    box.classList.add('border-warning');
+  } else {
+    html = r ? `Sem prazo fixo: mínimo de <strong>${fmt(pv * r + ins)}</strong>/mês (só juros)${when}. Informe a parcela combinada para prever outro valor.`
+             : `Sem prazo e sem juros: <strong>nenhuma parcela prevista</strong>. Registre cada pagamento no valor que quiser, ou informe a parcela combinada.`;
+  }
+  body.innerHTML = html + '<div class="text-muted mt-1">Esse valor entra nas despesas de cada mês.</div>';
+}
+document.querySelectorAll('input, select').forEach(el => {
+  el.addEventListener('input', updatePreview);
+  el.addEventListener('change', updatePreview);
+});
+updatePreview();
+document.querySelector('[name=planned_payment]').addEventListener('input', () => toggleLoanFields(document.querySelector('[name=loan_type]')));
 </script>
-{% endblock %}
 {% endblock %}

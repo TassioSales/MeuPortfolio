@@ -29,9 +29,11 @@
             <div class="glass-card stat-card stat-warning p-4 text-center">
                 <div class="text-muted small mb-1">Próxima Parcela</div>
                 <div class="fs-3 fw-bold text-warning">
-                    <span class="currency-value">{{ loan.next_interest|brl }}</span>
-                    {% if loan.insurance_monthly > 0 %}
-                    <div class="small text-muted fw-normal" style="font-size:0.75rem">+ {{ loan.insurance_monthly|brl }} seguro</div>
+                    {% if schedule %}
+                    <span class="currency-value">{{ schedule.0.total|brl }}</span>
+                    {% if schedule.0.date %}<div class="small text-muted fw-normal" style="font-size:0.75rem">vence {{ schedule.0.date|date:"d/m/Y" }}</div>{% endif %}
+                    {% else %}
+                    <span class="fs-6 text-muted fw-normal">Sem parcela prevista</span>
                     {% endif %}
                 </div>
             </div>
@@ -53,6 +55,24 @@
             </div>
         </div>
     </div>
+
+    {% if is_informal and not loan.planned_payment %}
+    <div class="alert alert-info d-flex gap-2 align-items-start mb-4">
+        <i class="bi bi-info-circle-fill mt-1"></i>
+        <div>
+            <strong>Empréstimo informal (sem nº de parcelas).</strong>
+            {% if schedule %}A parcela prevista é só o mínimo (juros do mês).{% else %}Nenhuma parcela é prevista automaticamente.{% endif %}
+            Para que um valor mensal entre nas despesas, <a href="{% url 'loan_edit' loan.pk %}">informe a parcela combinada</a>;
+            ou registre cada pagamento no valor que quiser.
+        </div>
+    </div>
+    {% elif loan.planned_payment %}
+    <div class="alert alert-light border d-flex gap-2 align-items-start mb-4 small">
+        <i class="bi bi-pencil-square mt-1"></i>
+        <div>Parcela combinada de <strong class="currency-value">{{ loan.planned_payment|brl }}</strong>/mês definida manualmente — ela substitui o cálculo automático.
+            <a href="{% url 'loan_edit' loan.pk %}">Alterar</a></div>
+    </div>
+    {% endif %}
 
     <!-- IOF + Seguro info bar (only when set) -->
     {% if loan.iof_rate > 0 or loan.insurance_monthly > 0 %}
@@ -100,6 +120,7 @@
                         <thead class="table-light">
                             <tr>
                                 <th>Parcela</th>
+                                <th>Vencimento</th>
                                 <th class="text-end">Amort. + Juros</th>
                                 <th class="text-end text-danger">Juros</th>
                                 <th class="text-end text-success">Amort.</th>
@@ -112,6 +133,7 @@
                             {% for row in schedule %}
                             <tr {% if forloop.first %}class="table-warning fw-semibold"{% endif %}>
                                 <td>{{ row.month }}{% if forloop.first %} <span class="badge bg-primary ms-1">próxima</span>{% endif %}</td>
+                                <td>{% if row.transaction %}<a href="{% url 'transaction_edit' row.transaction.pk %}" class="text-decoration-none" title="Editar este lançamento">{{ row.date|date:"d/m/Y" }}</a>{% else %}<span class="text-muted">—</span>{% endif %}</td>
                                 <td class="text-end currency-value">{{ row.payment|brl }}</td>
                                 <td class="text-end text-danger currency-value">{{ row.interest|brl }}</td>
                                 <td class="text-end text-success currency-value">{{ row.principal|brl }}</td>
@@ -124,7 +146,7 @@
                                 </td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="7" class="text-center text-muted py-3">Empréstimo quitado.</td></tr>
+                            <tr><td colspan="8" class="text-center text-muted py-3">{% if loan.current_balance > 0 %}Nenhuma parcela prevista — registre os pagamentos manualmente ou informe a parcela combinada.{% else %}Empréstimo quitado.{% endif %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -157,7 +179,7 @@
                     <div>Juros totais: <strong class="currency-value">{{ total_future_interest_sim|brl }}</strong></div>
                     {% if total_future_interest_sim < total_future_interest %}
                     <div class="text-success small mt-1">
-                        <i class="bi bi-piggy-bank me-1"></i>Economia: <span class="currency-value">{{ total_future_interest|add:"-"|floatformat:2 }}</span>
+                        <i class="bi bi-piggy-bank me-1"></i>Economia em juros: <span class="currency-value">{{ interest_savings|brl }}</span>
                     </div>
                     {% endif %}
                     {% endif %}
@@ -165,7 +187,7 @@
                 {% else %}
                 <div class="text-muted small p-2 bg-light-soft rounded-3">
                     <i class="bi bi-info-circle me-1"></i>
-                    Mínimo (só juros): <strong class="currency-value">{{ loan.next_interest|brl }}/mês</strong>
+                    Mínimo (só juros): <strong class="currency-value">{{ next_interest|brl }}/mês</strong>
                     {% if payoff_months_min %}
                     — quitação em {{ payoff_months_min }} meses.
                     {% else %}
@@ -192,6 +214,14 @@
                         </div>
                         <small class="text-muted d-block mt-1">Saldo após: <span class="currency-value">{{ p.balance_after|brl }}</span></small>
                         {% if p.notes %}<small class="text-muted fst-italic">{{ p.notes }}</small>{% endif %}
+                        {% if p.pk == latest_payment_id %}
+                        <div class="d-flex gap-2 mt-2">
+                            <a href="{% url 'loan_payment_edit' loan.pk p.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil me-1"></i>Editar</a>
+                            <a href="{% url 'loan_payment_delete' loan.pk p.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Excluir</a>
+                        </div>
+                        {% else %}
+                        <small class="text-muted d-block mt-1" title="Cada pagamento é calculado sobre o saldo deixado pelo anterior"><i class="bi bi-lock me-1"></i>Para alterar, exclua antes os pagamentos mais recentes</small>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
@@ -229,16 +259,16 @@
     </div>
 </div>
 
-<style>
-.bg-light-soft { background: rgba(0,0,0,0.03); }
-[data-theme="dark"] .bg-light-soft { background: rgba(255,255,255,0.04); }
-</style>
+{% endblock %}
 
 {% block scripts %}
+{{ chart_labels|json_script:"loan-chart-labels" }}
+{{ chart_balance|json_script:"loan-chart-balance" }}
+{{ chart_sim_balance|json_script:"loan-chart-sim-balance" }}
 <script>
-const labels = {{ chart_labels|safe }};
-const balances = {{ chart_balance|safe }};
-const simBalances = {{ chart_sim_balance|safe }};
+const labels = parseChartJson('loan-chart-labels');
+const balances = parseChartJson('loan-chart-balance');
+const simBalances = parseChartJson('loan-chart-sim-balance', null);
 
 new Chart(document.getElementById('loanChart'), {
     type: 'line',
@@ -273,11 +303,10 @@ new Chart(document.getElementById('loanChart'), {
         scales: {
             y: {
                 beginAtZero: true,
-                ticks: { callback: v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:0}) }
+                ticks: { callback: v => brlTick(v) }
             },
         },
     },
 });
 </script>
-{% endblock %}
 {% endblock %}

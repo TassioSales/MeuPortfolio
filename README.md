@@ -37,6 +37,20 @@ reencontrou sozinha um defeito que eu havia achado antes lendo o código à mão
 
 **[Ver projeto](./edge_audit)**
 
+### Conciliação Bancária
+
+Cruza o extrato do banco com o contas a receber. Sete estratégias em cascata — número do boleto no
+histórico, valor e data, nome do sacado, um depósito que quita vários boletos, pagamento dividido,
+tarifa dentro da tolerância — e o que não tem evidência fica para revisão em vez de ser adivinhado.
+Cada casamento carrega o motivo, porque conciliação que ninguém audita não é usada duas vezes.
+
+Medida contra cenário sintético com gabarito, em três sementes: **98,5% a 99,2% de precisão, 86% de
+cobertura, e zero pagamentos atribuídos ao cliente errado**.
+
+`Python · Polars · Streamlit · SQLite` — 80 testes, leitor de OFX próprio
+
+**[Ver projeto](./conciliador_bancario)**
+
 ### CRM Conversacional
 
 Atendimento no WhatsApp com agentes de IA, qualificação automática de leads, CRM em Kanban e

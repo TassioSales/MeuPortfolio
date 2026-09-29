@@ -40,7 +40,7 @@
 
 Análise exploratória automatizada de datasets CSV/Excel com narrativa gerada por IA, visualizações interativas e exportação de relatório em PDF.
 
-[Ver Projeto](/data_narrator)
+[Ver Projeto](./data_narrator)
 
 ---
 
@@ -50,7 +50,7 @@ Análise exploratória automatizada de datasets CSV/Excel com narrativa gerada p
 
 Plataforma completa para coleta, processamento, forecast e visualização de preços de combustíveis no Brasil.
 
-[Ver Projeto](/analise_de_combustiveis)
+[Ver Projeto](./analise_de_combustiveis)
 
 ---
 
@@ -60,7 +60,7 @@ Plataforma completa para coleta, processamento, forecast e visualização de pre
 
 Controle financeiro, investimentos, PDV, estoque e emissão de notas com versão compilada executável.
 
-[Ver Projeto](/finanças)
+[Ver Projeto](./finanças)
 
 ---
 
@@ -70,7 +70,7 @@ Controle financeiro, investimentos, PDV, estoque e emissão de notas com versão
 
 Gerenciador local de documentos com upload, extração de texto, busca e análise por IA.
 
-[Ver Projeto](/documind_local)
+[Ver Projeto](./documind_local)
 
 ---
 
@@ -82,7 +82,7 @@ Gerenciador local de documentos com upload, extração de texto, busca e anális
 
 Gere roteiros de viagem personalizados com IA avançada, integração com APIs e interface responsiva.
 
-[Ver Código](/gerador_roteiros) | [Demo Online](https://jiqucdwsimgpjhzzhmn3f2.streamlit.app/)
+[Ver Código](./gerador_roteiros) | [Demo Online](https://jiqucdwsimgpjhzzhmn3f2.streamlit.app/)
 
 ---
 
@@ -94,7 +94,7 @@ Gere roteiros de viagem personalizados com IA avançada, integração com APIs e
 
 Consultora de e-commerce inteligente com alertas proativos e análises de preço com IA.
 
-[Ver Projeto](/pricetrack-ai) | [Demo Online](https://pricetrack-ai.streamlit.app)
+[Ver Projeto](./pricetrack-ai) | [Demo Online](https://pricetrack-ai.streamlit.app)
 
 ---
 
@@ -106,7 +106,7 @@ Consultora de e-commerce inteligente com alertas proativos e análises de preço
 
 Sistema completo para gerenciamento de rifas online com analytics avançado e geração de PDF.
 
-[Ver Código](/plataforma_rifas) | [Demo Online](https://plataforma-rifas-pro.streamlit.app)
+[Ver Código](./plataforma_rifas) | [Demo Online](https://plataforma-rifas-pro.streamlit.app)
 
 ---
 
@@ -116,7 +116,7 @@ Sistema completo para gerenciamento de rifas online com analytics avançado e ge
 
 Sistema de gestão de ativos financeiros com previsão ML para os próximos 30 dias, análise de risco (Sharpe & Volatilidade), matriz de correlação em tempo real e assistente de IA para rebalanceamento de carteira.
 
-[Ver Projeto](/wealthmap_analytics)
+[Ver Projeto](./wealthmap_analytics)
 
 ---
 
@@ -126,7 +126,7 @@ Sistema de gestão de ativos financeiros com previsão ML para os próximos 30 d
 
 Jogos arcade single-player com backend Go para configuração e placar de líderes global.
 
-[Neon Drift](/neon_drift) | [Neon Snake](/neon_snake)
+[Neon Drift](./neon_drift) | [Neon Snake](./neon_snake)
 
 ---
 
@@ -136,7 +136,7 @@ Jogos arcade single-player com backend Go para configuração e placar de líder
 
 Dashboard de métricas de perfil GitHub com IA, análise de repositórios e insights automatizados.
 
-[Ver Projeto](/devmetrics)
+[Ver Projeto](./devmetrics)
 
 ---
 
@@ -146,7 +146,7 @@ Dashboard de métricas de perfil GitHub com IA, análise de repositórios e insi
 
 Encurtador de URLs com analytics de cliques, rastreamento de acessos e painel de estatísticas.
 
-[Ver Projeto](/encurtador_url)
+[Ver Projeto](./encurtador_url)
 
 ---
 
@@ -156,7 +156,7 @@ Encurtador de URLs com analytics de cliques, rastreamento de acessos e painel de
 
 Bot de produtividade pessoal com IA, gerenciamento de tarefas, lembretes e respostas inteligentes.
 
-[Ver Projeto](/bot_telegram)
+[Ver Projeto](./bot_telegram)
 
 ---
 
@@ -166,7 +166,7 @@ Bot de produtividade pessoal com IA, gerenciamento de tarefas, lembretes e respo
 
 Plataforma de análise de patrimônio em tempo real com dashboard interativo, WebSocket e IA.
 
-[Ver Projeto](/wealthmap_analytics)
+[Ver Projeto](./wealthmap_analytics)
 
 ---
 
@@ -178,7 +178,7 @@ Plataforma de análise de patrimônio em tempo real com dashboard interativo, We
 comparação de HMAC sujeita a ataque de tempo, bugs de identidade de participante, serialização
 de log, formatação de moeda e duas buscas quadráticas. 153 casos de teste.
 
-[Ver Detalhes](/contribuicoes_open_source)
+[Ver Detalhes](./contribuicoes_open_source)
 
 ---
 
@@ -188,7 +188,7 @@ de log, formatação de moeda e duas buscas quadráticas. 153 casos de teste.
 
 Dashboard interativo de análise do ENEM com ML preditivo: impacto de renda, escola, região e raça nas notas.
 
-[Ver Projeto](/enem_insights)
+[Ver Projeto](./enem_insights)
 
 </div>
 

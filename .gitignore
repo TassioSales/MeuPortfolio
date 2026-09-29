@@ -10,3 +10,9 @@ __pycache__/
 nexus/**/__pycache__/
 .playwright-mcp/email/04_novo_pedido.png
 crm_conversacional/.env.backup
+
+# Logs, binarios e gerados
+*.log
+logs/
+*.exe
+next-env.d.ts
